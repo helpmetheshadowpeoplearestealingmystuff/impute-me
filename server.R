@@ -17,7 +17,7 @@ shinyServer(function(input, output) {
 		dist(input$n)
 	})
 	
-	# Generate a plot of the data. Also uses the inputs to build the 
+	# Generate a plot  f the data. Also uses the inputs to build the 
 	# plot label. Note that the dependencies on both the inputs and
 	# the data reactive expression are both tracked, and all expressions 
 	# are called in the sequence implied by the dependency graph
