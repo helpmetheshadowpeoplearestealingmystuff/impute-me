@@ -6,6 +6,11 @@ library(shiny)
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
 	
+	
+	output$text1 <- renderText({ 
+		"You have selected this"
+	})
+	
 	# Reactive expression to generate the requested distribution. This is 
 	# called whenever the inputs change. The output renderers defined 
 	# below then all used the value computed from this expression
