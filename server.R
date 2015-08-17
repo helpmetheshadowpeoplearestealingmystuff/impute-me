@@ -1,4 +1,7 @@
 library(shiny)
+# 
+# load("data/2015-08-17 merged trans-eQTLs.rdata")
+
 
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
