@@ -8,7 +8,7 @@ library("R.utils")
 
 # path<-"~/impute_dir/genome_Lasse_Folkersen_Full_20140731040800.txt"
 
-sudo less "/var/log/shiny-server/gene-surfer-shiny-20150821-132140-45236.log"
+# sudo less "/var/log/shiny-server/gene-surfer-shiny-20150821-132140-45236.log"
 
 
 prepare_23andme_genome_2<-function(path=""){
@@ -38,11 +38,11 @@ prepare_23andme_genome<-function(path=""){
 	if(length(grep("^imputation_folder",list.files("~"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
 	
 	
-	setwd("/home/ubuntu/gene-surfer/imputations/")
+	setwd("/home/ubuntu/imputations/")
 	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
 	dir.create(homeFolderShort)
 	setwd(homeFolderShort)
-	homeFolder<-paste("/home/ubuntu/gene-surfer/imputations/",homeFolderShort,sep="")
+	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,sep="")
 	
 	if(sub("^.+\\.","",path)=="gz"){
 		gunzip(path)
