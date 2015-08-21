@@ -65,6 +65,8 @@ prepare_23andme_genome<-function(path=""){
 	if(ncol(testRead)!=4)stop("testRead of file didn't have 4 columns")
 	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead didn't have rs IDs in column 1")
 	
+	#should probably change this to more permanent
+	system("export PATH=$PATH:/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static")
 	
 	cmd1<-paste("perl -I /home/ubuntu/impute_dir/ -I /home/ubuntu/impute_dir/IO-zlib/share/perl5/ /home/ubuntu/impute_dir/impute_genome.pl -i",path,"-g /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ -o",uniqueID,"-p")
 	cmd1_out<-system(cmd1,intern=T)
