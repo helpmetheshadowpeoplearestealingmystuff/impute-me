@@ -45,7 +45,7 @@ prepare_23andme_genome<-function(path=""){
 	dir.create(homeFolderShort)
 	setwd(homeFolderShort)
 	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
-	file.copy(path, paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep="")))
+	file.copy(path, paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/"))
 	path <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""))
 	
 	
