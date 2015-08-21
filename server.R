@@ -16,7 +16,9 @@ prepare_23andme_genome<-function(path=""){
 	
 	if(!file.exists("/srv/shiny-server/gene-surfer/imputations"))dir.create("/srv/shiny-server/gene-surfer/imputations")
 	
+	
 	homeFolder<-paste("/srv/shiny-server/gene-surfer/imputations/imputation_folder",uniqueID,sep="_")
+	dir.create(homeFolder)
 	setwd(homeFolder)
 	
 	return(getwd())
