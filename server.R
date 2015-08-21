@@ -9,14 +9,14 @@ library("R.utils")
 # path<-"~/impute_dir/genome_Lasse_Folkersen_Full_20140731040800.txt"
 
 
-prepare_23andme_genome<-function(path=""){
+prepare_23andme_genome_2<-function(path=""){
 	
 	
 	
 	return(getwd())
 }
 
-prepare_23andme_genome_2<-function(path=""){
+prepare_23andme_genome<-function(path=""){
 	library("R.utils")
 	library("mail")
 	
@@ -27,7 +27,9 @@ prepare_23andme_genome_2<-function(path=""){
 	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
 	if(length(grep("^imputation_folder",list.files("~"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
 	
-	homeFolder<-paste("~/imputation_folder",uniqueID,sep="_")
+	if(!file.exists("/srv/shiny-server/gene-surfer/imputations"))dir.create("/srv/shiny-server/gene-surfer/imputations")
+	
+	homeFolder<-paste("/srv/shiny-server/gene-surfer/imputations/imputation_folder",uniqueID,sep="_")
 	setwd(homeFolder)
 	
 	if(sub("^.+\\.","",path)=="gz"){
