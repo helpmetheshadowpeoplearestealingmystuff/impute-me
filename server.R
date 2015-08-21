@@ -6,13 +6,13 @@ library("R.utils")
 # qsub -I -W group_list=allelic_imbalance -l nodes=1:ppn=1,mem=64gb,walltime=36000
 
 
-# path<-"~/impute_dir/genome_Lasse_Folkersen_Full_20140731040800.txt"
+# path<-"/home/ubuntu/impute_dir/genome_Lasse_Folkersen_Full_20140731040800.txt"
 
 # sudo less "/var/log/shiny-server/gene-surfer-shiny-20150821-132140-45236.log"
 
 
 prepare_23andme_genome_2<-function(path=""){
-	setwd("~/imputations/")
+	setwd("/home/ubuntu/imputations/")
 	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
 	# if(length(grep("^imputation_folder",list.files("~"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
 	
@@ -34,11 +34,12 @@ prepare_23andme_genome<-function(path=""){
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
 	
-	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
-	if(length(grep("^imputation_folder",list.files("~"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
+	
+	if(length(grep("^imputation_folder",list.files("/home/ubuntu/imputations/"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
 	
 	
 	setwd("/home/ubuntu/imputations/")
+	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
 	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
 	dir.create(homeFolderShort)
 	setwd(homeFolderShort)
@@ -55,14 +56,8 @@ prepare_23andme_genome<-function(path=""){
 	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead didn't have rs IDs in column 1")
 	
 	
-	# 	cmd1<-paste("perl -I ~/temp_setup/ -I ~/temp_setup/IO-zlib/share/perl5/ ~/temp_setup/impute_genome.pl -i",path,"-g ~/temp_setup/ALL_1000G_phase1integrated_v3_impute/ -o this_output -p > ~/temp_setup/scriptFile")
-	# 	cmd1_out<-system(cmd1,intern=T)
-	
-	cmd1<-paste("perl -I ~/impute_dir/ -I ~/impute_dir/IO-zlib/share/perl5/ ~/impute_dir/impute_genome.pl -i",path,"-g ~/impute_dir/ALL_1000G_phase1integrated_v3_impute/ -o",uniqueID,"-p")
+	cmd1<-paste("perl -I /home/ubuntu/impute_dir/ -I /home/ubuntu/impute_dir/IO-zlib/share/perl5/ /home/ubuntu/impute_dir/impute_genome.pl -i",path,"-g /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ -o",uniqueID,"-p")
 	cmd1_out<-system(cmd1,intern=T)
-	
-	
-	# perl -I ~/impute_dir/ -I ~/impute_dir/IO-zlib/share/perl5/ ~/impute_dir/impute_genome.pl -i ~/impute_dir/genome_Lasse_Folkersen_Full_20140731040800.txt -g ~/impute_dir/ALL_1000G_phase1integrated_v3_impute/ -o ovovovov -p >test
 	
 	
 	
@@ -93,7 +88,7 @@ prepare_23andme_genome<-function(path=""){
 	finalLocation <- paste("/srv/shiny-server/",zipFileOut,sep="")
 	cmd3 <- system("sudo mv", zipFileOthPath, finalLocation)
 	system(cmd3,intern=T)
-	setwd("~")
+	setwd("/home/ubuntu/imputations/")
 	unlink(homeFolder,recursive = TRUE)
 	
 	print("Getting IP and sending mail")
