@@ -20,8 +20,7 @@ prepare_23andme_genome<-function(path=""){
 	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
 	if(length(grep("^imputation_folder",list.files("~"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
 	
-	dir.create(paste("imputation_folder",uniqueID,sep="_"))
-	homeFolder<-paste("~/",paste(uniqueID,"folder",sep="_"),sep="")
+	homeFolder<-paste("~/imputation_folder",uniqueID,sep="_")
 	setwd(homeFolder)
 	
 	if(sub("^.+\\.","",path)=="gz"){

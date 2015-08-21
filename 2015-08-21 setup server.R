@@ -81,13 +81,20 @@ export PERL5LIB=~/impute_dir/IO-zlib/share/perl5/
 
 
 # use lib '~/impute_dir/IO-zlib';
-gunzip genome_Lasse_Folkersen_Full_20140731040800.txt.gz
+# gunzip genome_Lasse_Folkersen_Full_20140731040800.txt.gz
 	
-perl ~/impute_dir/impute_genome.pl -i ~/impute_dir/genome_Lasse_Folkersen_Full_20140731040800.txt -g ~/impute_dir/ALL_1000G_phase1integrated_v3_impute/ -o this_output -p > ~/impute_dir/scriptFile
+# perl ~/impute_dir/impute_genome.pl -i ~/impute_dir/genome_Lasse_Folkersen_Full_20140731040800.txt -g ~/impute_dir/ALL_1000G_phase1integrated_v3_impute/ -o this_output -p > ~/impute_dir/scriptFile
 
 
 # gzip: /home/people/lasfol/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chrY_impute.legend.gz:
 	
 	
 	
-impute2 -m /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr1_combined_b37.txt -h /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr1_impute.hap.gz -l /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr1_impute.legend.gz -g this_output.chr1.gen -int 40e6 45e6 -Ne 20000 -o tmp_impute2.chr1.9 -phase -allow_large_regions
+# impute2 -m /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr1_combined_b37.txt -h /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr1_impute.hap.gz -l /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr1_impute.legend.gz -g this_output.chr1.gen -int 40e6 45e6 -Ne 20000 -o tmp_impute2.chr1.9 -phase -allow_large_regions
+
+
+
+
+
+
+sudo git clone https://github.com/lassefolkersen/gene-surfer/
