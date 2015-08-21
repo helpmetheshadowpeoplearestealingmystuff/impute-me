@@ -34,16 +34,20 @@ prepare_23andme_genome<-function(path=""){
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
 	
-	
+	#check for too many ongoing imputations
 	if(length(grep("^imputation_folder",list.files("/home/ubuntu/imputations/"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
 	
 	
+	#set temp dir
 	setwd("/home/ubuntu/imputations/")
 	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
 	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
 	dir.create(homeFolderShort)
 	setwd(homeFolderShort)
-	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,sep="")
+	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
+	file.copy(path, paste(homeFolder,basename(path)))
+	
+	
 	
 	if(sub("^.+\\.","",path)=="gz"){
 		gunzip(path)

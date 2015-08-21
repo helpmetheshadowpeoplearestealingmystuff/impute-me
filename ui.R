@@ -6,14 +6,14 @@ shinyUI(fluidPage(
 	sidebarLayout(
 		sidebarPanel(
 			fileInput("largeFile", "First upload 23andme data", multiple = FALSE, accept = NULL),
-			p("Then start imputation (will take a while)"),
+			p("Then start imputation. This will take a while, but we'll mail you the results"),
 			actionButton("goButton","Start imputation")
 			
 			),
 		mainPanel(
 			textOutput("text1"),
-			textOutput("text2"),
-			p("hello")
+			textOutput("text2")
+			
 			
 		)
 	)
