@@ -45,15 +45,21 @@ prepare_23andme_genome<-function(path=""){
 	dir.create(homeFolderShort)
 	setwd(homeFolderShort)
 	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
-	file.copy(path, paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/"))
-	path <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
 	
+	#lift out file (unzip)
 	
-	if(sub("^.+\\.","",path)=="gz"){
-		gunzip(path)
-		path<-sub("\\.gz$","",path)
-		if(!file.exists(path))stop(paste("Very weird: Did not find file at path:",path))
+	write.table(path,file="logtemp.txt")
+	
+
+	#unzipping (or not) and moving to new place	
+	newPath <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
+	gunzipResults<-try(gunzip(path,newPath))
+	if(class(gunzipResults)=="try-error"){
+		file.copy(path, newPath)	
 	}
+	path <- newPath
+	
+	
 	
 	testRead<-read.table(path,nrow=10,stringsAsFactors=F)
 	if(ncol(testRead)!=4)stop("testRead of file didn't have 4 columns")
