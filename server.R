@@ -10,6 +10,13 @@ library("R.utils")
 
 
 prepare_23andme_genome<-function(path=""){
+	
+	
+	
+	return(getwd())
+}
+
+prepare_23andme_genome_2<-function(path=""){
 	library("R.utils")
 	library("mail")
 	
