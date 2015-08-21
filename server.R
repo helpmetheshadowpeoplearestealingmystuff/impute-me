@@ -8,23 +8,25 @@ library("R.utils")
 
 # path<-"~/impute_dir/genome_Lasse_Folkersen_Full_20140731040800.txt"
 
+sudo less "/var/log/shiny-server/gene-surfer-shiny-20150821-132140-45236.log"
 
-prepare_23andme_genome<-function(path=""){
-	
+
+prepare_23andme_genome_2<-function(path=""){
+	setwd("~/imputations/")
 	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
-	if(length(grep("^imputation_folder",list.files("~"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
+	# if(length(grep("^imputation_folder",list.files("~"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
 	
-	if(!file.exists("/srv/shiny-server/gene-surfer/imputations"))dir.create("/srv/shiny-server/gene-surfer/imputations")
+	# if(!file.exists("~/imputations"))dir.create("~/imputations")
 	
 	
-	homeFolder<-paste("/srv/shiny-server/gene-surfer/imputations/imputation_folder",uniqueID,sep="_")
-	dir.create(homeFolder)
-	setwd(homeFolder)
+	# homeFolder<-paste("~/imputations/imputation_folder",uniqueID,sep="_")
+	# dir.create(homeFolder)
+	# setwd(homeFolder)
 	
 	return(getwd())
 }
 
-prepare_23andme_genome_2<-function(path=""){
+prepare_23andme_genome<-function(path=""){
 	library("R.utils")
 	library("mail")
 	
@@ -35,10 +37,12 @@ prepare_23andme_genome_2<-function(path=""){
 	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
 	if(length(grep("^imputation_folder",list.files("~"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
 	
-	if(!file.exists("/srv/shiny-server/gene-surfer/imputations"))dir.create("/srv/shiny-server/gene-surfer/imputations")
 	
-	homeFolder<-paste("/srv/shiny-server/gene-surfer/imputations/imputation_folder",uniqueID,sep="_")
-	setwd(homeFolder)
+	setwd("/home/ubuntu/gene-surfer/imputations/")
+	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
+	dir.create(homeFolderShort)
+	setwd(homeFolderShort)
+	homeFolder<-paste("/home/ubuntu/gene-surfer/imputations/",homeFolderShort,sep="")
 	
 	if(sub("^.+\\.","",path)=="gz"){
 		gunzip(path)
