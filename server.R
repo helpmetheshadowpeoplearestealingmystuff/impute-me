@@ -1,49 +1,133 @@
-library(shiny)
-# 
+library("shiny")
+library("R.utils")
 # load("data/2015-08-17 merged trans-eQTLs.rdata")
+
+
+# qsub -I -W group_list=allelic_imbalance -l nodes=1:ppn=1,mem=64gb,walltime=36000
+
+
+# path<-"~/impute_dir/genome_Lasse_Folkersen_Full_20140731040800.txt"
+
+
+prepare_23andme_genome<-function(path=""){
+	library("R.utils")
+	library("mail")
+	
+	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
+	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
+	if(!file.exists(path))stop(paste("Did not find file at path:",path))
+	
+	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
+	if(length(grep("^imputation_folder",list.files("~"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
+	
+	dir.create(paste("imputation_folder",uniqueID,sep="_"))
+	homeFolder<-paste("~/",paste(uniqueID,"folder",sep="_"),sep="")
+	setwd(homeFolder)
+	
+	if(sub("^.+\\.","",path)=="gz"){
+		gunzip(path)
+		path<-sub("\\.gz$","",path)
+		if(!file.exists(path))stop(paste("Very weird: Did not find file at path:",path))
+	}
+	
+	testRead<-read.table(path,nrow=10,stringsAsFactors=F)
+	if(ncol(testRead)!=4)stop("testRead of file didn't have 4 columns")
+	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead didn't have rs IDs in column 1")
+	
+	
+	# 	cmd1<-paste("perl -I ~/temp_setup/ -I ~/temp_setup/IO-zlib/share/perl5/ ~/temp_setup/impute_genome.pl -i",path,"-g ~/temp_setup/ALL_1000G_phase1integrated_v3_impute/ -o this_output -p > ~/temp_setup/scriptFile")
+	# 	cmd1_out<-system(cmd1,intern=T)
+	
+	cmd1<-paste("perl -I ~/impute_dir/ -I ~/impute_dir/IO-zlib/share/perl5/ ~/impute_dir/impute_genome.pl -i",path,"-g ~/impute_dir/ALL_1000G_phase1integrated_v3_impute/ -o",uniqueID,"-p")
+	cmd1_out<-system(cmd1,intern=T)
+	
+	
+	# perl -I ~/impute_dir/ -I ~/impute_dir/IO-zlib/share/perl5/ ~/impute_dir/impute_genome.pl -i ~/impute_dir/genome_Lasse_Folkersen_Full_20140731040800.txt -g ~/impute_dir/ALL_1000G_phase1integrated_v3_impute/ -o ovovovov -p >test
+	
+	
+	
+	imputeCommands<-grep("^impute2 ",cmd1_out,value=T)
+	mergeCommands<-grep("^cat ",cmd1_out,value=T)
+	
+	
+	for(i in 1:length(imputeCommands)){
+		print(paste("running im",i,"of",length(imputeCommands)))
+		cmd_here<-imputeCommands[i]
+		cmd_here_out<-system(cmd_here,intern=T)	
+	}
+	for(i in 1:length(mergeCommands)){
+		print(paste("running",i,"of",length(imputeCommands)))
+		cmd_here<-imputeCommands[i]
+		cmd_here_out<-system(cmd_here,intern=T)	
+	}
+	
+	
+	print("Zipping files")
+	outputFiles<-grep("[1-9]\\.gen",list.files(homeFolder,full.names=T))
+	zipFileOut<-paste(homeFolder,paste(uniqueID,".zip",sep=""),sep="/")
+	zip(zipFileOut, outputFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+	
+	
+	print("Moving zip files to download location and clean up")
+	zipFileOthPath <- paste(homeFolder,zipFileOut,sep="")
+	finalLocation <- paste("/srv/shiny-server/",zipFileOut,sep="")
+	cmd3 <- system("sudo mv", zipFileOthPath, finalLocation)
+	system(cmd3,intern=T)
+	setwd("~")
+	unlink(homeFolder,recursive = TRUE)
+	
+	print("Getting IP and sending mail")
+	ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
+	location <- paste(ip,basename(fileOut),sep="/")
+	message <- paste("For the next 24 hours you can retrieve your imputed genome at this address:\n",location)
+	sendmail(recipient=to, subject=subject, message=message, password="rmail")
+
+	print("Wait 24 hours")
+	Sys.sleep(24*60*60)
+	print("Delete output file")
+	unlink(finalLocation)
+}
+
+
+
+
+
+
 
 
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
 	
 	
+	
 	output$text1 <- renderText({ 
-		"You have selected this"
+		paste("Currently selected file is\n",input$largeFile[["name"]],"(size",round(input$largeFile[["size"]]/1000000),"MB)")
 	})
 	
-	# Reactive expression to generate the requested distribution. This is 
-	# called whenever the inputs change. The output renderers defined 
-	# below then all used the value computed from this expression
-	data <- reactive({  
-		dist <- switch(input$dist,
-									 norm = rnorm,
-									 unif = runif,
-									 lnorm = rlnorm,
-									 exp = rexp,
-									 rnorm)
+	
+	
+	output$text2 <- renderText({ 
+		# Take a dependency on input$goButton
+		input$goButton
+		path <- isolate(input$largeFile[["datapath"]])
+		size <- isolate(input$largeFile[["size"]])
+		# combinationFraction <- as.numeric(isolate(input$combinationFraction))
+		# maxRows <- as.integer(isolate(input$maxRows))
+		# divisions <- as.integer(isolate(input$divisions))
+		# constraintCs <- isolate(input$constraint1)
 		
-		dist(input$n)
-	})
-	
-	# Generate a plot  f the data. Also uses the inputs to build the 
-	# plot label. Note that the dependencies on both the inputs and
-	# the data reactive expression are both tracked, and all expressions 
-	# are called in the sequence implied by the dependency graph
-	output$plot <- renderPlot({
-		dist <- input$dist
-		n <- input$n
+		if(is.null(path))return(NULL)
 		
-		hist(data(), 
-				 main=paste('r', dist, '(', n, ')', sep=''))
+		prepare_23andme_genome(path)
+		
+		
 	})
 	
-	# Generate a summary of the data
-	output$summary <- renderPrint({
-		summary(data())
-	})
 	
-	# Generate an HTML table view of the data
-	output$table <- renderTable({
-		data.frame(x=data())
-	})
+
+	
+		
+
 })
+
+
