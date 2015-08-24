@@ -5,9 +5,8 @@
 # crontab -e
 #
 # MAILTO=lassefolkersen@gmail.com
-# 15 * * * * Rscript /srv/shiny-server/gene-surfer/cron_job.R > /var/log/cron_log
-
-
+# sudo crontab -u root -e
+# 50 * * * * Rscript /srv/shiny-server/gene-surfer/cron_job.R > /var/log/cron_log
 
 
 
@@ -42,16 +41,20 @@ for(folderToCheck in foldersToCheck){
 	
 
 	if(jobStatus=="Job is ready"){
-		print(paste("Found job-status file - and job is ready",folderToCheck)		)
+		print(paste("Found job-status file and job is ready",folderToCheck)		)
 
 		unlink("job_status.txt")
 		write.table("Job is running",file="job_status.txt",col.names=F,row.names=F,quote=F)
 
 		load("imputation_commands.rdata")		
 		
+		impute2path <- "/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static/impute2"
+
+		
 		for(i in 1:length(cmd2)){
 			print(paste("running cmd",i,"of",length(cmd2)))
 			cmd_here<-cmd2[i]
+			cmd_here<- sub("impute2", impute2path, cmd_here)
 			cmd_here_out<-system(cmd_here,intern=T)	
 		}
 		

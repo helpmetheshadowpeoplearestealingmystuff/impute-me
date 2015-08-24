@@ -33,7 +33,8 @@ sudo vi /etc/shiny-server/shiny-server.conf
 
 sudo apt-get install git
 
-
+#Perhaps for mail?
+# sudo apt-get install postfix
 
 
 mkdir impute_dir
