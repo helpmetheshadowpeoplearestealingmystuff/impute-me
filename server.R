@@ -46,7 +46,7 @@ prepare_23andme_genome<-function(path="", email=""){
 	#check for too many ongoing imputations
 	s<-list.files("/home/ubuntu/imputations/")
 	if(length(grep("^imputation_folder",s)) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
-	write.table(s,file="logtemp.txt")
+
 	
 	
 	#set temp dir
@@ -57,6 +57,7 @@ prepare_23andme_genome<-function(path="", email=""){
 	setwd(homeFolderShort)
 	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
 	
+	write.table(s,file="logtemp.txt")
 # 	path<-"C:/Users/FOLK/Documents/Work/Bioinformatics/fdjsklfdjskl"
 # 	path<-"C:/Users/FOLK/Documents/Work/Bioinformatics/dfafdsfsd"
 # 	homeFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics"
