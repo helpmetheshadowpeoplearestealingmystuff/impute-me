@@ -74,7 +74,7 @@ prepare_23andme_genome<-function(path="", email=""){
 	
 	
 	cmd2<-c(imputeCommands,mergeCommands)
-	save(cmd2,uniqueID,mail,file=paste(homeFolder,"imputation_commands.rdata",sep=""))
+	save(cmd2,uniqueID,email,file=paste(homeFolder,"imputation_commands.rdata",sep=""))
 	
 	return(paste("Genome files succesfully uploaded and prepared for imputation. Your unique job-id is",uniqueID,"and when finished, you will receive an email to",email,"that contains download instructions."))
 	
