@@ -11,7 +11,6 @@
 
 
 
-
 #set temp dir
 library(mail)
 s<-list.files("/home/ubuntu/imputations/")
@@ -52,7 +51,7 @@ for(folderToCheck in foldersToCheck){
 
 		
 		for(i in 1:length(cmd2)){
-			print(paste("running cmd",i,"of",length(cmd2)))
+			print(paste("running cmd",i,"of",length(cmd2),"for",uniqueID))
 			cmd_here<-cmd2[i]
 			cmd_here<- sub("impute2", impute2path, cmd_here)
 			cmd_here_out<-system(cmd_here,intern=T)	
@@ -76,7 +75,26 @@ for(folderToCheck in foldersToCheck){
 		ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
 		location <- paste(ip,basename(finalLocation),sep="/")
 		message <- paste("For the next 24 hours you can retrieve your imputed genome at this address:\n",location)
-		sendmail(recipient=email, subject="Imputation is ready", message=message, password="rmail")
+		
+		
+		# list(host.name = "smtp.gmail.com", port = 465, user.name = "slackline", passwd = "PASSWORD", ssl = TRUE)
+		send.mail(from = "analyzer6063@gmail.com",
+							to = email,
+							subject = "Imputation is ready",
+							body = message,
+							smtp = list(
+								host.name = "smtp.gmail.com", 
+								port = 465, 
+								user.name = "analyzer6063@gmail.com", 
+								passwd = "ei1J#bQA^FA$", 
+								ssl = TRUE),
+							authenticate = TRUE,
+							send = TRUE)
+		
+		
+		
+		
+		
 		
 		print("Wait 24 hours")
 		Sys.sleep(24*60*60)
@@ -90,3 +108,5 @@ for(folderToCheck in foldersToCheck){
 		
 	
 }
+
+

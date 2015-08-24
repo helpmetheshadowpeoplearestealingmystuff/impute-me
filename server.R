@@ -105,7 +105,7 @@ shinyServer(function(input, output) {
 		if(input$goButton == 0){
 			return("")
 		}else if(input$goButton == 1) {
-			return("Job submitted, please wait 2-3 minutes for pre-checking and further instructions")
+			return("Job submitted, please wait 2-3 minutes for pre-checks and further instructions")
 		}else{
 			stop("Please don't try to submit the job more than once.")	
 		}
@@ -120,19 +120,10 @@ shinyServer(function(input, output) {
 			path <- isolate(input$largeFile[["datapath"]])
 			email <- isolate(input$email)
 			if(is.null(path))return("No file selected")
-			prepare_23andme_genome(path,email)
-			return("hej")
+			out<-prepare_23andme_genome(path,email)
+			return(out)
 		}
-		
-		
-		
 	})
-	
-	
-	
-	
-	
-	
 })
 
 

@@ -7,6 +7,9 @@
 sudo apt-get update
 sudo apt-get install r-base-dev
 sudo apt-get install libcurl4-openssl-dev
+sudo apt-get install default-jdk
+
+
 
 sudo -i
 R
@@ -15,11 +18,12 @@ install.packages("rmarkdown")
 install.packages("openxlsx")
 install.packages("nlme")
 install.packages("R.utils")
-install.packages("mail")
-
+install.packages("mailR")
 q()
 y
 exit
+
+
 
 
 sudo apt-get install gdebi-core
