@@ -26,14 +26,21 @@ prepare_23andme_genome_2<-function(path=""){
 	return(getwd())
 }
 
-prepare_23andme_genome<-function(path=""){
+prepare_23andme_genome<-function(path="",email=""){
 	library("R.utils")
 	library("mail")
 	
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
+
+	if(class(email)!="character")stop(paste("email must be character, not",class(email)))
+	if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
 	
+	if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
+		stop(paste("a real email adress is needed:",email))
+	}
+		
 	#check for too many ongoing imputations
 	s<-list.files("/home/ubuntu/imputations/")
 	if(length(grep("^imputation_folder",s)) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
@@ -52,7 +59,7 @@ prepare_23andme_genome<-function(path=""){
 	
 	
 	
-
+	
 	#unzipping (or not) and moving to new place	
 	newPath <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
 	gunzipResults<-try(gunzip(path,newPath))
@@ -79,6 +86,20 @@ prepare_23andme_genome<-function(path=""){
 	mergeCommands<-grep("^cat ",cmd1_out,value=T)
 	
 	
+	cmd2<-c(imputeCommands,mergeCommands)
+	save(cmd2,file=paste(homeFolder,"imputation_commands.rdata")
+	
+			 
+	return(paste("Genome files succesfully uploaded and prepared for imputation. Your unique job id is",uniqueID,"and you will receive an email to",email,"with download instructions when imputation is finished"))
+			 
+}
+
+
+
+
+
+
+run__imputation<-function(cmd2){
 	for(i in 1:length(imputeCommands)){
 		print(paste("running im",i,"of",length(imputeCommands)))
 		cmd_here<-imputeCommands[i]
@@ -110,18 +131,13 @@ prepare_23andme_genome<-function(path=""){
 	location <- paste(ip,basename(fileOut),sep="/")
 	message <- paste("For the next 24 hours you can retrieve your imputed genome at this address:\n",location)
 	sendmail(recipient=to, subject=subject, message=message, password="rmail")
-
+	
 	print("Wait 24 hours")
 	Sys.sleep(24*60*60)
 	print("Delete output file")
 	unlink(finalLocation)
+	
 }
-
-
-
-
-
-
 
 
 # Define server logic for random distribution application
@@ -139,7 +155,8 @@ shinyServer(function(input, output) {
 		# Take a dependency on input$goButton
 		input$goButton
 		path <- isolate(input$largeFile[["datapath"]])
-		size <- isolate(input$largeFile[["size"]])
+		# size <- isolate(input$largeFile[["size"]])
+		email <- isolate(input$email)
 		# combinationFraction <- as.numeric(isolate(input$combinationFraction))
 		# maxRows <- as.integer(isolate(input$maxRows))
 		# divisions <- as.integer(isolate(input$divisions))
@@ -147,16 +164,16 @@ shinyServer(function(input, output) {
 		
 		if(is.null(path))return(NULL)
 		
-		prepare_23andme_genome(path)
+		prepare_23andme_genome(path, email)
 		
 		
 	})
 	
 	
-
 	
-		
-
+	
+	
+	
 })
 
 
