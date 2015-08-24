@@ -50,12 +50,12 @@ prepare_23andme_genome<-function(path="", email=""){
 	
 	
 	#set temp dir
-# 	setwd("/home/ubuntu/imputations/")
+	setwd("/home/ubuntu/imputations/")
 	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
-# 	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
-# 	dir.create(homeFolderShort)
-# 	setwd(homeFolderShort)
-# 	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
+	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
+	dir.create(homeFolderShort)
+	setwd(homeFolderShort)
+	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
 	
 # 	path<-"C:/Users/FOLK/Documents/Work/Bioinformatics/fdjsklfdjskl"
 # 	path<-"C:/Users/FOLK/Documents/Work/Bioinformatics/dfafdsfsd"
