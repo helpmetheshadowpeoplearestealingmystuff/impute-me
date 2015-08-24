@@ -50,28 +50,29 @@ prepare_23andme_genome<-function(path="", email=""){
 	
 	
 	#set temp dir
-	setwd("/home/ubuntu/imputations/")
+# 	setwd("/home/ubuntu/imputations/")
 	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
-	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
-	dir.create(homeFolderShort)
-	setwd(homeFolderShort)
-	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
+# 	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
+# 	dir.create(homeFolderShort)
+# 	setwd(homeFolderShort)
+# 	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
 	
-	#lift out file (unzip)
-	
-	
+# 	path<-"C:/Users/FOLK/Documents/Work/Bioinformatics/fdjsklfdjskl"
+# 	path<-"C:/Users/FOLK/Documents/Work/Bioinformatics/dfafdsfsd"
+# 	homeFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics"
 	
 	
 	#unzipping (or not) and moving to new place	
-	newPath <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
-	gunzipResults<-try(unzip(path,exdir=homeFolder))
-	if(class(gunzipResults)=="try-error"){
-		file.copy(path, newPath)	
-	}else{
-		return(paste(list.files(homeFolder),collapse=","))
+	newTempPath <- paste(homeFolder,paste(uniqueID,"_raw_data",sep=""),sep="/")
+	newUnzippedPath <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
+	file.copy(path, newTempPath)	
+	gunzipResults<-unzip(newTempPath,exdir=homeFolder)
+	if(length(gunzipResults)==1){ #then its a zip file
+		file.rename(gunzipResults, newUnzippedPath)		
+	}else{ #then it's probably not
+		file.rename(newTempPath, newUnzippedPath)		
 	}
-	path <- newPath
-	
+	path <- newUnzippedPath
 	
 	
 	testRead<-read.table(path,nrow=10,stringsAsFactors=F)
@@ -94,7 +95,7 @@ prepare_23andme_genome<-function(path="", email=""){
 	save(cmd2,file=paste(homeFolder,"imputation_commands.rdata"))
 	
 	
-	return(paste("Genome files succesfully uploaded and prepared for imputation. Your unique job id is",uniqueID,"and you will receive an email to",email,"with download instructions when imputation is finished"))
+	return(paste("Genome files succesfully uploaded and prepared for imputation. Your unique job-id is",uniqueID,"and when finished, you will receive an email to",email,"that contains download instructions."))
 	
 }
 
