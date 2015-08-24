@@ -41,7 +41,7 @@ prepare_23andme_genome<-function(path="", email=""){
 	dir.create(homeFolderShort)
 	setwd(homeFolderShort)
 	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
-	write.table("Job is not ready yet",file="job_status.txt")
+	write.table("Job is not ready yet",file="job_status.txt",col.names=F,row.names=F,quote=F)
 
 	
 	#unzipping (or not) and moving to new place	
@@ -76,10 +76,12 @@ prepare_23andme_genome<-function(path="", email=""){
 	cmd2<-c(imputeCommands,mergeCommands)
 	save(cmd2,uniqueID,email,file=paste(homeFolder,"imputation_commands.rdata",sep=""))
 	
+	unlink("job_status.txt")
+	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
+	
+	
 	return(paste("Genome files succesfully uploaded and prepared for imputation. Your unique job-id is",uniqueID,"and when finished, you will receive an email to",email,"that contains download instructions."))
 	
-	unlink("job_status.txt")
-	write.table("Job is ready",file="job_status.txt")
 	
 }
 

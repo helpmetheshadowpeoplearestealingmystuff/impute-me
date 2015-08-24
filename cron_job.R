@@ -26,7 +26,7 @@ for(folderToCheck in foldersToCheck){
 	}
 	
 	jobStatus<-read.table("job_status.txt",stringsAsFactors=FALSE,header=FALSE)
-	if(jobStatus="Job is not ready yet"){
+	if(jobStatus=="Job is not ready yet"){
 		print("Found job-status file - but job is not ready yet",folderToCheck)		
 		next
 	}
@@ -34,7 +34,7 @@ for(folderToCheck in foldersToCheck){
 
 	
 	
-	if(jobStatus="Job is ready"){
+	if(jobStatus=="Job is ready"){
 		print("Found job-status file - and job is ready",folderToCheck)		
 		load("imputation_commands.rdata")
 		
