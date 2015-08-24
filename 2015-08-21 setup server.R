@@ -1,6 +1,6 @@
  
 
-
+ 
 
 #Set up server
 # qsub -I -W group_list=allelic_imbalance -l nodes=1:ppn=1,mem=32gb,walltime=360000
