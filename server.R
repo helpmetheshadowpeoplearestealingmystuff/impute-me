@@ -35,7 +35,9 @@ prepare_23andme_genome<-function(path=""){
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
 	
 	#check for too many ongoing imputations
-	if(length(grep("^imputation_folder",list.files("/home/ubuntu/imputations/"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
+	s<-list.files("/home/ubuntu/imputations/")
+	if(length(grep("^imputation_folder",s)) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
+	write.table(s,file="logtemp.txt")
 	
 	
 	#set temp dir
@@ -48,7 +50,7 @@ prepare_23andme_genome<-function(path=""){
 	
 	#lift out file (unzip)
 	
-	write.table(path,file="logtemp.txt")
+	
 	
 
 	#unzipping (or not) and moving to new place	
