@@ -31,7 +31,7 @@ prepare_23andme_genome<-function(path="", email=""){
 	#check for too many ongoing imputations
 	s<-list.files("/home/ubuntu/imputations/")
 	if(length(grep("^imputation_folder",s)) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
-
+	
 	
 	
 	#set temp dir
@@ -42,7 +42,7 @@ prepare_23andme_genome<-function(path="", email=""){
 	setwd(homeFolderShort)
 	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
 	write.table("Job is not ready yet",file="job_status.txt",col.names=F,row.names=F,quote=F)
-
+	
 	
 	#unzipping (or not) and moving to new place	
 	newTempPath <- paste(homeFolder,paste(uniqueID,"_raw_data",sep=""),sep="/")
@@ -99,16 +99,31 @@ shinyServer(function(input, output) {
 	})
 	
 	
-	
 	output$text2 <- renderText({ 
 		# Take a dependency on input$goButton
-		input$goButton
-		path <- isolate(input$largeFile[["datapath"]])
-		email <- isolate(input$email)
-
-		if(is.null(path))return(NULL)
 		
-		prepare_23andme_genome(path,email)
+		if(input$goButton == 0){
+			return("")
+		}else if(input$goButton == 1) {
+			return("Job submitted, please wait 2-3 minutes for pre-checking and further instructions")
+		}else{
+			stop("Please don't try to submit the job more than once.")	
+		}
+		
+	})
+	
+	
+	
+	output$text3 <- renderText({ 
+		# Take a dependency on input$goButton
+		if(input$goButton == 1){
+			path <- isolate(input$largeFile[["datapath"]])
+			email <- isolate(input$email)
+			if(is.null(path))return("No file selected")
+			prepare_23andme_genome(path,email)
+			return("hej")
+		}
+		
 		
 		
 	})

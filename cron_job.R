@@ -2,8 +2,10 @@
 # 
 #Strategy - setup this to run every hour on the hour, 
 # 	
+# crontab -e
+#
 # MAILTO=lassefolkersen@gmail.com
-# 0 * * * * Rscript /srv/shiny-server/gene-surfer/cron_job.R > /var/log/cron_log
+# 15 * * * * Rscript /srv/shiny-server/gene-surfer/cron_job.R > /var/log/cron_log
 
 
 
