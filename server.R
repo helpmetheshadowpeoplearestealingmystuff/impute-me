@@ -26,9 +26,9 @@ library("R.utils")
 # 	return(getwd())
 # }
 
-prepare_23andme_genome<-function(path,email){path}
 
-prepare_23andme_genome_2<-function(path="", email=""){
+
+prepare_23andme_genome<-function(path="", email=""){
 	library("R.utils")
 	library("mail")
 	
@@ -64,9 +64,11 @@ prepare_23andme_genome_2<-function(path="", email=""){
 	
 	#unzipping (or not) and moving to new place	
 	newPath <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
-	gunzipResults<-try(gunzip(path,newPath))
+	gunzipResults<-try(unzip(path,exdir=homeFolder))
 	if(class(gunzipResults)=="try-error"){
 		file.copy(path, newPath)	
+	}else{
+		return(paste(list.files(homeFolder),collapse=","))
 	}
 	path <- newPath
 	
@@ -161,7 +163,7 @@ shinyServer(function(input, output) {
 
 		if(is.null(path))return(NULL)
 		
-		prepare_23andme_genome(path)
+		prepare_23andme_genome(path,email)
 		
 		
 	})
