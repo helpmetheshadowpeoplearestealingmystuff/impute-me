@@ -11,6 +11,8 @@ library("shiny")
 # sudo less "/var/log/shiny-server/gene-surfer-shiny-20150821-132140-45236.log"
 
 
+adding options(shiny.maxRequestSize=10*1024^2) 
+
 
 
 prepare_23andme_genome<-function(path="", email=""){
