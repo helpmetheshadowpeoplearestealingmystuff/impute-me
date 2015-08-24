@@ -6,7 +6,7 @@ shinyUI(fluidPage(
 	sidebarLayout(
 		sidebarPanel(
 			fileInput("largeFile", "First upload 23andme data", multiple = FALSE, accept = NULL),
-			textInput(inputId="email", label = "email", value = "lassefolkersen@gmail.com"),
+			textInput(inputId="email", label = "Then give your email", value = "lassefolkersen@gmail.com"),
 			p("Then start imputation. This will take a while, but we'll mail you the results"),
 			actionButton("goButton","Start imputation"),
 			width=4

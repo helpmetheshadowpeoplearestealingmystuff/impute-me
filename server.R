@@ -1,5 +1,5 @@
 library("shiny")
-library("R.utils")
+# library("R.utils")
 # load("data/2015-08-17 merged trans-eQTLs.rdata")
 
 
@@ -11,26 +11,11 @@ library("R.utils")
 # sudo less "/var/log/shiny-server/gene-surfer-shiny-20150821-132140-45236.log"
 
 
-# prepare_23andme_genome_2<-function(path=""){
-# 	setwd("/home/ubuntu/imputations/")
-# 	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
-# 	# if(length(grep("^imputation_folder",list.files("~"))) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
-# 	
-# 	# if(!file.exists("~/imputations"))dir.create("~/imputations")
-# 	
-# 	
-# 	# homeFolder<-paste("~/imputations/imputation_folder",uniqueID,sep="_")
-# 	# dir.create(homeFolder)
-# 	# setwd(homeFolder)
-# 	
-# 	return(getwd())
-# }
-
 
 
 prepare_23andme_genome<-function(path="", email=""){
-	library("R.utils")
-	library("mail")
+	# library("R.utils")
+	# library("mail")
 	
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
@@ -56,12 +41,8 @@ prepare_23andme_genome<-function(path="", email=""){
 	dir.create(homeFolderShort)
 	setwd(homeFolderShort)
 	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
-	
-	write.table(s,file="logtemp.txt")
-# 	path<-"C:/Users/FOLK/Documents/Work/Bioinformatics/fdjsklfdjskl"
-# 	path<-"C:/Users/FOLK/Documents/Work/Bioinformatics/dfafdsfsd"
-# 	homeFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics"
-	
+	write.table("Job is not ready yet",file="job_status.txt")
+
 	
 	#unzipping (or not) and moving to new place	
 	newTempPath <- paste(homeFolder,paste(uniqueID,"_raw_data",sep=""),sep="/")
@@ -93,57 +74,17 @@ prepare_23andme_genome<-function(path="", email=""){
 	
 	
 	cmd2<-c(imputeCommands,mergeCommands)
-	save(cmd2,file=paste(homeFolder,"imputation_commands.rdata"))
-	
+	save(cmd2,uniqueID,mail,file=paste(homeFolder,"imputation_commands.rdata",sep=""))
 	
 	return(paste("Genome files succesfully uploaded and prepared for imputation. Your unique job-id is",uniqueID,"and when finished, you will receive an email to",email,"that contains download instructions."))
+	
+	unlink("job_status.txt")
+	write.table("Job is ready",file="job_status.txt")
 	
 }
 
 
 
-# 
-# 
-# 
-# run__imputation<-function(cmd2){
-# 	for(i in 1:length(imputeCommands)){
-# 		print(paste("running im",i,"of",length(imputeCommands)))
-# 		cmd_here<-imputeCommands[i]
-# 		cmd_here_out<-system(cmd_here,intern=T)	
-# 	}
-# 	for(i in 1:length(mergeCommands)){
-# 		print(paste("running",i,"of",length(imputeCommands)))
-# 		cmd_here<-imputeCommands[i]
-# 		cmd_here_out<-system(cmd_here,intern=T)	
-# 	}
-# 	
-# 	
-# 	print("Zipping files")
-# 	outputFiles<-grep("[1-9]\\.gen",list.files(homeFolder,full.names=T))
-# 	zipFileOut<-paste(homeFolder,paste(uniqueID,".zip",sep=""),sep="/")
-# 	zip(zipFileOut, outputFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-# 	
-# 	
-# 	print("Moving zip files to download location and clean up")
-# 	zipFileOthPath <- paste(homeFolder,zipFileOut,sep="")
-# 	finalLocation <- paste("/srv/shiny-server/",zipFileOut,sep="")
-# 	cmd3 <- system("sudo mv", zipFileOthPath, finalLocation)
-# 	system(cmd3,intern=T)
-# 	setwd("/home/ubuntu/imputations/")
-# 	unlink(homeFolder,recursive = TRUE)
-# 	
-# 	print("Getting IP and sending mail")
-# 	ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
-# 	location <- paste(ip,basename(fileOut),sep="/")
-# 	message <- paste("For the next 24 hours you can retrieve your imputed genome at this address:\n",location)
-# 	sendmail(recipient=to, subject=subject, message=message, password="rmail")
-# 	
-# 	print("Wait 24 hours")
-# 	Sys.sleep(24*60*60)
-# 	print("Delete output file")
-# 	unlink(finalLocation)
-# 	
-# }
 
 
 # Define server logic for random distribution application
