@@ -9,7 +9,7 @@
 
 
 #set temp dir
-library(mail)
+library(mailR)
 s<-list.files("/home/ubuntu/imputations/")
 foldersToCheck<-grep("^imputation_folder",s,value=T)
 
@@ -74,8 +74,11 @@ for(folderToCheck in foldersToCheck){
 		message <- paste("For the next 24 hours you can retrieve your imputed genome at this address:\n",location)
 		
 		
-		# list(host.name = "smtp.gmail.com", port = 465, user.name = "slackline", passwd = "PASSWORD", ssl = TRUE)
-		send.mail(from = "analyzer6063@gmail.com",
+		
+		mailingResult<-try(stop(),silent=TRUE)
+		while(class(mailingResult) == "try-error"){
+			print(paste("Trying to mail to",email))
+			mailingResult<-try(send.mail(from = "analyzer6063@gmail.com",
 							to = email,
 							subject = "Imputation is ready",
 							body = message,
@@ -86,9 +89,10 @@ for(folderToCheck in foldersToCheck){
 								passwd = "ei1J#bQA^FA$", 
 								ssl = TRUE),
 							authenticate = TRUE,
-							send = TRUE)
+							send = TRUE))
+			Sys.sleep(10)
 		
-		
+		}
 		
 		
 		
