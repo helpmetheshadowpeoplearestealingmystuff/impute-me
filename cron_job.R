@@ -56,7 +56,7 @@ for(folderToCheck in foldersToCheck){
 		
 
 		print("Zipping files")
-		outputFiles<-grep("[1-9]\\.gen$",list.files(),value=T)
+		outputFiles<-grep("\\.[1-9]{1,2}\\.gen$",list.files(),value=T)
 		zipFileOut<-paste("/home/ubuntu/imputations",folderToCheck,paste(uniqueID,".zip",sep=""),sep="/")
 		zip(zipFileOut, outputFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
 		
