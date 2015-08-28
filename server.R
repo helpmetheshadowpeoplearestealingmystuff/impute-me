@@ -1,24 +1,9 @@
 library("shiny")
-# library("R.utils")
-# load("data/2015-08-17 merged trans-eQTLs.rdata")
-
-
-# qsub -I -W group_list=allelic_imbalance -l nodes=1:ppn=1,mem=64gb,walltime=36000
-
-
-# path<-"/home/ubuntu/impute_dir/genome_Lasse_Folkersen_Full_20140731040800.txt"
-
-# sudo less "/var/log/shiny-server/gene-surfer-shiny-20150821-132140-45236.log"
 
 
 options(shiny.maxRequestSize=10*1024^2) 
 
-
-
 prepare_23andme_genome<-function(path="", email=""){
-	# library("R.utils")
-	# library("mail")
-	
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
@@ -64,19 +49,16 @@ prepare_23andme_genome<-function(path="", email=""){
 	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead didn't have rs IDs in column 1")
 	
 	#should probably change this to more permanent
-	system("export PATH=$PATH:/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static")
-	
-	cmd1<-paste("perl -I /home/ubuntu/impute_dir/ -I /home/ubuntu/impute_dir/IO-zlib/share/perl5/ /home/ubuntu/impute_dir/impute_genome.pl -i",path,"-g /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ -o",uniqueID,"-p")
-	cmd1_out<-system(cmd1,intern=T)
-	
-	
-	
-	imputeCommands<-grep("^impute2 ",cmd1_out,value=T)
-	mergeCommands<-grep("^cat ",cmd1_out,value=T)
-	
-	
-	cmd2<-c(imputeCommands,mergeCommands)
-	save(cmd2,uniqueID,email,file=paste(homeFolder,"imputation_commands.rdata",sep=""))
+	# system("export PATH=$PATH:/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static")
+	# cmd1<-paste("perl -I /home/ubuntu/impute_dir/ -I /home/ubuntu/impute_dir/IO-zlib/share/perl5/ /home/ubuntu/impute_dir/impute_genome.pl -i",path,"-g /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ -o",uniqueID,"-p")
+	# cmd1_out<-system(cmd1,intern=T)
+	# imputeCommands<-grep("^impute2 ",cmd1_out,value=T)
+	# mergeCommands<-grep("^cat ",cmd1_out,value=T)
+	# mergeCommands<-gsub("\\.haps","_info",cmd2) #change so it takes the info files instead
+	#maybe just skip the mergeCommands and make your own?
+	# mergeCommands<-grep("^cat", cmd2,value=T)
+	# cmd2<-c(imputeCommands,mergeCommands)
+	save(uniqueID,email,file=paste(homeFolder,"variables.rdata",sep=""))
 	
 	unlink("job_status.txt")
 	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)

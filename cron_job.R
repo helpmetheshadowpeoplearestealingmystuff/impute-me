@@ -5,11 +5,12 @@
 # sudo crontab -u root -e
 # 50 * * * * Rscript /srv/shiny-server/gene-surfer/cron_job.R > /var/log/cron_log
 
+source("/srv/shiny-server/gene-surfer/run_phasing_and_imputation.R")
 
 
 
-#set temp dir
-library(mailR)
+library("mailR")
+library("rJava")
 s<-list.files("/home/ubuntu/imputations/")
 foldersToCheck<-grep("^imputation_folder",s,value=T)
 
@@ -42,37 +43,35 @@ for(folderToCheck in foldersToCheck){
 		unlink("job_status.txt")
 		write.table("Job is running",file="job_status.txt",col.names=F,row.names=F,quote=F)
 
-		load("imputation_commands.rdata")		
+		load("variables.rdata")		
 		
-		impute2path <- "/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static/impute2"
-
-		
-		for(i in 1:length(cmd2)){
-			print(paste("running cmd",i,"of",length(cmd2),"for",uniqueID))
-			cmd_here<-cmd2[i]
-			cmd_here<- sub("impute2", impute2path, cmd_here)
-			cmd_here_out<-system(cmd_here,intern=T)	
-		}
-		
-
-		print("Zipping files")
-		outputFiles<-grep("\\.[1-9]{1,2}\\.gen$",list.files(),value=T)
-		zipFileOut<-paste("/home/ubuntu/imputations",folderToCheck,paste(uniqueID,".zip",sep=""),sep="/")
-		zip(zipFileOut, outputFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+		run_phasing_and_imputation(
+			rawdata=paste(uniqueID,"_raw_data.txt",sep=""), 
+			runDir=paste("/home/ubuntu/imputations/",paste("imputation_folder",uniqueID,sep="_"),sep=""),
+			shapeit="/home/ubuntu/impute_dir/bin/shapeit",
+			plink="/home/ubuntu/impute_dir/plink",
+			sample_ref="/home/ubuntu/misc_files/sample.reference.txt")
 		
 		
-		print("Moving zip files to download location and clean up")
-		finalLocation <- paste("/srv/shiny-server/",basename(zipFileOut),sep="")
-		cmd3 <- paste("sudo mv", zipFileOut, finalLocation)
-		system(cmd3,intern=T)
-		setwd("/home/ubuntu/imputations/")
-		unlink(folderToCheck,recursive = TRUE)
 		
-		print("Getting IP and sending mail")
-		ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
-		location <- paste(ip,basename(finalLocation),sep="/")
-		message <- paste("For the next 24 hours you can retrieve your imputed genome at this address:\n",location)
-		
+# 		print("Zipping files")
+# 		outputFiles<-grep("\\.[1-9]{1,2}\\.gen$",list.files(),value=T)
+# 		zipFileOut<-paste("/home/ubuntu/imputations",folderToCheck,paste(uniqueID,".zip",sep=""),sep="/")
+# 		zip(zipFileOut, outputFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+# 		
+# 		
+# 		print("Moving zip files to download location and clean up")
+# 		finalLocation <- paste("/srv/shiny-server/",basename(zipFileOut),sep="")
+# 		cmd3 <- paste("sudo mv", zipFileOut, finalLocation)
+# 		system(cmd3,intern=T)
+# 		setwd("/home/ubuntu/imputations/")
+# 		unlink(folderToCheck,recursive = TRUE)
+# 		
+# 		print("Getting IP and sending mail")
+# 		ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
+# 		location <- paste(ip,basename(finalLocation),sep="/")
+# 		message <- paste("For the next 24 hours you can retrieve your imputed genome at this address:\n",location)
+# 		
 		
 		
 		mailingResult<-try(stop(),silent=TRUE)
