@@ -6,9 +6,9 @@ shinyUI(fluidPage(
 	sidebarLayout(
 		sidebarPanel(
 			fileInput("largeFile", "First upload 23andme data", multiple = FALSE, accept = NULL),
-			textInput(inputId="email", label = "Then give your email", value = "lassefolkersen@gmail.com"),
-			checkboxInput("acceptTerms", "Accept terms", value = FALSE),
-			checkboxInput("simplify", "Simplify output", value = FALSE),
+			textInput(inputId="email", label = "Then enter your email", value = "lassefolkersen@gmail.com"),
+			checkboxInput("acceptTerms", "Accept terms of use", value = FALSE),
+			checkboxInput("simplify", "Simplify output file", value = FALSE),
 			p("Then start imputation. This will take a while, but we'll mail you a download-link when ready"),
 			actionButton("goButton","Start imputation"),
 			width=4
