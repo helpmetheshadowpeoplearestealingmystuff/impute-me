@@ -197,7 +197,7 @@ summarize_imputation<-function(runDir,uniqueID){
 	if(length(runDir)!=1)stop(paste("runDir must be lengh 1, not",length(runDir)))
 	if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
 	
-	if(class(uniqueID)!="uniqueID")stop(paste("uniqueID must be character, not",class(uniqueID)))
+	if(class(uniqueID)!="character")stop(paste("uniqueID must be character, not",class(uniqueID)))
 	if(length(uniqueID)!=1)stop(paste("uniqueID must be lengh 1, not",length(uniqueID)))
 	
 	
@@ -210,7 +210,7 @@ summarize_imputation<-function(runDir,uniqueID){
 	
 	for(chr in chromosomes){
 		s <-grep(paste("^step_7_chr",chr,sep=""), step7ResultsFiles,value=T)
-		s<-s[order(as.numeric(sub("^.+_","",step7ResultsFilesHere)))]
+		s<-s[order(as.numeric(sub("^.+_","",s)))]
 		cmd1<-paste("cat ",paste(s,collapse=" ")," > ",uniqueID,"_chr",chr,".haps",sep="")
 		system(cmd1)
 		

@@ -48,29 +48,19 @@ for(folderToCheck in foldersToCheck){
 
 		run_imputation(
 			rawdata=paste(uniqueID,"_raw_data.txt",sep=""), 
-			runDir=runDir
+			runDir=runDir,
 			shapeit="/home/ubuntu/impute_dir/bin/shapeit",
 			plink="/home/ubuntu/impute_dir/plink",
 			sample_ref="/home/ubuntu/misc_files/sample.reference.txt")
 		
 		
-		zipFileOut<-summarize_imputation(
-			runDir=runDir)
-		)
-		
+		zipFileOut<-summarize_imputation(runDir=runDir,uniqueID=uniqueID)
 		
 		finalLocation <- paste("/srv/shiny-server/",basename(zipFileOut),sep="")
 		cmd3 <- paste("sudo mv", zipFileOut, finalLocation)
 		system(cmd3,intern=T)
 		setwd("/home/ubuntu/imputations/")
 		# unlink(runDir,recursive = TRUE)
-		
-		print("Moving zip files to download location and clean up")
-		finalLocation <- paste("/srv/shiny-server/",basename(zipFileOut),sep="")
-		cmd3 <- paste("sudo mv", zipFileOut, finalLocation)
-		system(cmd3,intern=T)
-		setwd("/home/ubuntu/imputations/")
-		unlink(folderToCheck,recursive = TRUE)
 		
 		print("Getting IP and sending mail")
 		ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
