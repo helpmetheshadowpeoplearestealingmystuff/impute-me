@@ -73,6 +73,7 @@ run_imputation<-function(
 	runDir, 
 	shapeit="/home/ubuntu/impute_dir/bin/shapeit",
 	plink="/home/ubuntu/impute_dir/plink",
+	impute2="/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static/impute2",
 	sample_ref="/home/ubuntu/misc_files/sample.reference.txt"
 ){
 	
@@ -93,6 +94,10 @@ run_imputation<-function(
 	if(class(plink)!="character")stop(paste("plink must be character, not",class(plink)))
 	if(length(plink)!=1)stop(paste("plink must be lengh 1, not",length(plink)))
 	if(!file.exists(plink))stop(paste("Did not find plink at path:",plink))
+
+	if(class(impute2)!="character")stop(paste("impute2 must be character, not",class(impute2)))
+	if(length(impute2)!=1)stop(paste("impute2 must be lengh 1, not",length(impute2)))
+	if(!file.exists(impute2))stop(paste("Did not find impute2 at path:",impute2))
 	
 	if(class(sample_ref)!="character")stop(paste("sample_ref must be character, not",class(sample_ref)))
 	if(length(sample_ref)!=1)stop(paste("sample_ref must be lengh 1, not",length(sample_ref)))
@@ -183,7 +188,7 @@ run_imputation<-function(
 			end <- start+5e6
 			
 			
-			cmd7<-paste("impute2 -m /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start," ",end," -Ne 20000 -o step_7_chr",chr,"_",i,sep="")
+			cmd7<-paste(impute2," -m /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start," ",end," -Ne 20000 -o step_7_chr",chr,"_",i,sep="")
 			system(cmd7)
 		}
 	}
@@ -217,7 +222,7 @@ summarize_imputation<-function(runDir,uniqueID){
 	}	
 	
 	allFiles2<-list.files(runDir)
-	outFiles<-grep(paste("^",uniqueID,sep=""),allFiles2,value=T)
+	outFiles<-grep(paste("^",uniqueID,"_chr",sep=""),allFiles2,value=T)
 	
 	
 	zipFileOut<-paste(runDir,paste(uniqueID,".zip",sep=""),sep="/")

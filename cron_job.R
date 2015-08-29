@@ -36,22 +36,20 @@ for(folderToCheck in foldersToCheck){
 		next
 	}
 	
-
+	
 	if(jobStatus=="Job is ready"){
 		print(paste("Found job-status file and job is ready",folderToCheck)		)
-
+		
 		unlink("job_status.txt")
 		write.table("Job is running",file="job_status.txt",col.names=F,row.names=F,quote=F)
-
+		
 		load("variables.rdata")		
 		runDir<-paste("/home/ubuntu/imputations/",paste("imputation_folder",uniqueID,sep="_"),sep="")
-
+		
 		run_imputation(
 			rawdata=paste(uniqueID,"_raw_data.txt",sep=""), 
-			runDir=runDir,
-			shapeit="/home/ubuntu/impute_dir/bin/shapeit",
-			plink="/home/ubuntu/impute_dir/plink",
-			sample_ref="/home/ubuntu/misc_files/sample.reference.txt")
+			runDir=runDir
+		)
 		
 		
 		zipFileOut<-summarize_imputation(runDir=runDir,uniqueID=uniqueID)
@@ -73,19 +71,19 @@ for(folderToCheck in foldersToCheck){
 		while(class(mailingResult) == "try-error"){
 			print(paste("Trying to mail to",email))
 			mailingResult<-try(send.mail(from = "analyzer6063@gmail.com",
-							to = email,
-							subject = "Imputation is ready",
-							body = message,
-							smtp = list(
-								host.name = "smtp.gmail.com", 
-								port = 465, 
-								user.name = "analyzer6063@gmail.com", 
-								passwd = "ei1J#bQA^FA$", 
-								ssl = TRUE),
-							authenticate = TRUE,
-							send = TRUE))
+																	 to = email,
+																	 subject = "Imputation is ready",
+																	 body = message,
+																	 smtp = list(
+																	 	host.name = "smtp.gmail.com", 
+																	 	port = 465, 
+																	 	user.name = "analyzer6063@gmail.com", 
+																	 	passwd = "ei1J#bQA^FA$", 
+																	 	ssl = TRUE),
+																	 authenticate = TRUE,
+																	 send = TRUE))
 			Sys.sleep(10)
-		
+			
 		}
 		
 		
@@ -97,10 +95,10 @@ for(folderToCheck in foldersToCheck){
 		unlink(finalLocation)
 		break
 		
-				
+		
 	}
 	
-		
+	
 	
 }
 
