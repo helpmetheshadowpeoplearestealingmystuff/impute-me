@@ -3,7 +3,8 @@ library("shiny")
 
 options(shiny.maxRequestSize=10*1024^2) 
 
-source("/srv/shiny-server/gene-surfer/functions.R")
+# source("/srv/shiny-server/gene-surfer/functions.R")
+source("functions.R")
 
 
 
@@ -36,10 +37,13 @@ shinyServer(function(input, output) {
 	output$text3 <- renderText({ 
 		# Take a dependency on input$goButton
 		if(input$goButton == 1){
+			terms <- isolate(input$acceptTerms)
+			simplify <- isolate(input$simplify)
 			path <- isolate(input$largeFile[["datapath"]])
 			email <- isolate(input$email)
 			if(is.null(path))return("No file selected")
-			out<-prepare_23andme_genome(path,email)
+			if(!terms)return("Use-terms not accepted")
+			out<-prepare_23andme_genome(path,email,simplify)
 			return(out)
 		}
 	})

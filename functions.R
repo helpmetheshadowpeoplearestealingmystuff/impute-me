@@ -1,16 +1,19 @@
 
-prepare_23andme_genome<-function(path="", email=""){
+prepare_23andme_genome<-function(path, email, simplify){
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
 	
 	if(class(email)!="character")stop(paste("email must be character, not",class(email)))
 	if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
-	
 	if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
 		stop(paste("a real email adress is needed:",email))
 	}
+
+	if(class(simplify)!="logical")stop(paste("simplify must be logical, not",class(simplify)))
+	if(length(simplify)!=1)stop(paste("simplify must be lengh 1, not",length(simplify)))
 	
+		
 	#check for too many ongoing imputations
 	s<-list.files("/home/ubuntu/imputations/")
 	if(length(grep("^imputation_folder",s)) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
@@ -54,7 +57,7 @@ prepare_23andme_genome<-function(path="", email=""){
 	#maybe just skip the mergeCommands and make your own?
 	# mergeCommands<-grep("^cat", cmd2,value=T)
 	# cmd2<-c(imputeCommands,mergeCommands)
-	save(uniqueID,email,file=paste(homeFolder,"variables.rdata",sep=""))
+	save(uniqueID,email,simplify,file=paste(homeFolder,"variables.rdata",sep=""))
 	
 	unlink("job_status.txt")
 	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
@@ -94,7 +97,7 @@ run_imputation<-function(
 	if(class(plink)!="character")stop(paste("plink must be character, not",class(plink)))
 	if(length(plink)!=1)stop(paste("plink must be lengh 1, not",length(plink)))
 	if(!file.exists(plink))stop(paste("Did not find plink at path:",plink))
-
+	
 	if(class(impute2)!="character")stop(paste("impute2 must be character, not",class(impute2)))
 	if(length(impute2)!=1)stop(paste("impute2 must be lengh 1, not",length(impute2)))
 	if(!file.exists(impute2))stop(paste("Did not find impute2 at path:",impute2))
@@ -173,8 +176,12 @@ run_imputation<-function(
 		
 		
 		#removing the placeholder person again
-		cmd5<-paste("cut --delimiter=\  -f 1-8 step_4_chr",chr,".haps > step_5_chr",chr,".haps",sep="")
-		system(cmd5)
+		cmd5_1<-paste("cut --delimiter=' ' -f 1-7 step_4_chr",chr,".haps > step_5_chr",chr,".haps",sep="")
+		system(cmd5_1)
+		cmd5_2<-paste("head -n 3 step_4_chr",chr,".sample > step_5_chr",chr,".sample",sep="")
+		system(cmd5_2)
+		
+		
 		
 		#detect max length of each chromosome
 		cmd6<-paste("zcat /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz | tail -n 1 | cut --delimiter=\\  -f 2",sep="")
@@ -196,21 +203,31 @@ run_imputation<-function(
 
 
 
+# runDir<-"/home/ubuntu/example_output2"
+# uniqueID<-"id_278806802"
+# simplify=T
+# gtools="/home/ubuntu/impute_dir/gtool"
 
-summarize_imputation<-function(runDir,uniqueID){
+summarize_imputation<-function(runDir,uniqueID, simplify=FALSE,gtools="/home/ubuntu/impute_dir/gtool"){
 	if(class(runDir)!="character")stop(paste("runDir must be character, not",class(runDir)))
 	if(length(runDir)!=1)stop(paste("runDir must be lengh 1, not",length(runDir)))
 	if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
+	setwd(runDir)
 	
 	if(class(uniqueID)!="character")stop(paste("uniqueID must be character, not",class(uniqueID)))
 	if(length(uniqueID)!=1)stop(paste("uniqueID must be lengh 1, not",length(uniqueID)))
 	
+	if(class(simplify)!="logical")stop(paste("simplify must be logical, not",class(simplify)))
+	if(length(simplify)!=1)stop(paste("simplify must be lengh 1, not",length(simplify)))
+	
+	if(class(gtools)!="character")stop(paste("gtools must be character, not",class(gtools)))
+	if(length(gtools)!=1)stop(paste("gtools must be lengh 1, not",length(gtools)))
+	if(!file.exists(gtools))stop(paste("Did not find gtools at path:",gtools))
+	
 	
 	allFiles1<-list.files(runDir)
-	
 	step7Files<-grep("^step_7_chr",allFiles1,value=T)
 	step7ResultsFiles<-grep("[0-9]$",step7Files,value=T)
-	
 	chromosomes<-unique(sub("_[0-9]+$","",sub("^step_7_chr","",step7ResultsFiles)))
 	
 	for(chr in chromosomes){
@@ -218,19 +235,28 @@ summarize_imputation<-function(runDir,uniqueID){
 		s<-s[order(as.numeric(sub("^.+_","",s)))]
 		cmd1<-paste("cat ",paste(s,collapse=" ")," > ",uniqueID,"_chr",chr,".haps",sep="")
 		system(cmd1)
-		
 	}	
+	
 	
 	allFiles2<-list.files(runDir)
 	outFiles<-grep(paste("^",uniqueID,"_chr",sep=""),allFiles2,value=T)
 	
-	
-	zipFileOut<-paste(runDir,paste(uniqueID,".zip",sep=""),sep="/")
-	zip(zipFileOut, outFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-	
-	return(zipFileOut)
-	
+	if(!simplify){	
+		zipFileOut<-paste(runDir,paste(uniqueID,".zip",sep=""),sep="/")
+		zip(zipFileOut, outFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+		return(zipFileOut)
+	}else{
+		for(outFile in outFiles){
+			chr <- sub("\\.haps$","",sub("^.+_chr","",outFile))
+			sampleFile<-paste("step_4_",chr,".sample",sep="")
+			cmd2 <- paste(gtools," -G --g ",outFile, " --s sampleFile --chr ",chr)
+			system(cmd2)
+			
+			stop("Made it to here, needs more testing, and creation/moving of zipFile")
+		}
+	}
 }
+
 
 
 

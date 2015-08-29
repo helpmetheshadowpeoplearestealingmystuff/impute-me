@@ -52,7 +52,7 @@ for(folderToCheck in foldersToCheck){
 		)
 		
 		
-		zipFileOut<-summarize_imputation(runDir=runDir,uniqueID=uniqueID)
+		zipFileOut<-summarize_imputation(runDir=runDir,uniqueID=uniqueID,simplify=simplify)
 		
 		finalLocation <- paste("/srv/shiny-server/",basename(zipFileOut),sep="")
 		cmd3 <- paste("sudo mv", zipFileOut, finalLocation)
