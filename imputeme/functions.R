@@ -270,11 +270,11 @@ summarize_imputation<-function(
 			sampleFile<-paste("step_4_chr",chr,".sample",sep="")
 			
 			#make list of non-indels
-			cmd2<-paste("awk -F' ' '{ if ((length($4) == 1 ) && (length($5) == 1 )) print $2 }'",genFile,">",paste("step_8_chr",chr,"_snps_to_include",sep=""))
+			cmd2<-paste("awk -F' ' '{ if ((length($4) > 1 ) || (length($5) > 1 )) print $2 }'",genFile,">",paste("step_8_chr",chr,"_snps_to_exclude",sep=""))
 			system(cmd2)
 			
 			#exclude indels
-			cmd3 <- paste(gtools," -S --g ",genFile," --s ",sampleFile," --inclusion step_8_chr",chr,"_snps_to_include --og step_8_chr",chr,".gen",sep="")
+			cmd3 <- paste(gtools," -S --g ",genFile," --s ",sampleFile," --exclusion step_8_chr",chr,"_snps_to_exclude --og step_8_chr",chr,".gen",sep="")
 			system(cmd3)
 			
 			#Convert to ped format
