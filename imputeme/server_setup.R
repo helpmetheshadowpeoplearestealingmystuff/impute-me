@@ -87,6 +87,11 @@ tar zxvf shapeit.v2.r837.GLIBCv2.12.Linux.static.tgz
 wget http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool_v0.7.5_x86_64.tgz
 tar zxvf gtool_v0.7.5_x86_64.tgz
 
+
+#get server
+cd /srv/shiny-server/
+sudo git clone https://github.com/lassefolkersen/gene-surfer
+
 #This part can probably be skipped now
 # git clone https://github.com/johnlees/23andme-impute
 # mv 23andme-impute/* .

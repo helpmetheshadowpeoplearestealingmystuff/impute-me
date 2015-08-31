@@ -9,11 +9,11 @@ prepare_23andme_genome<-function(path, email, simplify){
 	if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
 		stop(paste("a real email adress is needed:",email))
 	}
-
+	
 	if(class(simplify)!="logical")stop(paste("simplify must be logical, not",class(simplify)))
 	if(length(simplify)!=1)stop(paste("simplify must be lengh 1, not",length(simplify)))
 	
-		
+	
 	#check for too many ongoing imputations
 	s<-list.files("/home/ubuntu/imputations/")
 	if(length(grep("^imputation_folder",s)) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
@@ -201,14 +201,28 @@ run_imputation<-function(
 	}
 }
 
-
-
-# runDir<-"/home/ubuntu/example_output2"
-# uniqueID<-"id_278806802"
+# 
+# 
+# runDir<-"/home/ubuntu/imputations/imputation_folder_id_637758681"
+# uniqueID<-"id_637758681"
 # simplify=T
 # gtools="/home/ubuntu/impute_dir/gtool"
 
-summarize_imputation<-function(runDir,uniqueID, simplify=FALSE,gtools="/home/ubuntu/impute_dir/gtool"){
+# test<-summarize_imputation(
+# 	runDir,
+# 	uniqueID, 
+# 	simplify=TRUE,
+# 	gtools="/home/ubuntu/impute_dir/gtool",
+# 	plink="/home/ubuntu/impute_dir/plink-1.07-x86_64/plink" #note, as of 2015-08-31 this must be plin 1.07, otherwise we get a bug
+# )
+
+summarize_imputation<-function(
+	runDir,
+	uniqueID, 
+	simplify=FALSE,
+	gtools="/home/ubuntu/impute_dir/gtool",
+	plink="/home/ubuntu/impute_dir/plink-1.07-x86_64/plink" #note, as of 2015-08-31 this must be plin 1.07, otherwise we get a bug
+){
 	if(class(runDir)!="character")stop(paste("runDir must be character, not",class(runDir)))
 	if(length(runDir)!=1)stop(paste("runDir must be lengh 1, not",length(runDir)))
 	if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
@@ -224,6 +238,10 @@ summarize_imputation<-function(runDir,uniqueID, simplify=FALSE,gtools="/home/ubu
 	if(length(gtools)!=1)stop(paste("gtools must be lengh 1, not",length(gtools)))
 	if(!file.exists(gtools))stop(paste("Did not find gtools at path:",gtools))
 	
+	if(class(plink)!="character")stop(paste("plink must be character, not",class(plink)))
+	if(length(plink)!=1)stop(paste("plink must be lengh 1, not",length(plink)))
+	if(!file.exists(plink))stop(paste("Did not find plink at path:",plink))
+	
 	
 	allFiles1<-list.files(runDir)
 	step7Files<-grep("^step_7_chr",allFiles1,value=T)
@@ -231,30 +249,57 @@ summarize_imputation<-function(runDir,uniqueID, simplify=FALSE,gtools="/home/ubu
 	chromosomes<-unique(sub("_[0-9]+$","",sub("^step_7_chr","",step7ResultsFiles)))
 	
 	for(chr in chromosomes){
+		print(paste("Merging chunks in chromosome",chr))
 		s <-grep(paste("^step_7_chr",chr,sep=""), step7ResultsFiles,value=T)
 		s<-s[order(as.numeric(sub("^.+_","",s)))]
-		cmd1<-paste("cat ",paste(s,collapse=" ")," > ",uniqueID,"_chr",chr,".haps",sep="")
+		cmd1<-paste("cat ",paste(s,collapse=" ")," > ",uniqueID,"_chr",chr,".gen",sep="")
 		system(cmd1)
 	}	
 	
 	
-	allFiles2<-list.files(runDir)
-	outFiles<-grep(paste("^",uniqueID,"_chr",sep=""),allFiles2,value=T)
 	
-	if(!simplify){	
-		zipFileOut<-paste(runDir,paste(uniqueID,".zip",sep=""),sep="/")
-		zip(zipFileOut, outFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-		return(zipFileOut)
-	}else{
-		for(outFile in outFiles){
-			chr <- sub("\\.haps$","",sub("^.+_chr","",outFile))
-			sampleFile<-paste("step_4_",chr,".sample",sep="")
-			cmd2 <- paste(gtools," -G --g ",outFile, " --s sampleFile --chr ",chr)
+	genFiles<-paste(uniqueID,"_chr",chromosomes,".gen",sep="")
+	zipFileOut<-paste(runDir,paste(uniqueID,".zip",sep=""),sep="/")
+	
+	
+	if(simplify){	
+		for(genFile in genFiles){
+			
+			chr <- sub("\\.gen$","",sub("^.+_chr","",genFile))
+			print(paste("Simplifying in chromosome",chr))
+			sampleFile<-paste("step_4_chr",chr,".sample",sep="")
+			
+			#make list of non-indels
+			cmd2<-paste("awk -F' ' '{ if ((length($4) == 1 ) && (length($5) == 1 )) print $2 }'",genFile,">",paste("step_8_chr",chr,"_snps_to_include",sep=""))
 			system(cmd2)
 			
-			stop("Made it to here, needs more testing, and creation/moving of zipFile")
+			#exclude indels
+			cmd3 <- paste(gtools," -S --g ",genFile," --s ",sampleFile," --inclusion step_8_chr",chr,"_snps_to_include --og step_8_chr",chr,".gen",sep="")
+			system(cmd3)
+			
+			#Convert to ped format
+			cmd4 <- paste(gtools," -G --g step_8_chr",chr,".gen --s ",sampleFile," --chr ",chr," --snp",sep="")
+			system(cmd4)
+			
+			#load with plink, tranpose and output			
+			cmd5 <- paste(plink," --file step_8_chr",chr,".gen --recode --transpose --noweb --out step_9_chr",chr,sep="")
+			system(cmd5)
+			
+			#re-order to 23andme format
+			cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,".tped  > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
+			system(cmd6)
 		}
+		
+		twentythreeandmeFiles<-paste(uniqueID,"_chr",chromosomes,".23andme.txt",sep="")
+		
+		outFiles<-twentythreeandmeFiles
+	}else{
+		outFiles<-genFiles
 	}
+	
+	#zip and return zip path	
+	zip(zipFileOut, outFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+	return(zipFileOut)
 }
 
 
