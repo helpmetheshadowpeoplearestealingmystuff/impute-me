@@ -120,7 +120,7 @@ tar zxvf gtool_v0.7.5_x86_64.tgz
 
 
 # 
-# sudo git clone https://github.com/lassefolkersen/gene-surfer/
+
 # 	
 # 	
 # 	
