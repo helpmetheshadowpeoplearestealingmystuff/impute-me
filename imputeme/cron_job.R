@@ -52,13 +52,23 @@ for(folderToCheck in foldersToCheck){
 		)
 		
 		#summarizing files
-		zipFilesOut<-summarize_imputation(runDir=runDir,uniqueID=uniqueID,destinationDir="/srv/shiny-server")
+		zipFilesOut<-summarize_imputation(runDir=runDir,uniqueID=uniqueID,destinationDir="/home/ubuntu/data")
 		
-		timeStamp<-sub("^.+/","",dirname(zipFilesOut[1]))
-		f<-file(paste(dirname(zipFilesOut[1]),"/pData.txt",sep=""),"w")
-		writeLines(paste("uniqueID","email","first_timeStamp",collapse="\t"),f)
-		writeLines(paste(uniqueID,email,timeStamp,collapse="\t"),f)
+		
+		
+		#creating the pData file
+		timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
+		md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
+		gender<-system(paste("cut --delimiter=' ' -f 5 ",runDir,"/step_1.ped",sep=""),intern=T)
+		f<-file(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),"w")
+		writeLines(paste("uniqueID","email","first_timeStamp","md5sum","gender",collapse="\t"),f)
+		writeLines(paste(uniqueID,email,timeStamp,md5sum,gender,collapse="\t"),f)
 		close(f)
+		
+
+		#making a link out of the 		
+		
+		
 		
 		print("Getting IP and sending mail")
 		ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))

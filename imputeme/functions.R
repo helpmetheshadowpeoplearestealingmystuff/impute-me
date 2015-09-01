@@ -277,23 +277,21 @@ summarize_imputation<-function(
 	
 
 	#preparing destinationDir
-	timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
 	dir.create(paste(destinationDir,"/",uniqueID,sep=""))
-	dir.create(paste(destinationDir,"/",uniqueID,"/",timeStamp,sep=""))
-	prepDestinationDir<-paste(destinationDir,"/",uniqueID,"/",timeStamp,sep="")
+	prepDestinationDir<-paste(destinationDir,"/",uniqueID,sep="")
 	
 	#zipping and mvoing 23andme files
 	zipFile23andme<-paste(runDir,paste(uniqueID,".23andme.zip",sep=""),sep="/")
 	twentythreeandmeFiles<-paste(uniqueID,"_chr",chromosomes,".23andme.txt",sep="")
 	zip(zipFile23andme, twentythreeandmeFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-	cmd8 <- paste("sudo mv", zipFile23andme, paste(prepDestinationDir,basename(zipFile23andme),sep="/"))
-	system(cmd8)
+	file.rename(zipFile23andme, paste(prepDestinationDir,basename(zipFile23andme),sep="/"))
+	
 	
 	#zipping gen files
 	zipFileGen<-paste(runDir,paste(uniqueID,".gen.zip",sep=""),sep="/")
 	zip(zipFileGen, genFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-	cmd9 <- paste("sudo mv", zipFileGen, paste(prepDestinationDir,basename(zipFileGen),sep="/"))
-	system(cmd9)
+	file.rename(zipFileGen, paste(prepDestinationDir,basename(zipFileGen),sep="/"))
+	
 	
 	
 	returnPaths<-c(
