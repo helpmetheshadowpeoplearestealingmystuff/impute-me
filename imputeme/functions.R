@@ -1,5 +1,5 @@
 
-prepare_23andme_genome<-function(path, email){
+prepare_23andme_genome<-function(path, email, filename){
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
@@ -9,6 +9,9 @@ prepare_23andme_genome<-function(path, email){
 	if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
 		stop(paste("a real email adress is needed:",email))
 	}
+	
+	if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
+	if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
 	
 	
 	#check for too many ongoing imputations
@@ -54,7 +57,7 @@ prepare_23andme_genome<-function(path, email){
 	#maybe just skip the mergeCommands and make your own?
 	# mergeCommands<-grep("^cat", cmd2,value=T)
 	# cmd2<-c(imputeCommands,mergeCommands)
-	save(uniqueID,email,file=paste(homeFolder,"variables.rdata",sep=""))
+	save(uniqueID,email,filename,file=paste(homeFolder,"variables.rdata",sep=""))
 	
 	unlink("job_status.txt")
 	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)

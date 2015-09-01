@@ -38,8 +38,9 @@ shinyServer(function(input, output) {
 		if(input$goButton == 1){
 			path <- isolate(input$largeFile[["datapath"]])
 			email <- isolate(input$email)
+			filename <- isolate(input$largeFile[["name"]])
 			if(is.null(path))return("No file selected")
-			out<-prepare_23andme_genome(path,email)
+			out<-prepare_23andme_genome(path,email,filename)
 			return(out)
 		}
 	})
