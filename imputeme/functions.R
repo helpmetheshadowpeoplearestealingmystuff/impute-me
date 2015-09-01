@@ -198,17 +198,6 @@ run_imputation<-function(
 	}
 }
 
-# # 
-# # 
-# runDir<-"/home/ubuntu/imputations/imputation_folder_id_718242232"
-# uniqueID<-"id_718242232"
-# destinationDir="/home/ubuntu/misc_files"
-# gtools="/home/ubuntu/impute_dir/gtool"
-# plink="/home/ubuntu/impute_dir/plink-1.07-x86_64/plink" #note, as of 2015-08-31 this must be plin 1.07, otherwise we get a bug
-# 
-# zipFilesOut<-summarize_imputation(runDir=runDir,uniqueID=uniqueID,destinationDir=destinationDir)
-# 
-# 
 
 summarize_imputation<-function(
 	runDir,

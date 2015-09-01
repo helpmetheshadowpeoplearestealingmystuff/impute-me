@@ -54,14 +54,16 @@ for(folderToCheck in foldersToCheck){
 		#summarizing files
 		zipFilesOut<-summarize_imputation(runDir=runDir,uniqueID=uniqueID,destinationDir="/srv/shiny-server")
 		
+		timeStamp<-sub("^.+/","",dirname(zipFilesOut[1]))
 		f<-file(paste(dirname(zipFilesOut[1]),"/pData.txt",sep=""),"w")
-		writeLines(paste(uniqueID,email,zipFilesOut[1]))
+		writeLines(paste("uniqueID","email","first_timeStamp",collapse="\t"),f)
+		writeLines(paste(uniqueID,email,timeStamp,collapse="\t"),f)
 		close(f)
 		
 		print("Getting IP and sending mail")
 		ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
-		location_23andme <- paste(ip,sub("/srv/shiny-server/","",zipFilesOut["23andme"]),sep="/")
-		location_gen <- paste(ip,sub("/srv/shiny-server/","",zipFilesOut["23andme"]),sep="/")
+		location_23andme <- paste(ip,sub("/srv/shiny-server","",zipFilesOut["23andme"]),sep="/")
+		location_gen <- paste(ip,sub("/srv/shiny-server","",zipFilesOut["23andme"]),sep="/")
 		
 		message <- paste("We have completed imputation of your genome. For the next 24 hours you can retrieve your imputed genome at this address:\n",
 										 location_23andme,
