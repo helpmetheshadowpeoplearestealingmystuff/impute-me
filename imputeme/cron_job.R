@@ -11,6 +11,7 @@ source("/srv/shiny-server/gene-surfer/imputeme/functions.R")
 
 library("mailR")
 library("rJava")
+library("tools")
 s<-list.files("/home/ubuntu/imputations/")
 foldersToCheck<-grep("^imputation_folder",s,value=T)
 
@@ -66,14 +67,20 @@ for(folderToCheck in foldersToCheck){
 		close(f)
 		
 
-		#making a link out of the 		
-		
-		
+		#making a link out to where the data can be retrieved		
+		file.symlink(
+			from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip",sep=""),
+			to=paste("/srv/shiny-server/",uniqueID,".23andme.zip",sep="")
+		)
+		file.symlink(
+			from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip",sep=""),
+			to=paste("/srv/shiny-server/",uniqueID,".gen.zip",sep="")
+		)
 		
 		print("Getting IP and sending mail")
 		ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
-		location_23andme <- paste(ip,sub("/srv/shiny-server","",zipFilesOut["23andme"]),sep="/")
-		location_gen <- paste(ip,sub("/srv/shiny-server","",zipFilesOut["23andme"]),sep="/")
+		location_23andme <- paste(ip,"/",uniqueID,".23andme.zip",sep="")
+		location_gen <- paste(ip,"/",uniqueID,".gen.zip",sep="")
 		
 		message <- paste("We have completed imputation of your genome. For the next 24 hours you can retrieve your imputed genome at this address:\n",
 										 location_23andme,
