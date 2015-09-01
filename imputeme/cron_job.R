@@ -51,19 +51,20 @@ for(folderToCheck in foldersToCheck){
 			runDir=runDir
 		)
 		
+		#summarizing files
+		zipFilesOut<-summarize_imputation(runDir=runDir,uniqueID=uniqueID,destinationDir="/srv/shiny-server")
 		
-		zipFileOut<-summarize_imputation(runDir=runDir,uniqueID=uniqueID,simplify=simplify)
 		
-		finalLocation <- paste("/srv/shiny-server/",basename(zipFileOut),sep="")
-		cmd3 <- paste("sudo mv", zipFileOut, finalLocation)
-		system(cmd3,intern=T)
-		setwd("/home/ubuntu/imputations/")
-		# unlink(runDir,recursive = TRUE)
 		
 		print("Getting IP and sending mail")
 		ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
-		location <- paste(ip,basename(finalLocation),sep="/")
-		message <- paste("For the next 24 hours you can retrieve your imputed genome at this address:\n",location)
+		location_23andme <- paste(ip,sub("/srv/shiny-server/","",zipFilesOut["23andme"]),sep="/")
+		location_gen <- paste(ip,sub("/srv/shiny-server/","",zipFilesOut["23andme"]),sep="/")
+		
+		message <- paste("We have completed imputation of your genome. For the next 24 hours you can retrieve your imputed genome at this address:\n",
+										 location_23andme,
+										 "\n\nFor advanced users, it is also possible to download the gen-format files from this location:\n",
+										 location_gen)
 		
 		
 		
@@ -86,14 +87,6 @@ for(folderToCheck in foldersToCheck){
 			
 		}
 		
-		
-		
-		
-		print("Wait 24 hours")
-		Sys.sleep(24*60*60)
-		print("Delete output file")
-		unlink(finalLocation)
-		break
 		
 		
 	}
