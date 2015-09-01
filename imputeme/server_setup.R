@@ -76,7 +76,7 @@ colnames(d)<-c("sample","population","group","sex")
 set.seed(42)
 d<-d[sample(rownames(d),2184/2),]
 write.table(d,file="sample.reference.txt",sep="\t",row.names=F,col.names=T,quote=F)
-make a sample file
+# make a sample file
 
 
 #Get shapeit
