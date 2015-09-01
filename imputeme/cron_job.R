@@ -54,7 +54,9 @@ for(folderToCheck in foldersToCheck){
 		#summarizing files
 		zipFilesOut<-summarize_imputation(runDir=runDir,uniqueID=uniqueID,destinationDir="/srv/shiny-server")
 		
-		
+		f<-file(paste(dirname(zipFilesOut[1]),"/pData.txt",sep=""),"w")
+		writeLines(paste(uniqueID,email,zipFilesOut[1]))
+		close(f)
 		
 		print("Getting IP and sending mail")
 		ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))

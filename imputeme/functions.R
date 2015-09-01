@@ -206,13 +206,6 @@ run_imputation<-function(
 # gtools="/home/ubuntu/impute_dir/gtool"
 # plink="/home/ubuntu/impute_dir/plink-1.07-x86_64/plink" #note, as of 2015-08-31 this must be plin 1.07, otherwise we get a bug
 
-# test<-summarize_imputation(
-# 	runDir,
-# 	uniqueID, 
-# 	simplify=TRUE,
-# 	gtools="/home/ubuntu/impute_dir/gtool",
-# 	plink="/home/ubuntu/impute_dir/plink-1.07-x86_64/plink" #note, as of 2015-08-31 this must be plin 1.07, otherwise we get a bug
-# )
 
 summarize_imputation<-function(
 	runDir,
@@ -290,8 +283,6 @@ summarize_imputation<-function(
 		system(cmd6)
 	}
 	
-	
-	destinationDir<-"/home/ubuntu"
 
 	#preparing destinationDir
 	timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
