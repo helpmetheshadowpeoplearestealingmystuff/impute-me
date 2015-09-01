@@ -36,11 +36,9 @@ shinyServer(function(input, output) {
 	output$text3 <- renderText({ 
 		# Take a dependency on input$goButton
 		if(input$goButton == 1){
-			terms <- isolate(input$acceptTerms)
 			path <- isolate(input$largeFile[["datapath"]])
 			email <- isolate(input$email)
 			if(is.null(path))return("No file selected")
-			if(!terms)return("Use-terms not accepted")
 			out<-prepare_23andme_genome(path,email)
 			return(out)
 		}
