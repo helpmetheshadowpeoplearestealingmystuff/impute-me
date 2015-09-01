@@ -20,14 +20,17 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	
 	
-	#set temp dir
+	#Create imputation folder and output data folder
 	setwd("/home/ubuntu/imputations/")
 	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
+	if(uniqueID%in%list.files("/home/ubuntu/data/"))stop("Problem with unique ID generation. Please re-load and try again.")
+	dir.create(paste("/home/ubuntu/data/",uniqueID,sep=""))
 	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
 	dir.create(homeFolderShort)
 	setwd(homeFolderShort)
 	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
 	write.table("Job is not ready yet",file="job_status.txt",col.names=F,row.names=F,quote=F)
+	
 	
 	
 	#unzipping (or not) and moving to new place	
@@ -280,7 +283,6 @@ summarize_imputation<-function(
 	
 
 	#preparing destinationDir
-	dir.create(paste(destinationDir,"/",uniqueID,sep=""))
 	prepDestinationDir<-paste(destinationDir,"/",uniqueID,sep="")
 	
 	#zipping and mvoing 23andme files
@@ -295,6 +297,11 @@ summarize_imputation<-function(
 	zip(zipFileGen, genFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
 	file.rename(zipFileGen, paste(prepDestinationDir,basename(zipFileGen),sep="/"))
 	
+	
+	#move the original file as well
+	zipFileOriginal<-paste(runDir,paste(uniqueID,".input_data.zip",sep=""),sep="/")
+	zip(zipFileOriginal, paste(uniqueID,"_raw_data.txt",sep=""), flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+	file.rename(zipFileOriginal, paste(prepDestinationDir,basename(zipFileOriginal),sep="/"))
 	
 	
 	returnPaths<-c(

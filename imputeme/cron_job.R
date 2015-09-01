@@ -108,7 +108,8 @@ for(folderToCheck in foldersToCheck){
 			
 		}
 		
-		
+		setwd("..")
+		unlink(runDir,recursive=TRUE)
 		
 	}
 	
