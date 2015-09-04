@@ -40,7 +40,7 @@ shinyServer(function(input, output) {
 			email <- isolate(input$email)
 			filename <- isolate(input$largeFile[["name"]])
 			if(is.null(path))return("No file selected")
-			stop("The server was temporarily moved to an amazon-EC2-'small' machine, which can't handle the actual imputation. The amazon-EC2-'large' can. It can quickly be set up again, but it's too expensive to leave running. Write me an email at lassefolkersen@gmail.com if I should start it")
+			# stop("The server was temporarily moved to an amazon-EC2-'small' machine, which can't handle the actual imputation. The amazon-EC2-'large' can. It can quickly be set up again, but it's too expensive to leave running. Write me an email at lassefolkersen@gmail.com if I should start it")
 			out<-prepare_23andme_genome(path,email,filename)
 			return(out)
 		}
