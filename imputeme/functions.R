@@ -137,7 +137,7 @@ run_imputation<-function(
 		
 		
 		#Many homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
-		logFile<-read.table(paste("shapeit_check_chr",chr,"_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1)
+		logFile<-read.table(paste("step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1)
 		omitMissing<-logFile[logFile[,1] %in% 'Missing',3]
 		logStrand<-logFile[logFile[,1] %in% 'Strand',]
 		omitNonIdentical<-logStrand[logStrand[,5] != logStrand[,6],3]
