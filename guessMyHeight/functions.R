@@ -5,13 +5,7 @@
 # uniqueID<-"id_733404623"
 
 
-# uniqueID<-"id_424142906"
-# giant_sup_path<-"/home/ubuntu/misc_files/GIANT_height_250k_Supplementary_Tables_20131030.txt"
-# giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
-# giant_sup<-giant_sup[order(abs(giant_sup[,"Beta"]),decreasing=T),]
-# giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
-# 
-# source("/srv/shiny-server/gene-surfer/guessMyHeight/functions.R")
+
 # 
 # set.seed(43)
 # set.seed(41)
@@ -162,13 +156,17 @@ get_genotypes<-function(
 	}
 	
 	#merge with cachedGenotypes
-	if(file.exists(cachedGenotypeFile)){
-		genotypes<-rbind(cachedGenotypes,genotypes)
-		unlink(cachedGenotypeFile)
+	if(nrow(requestDeNovo)>0){
+		if(file.exists(cachedGenotypeFile)){
+			genotypes<-rbind(cachedGenotypes,genotypes)
+			unlink(cachedGenotypeFile)
+		}
+		f<-gzfile(cachedGenotypeFile,"w")
+		write.table(genotypes,file=f,sep="\t",col.names=NA)
+		close(f)
+	}else{
+		genotypes<-cachedGenotypes
 	}
-	f<-gzfile(cachedGenotypeFile,"w")
-	write.table(genotypes,file=f,sep="\t",col.names=NA)
-	close(f)
 	
 	
 	#removing temporary folder

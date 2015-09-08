@@ -21,6 +21,9 @@ install.packages("openxlsx")
 install.packages("nlme")
 install.packages("R.utils")
 install.packages("mailR")
+# install.packages("XML")
+# source("http://bioconductor.org/biocLite.R")
+# biocLite("biomaRt")
 q()
 y
 exit

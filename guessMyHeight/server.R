@@ -33,10 +33,10 @@ shinyServer(function(input, output) {
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 		
 
-# 		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
-# 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
-# 			stop("Did not find a user with this id")
-# 		}
+		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+			Sys.sleep(3) #wait a little to prevent raw-force fishing	
+			stop("Did not find a user with this id")
+		}
 		
 		height_provided<-isolate(input$height_provided)
 		if(height_provided){
@@ -45,7 +45,6 @@ shinyServer(function(input, output) {
 			
 			if(is.na(real_height))stop("Must give you real height in cm")
 			if(is.na(real_age))stop("Must give you real age in years")
-			return(paste("height",real_height))
 			
 			if(real_age<0 | real_age>100)stop("real age must be a number between 0 and 100")
 			if(real_height>210 )stop("real height must be number below 210 cm (or write me an email if you are actually taller than that)")
