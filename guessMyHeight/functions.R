@@ -142,13 +142,13 @@ get_gheight<-function(genotypes, betas){
 	
 	
 	gheight_score<-0
-	for(snp in rownames(giant_sup)){
+	for(snp in rownames(betas)){
 		if(is.na(genotypes[snp,"genotype"]))next
 		genotype<-strsplit(genotypes[snp,],"/")[[1]]
-		effect_allele<-giant_sup[snp,"Effect..Allele"]
-		non_effect_allele<-giant_sup[snp,"non_effect_allele"]
+		effect_allele<-betas[snp,"Effect..Allele"]
+		non_effect_allele<-betas[snp,"non_effect_allele"]
 		all_alleles<-c(non_effect_allele,effect_allele)
-		beta<-giant_sup[snp,"Beta"]	
+		beta<-betas[snp,"Beta"]	
 		gheight_score <- gheight_score + sum(genotype%in%effect_allele) * beta
 	}
 	return(gheight_score)

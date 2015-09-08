@@ -1,8 +1,6 @@
 library("shiny")
 
 
-options(shiny.maxRequestSize=10*1024^2) 
-
 source("functions.R")
 
 
@@ -76,7 +74,7 @@ shinyServer(function(input, output) {
 		real_entry<-TRUE
 		entry <- c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),uniqueID, gheight, real_height, real_age,real_entry)
 		write(paste(entry,collapse="\t"),file=heights_registered,append=TRUE)
-		
+			
 		
 		
 		
