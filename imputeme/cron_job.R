@@ -78,7 +78,7 @@ for(folderToCheck in foldersToCheck){
 		)
 		
 		print("Getting IP and sending mail")
-		ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
+		ip<-"http://www.impute.me"#sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
 		location_23andme <- paste(ip,"/",uniqueID,".23andme.zip",sep="")
 		location_gen <- paste(ip,"/",uniqueID,".gen.zip",sep="")
 		
