@@ -22,7 +22,19 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	#Create imputation folder and output data folder
 	setwd("/home/ubuntu/imputations/")
-	uniqueID <- paste("id",sample(100000000:900000000,1),sep="_")
+	uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
+	numberOfLetters<-sample(c(0,1,1,2,3),1)
+	if(numberOfLetters>0){
+		positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
+		
+		l<-c(LETTERS,letters)
+		l<-l[!l%in%c("o","O")] #I hate it when O is in
+		for(x in positionsToInsertLetter){
+			substr(uniqueID,x,x)<-sample(l,1)
+		}
+	}
+	
+	
 	if(uniqueID%in%list.files("/home/ubuntu/data/"))stop("Problem with unique ID generation. Please re-load and try again.")
 	dir.create(paste("/home/ubuntu/data/",uniqueID,sep=""))
 	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
