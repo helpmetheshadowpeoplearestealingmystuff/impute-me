@@ -17,15 +17,15 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	
 	#check for too many ongoing imputations
-	print("check for too many ongoing imputations")
-	s<-list.files("/home/ubuntu/imputations/")
-	if(length(grep("^imputation_folder",s)) >= 2){
-		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
-		m<-paste(m,collapse="\t")
-		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-		
-		stop("More than 2 imputations are already in progress. Cannot start a new one")
-	}
+# 	print("check for too many ongoing imputations")
+# 	s<-list.files("/home/ubuntu/imputations/")
+# 	if(length(grep("^imputation_folder",s)) >= 2){
+# 		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
+# 		m<-paste(m,collapse="\t")
+# 		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+# 		
+# 		stop("More than 2 imputations are already in progress. Cannot start a new one")
+# 	}
 	
 	
 	
@@ -33,19 +33,19 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	
 	#Create uniqueID 
-	print("create uniqueID")
-	setwd("/home/ubuntu/imputations/")
-	uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
-	numberOfLetters<-sample(c(1,1,2,3),1)
-	if(numberOfLetters>0){
-		positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
-		
-		l<-c(LETTERS,letters)
-		l<-l[!l%in%c("o","O")] #I hate it when O is in
-		for(x in positionsToInsertLetter){
-			substr(uniqueID,x,x)<-sample(l,1)
-		}
-	}
+# 	print("create uniqueID")
+# 	setwd("/home/ubuntu/imputations/")
+# 	uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
+# 	numberOfLetters<-sample(c(1,1,2,3),1)
+# 	if(numberOfLetters>0){
+# 		positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
+# 		
+# 		l<-c(LETTERS,letters)
+# 		l<-l[!l%in%c("o","O")] #I hate it when O is in
+# 		for(x in positionsToInsertLetter){
+# 			substr(uniqueID,x,x)<-sample(l,1)
+# 		}
+# 	}
 	
 	
 	#create imputation folder and output data folder
