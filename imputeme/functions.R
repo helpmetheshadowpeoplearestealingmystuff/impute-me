@@ -34,7 +34,7 @@ prepare_23andme_genome<-function(path, email, filename){
 	#Create uniqueID 
 	setwd("/home/ubuntu/imputations/")
 	uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
-	numberOfLetters<-sample(c(0,1,1,2,3),1)
+	numberOfLetters<-sample(c(1,1,2,3),1)
 	if(numberOfLetters>0){
 		positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
 		
