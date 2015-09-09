@@ -5,7 +5,7 @@ options(shiny.maxRequestSize=10*1024^2)
 
 source("/srv/shiny-server/gene-surfer/imputeme/functions.R")
 
-stop("!")
+
 
 
 # Define server logic for random distribution application
