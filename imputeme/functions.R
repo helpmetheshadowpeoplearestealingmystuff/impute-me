@@ -1,6 +1,6 @@
 
 prepare_23andme_genome<-function(path, email, filename){
-	library("tools")
+	library(tools)
 	
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
@@ -92,6 +92,8 @@ prepare_23andme_genome<-function(path, email, filename){
 			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
 			m<-paste(m,collapse="\t")
 			write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+			unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
+			unlink(homeFolder,recursive=T)
 			stop("A person with this genome was already analyzed by the system. Write an email to lassefolkersen@gmail.com if you wish to clear this flag.")
 		}
 	}
