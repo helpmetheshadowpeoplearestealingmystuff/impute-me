@@ -109,7 +109,7 @@ for(folderToCheck in foldersToCheck){
 		}
 		
 		setwd("..")
-		# unlink(runDir,recursive=TRUE)
+		unlink(runDir,recursive=TRUE)
 		
 	}
 	
