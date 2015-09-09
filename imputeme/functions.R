@@ -1,6 +1,6 @@
 
 prepare_23andme_genome<-function(path, email, filename){
-	
+	stop("!")
 	if(F){
 		
 		
