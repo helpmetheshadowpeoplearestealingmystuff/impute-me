@@ -53,7 +53,6 @@ prepare_23andme_genome<-function(path, email, filename){
 		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
 		stop("Problem with unique ID generation. Please re-load and try again.")
 	}
-		
 	dir.create(paste("/home/ubuntu/data/",uniqueID,sep=""))
 	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
 	dir.create(homeFolderShort)
@@ -87,7 +86,7 @@ prepare_23andme_genome<-function(path, email, filename){
 	for(otherPerson in otherPersons){
 		if(!file.info(otherPerson)[["isdir"]])next
 		if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-		other_person_md5sum<-read.table(paste(otherPerson,"pData.txt",sep="/t",header=T,stringsAsFactors=F))[1,"md5sum"]
+		other_person_md5sum<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep=" ",header=T,stringsAsFactors=F)[1,"md5sum"]
 		if(this_person_md5sum == other_person_md5sum){
 			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
 			m<-paste(m,collapse="\t")
