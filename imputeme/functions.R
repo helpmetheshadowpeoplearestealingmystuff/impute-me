@@ -16,11 +16,20 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	#check for too many ongoing imputations
 	s<-list.files("/home/ubuntu/imputations/")
-	if(length(grep("^imputation_folder",s)) > 4)stop("More than 4 imputations are already in progress. Cannot start a new one")
+	if(length(grep("^imputation_folder",s)) >= 2){
+		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
+		m<-paste(m,collapse="\t")
+		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+		
+		stop("More than 2 imputations are already in progress. Cannot start a new one")
+	}
 	
 	
 	
-	#Create imputation folder and output data folder
+	
+	
+	
+	#Create uniqueID 
 	setwd("/home/ubuntu/imputations/")
 	uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
 	numberOfLetters<-sample(c(0,1,1,2,3),1)
@@ -35,7 +44,14 @@ prepare_23andme_genome<-function(path, email, filename){
 	}
 	
 	
-	if(uniqueID%in%list.files("/home/ubuntu/data/"))stop("Problem with unique ID generation. Please re-load and try again.")
+	#create imputation folder and output data folder
+	if(uniqueID%in%list.files("/home/ubuntu/data/")){
+		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID))
+		m<-paste(m,collapse="\t")
+		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+		stop("Problem with unique ID generation. Please re-load and try again.")
+	}
+		
 	dir.create(paste("/home/ubuntu/data/",uniqueID,sep=""))
 	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
 	dir.create(homeFolderShort)
@@ -57,21 +73,27 @@ prepare_23andme_genome<-function(path, email, filename){
 	}
 	path <- newUnzippedPath
 	
-	
+	#checking if it is a consistent file
 	testRead<-read.table(path,nrow=10,stringsAsFactors=F)
 	if(ncol(testRead)!=4)stop("testRead of file didn't have 4 columns")
 	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead didn't have rs IDs in column 1")
 	
-	#should probably change this to more permanent
-	# system("export PATH=$PATH:/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static")
-	# cmd1<-paste("perl -I /home/ubuntu/impute_dir/ -I /home/ubuntu/impute_dir/IO-zlib/share/perl5/ /home/ubuntu/impute_dir/impute_genome.pl -i",path,"-g /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ -o",uniqueID,"-p")
-	# cmd1_out<-system(cmd1,intern=T)
-	# imputeCommands<-grep("^impute2 ",cmd1_out,value=T)
-	# mergeCommands<-grep("^cat ",cmd1_out,value=T)
-	# mergeCommands<-gsub("\\.haps","_info",cmd2) #change so it takes the info files instead
-	#maybe just skip the mergeCommands and make your own?
-	# mergeCommands<-grep("^cat", cmd2,value=T)
-	# cmd2<-c(imputeCommands,mergeCommands)
+
+	#checking if this job has not actually been run before
+	this_person_md5sum <- md5sum(path)
+	otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+	for(otherPerson in otherPersons){
+		if(!file.info(otherPerson)[["isdir"]])next
+		if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+		other_person_md5sum<-read.table(paste(otherPerson,"pData.txt",sep="/t",header=T,stringsAsFactors=F))[1,"md5sum"]
+		if(this_person_md5sum == other_person_md5sum){
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
+			m<-paste(m,collapse="\t")
+			write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+			stop("A person with this genome was already analyzed by the system. Write an email to lassefolkersen@gmail.com if you wish to clear this flag.")
+		}
+	}
+	
 	save(uniqueID,email,filename,file=paste(homeFolder,"variables.rdata",sep=""))
 	
 	unlink("job_status.txt")

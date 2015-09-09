@@ -66,7 +66,7 @@ shinyServer(function(input, output) {
 		giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
 		
 		#get genotypes and calculate gheight
-		genotypes<-get_genotypes(uniqueID="id_424142906",request=giant_sup)
+		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
 		gheight<-get_gheight(genotypes=genotypes,betas=giant_sup)
 		
 		#save in database
