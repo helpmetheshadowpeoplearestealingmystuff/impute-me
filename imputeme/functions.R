@@ -1,5 +1,7 @@
 
 prepare_23andme_genome<-function(path, email, filename){
+	library("tools")
+	
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
@@ -100,7 +102,7 @@ prepare_23andme_genome<-function(path, email, filename){
 	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
 	
 	
-	return(paste("Genome files succesfully uploaded and prepared for imputation. Your unique job-id is",uniqueID,"and when finished, you will receive an email to",email,"that contains download instructions."))
+	return(paste("Genome files succesfully uploaded and prepared for imputation. When finished, you will receive an email to",email,"that contains download instructions."))
 	
 	
 }
