@@ -1,118 +1,120 @@
 
 prepare_23andme_genome<-function(path, email, filename){
-	return("None")
 	
-	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
-	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
-	if(!file.exists(path))stop(paste("Did not find file at path:",path))
-	
-	if(class(email)!="character")stop(paste("email must be character, not",class(email)))
-	if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
-	if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
-		stop(paste("a real email adress is needed:",email))
-	}
-	
-	if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
-	if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
-	
-	
-	#check for too many ongoing imputations
-	print("check for too many ongoing imputations")
-	s<-list.files("/home/ubuntu/imputations/")
-	if(length(grep("^imputation_folder",s)) >= 2){
-		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
-		m<-paste(m,collapse="\t")
-		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+	if(F){
 		
-		stop("More than 2 imputations are already in progress. Cannot start a new one")
-	}
-	
-	
-	
-	
-	
-	
-	#Create uniqueID 
-	print("create uniqueID")
-	setwd("/home/ubuntu/imputations/")
-	uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
-	numberOfLetters<-sample(c(1,1,2,3),1)
-	if(numberOfLetters>0){
-		positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
 		
-		l<-c(LETTERS,letters)
-		l<-l[!l%in%c("o","O")] #I hate it when O is in
-		for(x in positionsToInsertLetter){
-			substr(uniqueID,x,x)<-sample(l,1)
+		if(class(path)!="character")stop(paste("path must be character, not",class(path)))
+		if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
+		if(!file.exists(path))stop(paste("Did not find file at path:",path))
+		
+		if(class(email)!="character")stop(paste("email must be character, not",class(email)))
+		if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
+		if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
+			stop(paste("a real email adress is needed:",email))
 		}
-	}
-	
-	
-	#create imputation folder and output data folder
-	print("create imputation folder and output data folder")
-	if(uniqueID%in%list.files("/home/ubuntu/data/")){
-		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
-		m<-paste(m,collapse="\t")
-		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-		stop("Problem with unique ID generation. Please re-load and try again.")
-	}
-	dir.create(paste("/home/ubuntu/data/",uniqueID,sep=""))
-	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
-	dir.create(homeFolderShort)
-	setwd(homeFolderShort)
-	homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
-	write.table("Job is not ready yet",file="job_status.txt",col.names=F,row.names=F,quote=F)
-# 	
-	
-# 	
-# 	#unzipping (or not) and moving to new place
-	print("#unzipping (or not) and moving to new place")
-	newTempPath <- paste(homeFolder,paste(uniqueID,"_raw_data",sep=""),sep="/")
-	newUnzippedPath <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
-	file.copy(path, newTempPath)	
-	gunzipResults<-unzip(newTempPath,exdir=homeFolder)
-	if(length(gunzipResults)==1){ #then its a zip file
-		file.rename(gunzipResults, newUnzippedPath)		
-	}else{ #then it's probably not
-		file.rename(newTempPath, newUnzippedPath)		
-	}
-	path <- newUnzippedPath
-	
-	#checking if it is a consistent file
-	print("checking if it is a consistent file")
-	testRead<-read.table(path,nrow=10,stringsAsFactors=F)
-	if(ncol(testRead)!=4)stop("testRead of file didn't have 4 columns")
-	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead didn't have rs IDs in column 1")
-	
-
-	#checking if this job has not actually been run before
-	print("checking if this job has not actually been run before")
-	this_person_md5sum <- md5sum(path)
-	otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
-	for(otherPerson in otherPersons){
-		if(!file.info(otherPerson)[["isdir"]])next
-		if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-		other_person_md5sum<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep=" ",header=T,stringsAsFactors=F)[1,"md5sum"]
-		if(this_person_md5sum == other_person_md5sum){
-			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
+		
+		if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
+		if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
+		
+		
+		#check for too many ongoing imputations
+		print("check for too many ongoing imputations")
+		s<-list.files("/home/ubuntu/imputations/")
+		if(length(grep("^imputation_folder",s)) >= 2){
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
 			m<-paste(m,collapse="\t")
 			write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-			unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
-			unlink(homeFolder,recursive=T)
-			stop("A person with this genome was already analyzed by the system. Write an email to lassefolkersen@gmail.com if you wish to clear this flag.")
+			
+			stop("More than 2 imputations are already in progress. Cannot start a new one")
 		}
+		
+		
+		
+		
+		
+		
+		#Create uniqueID 
+		print("create uniqueID")
+		setwd("/home/ubuntu/imputations/")
+		uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
+		numberOfLetters<-sample(c(1,1,2,3),1)
+		if(numberOfLetters>0){
+			positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
+			
+			l<-c(LETTERS,letters)
+			l<-l[!l%in%c("o","O")] #I hate it when O is in
+			for(x in positionsToInsertLetter){
+				substr(uniqueID,x,x)<-sample(l,1)
+			}
+		}
+		
+		
+		#create imputation folder and output data folder
+		print("create imputation folder and output data folder")
+		if(uniqueID%in%list.files("/home/ubuntu/data/")){
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
+			m<-paste(m,collapse="\t")
+			write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+			stop("Problem with unique ID generation. Please re-load and try again.")
+		}
+		dir.create(paste("/home/ubuntu/data/",uniqueID,sep=""))
+		homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
+		dir.create(homeFolderShort)
+		setwd(homeFolderShort)
+		homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
+		write.table("Job is not ready yet",file="job_status.txt",col.names=F,row.names=F,quote=F)
+		# 	
+		
+		# 	
+		# 	#unzipping (or not) and moving to new place
+		print("#unzipping (or not) and moving to new place")
+		newTempPath <- paste(homeFolder,paste(uniqueID,"_raw_data",sep=""),sep="/")
+		newUnzippedPath <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
+		file.copy(path, newTempPath)	
+		gunzipResults<-unzip(newTempPath,exdir=homeFolder)
+		if(length(gunzipResults)==1){ #then its a zip file
+			file.rename(gunzipResults, newUnzippedPath)		
+		}else{ #then it's probably not
+			file.rename(newTempPath, newUnzippedPath)		
+		}
+		path <- newUnzippedPath
+		
+		#checking if it is a consistent file
+		print("checking if it is a consistent file")
+		testRead<-read.table(path,nrow=10,stringsAsFactors=F)
+		if(ncol(testRead)!=4)stop("testRead of file didn't have 4 columns")
+		if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead didn't have rs IDs in column 1")
+		
+		
+		#checking if this job has not actually been run before
+		print("checking if this job has not actually been run before")
+		this_person_md5sum <- md5sum(path)
+		otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+		for(otherPerson in otherPersons){
+			if(!file.info(otherPerson)[["isdir"]])next
+			if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+			other_person_md5sum<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep=" ",header=T,stringsAsFactors=F)[1,"md5sum"]
+			if(this_person_md5sum == other_person_md5sum){
+				m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
+				m<-paste(m,collapse="\t")
+				write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+				unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
+				unlink(homeFolder,recursive=T)
+				stop("A person with this genome was already analyzed by the system. Write an email to lassefolkersen@gmail.com if you wish to clear this flag.")
+			}
+		}
+		
+		
+		print("Finalize")
+		save(uniqueID,email,filename,file=paste(homeFolder,"variables.rdata",sep=""))
+		unlink("job_status.txt")
+		write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
+		
+		
+		return(paste("Genome files succesfully uploaded and prepared for imputation. When finished, you will receive an email to",email,"that contains download instructions."))
+		
 	}
-	
-	
-	print("Finalize")
-	save(uniqueID,email,filename,file=paste(homeFolder,"variables.rdata",sep=""))
-	unlink("job_status.txt")
-	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
-	
-	
-	return(paste("Genome files succesfully uploaded and prepared for imputation. When finished, you will receive an email to",email,"that contains download instructions."))
-	
-	
 }
 
 
@@ -329,13 +331,13 @@ summarize_imputation<-function(
 		#reform to plink fam/bim/bed file			
 		cmd5 <- paste(plink," --file step_8_chr",chr,".gen --recode --transpose --noweb --out step_9_chr",chr,sep="")
 		system(cmd5)
-
+		
 		#re-order to 23andme format
 		cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,".tped  > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
 		system(cmd6)
 	}
 	
-
+	
 	#preparing destinationDir
 	prepDestinationDir<-paste(destinationDir,"/",uniqueID,sep="")
 	
