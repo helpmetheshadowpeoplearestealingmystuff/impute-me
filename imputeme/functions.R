@@ -64,25 +64,25 @@ prepare_23andme_genome<-function(path, email, filename){
 	write.table("Job is not ready yet",file="job_status.txt",col.names=F,row.names=F,quote=F)
 	
 	
-	
-	#unzipping (or not) and moving to new place
-	print("#unzipping (or not) and moving to new place")
-	newTempPath <- paste(homeFolder,paste(uniqueID,"_raw_data",sep=""),sep="/")
-	newUnzippedPath <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
-	file.copy(path, newTempPath)	
-	gunzipResults<-unzip(newTempPath,exdir=homeFolder)
-	if(length(gunzipResults)==1){ #then its a zip file
-		file.rename(gunzipResults, newUnzippedPath)		
-	}else{ #then it's probably not
-		file.rename(newTempPath, newUnzippedPath)		
-	}
-	path <- newUnzippedPath
-	
-	#checking if it is a consistent file
-	print("checking if it is a consistent file")
-	testRead<-read.table(path,nrow=10,stringsAsFactors=F)
-	if(ncol(testRead)!=4)stop("testRead of file didn't have 4 columns")
-	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead didn't have rs IDs in column 1")
+# 	
+# 	#unzipping (or not) and moving to new place
+# 	print("#unzipping (or not) and moving to new place")
+# 	newTempPath <- paste(homeFolder,paste(uniqueID,"_raw_data",sep=""),sep="/")
+# 	newUnzippedPath <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
+# 	file.copy(path, newTempPath)	
+# 	gunzipResults<-unzip(newTempPath,exdir=homeFolder)
+# 	if(length(gunzipResults)==1){ #then its a zip file
+# 		file.rename(gunzipResults, newUnzippedPath)		
+# 	}else{ #then it's probably not
+# 		file.rename(newTempPath, newUnzippedPath)		
+# 	}
+# 	path <- newUnzippedPath
+# 	
+# 	#checking if it is a consistent file
+# 	print("checking if it is a consistent file")
+# 	testRead<-read.table(path,nrow=10,stringsAsFactors=F)
+# 	if(ncol(testRead)!=4)stop("testRead of file didn't have 4 columns")
+# 	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead didn't have rs IDs in column 1")
 	
 
 	#checking if this job has not actually been run before
@@ -104,10 +104,10 @@ prepare_23andme_genome<-function(path, email, filename){
 # 	}
 	
 	
-	print("Finalize")
-	save(uniqueID,email,filename,file=paste(homeFolder,"variables.rdata",sep=""))
-	unlink("job_status.txt")
-	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
+# 	print("Finalize")
+# 	save(uniqueID,email,filename,file=paste(homeFolder,"variables.rdata",sep=""))
+# 	unlink("job_status.txt")
+# 	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
 	
 	
 	return(paste("Genome files succesfully uploaded and prepared for imputation. When finished, you will receive an email to",email,"that contains download instructions."))
