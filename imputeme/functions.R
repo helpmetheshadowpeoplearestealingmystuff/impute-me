@@ -46,7 +46,7 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	#create imputation folder and output data folder
 	if(uniqueID%in%list.files("/home/ubuntu/data/")){
-		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID))
+		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
 		m<-paste(m,collapse="\t")
 		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
 		stop("Problem with unique ID generation. Please re-load and try again.")
