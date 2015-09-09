@@ -17,6 +17,7 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	
 	#check for too many ongoing imputations
+	print("check for too many ongoing imputations")
 	s<-list.files("/home/ubuntu/imputations/")
 	if(length(grep("^imputation_folder",s)) >= 2){
 		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
@@ -32,6 +33,7 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	
 	#Create uniqueID 
+	print("create uniqueID")
 	setwd("/home/ubuntu/imputations/")
 	uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
 	numberOfLetters<-sample(c(1,1,2,3),1)
@@ -47,6 +49,7 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	
 	#create imputation folder and output data folder
+	print("create imputation folder and output data folder")
 	if(uniqueID%in%list.files("/home/ubuntu/data/")){
 		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
 		m<-paste(m,collapse="\t")
@@ -62,7 +65,8 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	
 	
-	#unzipping (or not) and moving to new place	
+	#unzipping (or not) and moving to new place
+	print("#unzipping (or not) and moving to new place")
 	newTempPath <- paste(homeFolder,paste(uniqueID,"_raw_data",sep=""),sep="/")
 	newUnzippedPath <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
 	file.copy(path, newTempPath)	
@@ -75,12 +79,14 @@ prepare_23andme_genome<-function(path, email, filename){
 	path <- newUnzippedPath
 	
 	#checking if it is a consistent file
+	print("checking if it is a consistent file")
 	testRead<-read.table(path,nrow=10,stringsAsFactors=F)
 	if(ncol(testRead)!=4)stop("testRead of file didn't have 4 columns")
 	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead didn't have rs IDs in column 1")
 	
 
 	#checking if this job has not actually been run before
+	print("checking if this job has not actually been run before")
 	this_person_md5sum <- md5sum(path)
 	otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
 	for(otherPerson in otherPersons){
@@ -97,8 +103,9 @@ prepare_23andme_genome<-function(path, email, filename){
 		}
 	}
 	
-	save(uniqueID,email,filename,file=paste(homeFolder,"variables.rdata",sep=""))
 	
+	print("Finalize")
+	save(uniqueID,email,filename,file=paste(homeFolder,"variables.rdata",sep=""))
 	unlink("job_status.txt")
 	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
 	
@@ -359,6 +366,7 @@ summarize_imputation<-function(
 	
 	return(returnPaths)
 }
+
 
 
 
