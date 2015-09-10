@@ -54,8 +54,8 @@ shinyServer(function(input, output) {
 			
 			#also store this in the pData
 			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
-			pData<-pData[,"height"]<-real_height
-			pData<-pData[,"age"]<-real_age
+			pData[,"height"]<-real_height
+			pData[,"age"]<-real_age
 			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 			
 		}else{
