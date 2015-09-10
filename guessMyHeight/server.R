@@ -91,7 +91,7 @@ shinyServer(function(input, output) {
 		
 		#also store this in the pData
 		pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
-		pData<-pData[,"gheight"]<-gheight
+		pData[,"gheight"]<-gheight
 		write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 		
 		
