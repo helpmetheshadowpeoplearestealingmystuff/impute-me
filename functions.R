@@ -326,6 +326,15 @@ summarize_imputation<-function(
 		cmd4 <- paste(gtools," -G --g step_8_chr",chr,".gen --s ",sampleFile," --chr ",chr," --snp",sep="")
 		system(cmd4)
 		
+		#put in check-point and log dump for possible file output errors
+		if(!file.exists(paste("step_8_chr",chr,".gen.map",sep=""))){
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"failed_ped_generation",uniqueID,paste("chr",chr,sep=""))
+			m<-paste(m,collapse="\t")
+			write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+			stop("For some reason there was no step_8 ped file generated")
+		}
+		
+		
 		#reform to plink fam/bim/bed file			
 		cmd5 <- paste(plink," --file step_8_chr",chr,".gen --recode --transpose --noweb --out step_9_chr",chr,sep="")
 		system(cmd5)
