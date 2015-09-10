@@ -61,11 +61,11 @@ for(folderToCheck in foldersToCheck){
 		timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
 		md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
 		gender<-system(paste("cut --delimiter=' ' -f 5 ",runDir,"/step_1.ped",sep=""),intern=T)
+		header<-paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender"),collapse="\t")
+		content<-paste(c(uniqueID,filename,email,timeStamp,md5sum,gender),collapse="\t")
 		f<-file(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),"w")
-		writeLines(paste("uniqueID","filename","email","first_timeStamp","md5sum","gender",collapse="\t"),f)
-		writeLines(paste(uniqueID,filename,email,timeStamp,md5sum,gender,collapse="\t"),f)
+		writeLines(c(header,content),f)
 		close(f)
-		
 
 		#making a link out to where the data can be retrieved		
 		file.symlink(

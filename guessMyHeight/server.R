@@ -52,14 +52,16 @@ shinyServer(function(input, output) {
 				}
 			}
 			
-			#also save in pData
-			# read.table(paste("/home/ubuntu/data/",uniqueID,sep=""))){
-			#DO SOMETHING ABOUT GENDER AS WELL
 			
 		}else{
 			real_height<-NA	
 			real_age<-NA
 		}
+		
+		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+		read.table(pDataFile,header=T,stringsAsFactors=F)[1,"gender"]
+		
+		
 		
 		giant_sup_path<-"/home/ubuntu/misc_files/GIANT_modified_table.txt"
 		giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
@@ -69,7 +71,7 @@ shinyServer(function(input, output) {
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
 		gheight<-get_gheight(genotypes=genotypes,betas=giant_sup)
 		
-		#save in database
+		#save in pData
 		heights_registered<-"/home/ubuntu/misc_files/height_registrered.txt"
 		real_entry<-TRUE
 		entry <- c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),uniqueID, gheight, real_height, real_age,real_entry)
