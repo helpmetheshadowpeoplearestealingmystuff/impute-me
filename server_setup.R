@@ -68,6 +68,12 @@ mv ALL_1000G_phase1integrated_v3_annotated_legends/* ALL_1000G_phase1integrated_
 rmdir ALL_1000G_phase1integrated_v3_annotated_legends
 
 
+#link to the X-chr
+cd /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute
+ln -s genetic_map_chrX_nonPAR_combined_b37.txt genetic_map_chrX_combined_b37.txt
+ln -s ALL_1000G_phase1integrated_v3_chrX_nonPAR_impute.hap.gz ALL_1000G_phase1integrated_v3_chrX_impute.hap.gz
+ln -s ALL_1000G_phase1integrated_v3_chrX_nonPAR_impute.legend.gz ALL_1000G_phase1integrated_v3_chrX_impute.legend.gz
+
 #In R - get samples
 url<- "ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20110521/supporting/phase1_samples_integrated_20101123.ped"
 download.file(url,basename(url))
