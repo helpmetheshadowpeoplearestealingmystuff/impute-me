@@ -54,7 +54,8 @@ shinyServer(function(input, output) {
 			
 			#also store this in the pData
 			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
-			pData<-cbind(pData,data.frame(age=real_age, height=real_height,stringsAsFactors=FALSE))
+			pData<-pData[,"height"]<-real_height
+			pData<-pData[,"age"]<-real_age
 			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 			
 		}else{
@@ -87,6 +88,11 @@ shinyServer(function(input, output) {
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
 		gheight<-get_gheight(genotypes=genotypes,betas=giant_sup)
 		
+		
+		#also store this in the pData
+		pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+		pData<-pData[,"gheight"]<-gheight
+		write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 		
 		
 		#load database for comparison
