@@ -114,8 +114,8 @@ shinyServer(function(input, output) {
 		female_heights<-heights_in_data[heights_in_data[,"gender"]%in%2,]
 		
 		xlim<-range(heights_in_data[,"gheight"],na.rm=T)
-		ylim_male <-range(male_heights,"height"],na.rm=T)
-		ylim_female <-range(female_heights%in%2,"height"],na.rm=T)
+		ylim_male <-range(male_heights[,"height"],na.rm=T)
+		ylim_female <-range(female_heights,"height"],na.rm=T)
 		
 		plot(NULL,xlim=xlim,ylim=c(0,1),xlab="genetic height",yaxt="n",ylab="")
 		axis(2,at=seq(0,1,0.1), labels=round(seq(from=ylim_male[1],to=ylim_male[2],length.out=11)))
