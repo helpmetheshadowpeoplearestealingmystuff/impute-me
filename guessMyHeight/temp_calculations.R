@@ -88,15 +88,16 @@ for(snp in rownames(giant_sup)){
 heights_registered<-"/home/ubuntu/misc_files/height_registrered.txt"
 
 for(i in 1:100){
-	real_height<-round(rnorm(1,mean=174,sd=10))
+	real_gender<-sample(1:2,1)
+	real_height<-round(rnorm(1,mean=167,sd=5))
+	gender_component<-round((2-real_gender)*7*rnorm(1,1,0.05))
 	real_age<-sample(30:60,1)
 	gheight<-signif((real_height - 174)/10,4)+rnorm(1,mean=0,sd=0.2)
+	real_height<-real_height+ gender_component
 	uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
 	
 	real_entry<-FALSE
-	entry <- c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),uniqueID, gheight, real_height, real_age, real_entry)
+	entry <- c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),uniqueID, gheight, real_height, real_age, real_gender,real_entry)
 	write(paste(entry,collapse="\t"),file=heights_registered,append=TRUE)
-	
-	
-	
+
 }

@@ -51,7 +51,7 @@ shinyServer(function(input, output) {
 					stop("for adults, real height must be number above 150 cm (or write me an email if you are actually shorter than that)")
 				}
 			}
-
+			
 			#also store this in the pData
 			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
 			pData<-cbind(pData,data.frame(age=real_age, height=real_height,stringsAsFactors=FALSE))
@@ -77,7 +77,7 @@ shinyServer(function(input, output) {
 		
 		#Get gender
 		gender<-read.table(pDataFile,header=T,stringsAsFactors=F)[1,"gender"]
-
+		
 		
 		giant_sup_path<-"/home/ubuntu/misc_files/GIANT_modified_table.txt"
 		giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
@@ -87,21 +87,65 @@ shinyServer(function(input, output) {
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
 		gheight<-get_gheight(genotypes=genotypes,betas=giant_sup)
 		
-		#save in pData
-		heights_registered<-"/home/ubuntu/misc_files/height_registrered.txt"
-		real_entry<-TRUE
-		entry <- c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),uniqueID, gheight, real_height, real_age,real_entry)
-		write(paste(entry,collapse="\t"),file=heights_registered,append=TRUE)
-			
-		
 		
 		
 		#load database for comparison
-		heights_registered<-read.table(heights_registered,sep="\t",stringsAsFactors=F)
-		plot(heights_registered[,3], heights_registered[,4], xlab="gheight", ylab="real height (cm)")
+		#this is a file that could contain the GWAS heights
+		heights_pre_registered_file<-"/home/ubuntu/misc_files/height_registrered.txt"
+		heights_pre_registered<-read.table(heights_pre_registered_file,sep="\t",stringsAsFactors=F)
+		colnames(heights_pre_registered)<-c("time","id","gheight","height","age","gender","real")
+		heights_pre_registered<-heights_pre_registered[,c("height","gheight","gender")]
+		
+		
+		#this loops over all pData files
+		otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+		heights_in_data<-data.frame(height=vector(),gheight=vector(),gender=vector(),stringsAsFactors=F)
+		for(otherPerson in otherPersons){
+			if(!file.info(otherPerson)[["isdir"]])next
+			if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+			otherPersonPdata<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep=" ",header=T,stringsAsFactors=F)
+			if(!all(c("gheight","height","gender")%in%colnames(otherPersonPdata)))next
+			heights_in_data<-rbind(heights_in_data,otherPersonPdata[1,c("height","gheight","gender")])
+		}
+		
+		heights_in_data<-rbind(heights_in_data,heights_pre_registered)
+		
+		male_heights<-heights_in_data[heights_in_data[,"gender"]%in%1,]
+		female_heights<-heights_in_data[heights_in_data[,"gender"]%in%2,]
+		
+		xlim<-range(heights_in_data[,"gheight"],na.rm=T)
+		ylim_male <-range(male_heights,"height"],na.rm=T)
+		ylim_female <-range(female_heights%in%2,"height"],na.rm=T)
+		
+		plot(NULL,xlim=xlim,ylim=c(0,1),xlab="genetic height",yaxt="n",ylab="")
+		axis(2,at=seq(0,1,0.1), labels=round(seq(from=ylim_male[1],to=ylim_male[2],length.out=11)))
+		axis(4,at=seq(0,1,0.1), labels=round(seq(from=ylim_female[1],to=ylim_female[2],length.out=11)))
+		
+		mtext("Male height (cm)",side=2,padj=-4)
+		points(
+			x=male_heights[,"gheight"], 
+			y=(male_heights[,"height"]-ylim_male[1])/(ylim_male[2]-ylim_male[1]),#unit scale 
+			col="dodgerblue", #gotta love stereotypes for clean communcation
+			pch=19
+		)
+		mtext("Female height (cm)",side=4,padj=4)
+		points(
+			x=female_heights[,"gheight"], 
+			y=(female_heights[,"height"]-ylim_female[1])/(ylim_female[2]-ylim_female[1]),#unit scale 
+			col="red", #gotta love stereotypes for clean communcation
+			pch=19
+		)
 		
 		if(height_provided){
-			points(x=gheight, y=real_height,cex=2, col="red",pch=19)
+			if(gender==1){
+				y<-(real_height-ylim_male[1])/(ylim_male[2]-ylim_male[1])
+				points(x=gheight, y=real_height,cex=3, col="dodgerblue",pch=19)
+			}else{
+				y<-(real_height-ylim_female[1])/(ylim_female[2]-ylim_female[1])
+				points(x=gheight, y=real_height,cex=3, col="red",pch=19)
+			}
+			
+			
 			
 		}else{
 			abline(v=	gheight, lwd=2, col="red")
