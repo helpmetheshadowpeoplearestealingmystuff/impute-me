@@ -59,7 +59,7 @@ giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.na
 giant_sup<-giant_sup[order(abs(giant_sup[,"Beta"]),decreasing=T),]
 giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
 
-source("/srv/shiny-server/gene-surfer/guessMyHeight/functions.R")
+source("/srv/shiny-server/gene-surfer/functions.R")
 genotypes<-get_genotypes(uniqueID="id_424142906",request=giant_sup)
 
 

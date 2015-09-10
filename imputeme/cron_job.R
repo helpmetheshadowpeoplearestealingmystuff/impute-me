@@ -5,7 +5,7 @@
 # sudo crontab -u root -e
 # 50 * * * * Rscript /srv/shiny-server/gene-surfer/imputeme/cron_job.R > /var/log/cron_log
 
-source("/srv/shiny-server/gene-surfer/imputeme/functions.R")
+source("/srv/shiny-server/gene-surfer/functions.R")
 
 
 

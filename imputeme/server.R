@@ -3,7 +3,7 @@ library("tools")
 
 options(shiny.maxRequestSize=10*1024^2) 
 
-source("/srv/shiny-server/gene-surfer/imputeme/functions.R")
+source("/srv/shiny-server/gene-surfer/functions.R")
 
 
 
