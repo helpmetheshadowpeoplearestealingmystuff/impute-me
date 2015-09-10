@@ -109,7 +109,7 @@ shinyServer(function(input, output) {
 		for(otherPerson in otherPersons){
 			if(!file.info(otherPerson)[["isdir"]])next
 			if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-			otherPersonPdata<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep=" ",header=T,stringsAsFactors=F)
+			otherPersonPdata<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F)
 			if(!all(c("gheight","height","gender")%in%colnames(otherPersonPdata)))next
 			heights_in_data<-rbind(heights_in_data,otherPersonPdata[1,c("height","gheight","gender")])
 		}
@@ -123,6 +123,7 @@ shinyServer(function(input, output) {
 		ylim_male <-range(male_heights[,"height"],na.rm=T)
 		ylim_female <-range(female_heights[,"height"],na.rm=T)
 		
+		par(mai=c(1.36,1.093333,1.093333,0.960000))
 		plot(NULL,xlim=xlim,ylim=c(0,1),xlab="genetic height",yaxt="n",ylab="")
 		axis(2,at=seq(0,1,0.1), labels=round(seq(from=ylim_male[1],to=ylim_male[2],length.out=11)))
 		axis(4,at=seq(0,1,0.1), labels=round(seq(from=ylim_female[1],to=ylim_female[2],length.out=11)))

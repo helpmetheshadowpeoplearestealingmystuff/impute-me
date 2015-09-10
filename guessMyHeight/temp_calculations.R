@@ -79,11 +79,6 @@ for(snp in rownames(giant_sup)){
 
 
 
-
-
-
-
-
 #generating some initial gheight stuff
 heights_registered<-"/home/ubuntu/misc_files/height_registrered.txt"
 
@@ -92,7 +87,7 @@ for(i in 1:100){
 	real_height<-round(rnorm(1,mean=167,sd=5))
 	gender_component<-round((2-real_gender)*7*rnorm(1,1,0.05))
 	real_age<-sample(30:60,1)
-	gheight<-signif((real_height - 174)/10,4)+rnorm(1,mean=0,sd=0.2)
+	gheight<-signif((real_height - (167+3.5))/5+rnorm(1,mean=0,sd=0.2),4)
 	real_height<-real_height+ gender_component
 	uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
 	
