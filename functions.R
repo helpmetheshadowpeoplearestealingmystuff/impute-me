@@ -111,7 +111,7 @@ prepare_23andme_genome<-function(path, email, filename){
 	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
 	
 	
-	return(paste("Genome files succesfully uploaded. When imputed, you will receive an email to",email,"with download-instructions. You can close this browser window."))
+	return(paste("Genome files succesfully uploaded. Tomorrow you will receive an email to",email,"with download-instructions. You can close this browser window."))
 	
 	
 }

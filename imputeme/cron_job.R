@@ -67,6 +67,15 @@ for(folderToCheck in foldersToCheck){
 		writeLines(c(header,content),f)
 		close(f)
 
+		
+		#Run the genotype extraction routine
+		giant_sup_path<-"/home/ubuntu/misc_files/GIANT_modified_table.txt"
+		giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
+		giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
+		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
+		
+		
+		
 		#making a link out to where the data can be retrieved		
 		file.symlink(
 			from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip",sep=""),
@@ -84,8 +93,8 @@ for(folderToCheck in foldersToCheck){
 		
 		message <- paste("We have completed imputation of your genome. For the next 24 hours you can retrieve your imputed genome at this address:\n",
 										 location_23andme,
-										 "\n\nFor advanced users, it is also possible to download the gen-format files from this location:\n",
-										 location_gen)
+										 "\n\nFor advanced users, it is also possible to download the <a href=",location_gen,">gen-format files</a> ",sep="")
+		
 		
 		
 		
