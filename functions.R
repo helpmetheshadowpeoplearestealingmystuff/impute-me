@@ -169,7 +169,7 @@ run_imputation<-function(
 	
 	
 	#loop over chromosomes
-	for(chr in 1:22){
+	for(chr in c("X",as.character(1:22))){
 		
 		#First in loop - extract only one specific chromosome
 		cmd2<-paste(plink," --file step_1 --chr ",chr," --recode --out step_2_chr",chr," --exclude step_2_exclusions",sep="")
