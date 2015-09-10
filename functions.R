@@ -88,11 +88,11 @@ prepare_23andme_genome<-function(path, email, filename){
 	#checking if this job has not actually been run before
 	print("checking if this job has not actually been run before")
 	this_person_md5sum <- md5sum(path)
-	otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+	otherPersons<-list.files("/home/ubuntu/data",full.names=T)
 	for(otherPerson in otherPersons){
 		if(!file.info(otherPerson)[["isdir"]])next
 		if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-		other_person_md5sum<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep=" ",header=T,stringsAsFactors=F)[1,"md5sum"]
+		other_person_md5sum<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F)[1,"md5sum"]
 		if(this_person_md5sum == other_person_md5sum){
 			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
 			m<-paste(m,collapse="\t")
