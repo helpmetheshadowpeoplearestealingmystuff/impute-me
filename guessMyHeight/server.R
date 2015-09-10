@@ -29,7 +29,7 @@ shinyServer(function(input, output) {
 		print(nchar(uniqueID))
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
-		
+		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
 		
 		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
@@ -51,17 +51,33 @@ shinyServer(function(input, output) {
 					stop("for adults, real height must be number above 150 cm (or write me an email if you are actually shorter than that)")
 				}
 			}
-			
+
+			#also store this in the pData
+			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+			pData<-cbind(pData,data.frame(age=real_age, height=real_height,stringsAsFactors=FALSE))
+			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 			
 		}else{
 			real_height<-NA	
 			real_age<-NA
+			
+			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+			if("height"%in%colnames(pData)){
+				real_height<-pData[1,"height"]
+			}else{
+				real_height<-NA	
+			}
+			if("age"%in%colnames(pData)){
+				real_age<-pData[1,"age"]
+			}else{
+				real_age<-NA	
+			}
+			
 		}
 		
-		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
-		read.table(pDataFile,header=T,stringsAsFactors=F)[1,"gender"]
-		
-		
+		#Get gender
+		gender<-read.table(pDataFile,header=T,stringsAsFactors=F)[1,"gender"]
+
 		
 		giant_sup_path<-"/home/ubuntu/misc_files/GIANT_modified_table.txt"
 		giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
