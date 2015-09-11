@@ -96,7 +96,7 @@ for(folderToCheck in foldersToCheck){
 										 "<br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format files</a></HTML> ",sep="")
 		
 		
-		
+		#test commit
 		
 		mailingResult<-try(stop(),silent=TRUE)
 		while(class(mailingResult) == "try-error"){
