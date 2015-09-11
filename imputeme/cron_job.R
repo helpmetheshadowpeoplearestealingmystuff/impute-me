@@ -84,15 +84,10 @@ for(folderToCheck in foldersToCheck){
 		
 		message <- paste("We have completed imputation of your genome. For the next 24 hours you can retrieve your imputed genome at this address:\n",
 										 location_23andme,
-<<<<<<< HEAD
-										 "\n\nFor advanced users, it is also possible to download the <a href=",location_gen,">gen-format files</a> ",sep="")
-=======
 										 "\n\nFor advanced users, it is also possible to download the gen-format files from this location:\n",
 										 location_gen)
->>>>>>> 079a02a9cb27dc22eb5f8589cdd2ae644527d946
 		
 		
-		#test commit
 		
 		mailingResult<-try(stop(),silent=TRUE)
 		while(class(mailingResult) == "try-error"){
