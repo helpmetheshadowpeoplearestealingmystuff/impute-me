@@ -310,6 +310,7 @@ summarize_imputation<-function(
 	
 	genFiles<-paste(uniqueID,"_chr",chromosomes,".gen",sep="")
 	
+	
 	#running a conversion first to plink then to 23andme	
 	for(genFile in genFiles){
 		
