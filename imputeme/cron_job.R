@@ -5,7 +5,7 @@
 # sudo crontab -u root -e
 # 50 * * * * Rscript /srv/shiny-server/gene-surfer/imputeme/cron_job.R > /var/log/cron_log
 
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/srv/shiny-server/gene-surfer/imputeme/functions.R")
 
 
 
@@ -61,21 +61,12 @@ for(folderToCheck in foldersToCheck){
 		timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
 		md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
 		gender<-system(paste("cut --delimiter=' ' -f 5 ",runDir,"/step_1.ped",sep=""),intern=T)
-		header<-paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender"),collapse="\t")
-		content<-paste(c(uniqueID,filename,email,timeStamp,md5sum,gender),collapse="\t")
 		f<-file(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),"w")
-		writeLines(c(header,content),f)
+		writeLines(paste("uniqueID","filename","email","first_timeStamp","md5sum","gender",collapse="\t"),f)
+		writeLines(paste(uniqueID,filename,email,timeStamp,md5sum,gender,collapse="\t"),f)
 		close(f)
+		
 
-		
-		#Run the genotype extraction routine
-		giant_sup_path<-"/home/ubuntu/misc_files/GIANT_modified_table.txt"
-		giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
-		giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
-		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
-		
-		
-		
 		#making a link out to where the data can be retrieved		
 		file.symlink(
 			from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip",sep=""),
@@ -87,13 +78,18 @@ for(folderToCheck in foldersToCheck){
 		)
 		
 		print("Getting IP and sending mail")
-		ip<-"http://www.impute.me"#sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
+		ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
 		location_23andme <- paste(ip,"/",uniqueID,".23andme.zip",sep="")
 		location_gen <- paste(ip,"/",uniqueID,".gen.zip",sep="")
 		
 		message <- paste("We have completed imputation of your genome. For the next 24 hours you can retrieve your imputed genome at this address:\n",
 										 location_23andme,
+<<<<<<< HEAD
 										 "\n\nFor advanced users, it is also possible to download the <a href=",location_gen,">gen-format files</a> ",sep="")
+=======
+										 "\n\nFor advanced users, it is also possible to download the gen-format files from this location:\n",
+										 location_gen)
+>>>>>>> 079a02a9cb27dc22eb5f8589cdd2ae644527d946
 		
 		
 		#test commit
