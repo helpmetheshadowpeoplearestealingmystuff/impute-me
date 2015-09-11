@@ -333,6 +333,7 @@ summarize_imputation<-function(
 		#This step sometime fails for no apparent reason. Perhaps we just re-try it a few times if it does		
 		for(retry in 1:5){
 			if(!file.exists(paste("step_8_chr",chr,".gen.map",sep=""))){
+				print(paste("retrying step 8 command for chr ",chr,". This is time number ",retry))
 				system(cmd4)
 			}
 		}
