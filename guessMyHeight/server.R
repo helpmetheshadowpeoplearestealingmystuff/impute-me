@@ -151,9 +151,6 @@ shinyServer(function(input, output) {
 				y<-(real_height-ylim_female[1])/(ylim_female[2]-ylim_female[1])
 				points(x=gheight, y=real_height,cex=3, col="red",pch=19)
 			}
-			
-			
-			
 		}else{
 			abline(v=	gheight, lwd=2, col="red")
 			

@@ -260,6 +260,8 @@ run_imputation<-function(
 }
 
 
+
+
 summarize_imputation<-function(
 	runDir,
 	uniqueID,
@@ -326,8 +328,16 @@ summarize_imputation<-function(
 		#Convert to ped format
 		cmd4 <- paste(gtools," -G --g step_8_chr",chr,".gen --s ",sampleFile," --chr ",chr," --snp",sep="")
 		system(cmd4)
+
 		
-		#put in check-point and log dump for possible file output errors
+		#This step sometime fails for no apparent reason. Perhaps we just re-try it a few times if it does		
+		for(retry in 1:5){
+			if(!file.exists(paste("step_8_chr",chr,".gen.map",sep=""))){
+				system(cmd4)
+			}
+		}
+		
+		#otherwise we stop and write the log
 		if(!file.exists(paste("step_8_chr",chr,".gen.map",sep=""))){
 			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"failed_ped_generation",uniqueID,paste("chr",chr,sep=""))
 			m<-paste(m,collapse="\t")
