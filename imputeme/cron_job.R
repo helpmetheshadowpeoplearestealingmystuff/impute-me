@@ -89,6 +89,7 @@ for(folderToCheck in foldersToCheck){
 		
 		
 		#test
+		#test2
 		
 		mailingResult<-try(stop(),silent=TRUE)
 		while(class(mailingResult) == "try-error"){
