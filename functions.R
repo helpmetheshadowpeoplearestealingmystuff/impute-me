@@ -331,12 +331,28 @@ summarize_imputation<-function(
 		system(cmd4)
 
 		
-		#This step sometime fails for no apparent reason. Perhaps we just re-try it a few times if it does		
-		for(retry in 1:5){
-			if(!file.exists(paste("step_8_chr",chr,".gen.map",sep=""))){
-				print(paste("retrying step 8 command for chr ",chr,". This is time number ",retry))
-				system(cmd4)
+		#This step sometime fails for no apparent reason. Probably memory. Could we split it in subchunks?
+		#It's not looking nice, but at least it only needs to run in very low memory settings
+		if(!file.exists(paste("step_8_chr",chr,".gen.map",sep=""))){
+			print(paste("retrying step 8 command for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
+			cmd4_1 <- paste("split --verbose --lines 5000000 step_8_chr",chr,".gen step_8_extra_chr",chr,".gen",sep="")
+			system(cmd4_1)
+			
+			chunks<-grep(paste("step_8_extra_chr",chr,".gena[a-z]$",sep=""),list.files(runDir),value=T)
+			for(chunk in chunks){
+				cmd4_2 <- paste(gtools," -G --g ",chunk," --s ",sampleFile," --chr ",chr," --snp",sep="")
+				system(cmd4_2)
 			}
+			
+			cmd4_3<-paste("cat ",paste(paste(chunks,".map",sep=""),collapse=" ")," > step_8_chr",chr,".gen.map",sep="")
+			system(cmd4_3)
+			
+			for(chunk in chunks[2:length(chunks)]){
+				cmd4_4<-paste("cut -f 7- ",chunk,".ped > ",chunk,".cut.ped",sep="")
+				system(cmd4_4)
+			}
+			cmd4_5<-paste("paste ",chunk[1],".ped ",paste(paste(chunks[2:length(chunks)],".cut.ped",sep=""),collapse=" ")," > step_8_chr",chr,".gen.ped",sep="")
+			system(cmd4_5)
 		}
 		
 		#otherwise we stop and write the log
