@@ -261,7 +261,6 @@ run_imputation<-function(
 
 
 
-
 summarize_imputation<-function(
 	runDir,
 	uniqueID,
@@ -331,46 +330,36 @@ summarize_imputation<-function(
 		system(cmd4)
 		
 		
-		#This step sometime fails for no apparent reason. Probably memory. We therefore make a fork, where the
-		#the simple path keeps the chromosome together,but the more complicated step splits it up in chunks.
+		#reform to plink fam/bim/bed file			
+		cmd5 <- paste(plink," --file step_8_chr",chr,".gen --recode --transpose --noweb --out step_9_chr",chr,sep="")
+		system(cmd5)
+		
+		#re-order to 23andme format
+		cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,".tped  > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
+		system(cmd6)
+		
+		
+		#The step 8 and also 9 sometime fails for no apparent reason. Probably memory. We therefore make a checkup, where
+		#it is checked if the file actually exists and if not - a more complicated step splits it up in chunks.
 		#It's not looking nice, but at least the split-up only needs to run in very low memory settings
-		if(file.exists(paste("step_8_chr",chr,".gen.map",sep=""))){
-			
-			#reform to plink fam/bim/bed file			
-			cmd5 <- paste(plink," --file step_8_chr",chr,".gen --recode --transpose --noweb --out step_9_chr",chr,sep="")
-			system(cmd5)
-			
-			#re-order to 23andme format
-			cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,".tped  > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
-			system(cmd6)
-		}else{
-			#this is the case where the full chromosome failed. Instead we split it 5000000 SNP chunks
-			print(paste("retrying step 8 command for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
+		if(!file.exists(paste(sub("\\.gen$","",genFile),".23andme.txt",sep=""))){
+			print(paste("retrying step 8-9 command for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
 			cmd7 <- paste("split --verbose --lines 5000000 step_8_chr",chr,".gen step_8_extra_chr",chr,".gen",sep="")
 			system(cmd7)
-			
 			chunks<-grep(paste("step_8_extra_chr",chr,".gena[a-z]$",sep=""),list.files(runDir),value=T)
 			for(chunk in chunks){
 				ch<-sub("^.+\\.","",chunk)
-				
 				cmd8 <- paste(gtools," -G --g ",chunk," --s ",sampleFile," --chr ",chr," --snp",sep="")
 				system(cmd8)
-				
 				#reform to plink fam/bim/bed file			
 				cmd9 <- paste(plink," --file ",chunk," --recode --transpose --noweb --out step_9_chr",chr,"_",ch,sep="")
 				system(cmd9)
-				
 				#re-order to 23andme format
 				cmd10<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,"_",ch,".tped  > step_9_chr",chr,"_split_",ch,".txt",sep="")
 				system(cmd10)
-				
 			}
-			
 			cmd11<-paste("cat ",paste(paste("step_9_chr",chr,"_split_",sub("^.+\\.","",chunks),".txt",sep=""),collapse=" ")," > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
 			system(cmd11)			
-			
-			
-			
 		}
 	}
 	
