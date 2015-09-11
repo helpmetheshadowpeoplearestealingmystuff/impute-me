@@ -329,49 +329,51 @@ summarize_imputation<-function(
 		#Convert to ped format
 		cmd4 <- paste(gtools," -G --g step_8_chr",chr,".gen --s ",sampleFile," --chr ",chr," --snp",sep="")
 		system(cmd4)
-
 		
-		#This step sometime fails for no apparent reason. Probably memory. Could we split it in subchunks?
-		#It's not looking nice, but at least it only needs to run in very low memory settings
-		if(!file.exists(paste("step_8_chr",chr,".gen.map",sep=""))){
+		
+		#This step sometime fails for no apparent reason. Probably memory. We therefore make a fork, where the
+		#the simple path keeps the chromosome together,but the more complicated step splits it up in chunks.
+		#It's not looking nice, but at least the split-up only needs to run in very low memory settings
+		if(file.exists(paste("step_8_chr",chr,".gen.map",sep=""))){
+			
+			#reform to plink fam/bim/bed file			
+			cmd5 <- paste(plink," --file step_8_chr",chr,".gen --recode --transpose --noweb --out step_9_chr",chr,sep="")
+			system(cmd5)
+			
+			#re-order to 23andme format
+			cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,".tped  > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
+			system(cmd6)
+		}else{
+			#this is the case where the full chromosome failed. Instead we split it 5000000 SNP chunks
 			print(paste("retrying step 8 command for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
-			cmd4_1 <- paste("split --verbose --lines 5000000 step_8_chr",chr,".gen step_8_extra_chr",chr,".gen",sep="")
-			system(cmd4_1)
+			cmd7 <- paste("split --verbose --lines 5000000 step_8_chr",chr,".gen step_8_extra_chr",chr,".gen",sep="")
+			system(cmd7)
 			
 			chunks<-grep(paste("step_8_extra_chr",chr,".gena[a-z]$",sep=""),list.files(runDir),value=T)
 			for(chunk in chunks){
-				cmd4_2 <- paste(gtools," -G --g ",chunk," --s ",sampleFile," --chr ",chr," --snp",sep="")
-				system(cmd4_2)
+				ch<-sub("^.+\\.","",chunk)
+				
+				cmd8 <- paste(gtools," -G --g ",chunk," --s ",sampleFile," --chr ",chr," --snp",sep="")
+				system(cmd8)
+				
+				#reform to plink fam/bim/bed file			
+				cmd9 <- paste(plink," --file ",chunk," --recode --transpose --noweb --out step_9_chr",chr,"_",ch,sep="")
+				system(cmd9)
+				
+				#re-order to 23andme format
+				cmd10<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,"_",ch,".tped  > step_9_chr",chr,"_split_",ch,".txt",sep="")
+				system(cmd10)
+				
 			}
 			
-			cmd4_3<-paste("cat ",paste(paste(chunks,".map",sep=""),collapse=" ")," > step_8_chr",chr,".gen.map",sep="")
-			system(cmd4_3)
+			cmd11<-paste("cat ",paste(paste("step_9_chr",chr,"_split_",sub("^.+\\.","",chunks),".txt",sep=""),collapse=" ")," > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
+			system(cmd11)			
 			
-			for(chunk in chunks[2:length(chunks)]){
-				cmd4_4<-paste("cut -f 7- ",chunk,".ped > ",chunk,".cut.ped",sep="")
-				system(cmd4_4)
-			}
-			cmd4_5<-paste("paste ",chunk[1],".ped ",paste(paste(chunks[2:length(chunks)],".cut.ped",sep=""),collapse=" ")," > step_8_chr",chr,".gen.ped",sep="")
-			system(cmd4_5)
+			
+			
 		}
-		
-		#otherwise we stop and write the log
-		if(!file.exists(paste("step_8_chr",chr,".gen.map",sep=""))){
-			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"failed_ped_generation",uniqueID,paste("chr",chr,sep=""))
-			m<-paste(m,collapse="\t")
-			write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-			stop("For some reason there was no step_8 ped file generated")
-		}
-		
-		
-		#reform to plink fam/bim/bed file			
-		cmd5 <- paste(plink," --file step_8_chr",chr,".gen --recode --transpose --noweb --out step_9_chr",chr,sep="")
-		system(cmd5)
-		
-		#re-order to 23andme format
-		cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,".tped  > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
-		system(cmd6)
 	}
+	
 	
 	
 	#preparing destinationDir
