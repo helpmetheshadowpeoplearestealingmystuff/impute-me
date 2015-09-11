@@ -91,9 +91,9 @@ for(folderToCheck in foldersToCheck){
 		location_23andme <- paste(ip,"/",uniqueID,".23andme.zip",sep="")
 		location_gen <- paste(ip,"/",uniqueID,".gen.zip",sep="")
 		
-		message <- paste("We have completed imputation of your genome. For the next 24 hours you can retrieve your imputed genome at this address:\n",
+		message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br>",
 										 location_23andme,
-										 "\n\nFor advanced users, it is also possible to download the <a href=",location_gen,">gen-format files</a> ",sep="")
+										 "<br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format files</a></HTML> ",sep="")
 		
 		
 		
@@ -105,6 +105,7 @@ for(folderToCheck in foldersToCheck){
 																	 to = email,
 																	 subject = "Imputation is ready",
 																	 body = message,
+																	 html=T,
 																	 smtp = list(
 																	 	host.name = "smtp.gmail.com", 
 																	 	port = 465, 
