@@ -88,9 +88,7 @@ for(folderToCheck in foldersToCheck){
 										 location_gen)
 		
 		
-		#test
-		#test2
-		#tst3
+
 		
 		mailingResult<-try(stop(),silent=TRUE)
 		while(class(mailingResult) == "try-error"){
