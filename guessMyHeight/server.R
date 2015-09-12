@@ -130,12 +130,6 @@ shinyServer(function(input, output) {
 			)
 		
 	
-			#Plot the current users data
-		if(height_provided){
-			points(x=gheight, y=real_height,cex=3, col="black",bg=mainCol,pch=21)
-		}else{
-			abline(v=	gheight, lwd=2, col=mainCol)
-		}
 		
 		
 		#load previous users data
@@ -157,6 +151,16 @@ shinyServer(function(input, output) {
 			bg=mainCol,
 			pch=21
 		)
+		
+		
+		#Plot the current users data
+		if(height_provided){
+			points(x=gheight, y=real_height,cex=3, col="black",bg=mainCol,pch=21)
+		}else{
+			abline(v=	gheight, lwd=2, col=mainCol)
+		}
+		
+		
 		
 # 		male_heights<-heights_in_data[heights_in_data[,"gender"]%in%1,]
 # 		female_heights<-heights_in_data[heights_in_data[,"gender"]%in%2,]
