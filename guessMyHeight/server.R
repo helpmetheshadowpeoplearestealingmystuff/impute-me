@@ -12,7 +12,16 @@ shinyServer(function(input, output) {
 	
 	
 	output$text1 <- renderText({ 
-		paste("None")
+		if(input$goButton == 0){
+			return("")
+		}else if(input$goButton > 0) {
+			height_provided<-isolate(input$height_provided)
+			if(height_provided){
+				m<-"<HTML>Plot shows your height on the Y-axis and your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest heigh GWAS</A>. If smaller dots are show, they represent previous users of impute.me</HTML>"
+			}
+
+		}
+		return(m)
 	})
 	
 	
@@ -26,7 +35,6 @@ shinyServer(function(input, output) {
 		}
 		
 		uniqueID<-isolate(input$uniqueID)
-		print(nchar(uniqueID))
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
@@ -62,17 +70,18 @@ shinyServer(function(input, output) {
 			real_height<-NA	
 			real_age<-NA
 			
-			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
-			if("height"%in%colnames(pData)){
-				real_height<-pData[1,"height"]
-			}else{
-				real_height<-NA	
-			}
-			if("age"%in%colnames(pData)){
-				real_age<-pData[1,"age"]
-			}else{
-				real_age<-NA	
-			}
+			#these next 10 lines might not actually really be used, since we don't plot if real height is not provided?	
+# 			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+# 			if("height"%in%colnames(pData)){
+# 				real_height<-pData[1,"height"]
+# 			}else{
+# 				real_height<-NA	
+# 			}
+# 			if("age"%in%colnames(pData)){
+# 				real_age<-pData[1,"age"]
+# 			}else{
+# 				real_age<-NA	
+# 			}
 			
 		}
 		
@@ -95,15 +104,37 @@ shinyServer(function(input, output) {
 		write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 		
 		
+		#set gender stereotype colours
+		if(gender == 1){
+			backgroundCol<-colorRampPalette(colorRampPalette(c("white", "#08519C"))(10))
+			mainCol<-"dodgerblue"
+		}else{
+			backgroundCol<-colorRampPalette(colorRampPalette(c("white", "firebrick1"))(10))
+			mainCol<-"red"
+		}
+	
+			
 		#load database for comparison
-		#this is a file that could contain the GWAS heights
-		heights_pre_registered_file<-"/home/ubuntu/misc_files/height_registrered.txt"
-		heights_pre_registered<-read.table(heights_pre_registered_file,sep="\t",stringsAsFactors=F)
-		colnames(heights_pre_registered)<-c("time","id","gheight","height","age","gender","real")
-		heights_pre_registered<-heights_pre_registered[,c("height","gheight","gender")]
+		#this is a file that contains the GWAS heights
+		heights_pre_registered_file<-"/home/ubuntu/misc_files/background_heights.txt"
+		heights_pre_registered<-read.table(heights_pre_registered_file,sep="\t",stringsAsFactors=F,header=T)
+		smoothScatter(
+			x=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%gender,"gheight"],
+			y=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%gender,"real_height"],
+			xlab="genetic height",ylab="real height (cm)",
+			colramp=backgroundCol
+			)
+		
+	
+			#Plot the current users data
+		if(height_provided){
+			points(x=gheight, y=real_height,cex=3, col="black",bg=mainCol,pch=21)
+		}else{
+			abline(v=	gheight, lwd=2, col=mainCol)
+		}
 		
 		
-		#this loops over all pData files
+		#load previous users data
 		otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
 		heights_in_data<-data.frame(height=vector(),gheight=vector(),gender=vector(),stringsAsFactors=F)
 		for(otherPerson in otherPersons){
@@ -111,50 +142,57 @@ shinyServer(function(input, output) {
 			if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
 			otherPersonPdata<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F)
 			if(!all(c("gheight","height","gender")%in%colnames(otherPersonPdata)))next
+			if(otherPersonPdata[1,"gender"] != gender) next #only plot persons of the same gender
 			heights_in_data<-rbind(heights_in_data,otherPersonPdata[1,c("height","gheight","gender")])
 		}
-		
-		heights_in_data<-rbind(heights_in_data,heights_pre_registered)
-		
-		male_heights<-heights_in_data[heights_in_data[,"gender"]%in%1,]
-		female_heights<-heights_in_data[heights_in_data[,"gender"]%in%2,]
-		
-		xlim<-range(heights_in_data[,"gheight"],na.rm=T)
-		ylim_male <-range(male_heights[,"height"],na.rm=T)
-		ylim_female <-range(female_heights[,"height"],na.rm=T)
-		
-		par(mai=c(1.36,1.093333,1.093333,0.960000))
-		plot(NULL,xlim=xlim,ylim=c(0,1),xlab="genetic height",yaxt="n",ylab="")
-		axis(2,at=seq(0,1,0.1), labels=round(seq(from=ylim_male[1],to=ylim_male[2],length.out=11)))
-		axis(4,at=seq(0,1,0.1), labels=round(seq(from=ylim_female[1],to=ylim_female[2],length.out=11)))
-		
-		mtext("Male height (cm)",side=2,padj=-4)
+		#then plot them
 		points(
-			x=male_heights[,"gheight"], 
-			y=(male_heights[,"height"]-ylim_male[1])/(ylim_male[2]-ylim_male[1]),#unit scale 
-			col="dodgerblue", #gotta love stereotypes for clean communcation
-			pch=19
-		)
-		mtext("Female height (cm)",side=4,padj=4)
-		points(
-			x=female_heights[,"gheight"], 
-			y=(female_heights[,"height"]-ylim_female[1])/(ylim_female[2]-ylim_female[1]),#unit scale 
-			col="red", #gotta love stereotypes for clean communcation
-			pch=19
+			x=heights_in_data[,"gheight"],
+			y=heights_in_data[,"height"],
+			col="black",
+			bg=mainCol,
+			pch=21
 		)
 		
-		if(height_provided){
-			if(gender==1){
-				y<-(real_height-ylim_male[1])/(ylim_male[2]-ylim_male[1])
-				points(x=gheight, y=real_height,cex=3, col="dodgerblue",pch=19)
-			}else{
-				y<-(real_height-ylim_female[1])/(ylim_female[2]-ylim_female[1])
-				points(x=gheight, y=real_height,cex=3, col="red",pch=19)
-			}
-		}else{
-			abline(v=	gheight, lwd=2, col="red")
-			
-		}
+# 		male_heights<-heights_in_data[heights_in_data[,"gender"]%in%1,]
+# 		female_heights<-heights_in_data[heights_in_data[,"gender"]%in%2,]
+# 		
+# 		xlim<-range(heights_in_data[,"gheight"],na.rm=T)
+# 		ylim_male <-range(male_heights[,"height"],na.rm=T)
+# 		ylim_female <-range(female_heights[,"height"],na.rm=T)
+# 		
+# 		par(mai=c(1.36,1.093333,1.093333,0.960000))
+# 		plot(NULL,xlim=xlim,ylim=c(0,1),xlab="genetic height",yaxt="n",ylab="")
+# 		axis(2,at=seq(0,1,0.1), labels=round(seq(from=ylim_male[1],to=ylim_male[2],length.out=11)))
+# 		axis(4,at=seq(0,1,0.1), labels=round(seq(from=ylim_female[1],to=ylim_female[2],length.out=11)))
+# 		
+# 		mtext("Male height (cm)",side=2,padj=-4)
+# 		points(
+# 			x=male_heights[,"gheight"], 
+# 			y=(male_heights[,"height"]-ylim_male[1])/(ylim_male[2]-ylim_male[1]),#unit scale 
+# 			col="dodgerblue", #gotta love stereotypes for clean communcation
+# 			pch=19
+# 		)
+# 		mtext("Female height (cm)",side=4,padj=4)
+# 		points(
+# 			x=female_heights[,"gheight"], 
+# 			y=(female_heights[,"height"]-ylim_female[1])/(ylim_female[2]-ylim_female[1]),#unit scale 
+# 			col="red", #gotta love stereotypes for clean communcation
+# 			pch=19
+# 		)
+# 		
+# 		if(height_provided){
+# 			if(gender==1){
+# 				y<-(real_height-ylim_male[1])/(ylim_male[2]-ylim_male[1])
+# 				points(x=gheight, y=real_height,cex=3, col="dodgerblue",pch=19)
+# 			}else{
+# 				y<-(real_height-ylim_female[1])/(ylim_female[2]-ylim_female[1])
+# 				points(x=gheight, y=real_height,cex=3, col="red",pch=19)
+# 			}
+# 		}else{
+# 			abline(v=	gheight, lwd=2, col="red")
+# 			
+# 		}
 		
 	})
 	
