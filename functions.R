@@ -342,7 +342,15 @@ summarize_imputation<-function(
 		#The step 8 and also 9 sometime fails for no apparent reason. Probably memory. We therefore make a checkup, where
 		#it is checked if the file actually exists and if not - a more complicated step splits it up in chunks.
 		#It's not looking nice, but at least the split-up only needs to run in very low memory settings
-		if(!file.exists(paste(sub("\\.gen$","",genFile),".23andme.txt",sep=""))){
+		fileExists<-file.exists(paste(sub("\\.gen$","",genFile),".23andme.txt",sep=""))
+		if(fileExists){
+			size<-file.info(paste(sub("\\.gen$","",genFile),".23andme.txt",sep=""))["size"]
+		}else{
+			size<-0	
+		}
+		
+		#	arbitraly re-run if it's less than 100 bytes (fair to assume something was wrong then)
+		if(size < 100 ){
 			print(paste("retrying step 8-9 command for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
 			cmd7 <- paste("split --verbose --lines 5000000 step_8_chr",chr,".gen step_8_extra_chr",chr,".gen",sep="")
 			system(cmd7)
