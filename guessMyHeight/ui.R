@@ -22,7 +22,7 @@ shinyUI(fluidPage(
 			
 		),
 		mainPanel(
-			textOutput("text1"),
+			htmlOutput("text1"),
 			# textOutput("text2"),
 			plotOutput("plot1")
 			
