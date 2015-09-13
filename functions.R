@@ -325,32 +325,32 @@ summarize_imputation<-function(
 		cmd3 <- paste(gtools," -S --g ",genFile," --s ",sampleFile," --exclusion step_8_chr",chr,"_snps_to_exclude --og step_8_chr",chr,".gen",sep="")
 		system(cmd3)
 		
-		#Convert to ped format
-		cmd4 <- paste(gtools," -G --g step_8_chr",chr,".gen --s ",sampleFile," --chr ",chr," --snp",sep="")
-		system(cmd4)
-		
-		
-		#reform to plink fam/bim/bed file			
-		cmd5 <- paste(plink," --file step_8_chr",chr,".gen --recode --transpose --noweb --out step_9_chr",chr,sep="")
-		system(cmd5)
-		
-		#re-order to 23andme format
-		cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,".tped  > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
-		system(cmd6)
+# 		#Convert to ped format
+# 		cmd4 <- paste(gtools," -G --g step_8_chr",chr,".gen --s ",sampleFile," --chr ",chr," --snp",sep="")
+# 		system(cmd4)
+# 		
+# 		
+# 		#reform to plink fam/bim/bed file			
+# 		cmd5 <- paste(plink," --file step_8_chr",chr,".gen --recode --transpose --noweb --out step_9_chr",chr,sep="")
+# 		system(cmd5)
+# 		
+# 		#re-order to 23andme format
+# 		cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,".tped  > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
+# 		system(cmd6)
 		
 		
 		#The step 8 and also 9 sometime fails for no apparent reason. Probably memory. We therefore make a checkup, where
 		#it is checked if the file actually exists and if not - a more complicated step splits it up in chunks.
 		#It's not looking nice, but at least the split-up only needs to run in very low memory settings
-		fileExists<-file.exists(paste(sub("\\.gen$","",genFile),".23andme.txt",sep=""))
-		if(fileExists){
-			size<-file.info(paste(sub("\\.gen$","",genFile),".23andme.txt",sep=""))["size"]
-		}else{
-			size<-0	
-		}
+# 		fileExists<-file.exists(paste(sub("\\.gen$","",genFile),".23andme.txt",sep=""))
+# 		if(fileExists){
+# 			size<-file.info(paste(sub("\\.gen$","",genFile),".23andme.txt",sep=""))["size"]
+# 		}else{
+# 			size<-0	
+# 		}
 		
 		#	arbitraly re-run if it's less than 100 bytes (fair to assume something was wrong then)
-		if(size < 100 ){
+		if(TRUE ){
 			print(paste("retrying step 8-9 command for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
 			cmd7 <- paste("split --verbose --lines 5000000 step_8_chr",chr,".gen step_8_extra_chr",chr,".gen",sep="")
 			system(cmd7)
