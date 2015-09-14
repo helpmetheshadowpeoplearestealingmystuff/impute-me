@@ -1,6 +1,6 @@
 
 prepare_23andme_genome<-function(path, email, filename){
-	
+	library(tools)
 	
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
