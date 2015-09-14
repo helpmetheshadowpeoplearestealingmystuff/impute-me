@@ -67,6 +67,12 @@ for(folderToCheck in foldersToCheck){
 		close(f)
 		
 
+		#Run the genotype extraction routine
+		giant_sup_path<-"/srv/shiny-server/gene-surfer/guessMyHeight/GIANT_modified_table.txt"
+		giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
+		giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
+		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
+		
 		#making a link out to where the data can be retrieved		
 		file.symlink(
 			from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip",sep=""),
