@@ -28,7 +28,7 @@ q()
 y
 exit
 
-test
+
 
 #Then install shiny server
 sudo apt-get install gdebi-core
