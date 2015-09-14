@@ -3,8 +3,8 @@
 #Strategy - setup this to run every hour on the hour, 
 # 	
 # sudo crontab -u root -e
-# 50 * * * * Rscript /srv/shiny-server/gene-surfer/imputeme/cron_job.R > /var/log/cron_log
-
+# 50 * * * * Rscript /srv/shiny-server/gene-surfer/imputeme/cron_job.R > /var/log/cron_log 2>&1
+# 40 * * * * Rscript /srv/shiny-server/gene-surfer/imputeme/cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-cron.log 2>&1
 source("/srv/shiny-server/gene-surfer/imputeme/functions.R")
 
 
