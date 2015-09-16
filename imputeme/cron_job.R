@@ -73,6 +73,11 @@ for(folderToCheck in foldersToCheck){
 		giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
 		
+		
+		#change owner back to shiny. Don't know why in the world it becomes root - probably because it's a cron job. This could probably be changed in the future
+		cmd1<-paste("sudo chown -R shiny /home/ubuntu/data/",uniqueID,sep="")
+		system(cmd1)
+		
 		#making a link out to where the data can be retrieved		
 		file.symlink(
 			from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip",sep=""),

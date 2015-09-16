@@ -394,9 +394,6 @@ summarize_imputation<-function(
 	zip(zipFileOriginal, paste(uniqueID,"_raw_data.txt",sep=""), flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
 	file.rename(zipFileOriginal, paste(prepDestinationDir,basename(zipFileOriginal),sep="/"))
 	
-	#change owner back to shiny. Don't know why in the world it becomes root - probably because it's a cron job. This could probably be changed in the future
-	cmd12<-paste("sudo chown -R shiny ",prepDestinationDir,sep="")
-	system(cmd12)
 	
 	#return paths
 	returnPaths<-c(
