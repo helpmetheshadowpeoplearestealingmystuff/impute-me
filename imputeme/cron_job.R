@@ -71,7 +71,13 @@ for(folderToCheck in foldersToCheck){
 		giant_sup_path<-"/srv/shiny-server/gene-surfer/guessMyHeight/GIANT_modified_table.txt"
 		giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
 		giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
-		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
+		genotypes<-try(get_genotypes(uniqueID=uniqueID,request=giant_sup))
+		if(class(genotypes)=="try-error"){
+			#Notes on this error - this is just odd. It ran fine with the gtool-subsetting but seemed to crash on the ped conversion. For now we just re-run the process
+			unlist(paste("/home/ubuntu/data/",uniqueID,"/temp",sep=""),recursive=TRUE)
+			genotypes<-try(get_genotypes(uniqueID=uniqueID,request=giant_sup))
+			if(class(genotypes)=="try-error")stop("THis is a bug observed before")
+		}
 		
 		
 		#change owner back to shiny. Don't know why in the world it becomes root - probably because it's a cron job. This could probably be changed in the future
