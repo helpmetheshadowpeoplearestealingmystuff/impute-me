@@ -477,22 +477,31 @@ get_genotypes<-function(
 		
 		#looping over all chromosomes and extracting the relevant genotypes in each using gtools
 		for(chr in chromosomes){
-			gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
-			snpsHere<-rownames(requestDeNovo)[requestDeNovo[,"chr_name"]%in%chr]
-			write.table(snpsHere,file=paste(idTempFolder,"/snps_in_chr",chr,".txt",sep=""),quote=F,row.names=F,col.names=F)
-			cmd1<-paste(gtools," -S --g " , gen, " --s ",idTempFolder,"/samples.txt --inclusion ",idTempFolder,"/snps_in_chr",chr,".txt",sep="")
-			system(cmd1)
-			subsetFile<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset",sep="")
-			if(!file.exists(subsetFile)){
-				print(paste("Did not find any of the SNPs on chr",chr))	
-				next
+			
+			#This is wrapped in a try block, because it has previously failed
+			map<-ped<-try(stop(),silent=T)
+			tryCount<-1
+			while(class(ped) == "try-error" | class(map)=="try-error"){
+				print(paste("Getting ped and map file - try",tryCount))
+				gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
+				snpsHere<-rownames(requestDeNovo)[requestDeNovo[,"chr_name"]%in%chr]
+				write.table(snpsHere,file=paste(idTempFolder,"/snps_in_chr",chr,".txt",sep=""),quote=F,row.names=F,col.names=F)
+				cmd1<-paste(gtools," -S --g " , gen, " --s ",idTempFolder,"/samples.txt --inclusion ",idTempFolder,"/snps_in_chr",chr,".txt",sep="")
+				system(cmd1)
+				subsetFile<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset",sep="")
+				if(!file.exists(subsetFile)){
+					print(paste("Did not find any of the SNPs on chr",chr))	
+					next
+				}
+				cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold 0.7",sep="")
+				system(cmd2)
+				
+				
+				ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]][7:length(ped)])
+				map<-try(read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE))
+				tryCount<-tryCount+1
+				if(tryCount>5)stop(paste("Did too many tries for chr",chr))
 			}
-			cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold 0.7",sep="")
-			system(cmd2)
-			# ped<-read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep=""),stringsAsFactors=FALSE)
-			ped<-strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]]
-			ped<-ped[7:length(ped)]
-			map<-read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE)
 			
 			o<-data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F)
 			
