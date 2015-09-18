@@ -497,8 +497,9 @@ get_genotypes<-function(
 				system(cmd2)
 				
 				
-				ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]][7:length(ped)])
+				ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]])
 				map<-try(read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE))
+				if(class(ped)!="try-error")ped<-ped[7:length(ped)]
 				tryCount<-tryCount+1
 				if(tryCount>5)stop(paste("Did too many tries for chr",chr))
 			}
