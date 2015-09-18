@@ -99,7 +99,7 @@ shinyServer(function(input, output) {
 		
 		#get genotypes and calculate gheight
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
-		gheight<-get_gheight(genotypes=genotypes,betas=giant_sup)
+		gheight<-get_GRS(genotypes=genotypes,betas=giant_sup)
 		
 		
 		#also store this in the pData

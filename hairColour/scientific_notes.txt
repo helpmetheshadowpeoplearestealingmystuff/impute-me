@@ -1,0 +1,6 @@
+This image was downloaded (from some hair colour commercial)
+http://www.johnfrieda.co.uk/homecolour/precision-foam-colour/
+And then this tools was used (asking for 150 colours delta 5):
+http://www.coolphptools.com/color_extract
+This was saved as
+2015-09-18_possible_hair_colours.txt

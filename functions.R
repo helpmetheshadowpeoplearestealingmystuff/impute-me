@@ -549,7 +549,7 @@ get_genotypes<-function(
 
 
 
-get_gheight<-function(genotypes, betas){
+get_GRS<-function(genotypes, betas){
 	
 	if(class(genotypes)!="data.frame")stop(paste("genotypes must be data.frame, not",class(genotypes)))
 	if(!"genotype"%in%colnames(genotypes))stop(paste("genotypes must have a column genotypes"))
@@ -565,7 +565,7 @@ get_gheight<-function(genotypes, betas){
 	
 	
 	
-	gheight_score<-0
+	geneticRiskScore<-0
 	for(snp in rownames(betas)){
 		if(is.na(genotypes[snp,"genotype"]))next
 		genotype<-strsplit(genotypes[snp,],"/")[[1]]
@@ -573,8 +573,11 @@ get_gheight<-function(genotypes, betas){
 		non_effect_allele<-betas[snp,"non_effect_allele"]
 		all_alleles<-c(non_effect_allele,effect_allele)
 		beta<-betas[snp,"Beta"]	
-		gheight_score <- gheight_score + sum(genotype%in%effect_allele) * beta
+		geneticRiskScore <- geneticRiskScore + sum(genotype%in%effect_allele) * beta
 	}
-	return(gheight_score)
+	return(geneticRiskScore)
 	
 }
+
+
+
