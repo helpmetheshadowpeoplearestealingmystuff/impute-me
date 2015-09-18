@@ -12,7 +12,8 @@ shinyUI(fluidPage(
 			checkboxInput("col_provided", label ="Provide own hair colour", value = FALSE),
 			conditionalPanel(
 				condition = "input.col_provided",
-				sliderInput("blondeness", "Blondeness",min=0, max=100, value=50)
+				sliderInput("blondeness", "Blondeness",min=0, max=100, value=50),
+				sliderInput("redheadness", "Red-headness",min=0, max=100, value=0)
 			),
 			
 			actionButton("goButton","Run analysis"),
