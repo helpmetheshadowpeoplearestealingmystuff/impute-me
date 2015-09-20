@@ -57,13 +57,13 @@ shinyServer(function(input, output) {
 		
 		
 		
-		blondeness<-min(c(0,max(c(1,1 - (gColour_brown/12)))))
+		# blondeness<-min(c(0,max(c(1,1 - (gColour_brown/12)))))
 		
 		
-		blondeness<-min(c(0,max(c(1, (gColour_brown/50)))))
+		blondeness<-max(c(0,min(c(1, (gColour_brown/50)))))
 		
 		
-		redheadness<-min(c(0.1,max(c(1,1-(gColour_red/6)))))
+		redheadness<-max(c(0.1,min(c(1,1-(gColour_red/6)))))
 		
 		
 		m<-paste("Blondeness:",gColour_brown,"-",blondeness,"Readheadness:",gColour_red,"-",redheadness)
