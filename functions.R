@@ -478,11 +478,9 @@ get_genotypes<-function(
 		#looping over all chromosomes and extracting the relevant genotypes in each using gtools
 		for(chr in chromosomes){
 			
-			#This is wrapped in a try block, because it has previously failed
-			map<-ped<-try(stop(),silent=T)
-			tryCount<-1
-			while(class(ped) == "try-error" | class(map)=="try-error"){
-				print(paste("Getting ped and map file - try",tryCount))
+			#This is wrapped in a try block, because it has previously failed from unpredictble memory issues, so it's better to give a few tries
+			for(tryCount in 1:5){
+				print(paste("Getting ped and map file at chr",chr," - try",tryCount))
 				gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
 				snpsHere<-rownames(requestDeNovo)[requestDeNovo[,"chr_name"]%in%chr]
 				write.table(snpsHere,file=paste(idTempFolder,"/snps_in_chr",chr,".txt",sep=""),quote=F,row.names=F,col.names=F)
@@ -499,13 +497,15 @@ get_genotypes<-function(
 				
 				ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]])
 				map<-try(read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE))
-				if(class(ped)!="try-error")ped<-ped[7:length(ped)]
-				tryCount<-tryCount+1
-				if(tryCount>5)stop(paste("Did too many tries for chr",chr))
+				
+				if(class(ped)!="try-error" & class(map)!="try-error"){
+					ped<-ped[7:length(ped)]
+					o<-data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F)
+					break
+				}else{
+					o<-data.frame(row.names=snpsHere,genotype=rep(NA,length(snpsHere)),stringsAsFactors=F)
+				}
 			}
-			
-			o<-data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F)
-			
 			genotypes<-rbind(genotypes,o)
 		}
 		
