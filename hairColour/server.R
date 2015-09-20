@@ -26,8 +26,8 @@ shinyServer(function(input, output) {
 		
 		plot(NULL,xlim=c(0,1),ylim=c(0,1),xlab="blondeness",ylab="redheadness",xaxt="n",yaxt="n",frame=F)
 		
-		for(blonde in seq(0,1,0.005)){
-			for(red in seq(0,1,0.005)){	
+		for(blonde in seq(0,1,0.01)){
+			for(red in seq(0,1,0.01)){	
 				col<-hsv(
 					h=0.1 - (red/10),
 					s=min(c(1,1-blonde + (red/2))),
@@ -55,10 +55,15 @@ shinyServer(function(input, output) {
 		}
 		
 		
+		
+		
 		blondeness<-min(c(0,max(c(1,1 - (gColour_brown/12)))))
 		
 		redheadness<-min(c(0,max(c(1,1 - (gColour_red/6)))))
 		
+		
+		m<-paste("Blondeness:",gColour_brown,"-",blondeness,"Readheadness:",gColour_red,"-",redheadness)
+		mtext(m)
 		points(
 			x=blondeness,
 			y=redheadness,
@@ -68,12 +73,11 @@ shinyServer(function(input, output) {
 		
 		
 		
-		
 		if(col_provided){
 			points(
 				x=blondenessProvided/100,
 				y=redheadnessProvided/100,
-				pch=3,
+				pch=19,
 				col="blue"
 			)
 		}
