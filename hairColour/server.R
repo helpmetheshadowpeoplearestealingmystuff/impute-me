@@ -10,6 +10,9 @@ brown[,"col"]<-hsv(h=brown[,"h"],s=brown[,"s"],v=brown[,"v"])
 
 
 
+source("/srv/shiny-server/gene-surfer/functions.R")
+
+
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
 	
@@ -33,19 +36,22 @@ shinyServer(function(input, output) {
 			}
 		}
 		
-		# 		for(component in c("brown","red")){
-		# 			GRS_file<-read.table(paste("hairColour/2015-09-18_eriksson_2010_table1_",component,".txt",sep=""),sep="\t",header=T,stringsAsFactors=F,row.names=1)
-		# 			
-		# 			
-		# 			GRS_file<-brown_GRS_file
-		# 			GRS_file[,"Effect..Allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[1]})
-		# 			GRS_file[,"non_effect_allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[2]})
-		# 			
-		# 			#get genotypes and calculate gHairColour
-		# 			genotypes<-get_genotypes(uniqueID=uniqueID,request=GRS_file)
-		# 			gHairColour<-get_gHairColour(genotypes=genotypes,betas=GRS_file)
-		# 			assign(paste("gColour",component,sep="_"),gHairColour)
-		# 		}
+		for(component in c("brown","red")){
+			print(paste("Getting",component,"g-haircolour"))
+			GRS_file_name<-paste("/srv/shiny-server/gene-surfer/hairColour/2015-09-18_eriksson_2010_table1_",component,".txt",sep="")
+			# GRS_file_name<-paste("/home/ubuntu/misc_files/2015-09-18_eriksson_2010_table1_",component,".txt",sep="")
+			GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F,row.names=1)
+			
+			
+			GRS_file<-brown_GRS_file
+			GRS_file[,"Effect..Allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[1]})
+			GRS_file[,"non_effect_allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[2]})
+			
+			#get genotypes and calculate gHairColour
+			genotypes<-get_genotypes(uniqueID=uniqueID,request=GRS_file)
+			gHairColour<-get_GRS(genotypes=genotypes,betas=GRS_file)
+			assign(paste("gColour",component,sep="_"),gHairColour)
+		}
 		
 		
 		if(col_provided){
