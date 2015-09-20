@@ -67,10 +67,11 @@ shinyServer(function(input, output) {
 		points(
 			x=blondeness,
 			y=redheadness,
-			pch=3,
-			col="dodgerblue"
+			pch=21,
+			col="black",
+			bg=rgb(0.1, 0.1, 0.1, 0.5),
+			cex=3
 		)
-		
 		
 		
 		if(col_provided){
