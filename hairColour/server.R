@@ -18,8 +18,9 @@ shinyServer(function(input, output) {
 	
 	
 	output$haircol1 <- renderPlot({
-		blondenessProvided <- input$blondeness
-		redheadnessProvided <- input$redheadness
+		blondenessProvided <- isolate(input$blondeness)
+		redheadnessProvided <- isolate(input$redheadness)
+		uniqueID <- isolate(input$uniqueID)
 		col_provided <- isolate(input$col_provided)
 		input$goButton
 		

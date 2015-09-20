@@ -6,7 +6,7 @@ shinyUI(fluidPage(
 	sidebarLayout(
 		sidebarPanel(
 			
-			textInput(inputId="uniqueID", label = "Unique ID", value = "id_775007081"),
+			textInput(inputId="uniqueID", label = "Unique ID", value = "id_13896s006"),
 			# p("Then start imputation. This will take a while, but we'll mail you a download-link when ready"),
 			
 			checkboxInput("col_provided", label ="Provide own hair colour", value = FALSE),
