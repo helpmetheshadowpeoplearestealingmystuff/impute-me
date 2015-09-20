@@ -60,7 +60,7 @@ shinyServer(function(input, output) {
 		# blondeness<-min(c(0,max(c(1,1 - (gColour_brown/12)))))
 		
 		
-		blondeness<-max(c(0,min(c(1, (gColour_brown/50)))))
+		blondeness<-max(c(0,min(c(1, ((gColour_brown-8)/50)))))
 		
 		
 		redheadness<-max(c(0.1,min(c(1,1-(gColour_red/6)))))
@@ -72,9 +72,9 @@ shinyServer(function(input, output) {
 			x=blondeness,
 			y=redheadness,
 			pch=21,
-			col="black",
+			col="white",
 			bg=rgb(0.1, 0.1, 0.1, 0.5),
-			cex=3
+			cex=10
 		)
 		
 		
