@@ -65,18 +65,14 @@ shinyServer(function(input, output) {
 		
 		redheadness<-max(c(0.1,min(c(1,1-(gColour_red/6)))))
 		
-		
-		m<-paste("Blondeness:",gColour_brown,"-",blondeness,"Readheadness:",gColour_red,"-",redheadness)
+		# ?points
+		# m<-paste("Blondeness:",gColour_brown,"-",blondeness,"Readheadness:",gColour_red,"-",redheadness)
 		mtext(m)
-		points(
-			x=blondeness,
-			y=redheadness,
-			pch=21,
-			col="white",
-			bg=rgb(0.1, 0.1, 0.1, 0.5),
-			cex=10
-		)
-		
+		points(x=blondeness,y=redheadness,pch=1,col="white",cex=10,lwd=2)
+		points(x=blondeness,y=redheadness,pch=1,col="gray50",cex=9.8,lwd=2)
+		points(x=blondeness,y=redheadness,pch=1,col="black",cex=9.6,lwd=2)
+		points(x=blondeness,y=redheadness,pch=1,col="gray50",cex=9.4,lwd=2)
+		points(x=blondeness,y=redheadness,pch=1,col="white",cex=9.2,lwd=2)
 		
 		if(col_provided){
 			points(
