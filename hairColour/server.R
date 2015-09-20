@@ -38,12 +38,12 @@ shinyServer(function(input, output) {
 		
 		for(component in c("brown","red")){
 			print(paste("Getting",component,"g-haircolour"))
-			GRS_file_name<-paste("/srv/shiny-server/gene-surfer/hairColour/2015-09-18_eriksson_2010_table1_",component,".txt",sep="")
+			GRS_file_name<-paste("/srv/shiny-server/gene-surfer/hairColour/2015-09-18_eriksson_2010_tableS6_",component,".txt",sep="")
 			# GRS_file_name<-paste("/home/ubuntu/misc_files/2015-09-18_eriksson_2010_table1_",component,".txt",sep="")
 			GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F,row.names=1)
 			
 			
-			GRS_file<-brown_GRS_file
+			# GRS_file<-brown_GRS_file
 			GRS_file[,"Effect..Allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[1]})
 			GRS_file[,"non_effect_allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[2]})
 			
@@ -54,12 +54,22 @@ shinyServer(function(input, output) {
 		}
 		
 		
+		points(
+			x=1 - (gColour_brown/12),
+			y=gColour_red/6,
+			pch=3,
+			col="white"
+		)
+		
+		
+		
+		
 		if(col_provided){
 			points(
 				x=blondenessProvided/100,
 				y=redheadnessProvided/100,
 				pch=3,
-				col="white"
+				col="blue"
 			)
 		}
 		
