@@ -67,7 +67,7 @@ shinyServer(function(input, output) {
 		
 		# ?points
 		# m<-paste("Blondeness:",gColour_brown,"-",blondeness,"Readheadness:",gColour_red,"-",redheadness)
-		mtext(m)
+		# mtext(m)
 		points(x=blondeness,y=redheadness,pch=1,col="white",cex=10,lwd=2)
 		points(x=blondeness,y=redheadness,pch=1,col="gray50",cex=9.8,lwd=2)
 		points(x=blondeness,y=redheadness,pch=1,col="black",cex=9.6,lwd=2)
