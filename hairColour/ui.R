@@ -6,7 +6,7 @@ shinyUI(fluidPage(
 	sidebarLayout(
 		sidebarPanel(
 			
-			textInput(inputId="uniqueID", label = "Unique ID", value = "id_424142906"),
+			textInput(inputId="uniqueID", label = "Unique ID", value = "id_775007081"),
 			# p("Then start imputation. This will take a while, but we'll mail you a download-link when ready"),
 			
 			checkboxInput("col_provided", label ="Provide own hair colour", value = FALSE),
@@ -24,9 +24,9 @@ shinyUI(fluidPage(
 		),
 		mainPanel(
 			plotOutput("haircol1"),
-			htmlOutput("text1"),
+			htmlOutput("text1")
 			# textOutput("text2"),
-			plotOutput("haircol2")
+			# plotOutput("haircol2")
 			
 			
 		)
