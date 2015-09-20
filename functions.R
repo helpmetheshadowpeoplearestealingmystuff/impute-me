@@ -495,15 +495,15 @@ get_genotypes<-function(
 				system(cmd2)
 				
 				
-				ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]])
-				map<-try(read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE))
+				ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]],silent=T)
+				map<-try(read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE),silent=T)
 				
 				if(class(ped)!="try-error" & class(map)!="try-error"){
 					ped<-ped[7:length(ped)]
 					o<-data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F)
 					break
 				}else{
-					o<-data.frame(row.names=snpsHere,genotype=rep(NA,length(snpsHere)),stringsAsFactors=F)
+					o<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
 				}
 			}
 			genotypes<-rbind(genotypes,o)
