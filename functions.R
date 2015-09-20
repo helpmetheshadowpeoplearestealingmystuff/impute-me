@@ -500,13 +500,13 @@ get_genotypes<-function(
 				
 				if(class(ped)!="try-error" & class(map)!="try-error"){
 					ped<-ped[7:length(ped)]
-					o<-data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F)
+					genotypes_here<-data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F)
 					break
 				}else{
-					o<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
+					genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
 				}
 			}
-			genotypes<-rbind(genotypes,o)
+			genotypes<-rbind(genotypes,genotypes_here)
 		}
 		
 		genotypes[genotypes[,"genotype"]%in%"N/N","genotype"]<-NA

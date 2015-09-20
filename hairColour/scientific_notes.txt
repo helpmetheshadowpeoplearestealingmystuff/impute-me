@@ -13,3 +13,8 @@ From Eriksson 2010 table S6 the hair colour data is retrieved. This is well-form
 For red versus non-red hair color, participants were asked to “describe the amount of red in my hair (before I went gray, if I am gray now)” with available choices “No red at all,” “A tinge of red,” “Some red” and “A lot of red” which were coded from 0 to 3 in a linear regression."
 "
 So probably something like a 0-12 scale for brownness and 0-6 for redness (but we'll see)
+
+First tests:
+id_13896s006 TW: 13.7 / 4.44
+id_613z86871 LF: 37.2 / 4.44
+id_775007081 YM: 11.5 / 4.44
