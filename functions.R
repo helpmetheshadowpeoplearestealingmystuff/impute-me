@@ -19,12 +19,12 @@ prepare_23andme_genome<-function(path, email, filename){
 	#check for too many ongoing imputations
 	print("check for too many ongoing imputations")
 	s<-list.files("/home/ubuntu/imputations/")
-	if(length(grep("^imputation_folder",s)) >= 2){
+	if(length(grep("^imputation_folder",s)) >= 1){
 		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
 		m<-paste(m,collapse="\t")
 		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
 		
-		stop("More than 2 imputations are already in progress. Cannot start a new one")
+		stop("More than 1 imputations are already in progress. Cannot start a new one")
 	}
 	
 	
