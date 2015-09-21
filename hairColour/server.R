@@ -39,7 +39,7 @@ shinyServer(function(input, output) {
 		
 		for(component in c("brown","red")){
 			print(paste("Getting",component,"g-haircolour"))
-			GRS_file_name<-paste("/srv/shiny-server/gene-surfer/hairColour/2015-09-18_eriksson_2010_tableS6_",component,".txt",sep="")
+			GRS_file_name<-paste("/srv/shiny-server/gene-surfer/hairColour/2015-09-18_eriksson_2010_table_",component,".txt",sep="")
 			# GRS_file_name<-paste("/home/ubuntu/misc_files/2015-09-18_eriksson_2010_table1_",component,".txt",sep="")
 			GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F,row.names=1)
 			

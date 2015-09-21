@@ -591,20 +591,43 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 	
 	if(is.null(uniqueIDs)){
 		uniqueIDs<-list.files("/home/ubuntu/data/")
+	}else{
+		if(!class(uniqueIDs)!="character")stop("UniqueIDs must be of class character")
+		if(!all(file.exists(paste("/home/ubuntu/data/",uniqueIDs,sep=""))))stop("Not all UniqueIDs given were found")
 	}
+	
+	all_SNPs<-data.frame(SNP=vector(),chr_name=vector(),stringsAsFactors = F)		
+	for(module in list.files("/srv/shiny-server/gene-surfer",full.names=T)){
+		if(!file.info(module)["isdir"])next
+		if("SNPs_to_analyze.txt" %in% list.files(module)){
+			SNPs_to_analyze<-read.table(paste(module,"/SNPs_to_analyze.txt",sep=""),sep="\t",stringsAsFactors=F,header=T)
+			if(!all(c("SNP","chr_name")%in%colnames(SNPs_to_analyze)))stop(paste("In",module,"a SNPs_to_analyze file was found that lacked the SNP and chr_name column"))
+			SNPs_to_analyze[,"chr_name"]<-as.character(SNPs_to_analyze[,"chr_name"])
+			if(!all(SNPs_to_analyze[,"chr_name"]%in%c(1:22,"X")))stop(paste("In",module,"a SNPs_to_analyze had a chr_name column that contained something else than 1:22 and X"))
+			all_SNPs<-rbind(all_SNPs,SNPs_to_analyze[,c("SNP","chr_name")])
 			
-	for(folder in paste("/home/ubuntu/data/",uniqueIDs,sep="")){
-		
-		
-		
+		}
 	}
 	
-	#Run the genotype extraction routine
-	giant_sup_path<-"/srv/shiny-server/gene-surfer/guessMyHeight/GIANT_modified_table.txt"
-	giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
-	giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
-	genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
-	# 		
+	#an extra check for non-discrepant chr info
+	if(any(duplicated(all_SNPs[,"SNP"]))){
+		duplicates<-all_SNPs[duplicated(all_SNPs[,"SNP"]),"SNP"]
+		for(duplicate in duplicates){
+			if(length(unique(all_SNPs[all_SNPs[,"SNP"]%in%duplicate,"chr_name"]))!=1)stop(paste("Found a multi-entry SNP",duplicate,"with discrepant chr info"))
+		}
+		all_SNPs<-all_SNPs[!duplicated(all_SNPs[,"SNP"]),]
+	}
 	
+	rownames(all_SNPs)<-all_SNPs[,"SNP"]
 	
+	for(uniqueID in uniqueIDs){
+		print(paste("Checking all requested SNPs from",uniqueID))	
+		if(file.exists(paste("/home/ubuntu/data/",uniqueID,"/temp",sep=""))){
+			print(paste("Oddly",uniqueID,"already had a temp folder. This could happen by chance though"))
+			next
+		}
+		genotypes<-get_genotypes(uniqueID=uniqueID,request=all_SNPs)
+		cmd1 <-	paste("sudo chown shiny /home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.gz")
+		system(cmd1)
+	}
 }

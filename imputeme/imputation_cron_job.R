@@ -2,13 +2,14 @@
 # 
 #Strategy - setup this to run every hour on the hour, 
 # 	
-# sudo crontab -u root -e
-# 50 * * * * Rscript /srv/shiny-server/gene-surfer/imputeme/cron_job.R > /var/log/cron_log 2>&1
-# 40 * * * * Rscript /srv/shiny-server/gene-surfer/imputeme/cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-cron.log 2>&1
+#Don't run it as root. THis is better
+# sudo crontab -u shiny -e
+# 50 * * * * Rscript /srv/shiny-server/gene-surfer/imputeme/imputation_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
+
+
+
+
 source("/srv/shiny-server/gene-surfer/functions.R")
-
-
-
 library("mailR")
 library("rJava")
 library("tools")
@@ -81,8 +82,8 @@ for(folderToCheck in foldersToCheck){
 		
 		
 		#change owner back to shiny. Don't know why in the world it becomes root - probably because it's a cron job. This could probably be changed in the future
-		cmd1<-paste("sudo chown -R shiny /home/ubuntu/data/",uniqueID,sep="")
-		system(cmd1)
+		# cmd1<-paste("sudo chown -R shiny /home/ubuntu/data/",uniqueID,sep="")
+		# system(cmd1)
 		
 		#making a link out to where the data can be retrieved		
 		file.symlink(
