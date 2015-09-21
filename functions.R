@@ -443,6 +443,7 @@ get_genotypes<-function(
 	if(class(request)!="data.frame")stop(paste("request must be data.frame, not",class(request)))
 	if(!"chr_name"%in%colnames(request))stop("request object must have a column 'chr_name'")
 	if("already_exists"%in%colnames(request))print("request object had a column 'already_exists', this will be overwritten")
+	if(!any(substr(rownames(request),1,2)%in%"rs"))stop("Not a single rs id was found among the rownames of the request. Really?")
 	
 	
 	#checking existence of already cached genotypes
