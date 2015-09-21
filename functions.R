@@ -622,11 +622,16 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 	
 	for(uniqueID in uniqueIDs){
 		print(paste("Checking all requested SNPs from",uniqueID))	
-		if(file.exists(paste("/home/ubuntu/data/",uniqueID,"/temp",sep=""))){
-			print(paste("Oddly",uniqueID,"already had a temp folder. This could happen by chance though"))
-			next
+		
+		genotypes<-try(get_genotypes(uniqueID=uniqueID,request=all_SNPs))
+		if(class(genotypes)=="try-error"){
+			if(file.exists(paste("/home/ubuntu/data/",uniqueID,"/temp",sep=""))){
+				next
+			}else{
+				print("Some other error happened in the extraction crawler, but probably no cause for alarm:")
+				print(genotypes)
+			}
 		}
-		genotypes<-get_genotypes(uniqueID=uniqueID,request=all_SNPs)
 # 		cmd1 <-	paste("sudo chown shiny /home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.gz")
 # 		system(cmd1)
 	}
