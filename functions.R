@@ -593,7 +593,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 	if(is.null(uniqueIDs)){
 		uniqueIDs<-list.files("/home/ubuntu/data/")
 	}else{
-		if(!class(uniqueIDs)!="character")stop("UniqueIDs must be of class character")
+		if(class(uniqueIDs)!="character")stop("UniqueIDs must be of class character")
 		if(!all(file.exists(paste("/home/ubuntu/data/",uniqueIDs,sep=""))))stop("Not all UniqueIDs given were found")
 	}
 	
@@ -618,7 +618,6 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 		}
 		all_SNPs<-all_SNPs[!duplicated(all_SNPs[,"SNP"]),]
 	}
-	
 	rownames(all_SNPs)<-all_SNPs[,"SNP"]
 	
 	for(uniqueID in uniqueIDs){
@@ -628,7 +627,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 			next
 		}
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=all_SNPs)
-		cmd1 <-	paste("sudo chown shiny /home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.gz")
-		system(cmd1)
+# 		cmd1 <-	paste("sudo chown shiny /home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.gz")
+# 		system(cmd1)
 	}
 }
