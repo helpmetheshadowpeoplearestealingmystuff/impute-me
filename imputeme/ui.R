@@ -7,7 +7,7 @@ shinyUI(fluidPage(
 		sidebarPanel(
 			fileInput("largeFile", "Upload 23andme data", multiple = FALSE, accept = NULL),
 			textInput(inputId="email", label = "Email", value = "lassefolkersen@gmail.com"),
-			a("Terms of use", href="imputeme/terms_of_use.html"),
+			a("Terms of use", href="terms_of_use.html"),
 			# p("Then start imputation. This will take a while, but we'll mail you a download-link when ready"),
 			actionButton("goButton","Start imputation"),
 			width=4
