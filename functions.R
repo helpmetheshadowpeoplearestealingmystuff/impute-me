@@ -581,3 +581,30 @@ get_GRS<-function(genotypes, betas){
 
 
 
+
+
+
+
+
+crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
+	#A function that will crawl all data directories to extract all currently worked on SNPs
+	
+	if(is.null(uniqueIDs)){
+		uniqueIDs<-list.files("/home/ubuntu/data/")
+	}
+			
+	for(folder in paste("/home/ubuntu/data/",uniqueIDs,sep="")){
+		
+		
+		
+	}
+	
+	#Run the genotype extraction routine
+	giant_sup_path<-"/srv/shiny-server/gene-surfer/guessMyHeight/GIANT_modified_table.txt"
+	giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
+	giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
+	genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
+	# 		
+	
+	
+}

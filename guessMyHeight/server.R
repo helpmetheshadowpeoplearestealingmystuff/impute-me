@@ -93,9 +93,9 @@ shinyServer(function(input, output) {
 		gender<-read.table(pDataFile,header=T,stringsAsFactors=F)[1,"gender"]
 		
 		
-		giant_sup_path<-"/srv/shiny-server/gene-surfer/guessMyHeight/GIANT_modified_table.txt"
+		giant_sup_path<-"/srv/shiny-server/gene-surfer/guessMyHeight/SNPs_to_analyze.txt"
 		giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
-		giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
+
 		
 		#get genotypes and calculate gheight
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)

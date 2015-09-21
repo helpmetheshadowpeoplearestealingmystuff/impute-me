@@ -68,11 +68,9 @@ for(folderToCheck in foldersToCheck){
 		
 
 		#Run the genotype extraction routine
-		giant_sup_path<-"/srv/shiny-server/gene-surfer/guessMyHeight/GIANT_modified_table.txt"
-		giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
-		giant_sup[,"chr_name"]<-giant_sup[,"Chr"]
-		genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
-# 		
+	 	crawl_for_snps_to_analyze(uniqueIDs=uniqueID)
+		
+		
 # 		genotypes<-try(get_genotypes(uniqueID=uniqueID,request=giant_sup))
 # 		if(class(genotypes)=="try-error"){
 # 			#Notes on this error - this is just odd. It ran fine with the gtool-subsetting but seemed to crash on the ped conversion. For now we just re-run the process
