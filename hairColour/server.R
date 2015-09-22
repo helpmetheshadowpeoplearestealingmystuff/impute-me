@@ -37,16 +37,15 @@ shinyServer(function(input, output) {
 			}
 		}
 		
+		GRS_file_name<-"/srv/shiny-server/gene-surfer/hairColour/SNPs_to_analyze.txt"
+		GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F)
+		
+		
+		
 		for(component in c("brown","red")){
 			print(paste("Getting",component,"g-haircolour"))
-			GRS_file_name<-paste("/srv/shiny-server/gene-surfer/hairColour/2015-09-18_eriksson_2010_table_",component,".txt",sep="")
-			# GRS_file_name<-paste("/home/ubuntu/misc_files/2015-09-18_eriksson_2010_table1_",component,".txt",sep="")
-			GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F,row.names=1)
-			
-			
-			# GRS_file<-brown_GRS_file
-			GRS_file[,"effect_allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[1]})
-			GRS_file[,"non_effect_allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[2]})
+			GRS_file_here<-GRS_file[GRS_file[,"Category"]%in%component,]
+			rownames(GRS_file_here)<-GRS_file_here[,"SNP"]
 			
 			#get genotypes and calculate gHairColour
 			genotypes<-get_genotypes(uniqueID=uniqueID,request=GRS_file)
@@ -55,9 +54,6 @@ shinyServer(function(input, output) {
 		}
 		
 		
-		
-		
-		# blondeness<-min(c(0,max(c(1,1 - (gColour_brown/12)))))
 		
 		
 		blondeness<-max(c(0,min(c(1, ((gColour_brown-8)/50)))))
