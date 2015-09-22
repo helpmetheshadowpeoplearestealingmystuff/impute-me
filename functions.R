@@ -552,6 +552,7 @@ get_genotypes<-function(
 
 
 
+
 get_GRS<-function(genotypes, betas){
 	
 	if(class(genotypes)!="data.frame")stop(paste("genotypes must be data.frame, not",class(genotypes)))
