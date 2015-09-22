@@ -48,8 +48,8 @@ shinyServer(function(input, output) {
 			rownames(GRS_file_here)<-GRS_file_here[,"SNP"]
 			
 			#get genotypes and calculate gHairColour
-			genotypes<-get_genotypes(uniqueID=uniqueID,request=GRS_file)
-			gHairColour<-get_GRS(genotypes=genotypes,betas=GRS_file)
+			genotypes<-get_genotypes(uniqueID=uniqueID,request=GRS_file_here)
+			gHairColour<-get_GRS(genotypes=genotypes,betas=GRS_file_here)
 			assign(paste("gColour",component,sep="_"),gHairColour)
 		}
 		
