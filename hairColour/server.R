@@ -45,7 +45,7 @@ shinyServer(function(input, output) {
 			
 			
 			# GRS_file<-brown_GRS_file
-			GRS_file[,"Effect..Allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[1]})
+			GRS_file[,"effect_allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[1]})
 			GRS_file[,"non_effect_allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[2]})
 			
 			#get genotypes and calculate gHairColour
@@ -87,40 +87,5 @@ shinyServer(function(input, output) {
 	
 	
 	
-	
-# 	output$haircol2 <- renderPlot({
-# 		blondeness <- isolate(input$blondeness)
-# 		col_provided <- isolate(input$col_provided)
-# 		input$goButton
-# 		
-# 		plot(NULL,ylim=c(0,100),xlim=c(0,100),ylab="Real hair colour",xlab="Genetic hair colour",frame=F)
-# 		# 		for(i in 1:100){
-# 		# 			symbols(100-(i),50,rectangles=matrix(c(1,100),ncol=2),fg=col[i,"col"],bg=col[i,"col"],add=TRUE,inches=F)	
-# 		# 		}
-# 		# symbols(50,50,rectangles=matrix(c(100,100),ncol=2),fg="black",bg=NA,add=T,inches=F)
-# 		if(col_provided){
-# 			abline(h=blondeness,lwd=2,col="grey30")
-# 		}
-# 		
-# 		
-# 		# 		
-# 		# 		for(component in c("brown","red")){
-# 		# 			GRS_file<-read.table(paste("hairColour/2015-09-18_eriksson_2010_table1_",component,".txt",sep=""),sep="\t",header=T,stringsAsFactors=F,row.names=1)
-# 		# 			
-# 		# 			
-# 		# 			GRS_file<-brown_GRS_file
-# 		# 			GRS_file[,"Effect..Allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[1]})
-# 		# 			GRS_file[,"non_effect_allele"]<-sapply(strsplit(GRS_file[,"Alleles"],"/"),function(x){x[2]})
-# 		# 			
-# 		# 			#get genotypes and calculate gHairColour
-# 		# 			genotypes<-get_genotypes(uniqueID=uniqueID,request=GRS_file)
-# 		# 			gHairColour<-get_gHairColour(genotypes=genotypes,betas=GRS_file)
-# 		# 			assign(paste("gColour",component,sep="_"),gHairColour)
-# 		# 		}
-# 		
-# 		#Still do to -- somehow get the gHairCOlour plotted
-# 		
-# 		
-# 	})
 })
 

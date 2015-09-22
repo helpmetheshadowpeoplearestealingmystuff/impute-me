@@ -23,7 +23,7 @@ giant_sup[,"ensembl_alleles"]<-query[rownames(giant_sup),"allele"]
 
 #get the non-effect allele
 for(snp in rownames(giant_sup)){
-	effect_allele<-giant_sup[snp,"Effect..Allele"]
+	effect_allele<-giant_sup[snp,"effect_allele"]
 	alleles<-strsplit(giant_sup[snp,"ensembl_alleles"],"/")[[1]]
 	if(length(alleles)==2){
 		giant_sup[snp,"non_effect_allele"]<-alleles[!alleles%in%effect_allele	]
@@ -67,7 +67,7 @@ gheight_score<-0
 for(snp in rownames(giant_sup)){
 	if(is.na(genotypes[snp,]))next
 	genotype<-strsplit(genotypes[snp,],"/")[[1]]
-	effect_allele<-giant_sup[snp,"Effect..Allele"]
+	effect_allele<-giant_sup[snp,"effect_allele"]
 	non_effect_allele<-giant_sup[snp,"non_effect_allele"]
 	all_alleles<-c(non_effect_allele,effect_allele)
 	beta<-giant_sup[snp,"Beta"]	
