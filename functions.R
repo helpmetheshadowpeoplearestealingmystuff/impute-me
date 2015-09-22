@@ -432,7 +432,6 @@ get_genotypes<-function(
 	#creating a temp folder to use
 	idTempFolder<-paste("/home/ubuntu/data",uniqueID,"temp",sep="/")
 	if(file.exists(idTempFolder))stop(paste("Temp folder exists, this could indicate that",uniqueID,"is already worked on. Wait a little, or write administrators if you think this is a mistake"))
-	dir.create(idTempFolder)
 	
 	
 	#checking other variables
@@ -458,6 +457,7 @@ get_genotypes<-function(
 	
 	#If there are anything novel, extract it from zip (takes a long time)
 	if(nrow(requestDeNovo)>0){
+		dir.create(idTempFolder)
 		chromosomes<-unique(requestDeNovo[,"chr_name"])
 		contents<-unzip(genZipFile,list=T)
 		
@@ -513,6 +513,9 @@ get_genotypes<-function(
 		genotypes[genotypes[,"genotype"]%in%"N/N","genotype"]<-NA
 		stillMissing<-rownames(requestDeNovo)[!rownames(requestDeNovo)%in%rownames(genotypes)]
 		genotypes<-rbind(genotypes,data.frame(row.names=stillMissing,genotype=rep(NA,length(stillMissing),stringsAsFactors=F)))
+		
+		#removing temporary folder
+		unlink(idTempFolder,recursive=T)
 	}
 	
 	#merge with cachedGenotypes
@@ -529,8 +532,7 @@ get_genotypes<-function(
 	}
 	
 	
-	#removing temporary folder
-	unlink(idTempFolder,recursive=T)
+	
 	
 	return(genotypes)
 	
