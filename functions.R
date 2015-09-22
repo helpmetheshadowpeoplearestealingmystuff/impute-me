@@ -572,7 +572,7 @@ get_GRS<-function(genotypes, betas){
 	for(snp in rownames(betas)){
 		if(is.na(genotypes[snp,"genotype"]))next
 		genotype<-strsplit(genotypes[snp,],"/")[[1]]
-		effect_allele<-betas[snp,"Effect..Allele"]
+		effect_allele<-betas[snp,"effect_allele"]
 		non_effect_allele<-betas[snp,"non_effect_allele"]
 		all_alleles<-c(non_effect_allele,effect_allele)
 		beta<-betas[snp,"Beta"]	
