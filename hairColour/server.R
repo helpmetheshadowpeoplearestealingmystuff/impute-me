@@ -1,82 +1,105 @@
 library("shiny")
 
 
-brown<-data.frame(
-	h = rep(0.1, 100),
-	s=seq(0,1,length.out=100),
-	v=seq(1,0,length.out=100)
-)
-brown[,"col"]<-hsv(h=brown[,"h"],s=brown[,"s"],v=brown[,"v"])
 
-
-
-source("/srv/shiny-server/gene-surfer/functions.R")
-
+#create the image map
+edge<-20
+col<-y<-x<-vector()
+for(red in seq(0,1,1/edge)){	
+	for(blonde in seq(0,1,1/edge)){
+		col<-c(col,hsv(h=0.1 - (red/10),s=min(c(1,1-blonde + (red/2))),v=blonde))
+		x<-c(x,blonde)
+		y<-c(y,red)
+	}
+}
+d<-data.frame(x=x,y=y,col=col,stringsAsFactors=F)
+d[,"index"]<-d[,"x"]*edge + d[,"y"]*edge*(1+edge)
+z<-matrix(d[,"index"],ncol=edge+1,nrow=edge+1,byrow=F)
+x<-y<-seq(0,1,1/edge)
 
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
 	
 	
 	output$haircol1 <- renderPlot({
-		blondenessProvided <- isolate(input$blondeness)
-		redheadnessProvided <- isolate(input$redheadness)
+
 		uniqueID <- isolate(input$uniqueID)
 		col_provided <- isolate(input$col_provided)
 		input$goButton
 		
-		plot(NULL,xlim=c(0,1),ylim=c(0,1),xlab="blondeness",ylab="redheadness",xaxt="n",yaxt="n",frame=F)
-		
-		for(blonde in seq(0,1,0.01)){
-			for(red in seq(0,1,0.01)){	
-				col<-hsv(
-					h=0.1 - (red/10),
-					s=min(c(1,1-blonde + (red/2))),
-					v=blonde 
-				)
-				points(x=blonde,y=red,col=col,pch=19,cex=2)
-			}
+		#Check unique ID
+		uniqueID<-isolate(input$uniqueID)
+		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
+		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
+		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+			Sys.sleep(3) #wait a little to prevent raw-force fishing	
+			stop("Did not find a user with this id")
 		}
 		
+		
+		
+		if(col_provided){
+			real_brown <- isolate(input$blondeness)/100
+			real_red <- isolate(input$redheadness)/100
+			
+			#also store this in the pData
+			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+			pData[,"red_hair"]<-real_red
+			pData[,"brown_hair"]<-real_brown
+			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
+		}else{
+			real_brown<-NA	
+			real_red<-NA
+		}
+		
+		
+		
+		#paint the image map
+		image(x=x, y=y, z=z, col = d[,"col"], axes = FALSE,xlab="",ylab="")
+		
+		
+		#get the gColour
 		GRS_file_name<-"/srv/shiny-server/gene-surfer/hairColour/SNPs_to_analyze.txt"
 		GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F)
-		
-		
-		
 		for(component in c("brown","red")){
 			print(paste("Getting",component,"g-haircolour"))
 			GRS_file_here<-GRS_file[GRS_file[,"Category"]%in%component,]
 			rownames(GRS_file_here)<-GRS_file_here[,"SNP"]
-			
 			#get genotypes and calculate gHairColour
 			genotypes<-get_genotypes(uniqueID=uniqueID,request=GRS_file_here)
 			gHairColour<-get_GRS(genotypes=genotypes,betas=GRS_file_here)
 			assign(paste("gColour",component,sep="_"),gHairColour)
 		}
 		
+		#also store this in the pData
+		pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+		pData[,"g_red_hair"]<-gColour_red
+		pData[,"g_brown_hair"]<-gColour_brown
+		write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 		
 		
 		
-		blondeness<-max(c(0,min(c(1, ((gColour_brown-8)/50)))))
+		#Calibrating and plotting
+		brown_calibrate<-function(x){max(c(0,min(c(1, ((x-8)/50)))))}
+		red_calibrate<-function(x){max(c(0.1,min(c(1,1-(x/6)))))}
 		
+		gColour_brown<-brown_calibrate(gColour_brown)
+		gColour_red<-red_calibrate(gColour_red)
 		
-		redheadness<-max(c(0.1,min(c(1,1-(gColour_red/6)))))
+
+		points(x=blondeness,y=redheadness,pch=1,col="white",cex=10,lwd=1)
+		points(x=blondeness,y=redheadness,pch=1,col="gray50",cex=9.8,lwd=1)
+		points(x=blondeness,y=redheadness,pch=1,col="black",cex=9.6,lwd=1)
+		points(x=blondeness,y=redheadness,pch=1,col="gray50",cex=9.4,lwd=1)
+		points(x=blondeness,y=redheadness,pch=1,col="white",cex=9.2,lwd=1)
 		
-		# ?points
-		# m<-paste("Blondeness:",gColour_brown,"-",blondeness,"Readheadness:",gColour_red,"-",redheadness)
-		# mtext(m)
-		points(x=blondeness,y=redheadness,pch=1,col="white",cex=10,lwd=2)
-		points(x=blondeness,y=redheadness,pch=1,col="gray50",cex=9.8,lwd=2)
-		points(x=blondeness,y=redheadness,pch=1,col="black",cex=9.6,lwd=2)
-		points(x=blondeness,y=redheadness,pch=1,col="gray50",cex=9.4,lwd=2)
-		points(x=blondeness,y=redheadness,pch=1,col="white",cex=9.2,lwd=2)
-		
-		if(col_provided){
-			points(
-				x=blondenessProvided/100,
-				y=redheadnessProvided/100,
-				pch=19,
-				col="blue"
-			)
+
+			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="white",cex=10,lwd=1)
+			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="gray50",cex=9.8,lwd=1)
+			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="black",cex=9.6,lwd=1)
+			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="gray50",cex=9.4,lwd=1)
+			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="white",cex=9.2,lwd=1)
 		}
 		
 	})#,width=400,height=200)
