@@ -23,8 +23,8 @@ shinyUI(fluidPage(
 			
 		),
 		mainPanel(
-			plotOutput("haircol1"),
-			htmlOutput("text1")
+			htmlOutput("text1"),
+			plotOutput("haircol1")
 			# textOutput("text2"),
 			# plotOutput("haircol2")
 			
