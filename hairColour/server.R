@@ -85,8 +85,8 @@ shinyServer(function(input, output) {
 		brown_calibrate<-function(x){max(c(0,min(c(1, ((x-8)/50)))))}
 		red_calibrate<-function(x){max(c(0.1,min(c(1,1-(x/6)))))}
 		
-		gColour_brown<-brown_calibrate(gColour_brown)
-		gColour_red<-red_calibrate(gColour_red)
+		blondeness<-brown_calibrate(gColour_brown)
+		redheadness<-red_calibrate(gColour_red)
 		
 
 		points(x=blondeness,y=redheadness,pch=1,col="white",cex=10,lwd=1)
