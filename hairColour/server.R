@@ -94,6 +94,7 @@ shinyServer(function(input, output) {
 		points(x=blondeness,y=redheadness,pch=1,col="gray50",cex=9.4,lwd=1)
 		points(x=blondeness,y=redheadness,pch=1,col="white",cex=9.2,lwd=1)
 		
+		if(col_provided){
 
 			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="white",cex=10,lwd=1)
 			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="gray50",cex=9.8,lwd=1)
