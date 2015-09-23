@@ -41,13 +41,13 @@ shinyServer(function(input, output) {
 		
 		
 		if(col_provided){
-			real_brown <- isolate(input$blondeness)/100
+			real_blonde <- isolate(input$blondeness)/100
 			real_red <- isolate(input$redheadness)/100
 			
 			#also store this in the pData
 			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
 			pData[,"red_hair"]<-real_red
-			pData[,"brown_hair"]<-real_brown
+			pData[,"blonde_hair"]<-real_blonde
 			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 		}else{
 			real_brown<-NA	
@@ -97,11 +97,11 @@ shinyServer(function(input, output) {
 		
 		if(col_provided){
 
-			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="white",cex=10,lwd=1)
-			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="gray50",cex=9.8,lwd=1)
-			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="black",cex=9.6,lwd=1)
-			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="gray50",cex=9.4,lwd=1)
-			points(x=blondenessProvided,y=redheadnessProvided,pch=1,col="white",cex=9.2,lwd=1)
+			points(x=real_blonde,y=real_red,pch=1,col="white",cex=10,lwd=1)
+			points(x=real_blonde,y=real_red,pch=1,col="gray50",cex=9.8,lwd=1)
+			points(x=real_blonde,y=real_red,pch=1,col="black",cex=9.6,lwd=1)
+			points(x=real_blonde,y=real_red,pch=1,col="gray50",cex=9.4,lwd=1)
+			points(x=real_blonde,y=real_red,pch=1,col="white",cex=9.2,lwd=1)
 		}
 		
 	})#,width=400,height=200)
