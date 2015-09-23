@@ -97,11 +97,11 @@ shinyServer(function(input, output) {
 		
 		if(col_provided){
 
-			points(x=real_blonde,y=real_red,pch=1,col="white",cex=10,lwd=1)
-			points(x=real_blonde,y=real_red,pch=1,col="gray50",cex=9.8,lwd=1)
-			points(x=real_blonde,y=real_red,pch=1,col="black",cex=9.6,lwd=1)
-			points(x=real_blonde,y=real_red,pch=1,col="gray50",cex=9.4,lwd=1)
-			points(x=real_blonde,y=real_red,pch=1,col="white",cex=9.2,lwd=1)
+			points(x=real_blonde,y=real_red,pch=1,col="cyan",cex=10,lwd=1)
+			points(x=real_blonde,y=real_red,pch=1,col="dodgerblue",cex=9.8,lwd=1)
+			points(x=real_blonde,y=real_red,pch=1,col="darkblue",cex=9.6,lwd=1)
+			points(x=real_blonde,y=real_red,pch=1,col="dodgerblue",cex=9.4,lwd=1)
+			points(x=real_blonde,y=real_red,pch=1,col="cyan",cex=9.2,lwd=1)
 		}
 		
 	})#,width=400,height=200)
