@@ -1,4 +1,5 @@
 library("shiny")
+source("/srv/shiny-server/gene-surfer/functions.R")
 
 
 
