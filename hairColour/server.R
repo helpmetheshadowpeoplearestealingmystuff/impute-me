@@ -26,8 +26,8 @@ shinyServer(function(input, output) {
 		if(input$goButton == 0){
 			return("")
 		}else if(input$goButton > 0) {
-			height_provided<-isolate(input$height_provided)
-			if(height_provided){
+			col_provided <- isolate(input$col_provided)
+			if(col_provided){
 				m<-"<HTML>The circle shows your estimated genetic hair colour.</HTML>"
 			}else{
 				m<-"<HTML>The black/white circle shows your estimated genetic hair colour. The blue circle shows your real hair colour. By providing this information we can fine-tune our estimation algorithms. Thank you!</HTML>"
