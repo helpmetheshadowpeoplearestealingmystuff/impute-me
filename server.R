@@ -19,16 +19,17 @@ shinyServer(function(input, output) {
 				}
 			}
 		}
+		?barplot
 		
-		
-		# runningProcesses<-1
-		# totalProcesses<-3
+		runningProcesses<-1
+		totalProcesses<-1
 		currentLoad<-matrix(c(runningProcesses,totalProcesses-runningProcesses),ncol=1)
-		barplot(currentLoad,xlim=c(0,2),ylim=c(0,5))
-		title(ylab="imputations")
-		abline(h=1,lty=2)
-		text(0.9,3.2,adj=0,label="Max queue")
-		text(0.9,1.2,adj=0,label="Max running")
+		barplot(currentLoad,xlim=c(0,5),ylim=c(0,2),main="Current server load",horiz=T)
+		title(xlab="imputations")
+		abline(v=1,lty=2)
+		abline(v=3,lty=2)
+		text(3.02,1.3,adj=0,label="Max queue")
+		text(1.02,1.3,adj=0,label="Max running")
 		legend("topright",pch=15,col=c("grey50","grey10"),legend=c("Queued","Running"))
 		
 	})
