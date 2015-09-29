@@ -4,11 +4,34 @@ library("shiny")
 shinyServer(function(input, output) {
 	
 	
-# 	output$test1 <- renderPlot({ 
-# 		plot(1:10,1:10)
-# 		?barplot
-# 	})
-# 	
+	output$load1 <- renderPlot({ 
+		par(bg = rgb(red=1, green=1, blue=1, alpha=0, maxColorValue = 1))
+		
+		totalProcesses<-list.files("/home/ubuntu/imputations/")
+		runningProcesses<-0
+		for(process in totalProcesses){
+			status_file<-paste("/home/ubuntu/imputations/",process,"/job_status.txt",sep="")
+			if(file.exists(status_file)){
+				jobStatus<-read.table(status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
+				if(jobStatus=="Job is running"){
+					runningProcesses<-runningProcesses+1
+				}
+			}
+		}
+		
+		
+		# runningProcesses<-1
+		# totalProcesses<-3
+		currentLoad<-matrix(c(runningProcesses,totalProcesses-runningProcesses),ncol=1)
+		barplot(currentLoad,xlim=c(0,2),ylim=c(0,5))
+		title(ylab="imputations")
+		abline(h=1,lty=2)
+		text(0.9,3.2,adj=0,label="Max queue")
+		text(0.9,1.2,adj=0,label="Max running")
+		legend("topright",pch=15,col=c("grey50","grey10"),legend=c("Queued","Running"))
+		
+	})
+	
 	
 	output$text1 <- renderText({ 
 		

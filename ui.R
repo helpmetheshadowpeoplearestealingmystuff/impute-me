@@ -13,7 +13,7 @@ shinyUI(fluidPage(
 			a("RareGene", href=""),br(),
 			a("MyOffspring", href=""),br(),
 			a("MedicalMe", href=""),br(),
-			# plotOutput("test1"),
+			plotOutput("load1"),
 			
 			# p("Then start imputation. This will take a while, but we'll mail you a download-link when ready"),
 			# actionButton("goButton","Start imputation"),
