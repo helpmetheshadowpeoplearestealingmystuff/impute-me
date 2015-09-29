@@ -31,7 +31,10 @@ for(folderToCheck in foldersToCheck){
 if(runningJobCount>(maxImputations-1)){
 	print(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
 }else{
+	print(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so proceeding"))
 	
+}
+stop()
 	for(folderToCheck in foldersToCheck){
 		setwd(paste("/home/ubuntu/imputations/",folderToCheck,sep=""))	
 		
