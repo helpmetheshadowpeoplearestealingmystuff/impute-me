@@ -24,7 +24,7 @@ shinyServer(function(input, output) {
 		runningProcesses<-1
 		totalProcesses<-1
 		currentLoad<-matrix(c(runningProcesses,totalProcesses-runningProcesses),ncol=1)
-		barplot(currentLoad,xlim=c(0,5),ylim=c(0,2),main="Current server load",horiz=T)
+		barplot(currentLoad,xlim=c(0,5),ylim=c(0,2),main="",horiz=T)
 		title(xlab="imputations")
 		abline(v=1,lty=2)
 		abline(v=3,lty=2)
@@ -48,8 +48,15 @@ shinyServer(function(input, output) {
 					<h2><a href=''>Offspring trait prediction</a></h2>The height and hair module, just for use with children that are not even conceived yet. Not implemented yet. (Warning for larger confidence intervals).
 					<h2><a href=''>Enhanced BRCA2 investigation</a></h2>While this information is available for people who have access to the 23andme health area, the availability of imputed data much improves the coverage and allows to catch several rare, but equally-dangerous, mutations. Not implemented yet.
 					
-					<br><br><br><br>(Obviously the front-end parts of this page is very much under construction. If you are a web-developer, please write me an <a href='http://www.google.com/recaptcha/mailhide/d?k=01pdzWyCfeU-_1PRAPdKlJfg==&amp;c=3eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY=' onclick='window.open('http://www.google.com/recaptcha/mailhide/d?k\07501pdzWyCfeU-_1PRAPdKlJfg\75\75\46c\0753eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY\075', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;' title='Reveal this e-mail address'>email</a>)."
+					<br><br><br>
+					<h2>Current server load:</h2>"
 		return(m)
+	})
+	
+	
+	output$text2 <- renderText({ 
+	m<-"<br><br><br>(Obviously the front-end parts of this page is very much under construction. If you are a web-developer, please write me an <a href='http://www.google.com/recaptcha/mailhide/d?k=01pdzWyCfeU-_1PRAPdKlJfg==&amp;c=3eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY=' onclick='window.open('http://www.google.com/recaptcha/mailhide/d?k\07501pdzWyCfeU-_1PRAPdKlJfg\75\75\46c\0753eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY\075', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;' title='Reveal this e-mail address'>email</a>)."
+	return(m)
 	})
 	
 	
