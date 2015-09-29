@@ -7,9 +7,10 @@ shinyServer(function(input, output) {
 	output$load1 <- renderPlot({ 
 		par(bg = rgb(red=1, green=1, blue=1, alpha=0, maxColorValue = 1))
 		
-		totalProcesses<-list.files("/home/ubuntu/imputations/")
+		processes<-list.files("/home/ubuntu/imputations/")
+		totalProcesses <- length(processes)
 		runningProcesses<-0
-		for(process in totalProcesses){
+		for(process in processes){
 			status_file<-paste("/home/ubuntu/imputations/",process,"/job_status.txt",sep="")
 			if(file.exists(status_file)){
 				jobStatus<-read.table(status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
