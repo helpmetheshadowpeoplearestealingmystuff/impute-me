@@ -19,11 +19,14 @@ foldersToCheck<-grep("^imputation_folder",s,value=T)
 
 runningJobCount<-0
 for(folderToCheck in foldersToCheck){
-	if(file.exists("job_status.txt")){
-		jobStatus<-read.table("job_status.txt",stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
+	jobStatusFile<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
+	if(file.exists(jobStatusFile)){
+		jobStatus<-read.table(jobStatusFile,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
 		if(jobStatus=="Job is running"){
 			runningJobCount<-runningJobCount+1
 		}
+	}else{
+		print(paste("Didn't find job_status.txt in",	folderToCheck))
 	}
 }
 
