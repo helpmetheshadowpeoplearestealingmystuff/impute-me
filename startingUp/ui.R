@@ -7,9 +7,9 @@ shinyUI(fluidPage(
 		sidebarPanel(
 			# fileInput("largeFile", "Upload genome data", multiple = FALSE, accept = NULL),
 			# textInput(inputId="email", label = "Email", value = ""),
-			a("ImputeMe", href="gene-surfer/imputeme"),br(),
-			a("GuessMyHeight", href='gene-surfer/guessMyHeight'),br(),
-			a("GuessMyHairColour", href="gene-surfer/hairColour"),br(),
+			a("ImputeMe", href="imputeme"),br(),
+			a("GuessMyHeight", href='guessMyHeight'),br(),
+			a("GuessMyHairColour", href="hairColour"),br(),
 			a("RareGene", href=""),br(),
 			a("MyOffspring", href=""),br(),
 			a("MedicalMe", href=""),br(),
