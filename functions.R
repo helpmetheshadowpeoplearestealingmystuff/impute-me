@@ -30,7 +30,7 @@ prepare_23andme_genome<-function(path, email, filename){
 		m<-paste(m,collapse="\t")
 		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
 		
-		stop(paste("More than",maxImputationsInQueue,"imputations are already in progress. Cannot start a new one"))
+		stop(paste("More than",maxImputationsInQueue,"imputations are already in progress. Cannot start a new one. Limited server capacity is the reason for our kickstarter campaign. Support us and gett first in line: kck.st/1VlrTlf"))
 	}
 	
 	
