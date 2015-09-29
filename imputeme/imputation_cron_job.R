@@ -79,7 +79,7 @@ if(runningJobCount>(maxImputations-1)){
 			gender<-system(paste("cut --delimiter=' ' -f 5 ",runDir,"/step_1.ped",sep=""),intern=T)
 			f<-file(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),"w")
 			writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender"),collapse="\t"),f)
-			writeLines(paste(uniqueID,filename,email,timeStamp,md5sum,gender,collapse="\t"),f)
+			writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender),collapse="\t"),f)
 			close(f)
 			
 			
