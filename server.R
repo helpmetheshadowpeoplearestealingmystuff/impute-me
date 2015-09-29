@@ -19,7 +19,7 @@ shinyServer(function(input, output) {
 				}
 			}
 		}
-		?barplot
+
 		
 		runningProcesses<-1
 		totalProcesses<-1
