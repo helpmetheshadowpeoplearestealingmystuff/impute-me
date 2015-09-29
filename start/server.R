@@ -49,7 +49,7 @@ shinyServer(function(input, output) {
 					<h2><a href=''>Enhanced BRCA2 investigation</a></h2>While this information is available for people who have access to the 23andme health area, the availability of imputed data much improves the coverage and allows to catch several rare, but equally-dangerous, mutations. Not implemented yet.
 					
 					<br><br><br>
-					<h2>Current server load:</h2>"
+					<h2><a href=''>Current server load:</a></h2>"
 		return(m)
 	})
 	
