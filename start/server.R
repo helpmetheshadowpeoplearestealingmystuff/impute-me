@@ -19,12 +19,13 @@ shinyServer(function(input, output) {
 				}
 			}
 		}
-
+		
 		
 		# runningProcesses<-1
 		# totalProcesses<-1
 		currentLoad<-matrix(c(runningProcesses,totalProcesses-runningProcesses),ncol=1)
-		barplot(currentLoad,xlim=c(0,5),ylim=c(0,2),main="",horiz=T)
+		barplot(currentLoad,xlim=c(0,5),ylim=c(0,2),main="",horiz=T,xaxt="n")
+		axis(side=1,at=c(0,1,3,5),labels=c("0%","50%","100%","166%"))
 		title(xlab="imputations")
 		abline(v=1,lty=2)
 		abline(v=3,lty=2)
