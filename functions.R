@@ -11,15 +11,24 @@ prepare_23andme_genome<-function(path, email, filename){
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
-	
+
+	if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
+	if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
+		
 	if(class(email)!="character")stop(paste("email must be character, not",class(email)))
 	if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
 	if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
 		stop(paste("a real email adress is needed:",email))
 	}
 	
-	if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
-	if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
+	acceptedMails<-read.table("/home/ubuntu/misc_files/accepted_emails.txt",stringsAsFactors=F)[,1]
+	if(!email%in%acceptedMails){
+		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,filename)
+		m<-paste(m,collapse="\t")
+		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+		stop("At the current stage, the project is only open to backers. Please visit our kickstarter page at: http://kck.st/1VlrTlf")
+	}
+	
 	
 	
 	#check for too many ongoing imputations
