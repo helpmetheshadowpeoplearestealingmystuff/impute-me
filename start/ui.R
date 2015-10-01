@@ -10,6 +10,7 @@ shinyUI(fluidPage(
 			a("ImputeMe", href="http://www.impute.me/imputeme"),br(),
 			a("GuessMyHeight", href='http://www.impute.me/guessMyHeight'),br(),
 			a("GuessMyHairColour", href="http://www.impute.me/hairColour"),br(),
+			a("GuessMyAncestry", href="http://www.impute.me/placeholder.html"),br(),
 			a("RareGene", href="http://www.impute.me/placeholder.html"),br(),
 			a("MyOffspring", href="http://www.impute.me/placeholder.html"),br(),
 			a("MedicalMe", href="http://www.impute.me/placeholder.html"),br(),
