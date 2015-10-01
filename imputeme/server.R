@@ -1,7 +1,7 @@
 library("shiny")
 
 
-options(shiny.maxRequestSize=10*1024^2) 
+options(shiny.maxRequestSize=50*1024^2) 
 
 source("/srv/shiny-server/gene-surfer/functions.R")
 
