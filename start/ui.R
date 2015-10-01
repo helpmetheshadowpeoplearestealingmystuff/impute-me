@@ -21,9 +21,8 @@ shinyUI(fluidPage(
 			width=4
 		),
 		mainPanel(
-			htmlOutput("text1"),
-			plotOutput("load1",width = "50%"),
-			htmlOutput("text2")
+			htmlOutput("text1")
+
 		)
 	)
 ))

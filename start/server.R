@@ -21,11 +21,6 @@ shinyServer(function(input, output) {
 	})
 	
 	
-	output$text2 <- renderText({ 
-	m<-"<br><br><br>(Obviously the front-end parts of this page is very much under construction. If you are a web-developer, please write me an <a href='http://www.google.com/recaptcha/mailhide/d?k=01pdzWyCfeU-_1PRAPdKlJfg==&amp;c=3eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY=' onclick='window.open('http://www.google.com/recaptcha/mailhide/d?k\07501pdzWyCfeU-_1PRAPdKlJfg\75\75\46c\0753eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY\075', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;' title='Reveal this e-mail address'>email</a>)."
-	return(m)
-	})
-	
 	
 })
 
