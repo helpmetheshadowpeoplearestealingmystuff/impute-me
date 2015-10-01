@@ -93,17 +93,17 @@ if(runningJobCount>(maxImputations-1)){
 			#making a link out to where the data can be retrieved		
 			file.symlink(
 				from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip",sep=""),
-				to=paste("/srv/shiny-server/",uniqueID,".23andme.zip",sep="")
+				to=paste("/srv/shiny-server/gene-surfer/www/",uniqueID,".23andme.zip",sep="")
 			)
 			file.symlink(
 				from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip",sep=""),
-				to=paste("/srv/shiny-server/",uniqueID,".gen.zip",sep="")
+				to=paste("/srv/shiny-server/gene-surfer/www/",uniqueID,".gen.zip",sep="")
 			)
 			
 			print("Getting IP and sending mail")
 			ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
-			location_23andme <- paste(ip,"/",uniqueID,".23andme.zip",sep="")
-			location_gen <- paste(ip,"/",uniqueID,".gen.zip",sep="")
+			location_23andme <- paste(ip,"/www/",uniqueID,".23andme.zip",sep="")
+			location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
 			
 			
 			message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br>",
