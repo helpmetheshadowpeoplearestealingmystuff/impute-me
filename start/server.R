@@ -16,10 +16,7 @@ shinyServer(function(input, output) {
 					<h2><a href='http://www.impute.me/hairColour'>GuessMyHairColour</a> </h2>A module that attempts to guess your likely hair-colour using both black-brown-blonde scales and red-or-not scales in combination. Currently very much in beta-testing. If you have red-hair please write me and help with the tuning of the parameters.
 					<h2><a href=''>Rare gene discovery</a></h2>This module searches the genome of healthy adults for genes that are completely broken. The idea here is to use this as base for discovery projects on the thousands of genes in the genome that we know very little about. The existence of a broken or seriously altered version of an unknown gene in a healthy adult will be highly beneficial to the scientific community. Only use this module if you have an interest in contributing to science. Not implemented yet.
 					<h2><a href=''>Offspring trait prediction</a></h2>The height and hair module, just for use with children that are not even conceived yet. Not implemented yet. (Warning for larger confidence intervals).
-					<h2><a href=''>Enhanced BRCA2 investigation</a></h2>While this information is available for people who have access to the 23andme health area, the availability of imputed data much improves the coverage and allows to catch several rare, but equally-dangerous, mutations. Not implemented yet.
-					
-					<br><br><br>
-					<h2><a href=''>Current server load:</a></h2>"
+					<h2><a href=''>Enhanced BRCA2 investigation</a></h2>While this information is available for people who have access to the 23andme health area, the availability of imputed data much improves the coverage and allows to catch several rare, but equally-dangerous, mutations. Not implemented yet."
 		return(m)
 	})
 	
