@@ -3,7 +3,7 @@
 #Strategy - setup this to run every hour on the hour, 
 # 	
 #Don't run it as root. THis is better
-# sudo crontab -u shiny -e
+# sudo crontab -u ubuntu -e
 # 50 * * * * Rscript /srv/shiny-server/gene-surfer/imputeme/imputation_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
 
 

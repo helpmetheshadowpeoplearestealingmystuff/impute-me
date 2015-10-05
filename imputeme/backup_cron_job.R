@@ -1,6 +1,6 @@
 
 
-# sudo crontab -u shiny -e
+# sudo crontab -u ubuntu -e
 # 10 20 * * * /srv/shiny-server/gene-surfer/imputeme/backup_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-backup-cron.log 2>&1
 
 
