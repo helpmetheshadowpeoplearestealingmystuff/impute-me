@@ -101,7 +101,7 @@ sudo git clone https://github.com/lassefolkersen/gene-surfer
 # Then copy both files to user /home/shiny/.ssh
 # Then chance the id_rsa.pub to read shiny instead.
 # Then append id_rsa.pub to /home/people/lasfol/.ssh/authorized_keys
-# 
+# Also append id_rsa.pub from all the nodes to the hub
 
 
 #setup misc_files
@@ -113,7 +113,7 @@ vi /home/ubuntu/misc_files/configuration.R
 # maxImputations <- 1
 # maxImputationsInQueue <- 3
 # serverRole <- "Hub"
-# hubAddress <- "ec2-54-187-201-139.us-west-2.compute.amazonaws.com"
+# hubAddress <- "54.187.201.139"
 
 
 #Setup accepted emails

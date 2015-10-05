@@ -2,17 +2,17 @@
 
 # read configuration file
 source("/home/ubuntu/misc_files/configuration.R")
-if(!exists(!"maxImputations"))stop("Didn't find maxImputations")
-if(!is.integer(maxImputations) | !is.numeric(maxImputations))stop("maxImputations not numeric")
+if(!exists("maxImputations"))stop("Didn't find maxImputations")
+if(!is.numeric(maxImputations))stop("maxImputations not numeric")
 if(length(maxImputations)!=1)stop("maxImputations not length 1")
-if(!exists(!"maxImputationsInQueue"))stop("Didn't find maxImputationsInQueue")
-if(!is.integer(maxImputationsInQueue) | !is.numeric(maxImputationsInQueue))stop("maxImputationsInQueue not numeric")
+if(!exists("maxImputationsInQueue"))stop("Didn't find maxImputationsInQueue")
+if(!is.numeric(maxImputationsInQueue))stop("maxImputationsInQueue not numeric")
 if(length(maxImputationsInQueue)!=1)stop("maxImputationsInQueue not length 1")
-if(!exists(!"serverRole"))stop("Didn't find serverRole")
+if(!exists("serverRole"))stop("Didn't find serverRole")
 if(!is.character(serverRole))stop("serverRole not character")
 if(length(serverRole)!=1)stop("serverRole not length 1")
 if(!serverRole%in%c("Hub","Node"))stop("serverRole not Hub or Node")
-if(!exists(!"hubAddress"))stop("Didn't find hubAddress")
+if(!exists("hubAddress"))stop("Didn't find hubAddress")
 if(!is.character(hubAddress))stop("hubAddress not character")
 if(length(hubAddress)!=1)stop("hubAddress not length 1")
 
