@@ -28,11 +28,10 @@ for(folderToCheck in foldersToCheck){
 }
 if(runningJobCount>(maxImputations-1)){
 	stop(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
-	
 }
 
 
-#If it is not and serverRole is node - we fetch a job
+#If the computer is not too busy and the serverRole is node - we fetch a job
 if(serverRole== "Node"){
 	cmd1 <- paste("ssh ubuntu@",hubAddress," ls /home/ubuntu/imputations/",sep="")
 	remoteFoldersToCheck<-system(cmd1,intern=T)
@@ -44,16 +43,15 @@ if(serverRole== "Node"){
 			print(paste("Found job-status file and job is ready",remoteFolderToCheck))
 			
 			#First write to job-status that now the job is off to a remote server
-			cmd3 <- paste("ssh shiny@",hubAddress," 'echo job is remote-running > /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt'",sep="")
+			cmd3 <- paste("ssh shiny@",hubAddress," 'echo Job is remote-running > /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt'",sep="")
 			system(cmd3)
 			
 			#then copy all the files to here
-			dir.create(paste("/home/ubuntu/imputations/",remoteFolderToCheck,sep=""))
-			cmd4 <- paste("scp -r shiny@",hubAddress,":/home/ubuntu/imputations/",remoteFolderToCheck,"/ /home/ubuntu/imputations/",remoteFolderToCheck,"/",sep="")
+			cmd4 <- paste("scp -r shiny@",hubAddress,":/home/ubuntu/imputations/",remoteFolderToCheck," /home/ubuntu/imputations/",remoteFolderToCheck,sep="")
 			system(cmd4)
 			
 			#Then write locally that job is ready
-			job_status_file<-paste("/home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt")
+			job_status_file<-paste("/home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
 			unlink(job_status_file)
 			write.table("Job is ready",file=job_status_file,col.names=F,row.names=F,quote=F)
 		}
@@ -63,32 +61,29 @@ if(serverRole== "Node"){
 }
 
 
-#checking locally which, if any, folders are ready to run
+
+
+
+
+#Then - no matter the role - we check locally which, if any, folders are ready to run
 imputeThisFolder<-NA
 for(folderToCheck in foldersToCheck){
 	job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
-	
 	if(!file.exists(job_status_file)){
 		print(paste("Didn't find a job-status file - should probably auto-delete",folderToCheck))
 		next
 	}
-	
 	jobStatus<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
-	
-	
 	if(jobStatus=="Job is not ready yet"){
 		print(paste("Found job-status file - but job is not ready yet",folderToCheck))
 		next
 	}
-	
 	if(jobStatus=="Job is running"){
 		print(paste("Found job-status file - but job is already running",folderToCheck))
 		next
 	}
-	
-	
 	if(jobStatus=="Job is ready"){
-		print(paste("Found job-status file and job is ready",folderToCheck)		)
+		print(paste("Found job-status file and job is ready",folderToCheck))
 		unlink(job_status_file)
 		write.table("Job is running",file=job_status_file,col.names=F,row.names=F,quote=F)
 		imputeThisFolder<-folderToCheck
@@ -103,11 +98,13 @@ if(is.na(imputeThisFolder)){
 
 
 
-#If script is still running, it means there was a job ready for imputation
+#If script is still running, it means there was a job ready for imputation - 
 runDir<-paste("/home/ubuntu/imputations/",imputeThisFolder,sep="")
+setwd(runDir)
 load(paste(runDir,"/variables.rdata",sep=""))
-rawdata<-paste(runDir,uniqueID,"_raw_data.txt",sep="")
+rawdata<-paste(runDir,"/",uniqueID,"_raw_data.txt",sep="")
 
+#run the imputation
 run_imputation(rawdata=rawdata, runDir=runDir)
 
 #summarizing files
@@ -131,7 +128,7 @@ crawl_for_snps_to_analyze(uniqueIDs=uniqueID)
 
 #If this is running as a node, we need to copy it back around here
 if(serverRole== "Node"){
-	cmd5 <- paste("scp -r /home/ubuntu/data/",uniqueID,"/ shiny@",hubAddress,":/home/ubuntu/data/",uniqueID,"/",sep="")
+	cmd5 <- paste("scp -r /home/ubuntu/data/",uniqueID," shiny@",hubAddress,":/home/ubuntu/data/",uniqueID,sep="")
 	system(cmd5)
 }
 
@@ -154,7 +151,7 @@ if(serverRole== "Node"){
 		from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip",sep=""),
 		to=paste("/srv/shiny-server/gene-surfer/www/",uniqueID,".gen.zip",sep="")
 	)
-}else{stop("very odd")
+}else{stop("very odd")}
 
 
 
@@ -194,7 +191,7 @@ while(class(mailingResult) == "try-error"){
 	
 }
 
-
+setwd("..")
 unlink(runDir,recursive=TRUE)
 
 
