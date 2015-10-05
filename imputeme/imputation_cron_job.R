@@ -33,7 +33,7 @@ if(runningJobCount>(maxImputations-1)){
 
 #If the computer is not too busy and the serverRole is node - we fetch a job
 if(serverRole== "Node"){
-	cmd1 <- paste("ssh ubuntu@",hubAddress," ls /home/ubuntu/imputations/",sep="")
+	cmd1 <- paste("ssh shiny@",hubAddress," ls /home/ubuntu/imputations/",sep="")
 	remoteFoldersToCheck<-system(cmd1,intern=T)
 	for(remoteFolderToCheck in remoteFoldersToCheck){
 		cmd2 <- paste("ssh shiny@",hubAddress," cat /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
