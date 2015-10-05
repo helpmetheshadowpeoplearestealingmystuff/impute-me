@@ -102,3 +102,24 @@ sudo git clone https://github.com/lassefolkersen/gene-surfer
 # Then chance the id_rsa.pub to read shiny instead.
 # Then append id_rsa.pub to /home/people/lasfol/.ssh/authorized_keys
 # 
+
+
+#setup misc_files
+mkdir /home/ubuntu/misc_files
+
+
+#Setup configuration file
+vi /home/ubuntu/misc_files/configuration.R
+# maxImputations <- 1
+# maxImputationsInQueue <- 3
+# serverRole <- "Hub"
+# hubAddress <- "ec2-54-187-201-139.us-west-2.compute.amazonaws.com"
+
+
+#Setup accepted emails
+vi /home/ubuntu/misc_files/accepted_emails.txt
+# lassefolkersen@mail.com
+
+
+#make a folder for cron logs
+mkdir /home/ubuntu/misc_files/cron_logs
