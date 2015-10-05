@@ -35,6 +35,7 @@ y
 
 #then listen on port 80
 sudo vi /etc/shiny-server/shiny-server.conf
+#also add run_as ubuntu  (!!!!)
 
 
 #Then install git
