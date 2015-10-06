@@ -104,6 +104,11 @@ setwd(runDir)
 load(paste(runDir,"/variables.rdata",sep=""))
 rawdata<-paste(runDir,"/",uniqueID,"_raw_data.txt",sep="")
 
+#if running as node, we also create the output dir already here
+if(serverRole== "Node"){
+	dir.create("/home/ubuntu/data/",uniqueID,sep="")
+}
+
 #run the imputation
 run_imputation(rawdata=rawdata, runDir=runDir)
 
