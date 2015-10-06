@@ -25,18 +25,18 @@ shinyServer(function(input, output) {
 			}
 		}
 		
-# 		remoteRunningProcesses<-1
+# 		remoteRunningProcesses<-2
 # 		runningProcesses<-1
-# 		totalProcesses<-3
+# 		totalProcesses<-6
 		currentLoad<-matrix(c(runningProcesses,remoteRunningProcesses,totalProcesses-remoteRunningProcesses-runningProcesses),ncol=1)
-		barplot(currentLoad,xlim=c(0,5),ylim=c(0,2),main="",horiz=T,xaxt="n")
+		barplot(currentLoad,xlim=c(0,8),ylim=c(0,2),main="",horiz=T,xaxt="n",col=c("grey20","grey40","grey70"))
 		axis(side=1,at=c(0,1,3,5),labels=c("0","1","3","5"))
 		title(xlab="imputations")
 		abline(v=1,lty=2)
 		abline(v=3,lty=2)
 		text(3.02,1.3,adj=0,label="Max queue")
 		text(1.02,1.3,adj=0,label="Max running")
-		legend("topright",pch=15,col=c("grey50","grey10"),legend=c("Queued","Running"))
+		legend("topright",pch=15,col=c("grey20","grey40","grey70"),legend=c("Running","Remote-running","Queued"))
 		
 	})
 	
