@@ -33,21 +33,21 @@ if(runningJobCount>(maxImputations-1)){
 
 #If the computer is not too busy and the serverRole is node - we fetch a job
 if(serverRole== "Node"){
-	cmd1 <- paste("ssh shiny@",hubAddress," ls /home/ubuntu/imputations/",sep="")
+	cmd1 <- paste("ssh ubuntu@",hubAddress," ls /home/ubuntu/imputations/",sep="")
 	remoteFoldersToCheck<-system(cmd1,intern=T)
 	for(remoteFolderToCheck in remoteFoldersToCheck){
-		cmd2 <- paste("ssh shiny@",hubAddress," cat /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
+		cmd2 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
 		jobStatus<-system(cmd2,intern=T)
 		#Check if the job is ready
 		if(jobStatus=="Job is ready"){
 			print(paste("Found job-status file and job is ready",remoteFolderToCheck))
 			
 			#First write to job-status that now the job is off to a remote server
-			cmd3 <- paste("ssh shiny@",hubAddress," 'echo Job is remote-running > /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt'",sep="")
+			cmd3 <- paste("ssh ubuntu@",hubAddress," 'echo Job is remote-running > /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt'",sep="")
 			system(cmd3)
 			
 			#then copy all the files to here
-			cmd4 <- paste("scp -r shiny@",hubAddress,":/home/ubuntu/imputations/",remoteFolderToCheck," /home/ubuntu/imputations/",remoteFolderToCheck,sep="")
+			cmd4 <- paste("scp -r ubuntu@",hubAddress,":/home/ubuntu/imputations/",remoteFolderToCheck," /home/ubuntu/imputations/",remoteFolderToCheck,sep="")
 			system(cmd4)
 			
 			#Then write locally that job is ready
@@ -133,17 +133,17 @@ crawl_for_snps_to_analyze(uniqueIDs=uniqueID)
 
 #If this is running as a node, we need to copy it back around here
 if(serverRole== "Node"){
-	cmd5 <- paste("scp -r /home/ubuntu/data/",uniqueID," shiny@",hubAddress,":/home/ubuntu/data/",uniqueID,sep="")
+	cmd5 <- paste("scp -r /home/ubuntu/data/",uniqueID," ubuntu@",hubAddress,":/home/ubuntu/data/",uniqueID,sep="")
 	system(cmd5)
 }
 
 
 #making a link out to where the data can be retrieved	(different on hub and node)
 if(serverRole== "Node"){
-	cmd6 <- paste("ssh shiny@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip /srv/shiny-server/gene-surfer/www/",uniqueID,".23andme.zip'",sep="")
+	cmd6 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip /srv/ubuntu-server/gene-surfer/www/",uniqueID,".23andme.zip'",sep="")
 	system(cmd6)
 	
-	cmd7 <- paste("ssh shiny@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip /srv/shiny-server/gene-surfer/www/",uniqueID,".gen.zip'",sep="")
+	cmd7 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip /srv/shiny-server/gene-surfer/www/",uniqueID,".gen.zip'",sep="")
 	system(cmd7)
 	
 	
@@ -202,7 +202,7 @@ unlink(runDir,recursive=TRUE)
 
 #also clear the hub imputation_folder if running as node
 if(serverRole== "Node"){
-	cmd8 <- paste("ssh shiny@",hubAddress," 'rm -r /home/ubuntu/imputations/imputation_folder_",uniqueID,"'",sep="")
+	cmd8 <- paste("ssh ubuntu@",hubAddress," 'rm -r /home/ubuntu/imputations/imputation_folder_",uniqueID,"'",sep="")
 	system(cmd8)
 	
 	#also don't leave the finished data here
