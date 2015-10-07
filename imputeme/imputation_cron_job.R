@@ -140,7 +140,7 @@ if(serverRole== "Node"){
 
 #making a link out to where the data can be retrieved	(different on hub and node)
 if(serverRole== "Node"){
-	cmd6 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip /srv/ubuntu-server/gene-surfer/www/",uniqueID,".23andme.zip'",sep="")
+	cmd6 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip /srv/shiny-server/gene-surfer/www/",uniqueID,".23andme.zip'",sep="")
 	system(cmd6)
 	
 	cmd7 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip /srv/shiny-server/gene-surfer/www/",uniqueID,".gen.zip'",sep="")
