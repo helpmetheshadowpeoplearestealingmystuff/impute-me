@@ -133,8 +133,11 @@ crawl_for_snps_to_analyze(uniqueIDs=uniqueID)
 
 #If this is running as a node, we need to copy it back around here
 if(serverRole== "Node"){
-	cmd5 <- paste("scp -r /home/ubuntu/data/",uniqueID," ubuntu@",hubAddress,":/home/ubuntu/data/",uniqueID,sep="")
+	#Have to do the * thing, because the directory already exists
+	cmd5 <- paste("scp -r /home/ubuntu/data/",uniqueID,"/* ubuntu@",hubAddress,":/home/ubuntu/data/",uniqueID,sep="")
 	system(cmd5)
+	
+	
 }
 
 
