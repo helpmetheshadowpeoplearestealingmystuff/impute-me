@@ -22,7 +22,17 @@ shinyUI(fluidPage(
 			width=4
 		),
 		mainPanel(
-			htmlOutput("text1")
+			HTML("<h1>Welcome to impute.me</h1>
+				<br>
+			<br>
+			This is the starting page for a cutting edge genetics analysis tools. If you use this service, please consider supporting our <a href='http://kck.st/1VlrTlf'>kickstarter campaign</a>. These are the current modules:<br>
+			<h2><a href='http://www.impute.me/imputeme'>ImputeMe</a> </h2>The core of the analysis engine. This advanced algorithm will take the 0.7M genotypes that customers of direct-to-consumer genetic testing companies usually receive. It will then analyze them for about 24 hours, using ethnicity information from the 1000 genomes project. Afterwards it will return an expanded version of 4M known imputed genotypes - 'guessed', but at a very high confidence level.
+			<h2><a href='http://www.impute.me/guessMyHeight'>GuessMyHeight</a> </h2>A module that uses the 697 recently discovered main-drivers of variability in human height, and make a prediction of your height. In the majority of cases this should be accurate to within +/-5 cms, but do keep in mind that environment also plays a large role in most traits. For children this should be taken as expected final height.
+			<h2><a href='http://www.impute.me/hairColour'>GuessMyHairColour</a> </h2>A module that attempts to guess your likely hair-colour using both black-brown-blonde scales and red-or-not scales in combination. Currently very much in beta-testing. If you have red-hair please write me and help with the tuning of the parameters.
+			<h2><a href='http://www.impute.me/placeholder.html'>GuessMyAncestry</a> </h2> module for guessing ancestry etc. The module provided by 23andme already is actually quite good, so in order to not overlap with that, the plan is for an alternative method based on principal components analysis together with human genome diversity project data.
+			<h2><a href='http://www.impute.me/placeholder.html'>Rare gene discovery</a></h2>This module searches the genome of healthy adults for genes that are completely broken. The idea here is to use this as base for discovery projects on the thousands of genes in the genome that we know very little about. The existence of a broken or seriously altered version of an unknown gene in a healthy adult will be highly beneficial to the scientific community. Only use this module if you have an interest in contributing to science. Not implemented yet.
+			<h2><a href='http://www.impute.me/placeholder.html'>Offspring trait prediction</a></h2>The height and hair module, just for use with children that are not even conceived yet. Not implemented yet. (Warning for larger confidence intervals).
+			<h2><a href=''>Enhanced BRCA2 investigation</a></h2>While this information is available for people who have access to the 23andme health area, the availability of imputed data much improves the coverage and allows to catch several rare, but equally-dangerous, mutations. Not implemented yet.")
 
 		)
 	)
