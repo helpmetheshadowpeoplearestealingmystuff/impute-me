@@ -8,6 +8,7 @@ shinyUI(fluidPage(
 			# fileInput("largeFile", "Upload genome data", multiple = FALSE, accept = NULL),
 			# textInput(inputId="email", label = "Email", value = ""),
 			a("ImputeMe", href="http://www.impute.me/imputeme"),br(),
+			a("Terms-of-use", href='http://www.impute.me/www/terms_of_use.html'),br(),
 			a("GuessMyHeight", href='http://www.impute.me/guessMyHeight'),br(),
 			a("GuessMyHairColour", href="http://www.impute.me/hairColour"),br(),
 			a("GuessMyAncestry", href="http://www.impute.me/placeholder.html"),br(),
