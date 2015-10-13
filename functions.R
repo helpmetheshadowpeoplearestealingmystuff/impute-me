@@ -43,7 +43,7 @@ prepare_23andme_genome<-function(path, email, filename){
 		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,filename)
 		m<-paste(m,collapse="\t")
 		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-		stop("At the current stage, the project is only open to backers. Please visit our kickstarter page at: http://kck.st/1VlrTlf")
+		stop("At the current stage, the project is only open to backers. Please visit our kickstarter page at: http://kck.st/1VlrTlf - sorry for the inconvenience. Going forward the plan is to run on a more voluntary pricing basis, always as non-profit (see terms-of-use). No data was saved.")
 	}
 	
 	
