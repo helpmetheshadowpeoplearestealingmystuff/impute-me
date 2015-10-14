@@ -34,14 +34,22 @@ shinyServer(function(input, output) {
 		
 		
 		BRCA_table_file <-"/srv/shiny-server/gene-surfer/BRCA/SNPs_to_analyze.txt"
-		BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F,row.names=1)
+		BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F)
 
+		BRCA_table[,"SNP"]<-rownames(BRCA_table)
+		BRCA_table[BRCA_table[,"chr_name"]%in%13,"gene"]<-"BRCA2"
+		BRCA_table[BRCA_table[,"chr_name"]%in%17,"gene"]<-"BRCA1"
 		
 		#get genotypes and calculate gheight
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=BRCA_table)
 		
 		BRCA_table[,"Your genotype"]<-genotypes[rownames(BRCA_table),]
+
+		BRCA_table<-BRCA_table[,c("SNP","gene","Your genotype","polyphen_prediction","sift_prediction","consequence_type_tv")]
+		
 		return(BRCA_table)
+		
+		
 		
 	})
 	
