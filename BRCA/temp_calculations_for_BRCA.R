@@ -119,12 +119,12 @@ for(duplicate in duplicates){
 extras<-data.frame(
 	SNP=c("i4000377","i4000378","i4000379"),
 	chrom_start=c(NA,NA,NA),
-	chr_name=c(17,17,13),
+	chr_name=c("input","input","input"),
 	polyphen_prediction=c(NA,NA,NA),
 	sift_prediction=c(NA,NA,NA),
 	consequence_type_tv=c(NA,NA,NA)
 )
-
+consequence[,"chr_name"]<-as.character(consequence[,"chr_name"])
 out<-rbind(extras,consequence)
 
 write.table(out,file="BRCA/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
