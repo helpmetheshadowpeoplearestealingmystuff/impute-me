@@ -487,7 +487,7 @@ get_genotypes<-function(
 	if(file.exists(cachedGenotypeFile)){
 		cachedGenotypes<-read.table(cachedGenotypeFile,header=T,stringsAsFactors=F,row.names=1)
 		snpsAlreadyCached<-rownames(cachedGenotypes)
-		requestDeNovo<-request[!rownames(request)%in%snpsAlreadyCached,]
+		requestDeNovo<-request[!rownames(request)%in%snpsAlreadyCached,,drop=F]
 	}else{
 		requestDeNovo<-request
 	}
