@@ -1,4 +1,7 @@
 SNP	chrom_start	chr_name	polyphen_prediction	sift_prediction	consequence_type_tv
+i4000377	NA	17	NA	NA	NA
+i4000378	NA	17	NA	NA	NA
+i4000379	NA	13	NA	NA	NA
 rs11571833	32398489	13			stop_gained
 rs28897687	43091823	17			coding_sequence_variant
 rs80356888	43104173	17			stop_gained

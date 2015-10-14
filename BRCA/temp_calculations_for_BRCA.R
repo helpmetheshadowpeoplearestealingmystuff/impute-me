@@ -37,6 +37,8 @@ save(calls,file="2015-10-14_BRCA_calls.rdata")
 rm(list=ls())
 load("../2015-10-14_BRCA_calls.rdata")
 
+# calls
+
 library(biomaRt)
 snpmart <- useMart("snp", dataset="hsapiens_snp")
 
@@ -54,6 +56,9 @@ consequence<- getBM(c('refsnp_id','chrom_start','chr_name',"polyphen_prediction"
 
 
 
+missing<-snps[!snps%in%consequence[,"refsnp_id"]]
+
+grep("chr17:41275798",missing)
 table(consequence[,"consequence_type_tv"])
 
 # 3_prime_UTR_variant                5_prime_UTR_variant 
@@ -110,5 +115,16 @@ for(duplicate in duplicates){
 }
 
 
+#but we also need to get these three that are special for the 23andme array
+extras<-data.frame(
+	SNP=c("i4000377","i4000378","i4000379"),
+	chrom_start=c(NA,NA,NA),
+	chr_name=c(17,17,13),
+	polyphen_prediction=c(NA,NA,NA),
+	sift_prediction=c(NA,NA,NA),
+	consequence_type_tv=c(NA,NA,NA)
+)
 
-write.table(consequence,file="BRCA/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
+out<-rbind(extras,consequence)
+
+write.table(out,file="BRCA/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
