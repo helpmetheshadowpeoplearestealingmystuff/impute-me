@@ -40,6 +40,15 @@ shinyServer(function(input, output) {
 		BRCA_table[BRCA_table[,"chr_name"]%in%13,"gene"]<-"BRCA2"
 		BRCA_table[BRCA_table[,"chr_name"]%in%17,"gene"]<-"BRCA1"
 		
+		BRCA_table["i4000377","gene"]<-"BRCA1"
+		BRCA_table["i4000378","gene"]<-"BRCA1"
+		BRCA_table["i4000379","gene"]<-"BRCA2"
+		
+		BRCA_table["i4000377","consequence_type_tv"]<-"Originally measured by 23andme"
+		BRCA_table["i4000378","consequence_type_tv"]<-"Originally measured by 23andme"
+		BRCA_table["i4000379","consequence_type_tv"]<-"Originally measured by 23andme"
+		
+		
 		#get genotypes and calculate gheight
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=BRCA_table)
 		
