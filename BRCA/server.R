@@ -54,7 +54,7 @@ shinyServer(function(input, output) {
 		
 		BRCA_table[,"Your genotype"]<-genotypes[rownames(BRCA_table),]
 
-		BRCA_table<-BRCA_table[,c("SNP","gene","Your genotype","polyphen_prediction","sift_prediction","consequence_type_tv")]
+		BRCA_table<-BRCA_table[,c("SNP","gene","Your genotype","normal","polyphen_prediction","sift_prediction","consequence_type_tv")]
 		
 		return(BRCA_table)
 		

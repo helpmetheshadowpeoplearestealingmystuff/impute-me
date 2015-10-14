@@ -128,3 +128,79 @@ consequence[,"chr_name"]<-as.character(consequence[,"chr_name"])
 out<-rbind(extras,consequence)
 
 write.table(out,file="BRCA/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#2015-10-14 checking the normal in all current data sets
+rm(list=ls())
+
+source("/srv/shiny-server/gene-surfer/functions.R")
+
+BRCA_table_file <-"/srv/shiny-server/gene-surfer/BRCA/SNPs_to_analyze.txt"
+BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F)
+
+rownames(BRCA_table)<-BRCA_table[,"SNP"]
+# BRCA_table[BRCA_table[,"chr_name"]%in%13,"gene"]<-"BRCA2"
+# BRCA_table[BRCA_table[,"chr_name"]%in%17,"gene"]<-"BRCA1"
+# 
+# BRCA_table["i4000377","gene"]<-"BRCA1"
+# BRCA_table["i4000378","gene"]<-"BRCA1"
+# BRCA_table["i4000379","gene"]<-"BRCA2"
+# 
+# BRCA_table["i4000377","consequence_type_tv"]<-"Direct from 23andme"
+# BRCA_table["i4000378","consequence_type_tv"]<-"Direct from 23andme"
+# BRCA_table["i4000379","consequence_type_tv"]<-"Direct from 23andme"
+
+
+uniqueIDs<-list.files("/home/ubuntu/data")
+for(uniqueID in uniqueIDs){
+	#get genotypes and calculate gheight
+	genotypes<-try(get_genotypes(uniqueID=uniqueID,request=BRCA_table))
+	# BRCA_table[,"Your genotype"]<-genotypes[rownames(BRCA_table),]
+	if(class(genotypes)=="try-error")next
+	colnames(genotypes)[1]<-uniqueID
+	BRCA_table<-cbind(BRCA_table, genotypes[rownames(BRCA_table),,drop=F])
+}
+
+
+
+people<-grep("^id_",colnames(BRCA_table),value=T)
+people<-people[!people%in%"id_860342AX5"]
+overview<-apply(BRCA_table[,people],1,table)
+
+
+differences<-sort(sapply(overview,length))
+
+
+#too high frequency to include these
+omitThese<-names(differences)[differences>=2]
+BRCA_table[omitThese,]
+
+
+BRCA_table<-BRCA_table[!rownames(BRCA_table)%in%omitThese,]
+
+
+normals<-apply(BRCA_table[,people],1,unique)
+BRCA_table[,"normal"]<-unlist(lapply(normals,function(x){x[!is.na(x)]}))
+
+BRCA_table<-BRCA_table[,grep("^id",colnames(BRCA_table),invert=T)]
+
+BRCA_table_file <-"/srv/shiny-server/gene-surfer/BRCA/SNPs_to_analyze.txt"
+BRCA_table<-write.table(BRCA_table,file="SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
+
+
+
+
