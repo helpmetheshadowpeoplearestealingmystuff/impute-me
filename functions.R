@@ -28,10 +28,10 @@ prepare_23andme_genome<-function(path, email, filename){
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
-
+	
 	if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
 	if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
-		
+	
 	if(class(email)!="character")stop(paste("email must be character, not",class(email)))
 	if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
 	if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
@@ -458,6 +458,8 @@ get_genotypes<-function(
 	if(!file.exists(idFolder))stop(paste("Did not find an idFolder at",idFolder))
 	genZipFile<-paste(idFolder,"/",uniqueID,".gen.zip",sep="")
 	if(!file.exists(genZipFile))stop(paste("Did not find a .gen file in idFolder at",idFolder))
+	inputZipFile<-paste(idFolder,"/",uniqueID,".input_data.zip",sep="")
+	if(!file.exists(inputZipFile))stop(paste("Did not find a .input_data file in idFolder at",idFolder))
 	cachedGenotypeFile<-paste(idFolder,"/",uniqueID,".cached.gz",sep="")
 	if(!file.exists(cachedGenotypeFile))print(paste("Did not find a chachedGenotypeFile file in idFolder at",idFolder,"but that's no problem"))
 	
@@ -493,54 +495,69 @@ get_genotypes<-function(
 		chromosomes<-unique(requestDeNovo[,"chr_name"])
 		contents<-unzip(genZipFile,list=T)
 		
-		gensToExtract<-paste(uniqueID,"_chr",chromosomes,".gen",sep="")
-		if(!all(gensToExtract%in%contents[,"Name"])){
-			missing<-gensToExtract[!gensToExtract%in%contents[,"Name"]]
-			stop(paste("These were missing in the zip-gen file:",paste(missing,collapse=", ")))
+		#if input is in as a chromosome, use the 23andmefile as input
+		if("input"%in%chromosomes){
+			snpsFromInput<-requestDeNovo[requestDeNovo[,"chr_name"]%in%"input","SNP"]
+			outZip<-unzip(inputZipFile, overwrite = TRUE,exdir = idTempFolder, unzip = "internal",)
+			cmd0 <- paste("grep -E '",paste(paste(snpsFromInput,"\t",sep=""),collapse="|"),"' ",outZip,sep="")
+			input_genotypes<-system(cmd0,intern=T)
+			input_genotypes<-do.call(rbind,strsplit(input_genotypes,"\t"))
+			genotypes<-data.frame(row.names=input_genotypes[,1],genotype= sub("\r$","",input_genotypes[,4]),stringsAsFactors=F)
+		}else{
+			genotypes<-data.frame(genotype=vector(),stringsAsFactors=F)
 		}
-		outZip<-unzip(genZipFile, files = gensToExtract, overwrite = TRUE,exdir = idTempFolder, unzip = "internal",)
 		
-		f<-file(paste(idTempFolder,"/samples.txt",sep=""),"w")
-		writeLines("ID_1 ID_2 missing sex",f)
-		writeLines("0 0 0 D",f)
-		writeLines("John Doe 0.0 2 ",f)#gender probably doesn't matter here
-		close(f)
-		
-		genotypes<-data.frame(genotype=vector(),stringsAsFactors=F)
-		
-		#looping over all chromosomes and extracting the relevant genotypes in each using gtools
-		for(chr in chromosomes){
-			
-			#This is wrapped in a try block, because it has previously failed from unpredictble memory issues, so it's better to give a few tries
-			for(tryCount in 1:5){
-				print(paste("Getting ped and map file at chr",chr," - try",tryCount))
-				gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
-				snpsHere<-rownames(requestDeNovo)[requestDeNovo[,"chr_name"]%in%chr]
-				write.table(snpsHere,file=paste(idTempFolder,"/snps_in_chr",chr,".txt",sep=""),quote=F,row.names=F,col.names=F)
-				cmd1<-paste(gtools," -S --g " , gen, " --s ",idTempFolder,"/samples.txt --inclusion ",idTempFolder,"/snps_in_chr",chr,".txt",sep="")
-				system(cmd1)
-				subsetFile<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset",sep="")
-				if(!file.exists(subsetFile)){
-					print(paste("Did not find any of the SNPs on chr",chr))	
-					next
-				}
-				cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold 0.7",sep="")
-				system(cmd2)
-				
-				
-				ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]],silent=T)
-				map<-try(read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE),silent=T)
-				
-				if(class(ped)!="try-error" & class(map)!="try-error"){
-					ped<-ped[7:length(ped)]
-					genotypes_here<-data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F)
-					break
-				}else{
-					genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
-				}
+		#if any normal style chromosome names are in use the gen files
+		if(any(c(as.character(1:22),"X")%in%chromosomes)){
+			gensToExtract<-paste(uniqueID,"_chr",chromosomes,".gen",sep="")
+			if(!all(gensToExtract%in%contents[,"Name"])){
+				missing<-gensToExtract[!gensToExtract%in%contents[,"Name"]]
+				stop(paste("These were missing in the zip-gen file:",paste(missing,collapse=", ")))
 			}
-			genotypes<-rbind(genotypes,genotypes_here)
+			outZip<-unzip(genZipFile, files = gensToExtract, overwrite = TRUE,exdir = idTempFolder, unzip = "internal",)
+			
+			f<-file(paste(idTempFolder,"/samples.txt",sep=""),"w")
+			writeLines("ID_1 ID_2 missing sex",f)
+			writeLines("0 0 0 D",f)
+			writeLines("John Doe 0.0 2 ",f)#gender probably doesn't matter here
+			close(f)
+			
+			
+			#looping over all chromosomes and extracting the relevant genotypes in each using gtools
+			for(chr in chromosomes){
+				
+				#This is wrapped in a try block, because it has previously failed from unpredictble memory issues, so it's better to give a few tries
+				for(tryCount in 1:5){
+					print(paste("Getting ped and map file at chr",chr," - try",tryCount))
+					gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
+					snpsHere<-rownames(requestDeNovo)[requestDeNovo[,"chr_name"]%in%chr]
+					write.table(snpsHere,file=paste(idTempFolder,"/snps_in_chr",chr,".txt",sep=""),quote=F,row.names=F,col.names=F)
+					cmd1<-paste(gtools," -S --g " , gen, " --s ",idTempFolder,"/samples.txt --inclusion ",idTempFolder,"/snps_in_chr",chr,".txt",sep="")
+					system(cmd1)
+					subsetFile<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset",sep="")
+					if(!file.exists(subsetFile)){
+						print(paste("Did not find any of the SNPs on chr",chr))	
+						next
+					}
+					cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold 0.7",sep="")
+					system(cmd2)
+					
+					
+					ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]],silent=T)
+					map<-try(read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE),silent=T)
+					
+					if(class(ped)!="try-error" & class(map)!="try-error"){
+						ped<-ped[7:length(ped)]
+						genotypes_here<-data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F)
+						break
+					}else{
+						genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
+					}
+				}
+				genotypes<-rbind(genotypes,genotypes_here)
+			}
 		}
+		
 		
 		genotypes[genotypes[,"genotype"]%in%"N/N","genotype"]<-NA
 		stillMissing<-rownames(requestDeNovo)[!rownames(requestDeNovo)%in%rownames(genotypes)]
@@ -639,7 +656,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 			SNPs_to_analyze<-read.table(paste(module,"/SNPs_to_analyze.txt",sep=""),sep="\t",stringsAsFactors=F,header=T)
 			if(!all(c("SNP","chr_name")%in%colnames(SNPs_to_analyze)))stop(paste("In",module,"a SNPs_to_analyze file was found that lacked the SNP and chr_name column"))
 			SNPs_to_analyze[,"chr_name"]<-as.character(SNPs_to_analyze[,"chr_name"])
-			if(!all(SNPs_to_analyze[,"chr_name"]%in%c(1:22,"X")))stop(paste("In",module,"a SNPs_to_analyze had a chr_name column that contained something else than 1:22 and X"))
+			if(!all(SNPs_to_analyze[,"chr_name"]%in%c(1:22,"X","input")))stop(paste("In",module,"a SNPs_to_analyze had a chr_name column that contained something else than 1:22 and X"))
 			all_SNPs<-rbind(all_SNPs,SNPs_to_analyze[,c("SNP","chr_name")])
 			
 		}
@@ -667,8 +684,8 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 				print(genotypes)
 			}
 		}
-# 		cmd1 <-	paste("sudo chown shiny /home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.gz")
-# 		system(cmd1)
+		# 		cmd1 <-	paste("sudo chown shiny /home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.gz")
+		# 		system(cmd1)
 	}
 }
 
@@ -691,7 +708,7 @@ make_overview_of_samples<-function(verbose=T){
 	for(uniqueID in uniqueIDs){
 		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
 		if(file.exists(pDataFile)){
-		all_pData[[uniqueID]]<-read.table(pDataFile,header=T,stringsAsFactors=F)
+			all_pData[[uniqueID]]<-read.table(pDataFile,header=T,stringsAsFactors=F)
 		}else{
 			if(verbose)print(paste("Didn't find a pData file for",uniqueID))	
 		}
