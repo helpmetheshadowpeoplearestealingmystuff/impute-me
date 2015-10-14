@@ -506,7 +506,10 @@ get_genotypes<-function(
 			cmd0 <- paste("grep -E '",paste(paste(snpsFromInput,"\t",sep=""),collapse="|"),"' ",outZip,sep="")
 			input_genotypes<-system(cmd0,intern=T)
 			input_genotypes<-do.call(rbind,strsplit(input_genotypes,"\t"))
-			genotypes<-data.frame(row.names=input_genotypes[,1],genotype= sub("\r$","",input_genotypes[,4]),stringsAsFactors=F)
+			input_genotypes[,4]<-sub("\r$","",input_genotypes[,4])
+			if(any(nchar(input_genotypes[,4])!=2))stop("input data must have length 2 genotypes")
+			input_genotypes[,4]<-paste(substr(input_genotypes[,4],1,1),substr(input_genotypes[,4],2,2),sep="/")
+			genotypes<-data.frame(row.names=input_genotypes[,1],genotype= ,stringsAsFactors=F)
 		}else{
 			genotypes<-data.frame(genotype=vector(),stringsAsFactors=F)
 		}
