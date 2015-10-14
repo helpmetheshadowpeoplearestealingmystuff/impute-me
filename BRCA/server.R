@@ -34,7 +34,7 @@ shinyServer(function(input, output) {
 		
 		
 		BRCA_table_file <-"/srv/shiny-server/gene-surfer/BRCA/SNPs_to_analyze.txt"
-		BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F)
+		BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F,row.names=1)
 
 		
 		#get genotypes and calculate gheight
