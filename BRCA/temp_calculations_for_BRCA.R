@@ -89,9 +89,26 @@ keep3<-consequence[,"polyphen_prediction"]%in%"deleterious"
 
 consequence<-consequence[keep1 | keep2 | keep3,]
 
-consequence<-consequence[order(factor(consequence[,"polyphen_prediction"],levels=c("","probably damaging","possibly damaging","unknown","benign"))),]
+consequence[,"polyphen_prediction"]<-factor(consequence[,"polyphen_prediction"],levels=c("","probably damaging","possibly damaging","unknown","benign"))
+
+consequence<-consequence[order(consequence[,"polyphen_prediction"]),]
 
 
 head(consequence)
 colnames(consequence)[1]<-c("SNP")
+
+
+duplicates<-consequence[duplicated(consequence[,"SNP"]),"SNP"]
+for(duplicate in duplicates){
+	print(nrow(consequence))
+	w<-which(consequence[,"SNP"]%in%duplicate)
+	consequence[w,]
+	omit<-w[order(consequence[w,"polyphen_prediction"])[2:length(w)]]
+	consequence<-consequence[!(1:nrow(consequence))%in%omit,]
+	print(nrow(consequence))
+	
+}
+
+
+
 write.table(consequence,file="BRCA/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")

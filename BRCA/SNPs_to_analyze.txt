@@ -1,20 +1,77 @@
 SNP	chrom_start	chr_name	polyphen_prediction	sift_prediction	consequence_type_tv
-rs1800744	43074471	17	benign	deleterious - low confidence	missense_variant
+rs11571833	32398489	13			stop_gained
+rs28897687	43091823	17			coding_sequence_variant
+rs80356888	43104173	17			stop_gained
+rs11571747	32371035	13	probably damaging	deleterious	missense_variant
+rs11571769	32379413	13	probably damaging	deleterious	missense_variant
+rs145605603	32337575	13	probably damaging	deleterious	missense_variant
+rs148618542	32340324	13	probably damaging	deleterious	missense_variant
+rs1799950	43094464	17	probably damaging	deleterious	missense_variant
+rs1801406	32337751	13	probably damaging	deleterious	missense_variant
+rs185012573	32356464	13	probably damaging	deleterious	missense_variant
+rs186224762	32363306	13	probably damaging	deleterious	missense_variant
+rs186810431	32344639	13	probably damaging	deleterious	missense_variant
+rs191744583	32337435	13	probably damaging	deleterious	missense_variant
+rs192655097	43093075	17	probably damaging	deleterious	missense_variant
+rs28897728	32338940	13	probably damaging	deleterious	missense_variant
+rs28897745	32363196	13	probably damaging	deleterious	missense_variant
+rs28897754	32379412	13	probably damaging	deleterious	missense_variant
+rs4987047	32379392	13	probably damaging	deleterious	missense_variant
+rs55689095	32357836	13	probably damaging	deleterious	missense_variant
+rs55914168	43093180	17	probably damaging	deleterious	missense_variant
+rs56121817	32398388	13	probably damaging	deleterious	missense_variant
+rs56128296	43094394	17	probably damaging	deleterious	missense_variant
+rs56158747	43071232	17	probably damaging	deleterious	missense_variant
+rs56309455	32398634	13	probably damaging	deleterious	missense_variant
+rs80357272	43092083	17	probably damaging	deleterious	missense_variant
+rs80358600	32337870	13	probably damaging	deleterious	missense_variant
+rs80359065	32363389	13	probably damaging	deleterious	missense_variant
+rs80359105	32370993	13	probably damaging	deleterious	missense_variant
+rs11571640	32332442	13	possibly damaging	deleterious	missense_variant
+rs183119644	43092021	17	possibly damaging	deleterious	missense_variant
+rs184374817	43092887	17	possibly damaging	tolerated	missense_variant
+rs28897689	43091492	17	possibly damaging	tolerated	missense_variant
+rs28897706	32332456	13	possibly damaging	tolerated	missense_variant
+rs55953736	32340702	13	possibly damaging	deleterious	missense_variant
+rs56214134	43091931	17	possibly damaging	deleterious	missense_variant
+rs59004709	32379467	13	possibly damaging	tolerated	missense_variant
+rs80356892	43092965	17	possibly damaging	deleterious	missense_variant
+rs80358408	32332601	13	possibly damaging	tolerated	missense_variant
+rs80358486	32336452	13	possibly damaging	tolerated	missense_variant
+rs80358531	32319289	13	possibly damaging	deleterious	missense_variant
+rs80358762	32316513	13	possibly damaging	deleterious	missense_variant
+rs11571746	32370971	13	unknown	deleterious - low confidence	start_lost
+rs145631871	32396088	13	unknown		missense_variant
+rs150600452	32375396	13	unknown		missense_variant
+rs182550445	32375359	13	unknown	tolerated - low confidence	missense_variant
+rs11571653	32336705	13	benign	tolerated	missense_variant
+rs11571657	32339995	13	benign	deleterious	missense_variant
+rs11571659	32340767	13	benign	deleterious	missense_variant
+rs11571707	32356461	13	benign	tolerated	missense_variant
+rs11571831	32398243	13	benign	tolerated	missense_variant
+rs117187202	32338731	13	benign	tolerated	missense_variant
+rs143667871	32338607	13	benign	tolerated	missense_variant
+rs144848	32332592	13	benign	tolerated	missense_variant
+rs144853230	43092551	17	benign	tolerated	missense_variant
+rs146351301	32340038	13	benign	tolerated	missense_variant
+rs149474191	32340063	13	benign	tolerated	missense_variant
+rs149753706	32337193	13	benign	tolerated	missense_variant
+rs16942	43091983	17	benign	tolerated	missense_variant
+rs169547	32355250	13	benign	tolerated	missense_variant
+rs1799944	32337326	13	benign	tolerated	missense_variant
+rs1799954	32340455	13	benign	deleterious	missense_variant
+rs1799967	43070958	17	benign	tolerated	missense_variant
+rs1800704	43092507	17	benign	tolerated	missense_variant
+rs1800709	43093010	17	benign	deleterious	missense_variant
 rs1801426	32398747	13	benign	tolerated	missense_variant
 rs183331660	43079334	17	benign	tolerated	missense_variant
 rs183478654	32339696	13	benign	tolerated	missense_variant
 rs183920365	32337834	13	benign	tolerated	missense_variant
 rs184442109	32346854	13	benign	tolerated	missense_variant
-rs191872612	43094848	17	benign	deleterious	missense_variant
-rs191872612	43094848	17	benign	tolerated	missense_variant
 rs2219594	32339036	13	benign	tolerated	missense_variant
 rs2227943	32337141	13	benign	deleterious	missense_variant
 rs2227944	32337315	13	benign	deleterious	missense_variant
 rs2227945	43092113	17	benign	tolerated	missense_variant
-rs28897675	43094795	17	benign	tolerated	missense_variant
-rs28897675	43094795	17	benign	deleterious - low confidence	missense_variant
-rs28897687	43091823	17	benign	tolerated	missense_variant
-rs28897689	43091492	17	benign	tolerated	missense_variant
 rs28897708	32332992	13	benign	tolerated	missense_variant
 rs28897710	32333270	13	benign	tolerated	missense_variant
 rs28897716	32337158	13	benign	tolerated	missense_variant
@@ -28,9 +85,6 @@ rs41293521	32394724	13	benign	tolerated	missense_variant
 rs45574331	32354870	13	benign	tolerated	missense_variant
 rs4986845	43093364	17	benign	tolerated	missense_variant
 rs4986847	43092758	17	benign	deleterious	missense_variant
-rs4986847	43092758	17	benign	tolerated	missense_variant
-rs4986850	43093454	17	benign	deleterious	missense_variant
-rs4986850	43093454	17	benign	tolerated	missense_variant
 rs4986852	43092412	17	benign	tolerated	missense_variant
 rs4986854	43071031	17	benign	tolerated	missense_variant
 rs4986860	32355172	13	benign	tolerated	missense_variant
@@ -39,23 +93,16 @@ rs4987048	32340059	13	benign	tolerated	missense_variant
 rs4987117	32340099	13	benign	tolerated	missense_variant
 rs55638633	32337410	13	benign	tolerated	missense_variant
 rs55639415	32339553	13	benign	deleterious	missense_variant
-rs55688530	43097280	17	benign	tolerated	missense_variant
-rs55688530	43097280	17	benign	deleterious	missense_variant
 rs55720177	43094104	17	benign	tolerated	missense_variant
 rs55794205	32340677	13	benign	tolerated	missense_variant
 rs55800493	32332518	13	benign	tolerated	missense_variant
 rs55815649	43074406	17	benign	tolerated	missense_variant
-rs55815649	43074406	17	benign	tolerated - low confidence	missense_variant
 rs55816687	32336493	13	benign	tolerated	missense_variant
 rs55933907	32380124	13	benign	tolerated	missense_variant
 rs55969723	32338542	13	benign	deleterious	missense_variant
 rs55977008	32355003	13	benign	tolerated	missense_variant
 rs56082113	43093073	17	benign	tolerated	missense_variant
-rs56158747	43071232	17	benign	deleterious	missense_variant
 rs56191579	32340486	13	benign	tolerated	missense_variant
-rs56195342	43063368	17	benign	tolerated	missense_variant
-rs56195342	43063368	17	benign	deleterious	missense_variant
-rs56214134	43091931	17	benign	deleterious	missense_variant
 rs56248502	32338445	13	benign	tolerated	missense_variant
 rs56336919	43091990	17	benign	tolerated	missense_variant
 rs68071147	32326142	13	benign	deleterious	missense_variant
@@ -63,28 +110,14 @@ rs70953664	32338596	13	benign	tolerated	missense_variant
 rs74047012	32356593	13	benign	tolerated	missense_variant
 rs75419644	32333276	13	benign	tolerated	missense_variant
 rs766173	32332343	13	benign	deleterious	missense_variant
-rs766173	32332343	13	benign	tolerated	missense_variant
-rs78951648	43090963	17	benign	tolerated	missense_variant
-rs78951648	43090963	17	benign	deleterious	missense_variant
 rs79483201	32332421	13	benign	tolerated	missense_variant
 rs799917	43092919	17	benign	deleterious	missense_variant
-rs799917	43092919	17	benign	tolerated	missense_variant
-rs80356892	43092965	17	benign	deleterious	missense_variant
 rs80356895	43093525	17	benign	tolerated	missense_variant
-rs80356920	43047699	17	benign	deleterious	missense_variant
-rs80356920	43047699	17	benign	tolerated	missense_variant
-rs80356920	43047699	17	benign	tolerated - low confidence	missense_variant
 rs80357036	43091696	17	benign	tolerated	missense_variant
-rs80357075	43076562	17	benign	tolerated	missense_variant
-rs80357075	43076562	17	benign	deleterious	missense_variant
 rs80357090	43097266	17	benign	tolerated	missense_variant
 rs80357280	43091708	17	benign	tolerated	missense_variant
-rs80357371	43093745	17	benign	deleterious	missense_variant
-rs80357371	43093745	17	benign	tolerated	missense_variant
 rs80357459	43092448	17	benign	tolerated	missense_variant
 rs80358487	32336474	13	benign	deleterious	missense_variant
-rs80358487	32336474	13	benign	tolerated	missense_variant
-rs80358600	32337870	13	benign	tolerated	missense_variant
 rs80358698	32339025	13	benign	tolerated	missense_variant
 rs80358732	32339451	13	benign	tolerated	missense_variant
 rs80358899	32341103	13	benign	tolerated	missense_variant
