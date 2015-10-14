@@ -36,7 +36,7 @@ shinyServer(function(input, output) {
 		BRCA_table_file <-"/srv/shiny-server/gene-surfer/BRCA/SNPs_to_analyze.txt"
 		BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F)
 
-		BRCA_table[,"SNP"]<-rownames(BRCA_table)
+		rownames(BRCA_table)<-BRCA_table[,"SNP"]
 		BRCA_table[BRCA_table[,"chr_name"]%in%13,"gene"]<-"BRCA2"
 		BRCA_table[BRCA_table[,"chr_name"]%in%17,"gene"]<-"BRCA1"
 		
