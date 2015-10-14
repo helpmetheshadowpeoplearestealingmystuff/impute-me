@@ -516,7 +516,7 @@ get_genotypes<-function(
 		
 		#if any normal style chromosome names are in use the gen files
 		if(any(c(as.character(1:22),"X")%in%chromosomes)){
-			gensToExtract<-paste(uniqueID,"_chr",chromosomes,".gen",sep="")
+			gensToExtract<-paste(uniqueID,"_chr",chromosomes[chromosomes%in%c(as.character(1:22),"X")],".gen",sep="")
 			if(!all(gensToExtract%in%contents[,"Name"])){
 				missing<-gensToExtract[!gensToExtract%in%contents[,"Name"]]
 				stop(paste("These were missing in the zip-gen file:",paste(missing,collapse=", ")))
