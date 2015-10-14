@@ -509,7 +509,7 @@ get_genotypes<-function(
 			input_genotypes[,4]<-sub("\r$","",input_genotypes[,4])
 			if(any(nchar(input_genotypes[,4])!=2))stop("input data must have length 2 genotypes")
 			input_genotypes[,4]<-paste(substr(input_genotypes[,4],1,1),substr(input_genotypes[,4],2,2),sep="/")
-			genotypes<-data.frame(row.names=input_genotypes[,1],genotype= ,stringsAsFactors=F)
+			genotypes<-data.frame(row.names=input_genotypes[,1],genotype=input_genotypes[,4],stringsAsFactors=F)
 		}else{
 			genotypes<-data.frame(genotype=vector(),stringsAsFactors=F)
 		}
