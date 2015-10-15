@@ -614,7 +614,7 @@ get_GRS<-function(genotypes, betas){
 	
 	if(class(genotypes)!="data.frame")stop(paste("genotypes must be data.frame, not",class(genotypes)))
 	if(!"genotype"%in%colnames(genotypes))stop(paste("genotypes must have a column genotypes"))
-	if(unique(sub("[0-9].+$","",rownames(genotypes)))!="rs")stop("genotypes must have rownames starting with rs")
+	if(!all(unique(sub("[0-9].+$","",rownames(genotypes)))%in%c("i","rs")))stop("genotypes must have rownames starting with rs")
 	
 	if(class(betas)!="data.frame")stop(paste("genotypes must be data.frame, not",class(betas)))
 	necessary_columns<-c("effect_allele","non_effect_allele","Beta")
