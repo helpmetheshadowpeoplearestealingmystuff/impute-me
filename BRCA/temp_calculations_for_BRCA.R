@@ -127,6 +127,14 @@ extras<-data.frame(
 consequence[,"chr_name"]<-as.character(consequence[,"chr_name"])
 out<-rbind(extras,consequence)
 
+
+
+#addressing the non rs-ID ones
+check<-sub("\\:[ID]$","",missing)
+check<-grep("^rs",check,invert=T,value=T)
+cat(paste(sub("\\:"," ",check),1+as.numeric(sub("chr..\\:","",check))," ",check,"\n"))
+length(check)
+
 write.table(out,file="BRCA/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
 
 
