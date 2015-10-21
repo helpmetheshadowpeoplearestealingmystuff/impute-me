@@ -31,6 +31,32 @@ if(runningJobCount>(maxImputations-1)){
 }
 
 
+#money saving implementation. If this is hub and there's a job, just send an email an turn on a node server. That way server can run on a small computer
+if(serverRole== "Hub"){
+	
+	mailingResult<-try(stop(),silent=TRUE)
+	while(class(mailingResult) == "try-error"){
+		mailingResult<-try(send.mail(from = "analyzer6063@gmail.com",
+																 to = "lassefolkersen@gmail.com",
+																 subject = "Imputation is waiting",
+																 body = "There is an imputation waiting. Switch on node",
+																 html=T,
+																 smtp = list(
+																 	host.name = "smtp.gmail.com", 
+																 	port = 465, 
+																 	user.name = "analyzer6063@gmail.com", 
+																 	passwd = "ei1J#bQA^FA$", 
+																 	ssl = TRUE),
+																 authenticate = TRUE,
+																 send = TRUE))
+		Sys.sleep(10)
+		
+	}
+	
+	
+}
+
+
 #If the computer is not too busy and the serverRole is node - we fetch a job
 if(serverRole== "Node"){
 	cmd1 <- paste("ssh ubuntu@",hubAddress," ls /home/ubuntu/imputations/",sep="")
@@ -121,8 +147,8 @@ timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
 md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
 gender<-system(paste("cut --delimiter=' ' -f 5 ",runDir,"/step_1.ped",sep=""),intern=T)
 f<-file(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),"w")
-writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender"),collapse="\t"),f)
-writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender),collapse="\t"),f)
+writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion"),collapse="\t"),f)
+writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,FALSE),collapse="\t"),f)
 close(f)
 
 
