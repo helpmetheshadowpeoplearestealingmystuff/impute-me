@@ -53,7 +53,7 @@ if(serverRole== "Hub"){
 		
 	}
 	
-	
+	stop()
 }
 
 
