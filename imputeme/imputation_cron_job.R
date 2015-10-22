@@ -17,12 +17,16 @@ source("/srv/shiny-server/gene-surfer/functions.R")
 #First checking if node is already at max load (maxImputations)
 foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
 runningJobCount<-0
+remoteRunningJobCount<-0
 for(folderToCheck in foldersToCheck){
 	jobStatusFile<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
 	if(file.exists(jobStatusFile)){
 		jobStatus<-read.table(jobStatusFile,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
 		if(jobStatus=="Job is running"){
 			runningJobCount<-runningJobCount+1
+		}
+		if(jobStatus=="Job is remote-running"){
+			remoteRunningJobCount<-remoteRunningJobCount+1
 		}
 	}
 }
@@ -33,7 +37,7 @@ if(runningJobCount>(maxImputations-1)){
 
 #money saving implementation. If this is hub and there's a job, just send an email an turn on a node server. That way server can run on a small computer
 if(serverRole== "Hub"){
-	if(length(foldersToCheck)>0){
+	if(length(foldersToCheck) - runningJobCount - remoteRunningJobCount >0){
 		mailingResult<-try(stop(),silent=TRUE)
 		while(class(mailingResult) == "try-error"){
 			mailingResult<-try(send.mail(from = "analyzer6063@gmail.com",
@@ -52,7 +56,6 @@ if(serverRole== "Hub"){
 			Sys.sleep(10)
 			
 		}
-		
 		stop("Stopping because the node need to be switched on")
 	}
 }
