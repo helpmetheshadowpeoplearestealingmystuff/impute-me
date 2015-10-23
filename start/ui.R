@@ -25,7 +25,20 @@ shinyUI(fluidPage(
 			HTML("<h1>Welcome to impute.me</h1>
 				<br>
 			<br>
-			This is the starting page for a cutting edge genetics analysis tools. If you use this service, please consider supporting our <a href='http://kck.st/1VlrTlf'>kickstarter campaign</a>. These are the current modules:<br>
+
+
+			This is the starting page for a cutting edge genetics analysis tools.<br><br>
+
+			It can contribute better and more useful genetic analysis - if you already have genome-wide data from a direct-to-consumer service.<br><br>
+
+		Because of expenses related to the building of the web-site it is currently only for paying backers of our <a href='http://kck.st/1VlrTlf'>kickstarter campaign</a> campaign. The project however is fundamentally non-profit and aim to driven only by donations<br><br>
+
+		We take your anonymity much more seriously than any other online genetics-service: Your genome is only kept for two weeks for download and analysis, after which it is deleted from our servers. Also, we only want as little information about you as absolute required: an email to send the results to is the only requirement.<br><br>
+
+	The code for the server is open-source and freely available at <a href='https://github.com/lassefolkersen/gene-surfer'>github</a>.<br><br>
+			
+
+		These are the current modules:<br>
 			<h2><a href='http://www.impute.me/imputeme'>ImputeMe</a> </h2>The core of the analysis engine. This advanced algorithm will take the 0.7M genotypes that customers of direct-to-consumer genetic testing companies usually receive. It will then analyze them for about 24 hours, using ethnicity information from the 1000 genomes project. Afterwards it will return an expanded version of 4M known imputed genotypes - 'guessed', but at a very high confidence level.
 			<h2><a href='http://www.impute.me/guessMyHeight'>GuessMyHeight</a> </h2>A module that uses the 697 recently discovered main-drivers of variability in human height, and make a prediction of your height. In the majority of cases this should be accurate to within +/-5 cms, but do keep in mind that environment also plays a large role in most traits. For children this should be taken as expected final height.
 			<h2><a href='http://www.impute.me/hairColour'>GuessMyHairColour</a> </h2>A module that attempts to guess your likely hair-colour using both black-brown-blonde scales and red-or-not scales in combination. Currently very much in beta-testing. If you have red-hair please write me and help with the tuning of the parameters.
