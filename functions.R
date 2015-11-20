@@ -367,16 +367,16 @@ summarize_imputation<-function(
 		system(cmd5)
 		
 		#re-order to 23andme format
-		cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,".tped  > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
+		cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,".tped  > step_10_chr",chr,".txt",sep="")
 		system(cmd6)
 		
 		
 		#The step 8 and also 9 sometime fails for no apparent reason. Probably memory. We therefore make a checkup, where
 		#it is checked if the file actually exists and if not - a more complicated step splits it up in chunks.
 		#It's not looking nice, but at least the split-up only needs to run in very low memory settings
-		fileExists<-file.exists(paste(sub("\\.gen$","",genFile),".23andme.txt",sep=""))
+		fileExists<-file.exists(paste("step_10_chr",chr,".txt",sep=""))
 		if(fileExists){
-			size<-file.info(paste(sub("\\.gen$","",genFile),".23andme.txt",sep=""))["size"]
+			size<-file.info(paste("step_10_chr",chr,".txt",sep=""))["size"]
 		}else{
 			size<-0	
 		}
@@ -398,9 +398,14 @@ summarize_imputation<-function(
 				cmd10<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,"_",ch,".tped  > step_9_chr",chr,"_split_",ch,".txt",sep="")
 				system(cmd10)
 			}
-			cmd11<-paste("cat ",paste(paste("step_9_chr",chr,"_split_",sub("^.+\\.","",chunks),".txt",sep=""),collapse=" ")," > ",sub("\\.gen$","",genFile),".23andme.txt",sep="")
+			cmd11<-paste("cat ",paste(paste("step_9_chr",chr,"_split_",sub("^.+\\.","",chunks),".txt",sep=""),collapse=" ")," > step_10_chr",chr,".txt",sep="")
 			system(cmd11)			
 		}
+		
+		#remove NN
+		cmd12 <- paste("awk '{ if($4 != \"NN\") print}' step_10_chr",chr,".txt  >", sub("\\.gen$","",genFile),".23andme.txt",sep="")
+		system(cmd12)
+
 	}
 	
 	

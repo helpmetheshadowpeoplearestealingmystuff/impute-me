@@ -1,0 +1,17 @@
+3	cds-synon	synonymous change. ex. rs248, GAG->GAA, both produce amino acid: Glu	2003-02-03 16:01:00.0	cSNP 	1	1	1		SO:0001819
+6	intron	intron. ex. rs249.	2003-02-03 16:01:00.0	other	0			8	SO:0001627
+8	cds-reference	contig reference	2003-02-03 16:01:00.0	other	1				
+9	synonymy unknown	coding: synonymy unknown. Not used since 2003.	2003-02-03 16:01:00.0	other	1				
+13	nearGene-3	within 3' 0.5kb to a gene. ex.  rs3916027  is at NT_030737.9 pos7669796, within 500 bp of UTR starts 7669698 for NM_000237.2.	2006-11-21 00:00:00.0	other	0			4	SO:0001634
+15	nearGene-5	within 5' 2kb to a gene. ex. rs7641128 is at NT_030737.9 pos7641128, with 2K bp of UTR starts 7641510 for NM_000237.2.	2006-11-21 00:00:00.0	other	0			2	SO:0001636
+20	intergenic	variant between two genes, outside of 2Kb upstream and 500bp downstream of a gene	2012-01-06 11:54:00.0	other	0			1024	SO:0001628
+30	ncRNA	variant on non-coding RNA(NCBI Refseq prefix NR,XR).	2012-01-06 13:04:00.0	other	0			2048	SO:0001619
+41	STOP-GAIN	changes to STOP codon. ex.  rs328, TCA->TGA, Ser to terminator.	2005-08-01 00:00:00.0	cSNP 	1	1	128		SO:0001587
+42	missense	alters codon to make an altered amino acid in protein product. ex.  rs300, ACT->GCT, Thr->Ala.	2005-08-01 00:00:00.0	cSNP 	1	1	4		SO:0001583
+43	STOP-LOSS	changes STOP codon to other non stop codon	2010-09-13 16:00:00.0	cSNP 	1		256		SO:0001578
+44	frameshift	indel snp causing frameshift.	2005-08-01 00:00:00.0	cSNP 	1	1	8		SO:0001589
+45	cds-indel	indel snp with length of multiple of 3bp, not causing frameshift.	2010-01-07 10:12:00.0	cSNP 	1				SO:0001650
+53	UTR-3	3 prime untranslated region. ex.  rs3289.	2005-08-01 00:00:00.0	other	0	1		128	SO:0001624
+55	UTR-5	5 prime untranslated region. ex.  rs1800590.	2005-08-01 00:00:00.0	other	0	1		64	SO:0001623
+73	splice-3	3 prime acceptor dinucleotide. The last two bases in the 3 prime end of an intron. Most intron ends with AG.ex.rs193227 is in acceptor site.	2005-08-01 00:00:00.0	other	0			32	SO:0001574
+75	splice-5	5 prime donor dinucleotide. 1st two bases in the 5 prime end of the intron. Most intron starts is GU. ex.rs8424 is in donor site.	2005-08-01 00:00:00.0	other	0			16	SO:0001575
