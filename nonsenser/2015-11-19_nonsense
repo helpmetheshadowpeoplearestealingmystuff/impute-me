@@ -1,3 +1,0 @@
-#filter: snp142CodingDbSnp.funcCodes = '41,'
-#bin	chrom	chromStart	chromEnd	name	transcript	frame	alleleCount	funcCodes	alleles	codons	peptides
-# No results passing filter.
