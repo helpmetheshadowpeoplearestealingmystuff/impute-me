@@ -386,7 +386,7 @@ summarize_imputation<-function(
 			print(paste("retrying step 8-9 command for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
 			cmd7 <- paste("split --verbose --lines 5000000 step_8_chr",chr,".gen step_8_extra_chr",chr,".gen",sep="")
 			system(cmd7)
-			chunks<-grep(paste("step_8_extra_chr",chr,".gena[a-z]$",sep=""),list.files(runDir),value=T)
+			chunks<-grep(paste("step_8_extra_chr",chr,"\\.gena[a-z]$",sep=""),list.files(runDir),value=T)
 			for(chunk in chunks){
 				ch<-sub("^.+\\.","",chunk)
 				cmd8 <- paste(gtools," -G --g ",chunk," --s ",sampleFile," --chr ",chr," --snp",sep="")
