@@ -331,7 +331,8 @@ summarize_imputation<-function(
 	
 	for(chr in chromosomes){
 		print(paste("Merging chunks in chromosome",chr))
-		s <-grep(paste("^step_7_chr",chr,sep=""), step7ResultsFiles,value=T)
+		s <-grep(paste("^step_7_chr",chr,"_",sep=""), step7ResultsFiles,value=T)
+		print(paste("For chr",chr,"these were the files to merge:",paste(s,collapse=", ")))
 		s<-s[order(as.numeric(sub("^.+_","",s)))]
 		cmd1<-paste("cat ",paste(s,collapse=" ")," > ",uniqueID,"_chr",chr,".gen",sep="")
 		system(cmd1)
