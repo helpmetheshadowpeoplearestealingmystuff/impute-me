@@ -406,7 +406,7 @@ summarize_imputation<-function(
 		#remove NN
 		cmd12 <- paste("awk '{ if($4 != \"NN\") print}' step_10_chr",chr,".txt  >", sub("\\.gen$","",genFile),".23andme.txt",sep="")
 		system(cmd12)
-
+		
 	}
 	
 	
@@ -454,7 +454,14 @@ summarize_imputation<-function(
 get_genotypes<-function(
 	uniqueID,
 	request,
-	gtools="/home/ubuntu/impute_dir/gtool"){
+	gtools="/home/ubuntu/impute_dir/gtool",
+	namingLabel="cached" #should default to cached, but it's a way of separately saving larger cached sets in a different file
+){
+	
+	
+	#checking
+	if(class(namingLabel)!="character")stop(paste("namingLabel must be character, not",class(namingLabel)))
+	if(length(namingLabel)!=1)stop(paste("namingLabel must be lengh 1, not",length(namingLabel)))
 	
 	
 	#checking data in uniqueID's home folder
@@ -466,7 +473,7 @@ get_genotypes<-function(
 	if(!file.exists(genZipFile))stop(paste("Did not find a .gen file in idFolder at",idFolder))
 	inputZipFile<-paste(idFolder,"/",uniqueID,".input_data.zip",sep="")
 	if(!file.exists(inputZipFile))stop(paste("Did not find a .input_data file in idFolder at",idFolder))
-	cachedGenotypeFile<-paste(idFolder,"/",uniqueID,".cached.gz",sep="")
+	cachedGenotypeFile<-paste(idFolder,"/",uniqueID,".",namingLabel,".gz",sep="")
 	if(!file.exists(cachedGenotypeFile))print(paste("Did not find a chachedGenotypeFile file in idFolder at",idFolder,"but that's no problem"))
 	
 	#creating a temp folder to use
@@ -630,8 +637,8 @@ get_GRS<-function(genotypes, betas){
 	necessary_columns<-c("effect_allele","non_effect_allele","Beta")
 	if(!all(necessary_columns%in%colnames(betas)))stop(paste("betas must have a column",paste(necessary_columns,collapse=", ")))
 	if(!all(unique(sub("[0-9].+$","",rownames(betas)))%in%c("i","rs")))stop("betas must have rownames starting with rs")
-		
-		
+	
+	
 	# if(!all(rownames(genotypes)%in%rownames(betas)))stop("all SNPs in genotypes must be present in betas")
 	if(!all(rownames(betas)%in%rownames(genotypes)))stop("all SNPs in betas must be present in genotypes")
 	
@@ -668,6 +675,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 		if(!all(file.exists(paste("/home/ubuntu/data/",uniqueIDs,sep=""))))stop("Not all UniqueIDs given were found")
 	}
 	
+	#getting a list of SNPs to analyze
 	all_SNPs<-data.frame(SNP=vector(),chr_name=vector(),stringsAsFactors = F)		
 	for(module in list.files("/srv/shiny-server/gene-surfer",full.names=T)){
 		if(!file.info(module)["isdir"])next
@@ -680,6 +688,11 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 			
 		}
 	}
+	
+	
+	
+	
+	
 	
 	#an extra check for non-discrepant chr info
 	if(any(duplicated(all_SNPs[,"SNP"]))){
@@ -703,8 +716,20 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 				print(genotypes)
 			}
 		}
-		# 		cmd1 <-	paste("sudo chown shiny /home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.gz")
-		# 		system(cmd1)
+		
+		genotypes<-try(get_genotypes(uniqueID=uniqueID,request=all_SNPs))
+		
+	}
+	
+	
+	
+	
+	#getting the nonsenser SNPs if possible
+	e<-try(load("/srv/shiny-server/gene-surfer/nonsenser/2015-11-23_all_coding_SNPs.rdata"))
+	if(class(e)!="try-error"){
+		for(uniqueID in uniqueIDs){
+			genotypes<-get_genotypes(uniqueID,coding_snps,namingLabel="cached.nonsenser")
+		}
 	}
 }
 

@@ -124,7 +124,7 @@ coding_snps<-coding_snps[!duplicated(coding_snps[,"Otherinfo"]),] #it's just 39
 rownames(coding_snps)<-coding_snps[,"Otherinfo"]
 coding_snps[,"Otherinfo"]<-NULL
 
-table(coding_snps[,"SIFT_pred"])
+
 
 save(coding_snps, file="2015-11-20_all_coding_SNPs.rdata")
 table(coding_snps[coding_snps[,"SIFT_pred"]%in%"D","Chr"])
@@ -153,16 +153,21 @@ load("2015-11-20_all_coding_SNPs.rdata")
 
 #restart II 2015-11-21
 #These two seemed important to downlaod
+qsub -I -W group_list=allelic_imbalance  -l nodes=1:ppn=1,mem=16gb,walltime=36000
+
 ./annotate_variation.pl -downdb -webfrom annovar -buildver hg19 dbnsfp30a humandb
 ./annotate_variation.pl -downdb -buildver hg19 1000g2012feb humandb
 
 table_annovar=~/downloads/annovar/table_annovar.pl
 humandb=~/downloads/annovar/humandb/
-	
+
+cd /home/people/lasfol/2015-11-23_temp_nonsenser
+
+		
 for i in {22..1}
 do
 echo $i
-awk '{ print $2 "\t" $3 "\t" $3 "\t" substr($4,1,1) "\t" substr($4,2,2) "\t" $1}' id_3700776I4_chr$i.23andme.txt  > out_chr$i.txt
+awk '{ print $2 "\t" $3 "\t" $3 "\t" substr($4,1,1) "\t" substr($4,2,2) "\t" $1}' id_57n662948_chr$i.23andme.txt  > out_chr$i.txt
 $table_annovar out_chr$i.txt $humandb -protocol dbnsfp30a -operation f -build hg19 -nastring . -otherinfo
 awk '{if($6 != ".") print}' out_chr$i.txt.hg19_multianno.txt  > out_short_chr$i.txt
 done
@@ -190,17 +195,50 @@ rownames(coding_snps)<-coding_snps[,"Otherinfo"]
 coding_snps[,"Otherinfo"]<-NULL
 
 table(coding_snps[,"SIFT_pred"])
+colnames(coding_snps)[1]<-"chr_name"
 
-save(coding_snps, file="2015-11-20_all_coding_SNPs.rdata")
+
+save(coding_snps, file="2015-11-23_all_coding_SNPs.rdata")
 table(coding_snps[coding_snps[,"SIFT_pred"]%in%"D","Chr"])
 
 t<-coding_snps[coding_snps[,"SIFT_pred"]%in%"D" & coding_snps[,"Chr"]%in%1,]
 #odd that so many are on chr1
 
-scp lasfol@computerome.cbs.dtu.dk:/home/people/lasfol/2015-11-20_temp_nonsenser/2015-11-20_all_coding_SNPs.rdata /home/ubuntu/misc_files/
+scp lasfol@computerome.cbs.dtu.dk:/home/people/lasfol/2015-11-23_temp_nonsenser/2015-11-23_all_coding_SNPs.rdata /home/ubuntu/misc_files/
 	
 	
 	#but now we have a list of genotyped missense and nonsense mutation. Nice.
 	load("2015-11-20_all_coding_SNPs.rdata")
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+load("2015-11-20_all_coding_SNPs.rdata")
+uniqueID<-"id_57n662948"
+request<-coding_snps
+namingLabel<-"cached.nonsenser"
+
+genotypes<-get_genotypes(uniqueID,request,namingLabel=namingLabel)
 
