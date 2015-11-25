@@ -23,17 +23,17 @@ source("/srv/shiny-server/gene-surfer/functions.R")
 
 ./annotate_variation.pl -filter -dbtype ALL.sites.2015_08 -buildver hg19 -out ex1 example/ex1.avinput humandb/
 	
+	
+	
+	# 	
+	# wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
+	# 
+	# 
+	# ./annotate_variation.pl -filter -dbtype ALL.sites.2015_08 -buildver hg19 -out ex2 humandb/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf humandb/
+	# 
+	# ./annotate_variation.pl -filter -dbtype vcf -buildver hg19 -out ex2 humandb/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf humandb/
+	# 	
 
-	
-# 	
-# wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
-# 
-# 
-# ./annotate_variation.pl -filter -dbtype ALL.sites.2015_08 -buildver hg19 -out ex2 humandb/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf humandb/
-# 
-# ./annotate_variation.pl -filter -dbtype vcf -buildver hg19 -out ex2 humandb/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf humandb/
-# 	
-	
 # 	
 # t<-read.table("hg19_EUR.sites.2015_08.txt",sep="\t",stringsAsFactors=F,nrow=10000)
 # 
@@ -65,10 +65,10 @@ awk '{ print $2 "\t" $3 "\t" $3 "\t" substr($4,1,1) "\t" substr($4,2,2) "\t" $1}
 
 ./annotate_variation.pl -filter -dbtype ALL.sites.2015_08 -buildver hg19 -out ex1 ~/2015-11-20_temp_nonsenser/test_out.txt humandb/
 	
-
-
 	
-./annotate_variation.pl -downdb -buildver hg19 1000g2012feb humandb
+	
+	
+	./annotate_variation.pl -downdb -buildver hg19 1000g2012feb humandb
 ./annotate_variation.pl -filter -dbtype 1000g2012feb_all -out ex5 -buildver hg19 humandb/test_out.txt humandb
 
 
@@ -93,8 +93,8 @@ awk '{ print $2 "\t" $3 "\t" $3 "\t" substr($4,1,1) "\t" substr($4,2,2) "\t" $1}
 
 table_annovar=~/downloads/annovar/table_annovar.pl
 humandb=~/downloads/annovar/humandb/
-
-for i in {22..1}
+	
+	for i in {22..1}
 do
 echo $i
 awk '{ print $2 "\t" $3 "\t" $3 "\t" substr($4,1,1) "\t" substr($4,2,2) "\t" $1}' id_3700776I4_chr$i.23andme.txt  > out_chr$i.txt
@@ -133,10 +133,10 @@ t<-coding_snps[coding_snps[,"SIFT_pred"]%in%"D" & coding_snps[,"Chr"]%in%1,]
 #odd that so many are on chr1
 
 scp lasfol@computerome.cbs.dtu.dk:/home/people/lasfol/2015-11-20_temp_nonsenser/2015-11-20_all_coding_SNPs.rdata /home/ubuntu/misc_files/
-
 	
-#but now we have a list of genotyped missense and nonsense mutation. Nice.
-load("2015-11-20_all_coding_SNPs.rdata")
+	
+	#but now we have a list of genotyped missense and nonsense mutation. Nice.
+	load("2015-11-20_all_coding_SNPs.rdata")
 
 
 
@@ -160,10 +160,10 @@ qsub -I -W group_list=allelic_imbalance  -l nodes=1:ppn=1,mem=16gb,walltime=3600
 
 table_annovar=~/downloads/annovar/table_annovar.pl
 humandb=~/downloads/annovar/humandb/
+	
+	cd /home/people/lasfol/2015-11-23_temp_nonsenser
 
-cd /home/people/lasfol/2015-11-23_temp_nonsenser
 
-		
 for i in {22..1}
 do
 echo $i
@@ -216,29 +216,23 @@ scp lasfol@computerome.cbs.dtu.dk:/home/people/lasfol/2015-11-23_temp_nonsenser/
 
 
 
+# 
+# load("2015-11-20_all_coding_SNPs.rdata")
+# uniqueID<-"id_57n662948"
+# request<-coding_snps
+# namingLabel<-"cached.nonsenser"
+# 
+# genotypes<-get_genotypes(uniqueID,request,namingLabel=namingLabel)
+# 
+#Ok main function updated. Now the main-crawler also gets a separate file with all 8000 non/missense SNPs. Nice. let's analyze them,
 
 
 
 
+uniqueIDs<-list.files("/home/ubuntu/data/")
+e<-load("/srv/shiny-server/gene-surfer/nonsenser/2015-11-23_all_coding_SNPs.rdata")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-load("2015-11-20_all_coding_SNPs.rdata")
-uniqueID<-"id_57n662948"
-request<-coding_snps
-namingLabel<-"cached.nonsenser"
-
-genotypes<-get_genotypes(uniqueID,request,namingLabel=namingLabel)
+for(uniqueID in uniqueIDs){
+	genotypes<-get_genotypes(uniqueID,coding_snps,namingLabel="cached.nonsenser")
+}
 
