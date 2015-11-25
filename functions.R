@@ -604,7 +604,7 @@ get_genotypes<-function(
 	
 	
 	
-	return(genotypes)
+	return(genotypes[rownames(request),])
 	
 }
 

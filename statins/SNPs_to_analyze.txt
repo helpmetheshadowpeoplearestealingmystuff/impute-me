@@ -1,2 +1,2 @@
 SNP	chr_name	Beta	effect_allele	non_effect_allele	ensembl_alleles
-rs4363657 	12	NA	C	T	C/T
+rs4363657	12	NA	C	T	C/T
