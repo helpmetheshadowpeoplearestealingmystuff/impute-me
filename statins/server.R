@@ -43,8 +43,8 @@ shinyServer(function(input, output) {
 		
 		SLCO1B1_table[,"Your genotype"]<-genotypes[rownames(SLCO1B1_table),]
 
-		SLCO1B1_table<-SLCO1B1_table[,c("SNP","Your genotype","effect_allele","non_effect_allele")]
-		colnames(SLCO1B1_table)<-c("SNP","Your genotype","Risk allele","Normal allele")
+		SLCO1B1_table<-SLCO1B1_table[,c("SNP","Your genotype","effect_allele")]
+		colnames(SLCO1B1_table)<-c("SNP","Your genotype","Risk allele")
 		
 		return(SLCO1B1_table)
 		
