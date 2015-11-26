@@ -793,7 +793,7 @@ format_ancestry_com_as_23andme<-function(path){
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
 	
 	testRead<-read.table(path,nrow=10,stringsAsFactors=F,header=T)
-	if(ncol(testRead)!=5){stop("testRead of file didn't have 4 columns (23andme) or 5 columns (ancestry.com)")}
+	if(ncol(testRead)!=5){stop("testRead of file didn't have 5 columns (as it should have when invoking ancestry.com conversion)")}
 	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead seemed like ancestry.com data, but didn't have rs IDs in column 1")
 		
 	
