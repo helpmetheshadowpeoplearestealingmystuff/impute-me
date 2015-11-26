@@ -121,6 +121,7 @@ prepare_23andme_genome<-function(path, email, filename){
 		format_ancestry_com_as_23andme(path)
 
 	}
+	testRead<-read.table(path,nrow=10,stringsAsFactors=F)
 	if(ncol(testRead)!=4)stop("testRead didn't have 4 columns (or 5 for ancestry.com data)")
 	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead didn't have rs IDs in column 1")
 	
