@@ -6,7 +6,7 @@ shinyUI(fluidPage(
 	sidebarLayout(
 		sidebarPanel(
 			
-			textInput(inputId="uniqueID", label = "Unique ID", value = "id_1l431dI24"),
+			textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 			actionButton("goButton","Run analysis"),
 			width=4
 			
