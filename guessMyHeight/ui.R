@@ -6,7 +6,7 @@ shinyUI(fluidPage(
 	sidebarLayout(
 		sidebarPanel(
 			
-			textInput(inputId="uniqueID", label = "Unique ID", value = "id_1l431dI24"),
+			textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 			# p("Then start imputation. This will take a while, but we'll mail you a download-link when ready"),
 			checkboxInput("height_provided", label ="Provide own height", value = FALSE),
 			conditionalPanel(
