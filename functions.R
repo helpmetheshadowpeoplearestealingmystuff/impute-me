@@ -735,7 +735,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 	
 	
 	#getting the nonsenser SNPs if possible
-	e<-try(load("/srv/shiny-server/gene-surfer/nonsenser/2015-11-23_all_coding_SNPs.rdata"))
+	e<-try(load("/srv/shiny-server/gene-surfer/nonsenser/2015-12-16_all_coding_SNPs.rdata"))
 	if(class(e)!="try-error"){
 		for(uniqueID in uniqueIDs){
 			genotypes<-get_genotypes(uniqueID,coding_snps,namingLabel="cached.nonsenser")

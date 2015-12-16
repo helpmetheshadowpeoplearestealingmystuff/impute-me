@@ -203,14 +203,6 @@ colnames(coding_snps)[1]<-"chr_name"
 
 save(coding_snps, file="2015-11-23_all_coding_SNPs.rdata")
 
-rm(list=ls())
-load("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/nonsenser/2015-11-23_all_coding_SNPs.rdata")
-
-freq<-read.table("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/nonsenser/2015-12-16_SNAPResults.txt",sep="\t",row.names=1,header=T)
-
-coding_snps[,"Frequency"]<-freq[rownames(coding_snps),"MAF"]
-save(coding_snps, file="2015-12-16_all_coding_SNPs.rdata")
-
 
 
 table(coding_snps[coding_snps[,"SIFT_pred"]%in%"D","Chr"])
@@ -222,7 +214,7 @@ scp lasfol@computerome.cbs.dtu.dk:/home/people/lasfol/2015-11-23_temp_nonsenser/
 	
 	
 	#but now we have a list of genotyped missense and nonsense mutation. Nice.
-	load("2015-11-20_all_coding_SNPs.rdata")
+load("2015-11-20_all_coding_SNPs.rdata")
 
 
 
@@ -246,8 +238,6 @@ source("/srv/shiny-server/gene-surfer/functions.R")
 
 uniqueIDs<-list.files("/home/ubuntu/data/")
 load("/srv/shiny-server/gene-surfer/nonsenser/2015-11-23_all_coding_SNPs.rdata")
-
-
 for(uniqueID in uniqueIDs){
 	g1<-get_genotypes(uniqueID,coding_snps,namingLabel="cached.nonsenser")
 	g2<- g1[rownames(coding_snps),"genotype"]
@@ -271,3 +261,24 @@ normalAllele<-sapply(a, function(x){
 		}
 	}else{stop("Whaat!")}
 })
+
+
+save(normalAllele,file="2015-12-16 majorAllele.rdata")
+
+
+
+
+
+
+
+
+rm(list=ls())
+load("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/nonsenser/2015-11-23_all_coding_SNPs.rdata")
+
+load("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/nonsenser/2015-12-16 majorAllele.rdata")
+
+freq<-read.table("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/nonsenser/2015-12-16_SNAPResults.txt",sep="\t",row.names=1,header=T)
+
+coding_snps[,"Frequency"]<-freq[rownames(coding_snps),"MAF"]
+coding_snps[,"Common allele"]<-normalAllele[rownames(coding_snps)]
+save(coding_snps, file="2015-12-16_all_coding_SNPs.rdata")

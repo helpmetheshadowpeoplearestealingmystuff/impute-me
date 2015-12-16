@@ -32,24 +32,17 @@ shinyServer(function(input, output) {
 		#Get gender
 		gender<-read.table(pDataFile,header=T,stringsAsFactors=F)[1,"gender"]
 		
+		load("/srv/shiny-server/gene-surfer/nonsenser/2015-12-16_all_coding_SNPs.rdata")
 		
-		SLCO1B1_table_file <-"/srv/shiny-server/gene-surfer/statins/SNPs_to_analyze.txt"
-		SLCO1B1_table<-read.table(SLCO1B1_table_file,sep="\t",header=T,stringsAsFactors=F)
-
-		rownames(SLCO1B1_table)<-SLCO1B1_table[,"SNP"]
+		coding_snps[,"SNP"]<-rownames(coding_snps)
 
 		#get genotypes and calculate gheight
-		genotypes<-get_genotypes(uniqueID=uniqueID,request=SLCO1B1_table)
+		genotypes<-get_genotypes(uniqueID=uniqueID,request=coding_snps,namingLabel="cached.nonsenser")
 		
-		SLCO1B1_table[,"Your genotype"]<-genotypes[rownames(SLCO1B1_table),]
+		coding_snps[,"Your genotype"]<-genotypes[rownames(coding_snps),]
 
-		SLCO1B1_table<-SLCO1B1_table[,c("SNP","Your genotype","effect_allele")]
-		colnames(SLCO1B1_table)<-c("SNP","Your genotype","Risk allele")
-		
-		return(SLCO1B1_table)
-		
-		
-		
+		out<-coding_snps[,c("SNP","Your genotype","Common allele","Frequency","SIFT_pred","MutationTaster_pred","Polyphen2_HDIV_pred")]
+		return(out)
 	})
 	
 })
