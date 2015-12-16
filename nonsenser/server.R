@@ -42,6 +42,30 @@ shinyServer(function(input, output) {
 		coding_snps[,"Your genotype"]<-genotypes[rownames(coding_snps),]
 
 		out<-coding_snps[,c("SNP","Your genotype","Common allele","Frequency","SIFT_pred","MutationTaster_pred","Polyphen2_HDIV_pred")]
+		colnames(out)[5]<-"SIFT"
+		colnames(out)[6]<-"MutationTaster"
+		colnames(out)[7]<-"PolyPhen2"
+
+		
+		out[,"Heterozygote"]<-sapply(strsplit(out[,"Your genotype"],"/"),function(x){x[1] != x[2]})
+		out[,"Unmeasured"]<- is.na(out[,"Your genotype"])
+		
+		out[,"Homozygote allele"]<-sub("/.$","",out[,"Your genotype"])
+		out[out[,"Heterozygote"] & !out[,"Unmeasured"],"Homozygote allele"]<-NA
+		
+		out[,"Homozygote minor"]<-out[,"Homozygote allele"]!= out[,"Common allele"] & out[,"Common allele"]!=""
+		out[is.na(out[,"Homozygote minor"]),"Homozygote minor"]<-FALSE
+		
+		type<- rep("Homozygote major?",nrow(out))
+		type[out[,"Homozygote minor"]]<-"Homozygote minor?"
+		type[out[,"Heterozygote"]]<-"Heterozygote"
+		type[out[,"Unmeasured"]]<-"Unmeasured"
+		out[,"Type"]<-factor(type,levels=c("Homozygote minor?","Heterozygote","Homozygote major?","Unmeasured"))
+		
+		out<-out[order(out[,"Type"], out[,"Frequency"]),]
+		
+		out[,"Heterozygote"]<-out[,"Unmeasured"]<-out[,"Homozygote allele"]<-out[,"Homozygote minor"]<-NULL
+		
 		return(out)
 	})
 	
