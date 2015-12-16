@@ -198,7 +198,21 @@ table(coding_snps[,"SIFT_pred"])
 colnames(coding_snps)[1]<-"chr_name"
 
 
+
+
+
 save(coding_snps, file="2015-11-23_all_coding_SNPs.rdata")
+
+rm(list=ls())
+load("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/nonsenser/2015-11-23_all_coding_SNPs.rdata")
+
+freq<-read.table("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/nonsenser/2015-12-16_SNAPResults.txt",sep="\t",row.names=1,header=T)
+
+coding_snps[,"Frequency"]<-freq[rownames(coding_snps),"MAF"]
+save(coding_snps, file="2015-12-16_all_coding_SNPs.rdata")
+
+
+
 table(coding_snps[coding_snps[,"SIFT_pred"]%in%"D","Chr"])
 
 t<-coding_snps[coding_snps[,"SIFT_pred"]%in%"D" & coding_snps[,"Chr"]%in%1,]
@@ -227,12 +241,33 @@ scp lasfol@computerome.cbs.dtu.dk:/home/people/lasfol/2015-11-23_temp_nonsenser/
 #Ok main function updated. Now the main-crawler also gets a separate file with all 8000 non/missense SNPs. Nice. let's analyze them,
 
 
-
+rm(list=ls())
+source("/srv/shiny-server/gene-surfer/functions.R")
 
 uniqueIDs<-list.files("/home/ubuntu/data/")
-e<-load("/srv/shiny-server/gene-surfer/nonsenser/2015-11-23_all_coding_SNPs.rdata")
+load("/srv/shiny-server/gene-surfer/nonsenser/2015-11-23_all_coding_SNPs.rdata")
+
 
 for(uniqueID in uniqueIDs){
-	genotypes<-get_genotypes(uniqueID,coding_snps,namingLabel="cached.nonsenser")
+	g1<-get_genotypes(uniqueID,coding_snps,namingLabel="cached.nonsenser")
+	g2<- g1[rownames(coding_snps),"genotype"]
+	coding_snps[,paste(uniqueID,"A1",sep="_")]<-sub("/.+$","",g2)
+	coding_snps[,paste(uniqueID,"A2",sep="_")]<-sub("^.+/","",g2)
 }
 
+cols<-grep("^id",colnames(coding_snps),value=T)
+
+a<-apply(coding_snps[,cols],1,table)
+
+
+normalAllele<-sapply(a, function(x){
+	if(length(x)==1){
+		return(names(x))
+	}else if(length(x)==2){
+		if(sort(x)[1] / sum(x) > 0.2){ #don't return a 'normal' if MAF is above 0.2
+			return("")	
+		}else{
+			return(names(x)[2])
+		}
+	}else{stop("Whaat!")}
+})
