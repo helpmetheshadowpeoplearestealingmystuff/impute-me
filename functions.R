@@ -39,7 +39,7 @@ prepare_23andme_genome<-function(path, email, filename){
 	}
 	
 	acceptedMails<-read.table("/home/ubuntu/misc_files/accepted_emails.txt",stringsAsFactors=F)[,1]
-	if(!email%in%acceptedMails | TRUE){ #changed to always accept submission for now
+	if(!email%in%acceptedMails & FALSE){ #changed to always accept submission for now
 		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,filename)
 		m<-paste(m,collapse="\t")
 		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
