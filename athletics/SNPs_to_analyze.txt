@@ -1,16 +1,16 @@
 SNP	chr_name	Beta	effect_allele	non_effect_allele	ensembl_alleles	Comment
-rs1815739	11	NA	C	T	C/T	ACTN3
-rs4646994	17	NA	NA	NA	NA	ACE
-rs699	1	NA	NA	NA	NA	AGT
-rs1042713	5	NA	NA	NA	NA	ADRB2
-rs1042714	5	NA	NA	NA	NA	ADRB2
-rs4994	8	NA	NA	NA	NA	ADRB3
-rs5082	1	NA	NA	NA	NA	APOA2
-rs1800012	17	NA	NA	NA	NA	COL1A1
-rs1799883	4	NA	NA	NA	NA	FABP2
-rs9939609	16	NA	NA	NA	NA	FTO
-rs1801282	3	NA	NA	NA	NA	PPARG
-rs1049434	1	NA	NA	NA	NA	SLC16A1
-rs7903146	10	NA	NA	NA	NA	TCF7L2
-rs12255372	10	NA	NA	NA	NA	TCF7L2
-rs7221412	17	NA	NA	NA	NA	TRNAS6
+rs1815739	11	NA	T	C	C/T	This C variant of this SNP breaks the ACTN3. The T variant have been found to be associated with better sprint performance (PMID 12879365)
+rs4646994	17	NA	NA	NA	I/D	ACE - this SNP is found in one study to potentially distinguish between capability in power-sports vs endurance-sports (PMID 25943990). However it is also mentioned in several studies of other traits such as hypertension and alzheimers. The evidence behind it's effect remain unclear.
+rs699	1	NA	C	T	C/T	AGT - the C allele of this SNP has been found to associate with ability in power-sports (PMID 20029521)
+rs1042713	5	NA	NA	NA	A/G	ADRB2 - this SNP was not associated with obesity in a meta analysis (PMID 24960039)
+rs1042714	5	NA	G	C	C/G	ADRB2 - the G allele was found to be associated with obesity in a meta analysis (PMID 24960039)
+rs4994	8	NA	C	T	C/T	ADRB3 - this have been observed in a single study to be obesity associated (PMID 22550477). Note that this is particularly weak evidence for this SNP.
+rs5082	1	NA	C	T	C/T	APOA2 - the C allele was found to be associated with obesity (PMID 19901143). 
+rs1800012	17	NA	NA	NA	G/T	COL1A1 - the T allele was found to be associated with protection against injuries (acute soft tissue ruptures.). PMID 19193665
+rs1799883	4	NA	NA	NA	NA	FABP2 - pretty unclear what this SNP is supposed to do, even from litterature. Something with obesity.
+rs9939609	16	NA	A	T	A/T	FTO - the A allele for this SNP is associated with obesity. Note that the evidence for this is stronger than remaining findings, and the finding has been replicated many times. The effect size however remains small.
+rs1801282	3	NA	G	C	C/G	PPARG - the G allele was found to be associated with obesity (PMID 25182148)
+rs1049434	1	NA	A	T	A/T	SLC16A1 - extremely weak evidence that the A allele is associated with higher lactate (PMID 22516692)
+rs7903146	10	NA	NA	NA	NA	TCF7L2 - this is a diabetes SNP. Unclear why that particular one is included in the data, in face of the hundreds of other known diabetes SNP. 
+rs12255372	10	NA	NA	NA	NA	TCF7L2 - this is a diabetes SNP. Unclear why that particular one is included in the data, in face of the hundreds of other known diabetes SNP. 
+rs7221412	17	NA	G	A	A/G	TRNAS6 - the G allele was found to be associated with later timing in a study of circadian rythm (PMID 23034908)
