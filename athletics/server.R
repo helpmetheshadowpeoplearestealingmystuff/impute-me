@@ -34,7 +34,7 @@ shinyServer(function(input, output) {
 		
 		
 		table_file <-"/srv/shiny-server/gene-surfer/athletics/SNPs_to_analyze.txt"
-		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
+		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")
 
 		rownames(table)<-table[,"SNP"]
 
