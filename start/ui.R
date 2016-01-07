@@ -1,28 +1,11 @@
 
 
+tags$head(include('/layout/head.html'))
 
 shinyUI(fluidPage(
+	include('/layout/navigation.html'),
 	titlePanel("Impute.me"),
 	sidebarLayout(
-		sidebarPanel(
-			# fileInput("largeFile", "Upload genome data", multiple = FALSE, accept = NULL),
-			# textInput(inputId="email", label = "Email", value = ""),
-			a("ImputeMe", href="http://www.impute.me/imputeme"),br(),
-			a("Terms-of-use", href='http://www.impute.me/www/terms_of_use.html'),br(),
-			a("GuessMyHeight", href='http://www.impute.me/guessMyHeight'),br(),
-			a("GuessMyHairColour", href="http://www.impute.me/hairColour"),br(),
-			a("RareGene", href="http://www.impute.me/nonsenser"),br(),
-			a("MyOffspring", href="http://www.impute.me/placeholder.html"),br(),
-			a("BRCA", href="http://www.impute.me/BRCA"),br(),
-			a("Statins", href="http://www.impute.me/statins"),br(),
-			a("Athletics", href="http://www.impute.me/athletics"),br(),
-			a("Contact", href="http://www.impute.me/contact"),br(),
-		
-			
-			# p("Then start imputation. This will take a while, but we'll mail you a download-link when ready"),
-			# actionButton("goButton","Start imputation"),
-			width=4
-		),
 		mainPanel(
 			HTML("<h1>Welcome to impute.me</h1>
 				<br>
@@ -48,7 +31,9 @@ shinyUI(fluidPage(
 					 )
 
 		)
-	)
+	),
+
+	include('/layout/footer.html'),
 ))
 
 
