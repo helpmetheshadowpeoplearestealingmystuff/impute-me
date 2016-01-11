@@ -1,8 +1,9 @@
 
 
-#tags$head(includeHTML('../layout/head.html'))
+
 
 shinyUI(fluidPage(
+	tags$head(includeHTML('../layout/head.html')),
 	includeHTML('../layout/navigation.html'),
 	titlePanel("Impute.me"),
 	sidebarLayout(
