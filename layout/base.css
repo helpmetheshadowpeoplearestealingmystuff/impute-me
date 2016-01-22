@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Raleway);
+@import url(https://fonts.googleapis.com/css?family=Lora);
 
 body
 {
@@ -11,13 +11,13 @@ body
 .navbar-default
 {
     background-color: #F6F6F6 !important;
-    border-bottom: 10px solid #DE1B1B;
+    border-bottom: 10px solid #26A5FF;
 }
 
 
 h1,h2,h3,h4,h5,h6,.navbar-brand
 {
-   font-family: 'Raleway', serif;
+   font-family: 'Lora', serif;
 }
 
 
