@@ -2,6 +2,8 @@
 
 
 shinyUI(fluidPage(
+	tags$head(includeHTML('../layout/head.html')),
+	includeHTML('../layout/navigation.html'),
 	titlePanel("Gene mutations"),
 	sidebarLayout(
 		sidebarPanel(
@@ -20,7 +22,8 @@ Interpretation of the table can be done in many ways and unlike other modules, t
 			# plotOutput("plot1")
 			
 			
-		)
+		),
+	includeHTML('../layout/footer.html')
 	)
 ))
 
