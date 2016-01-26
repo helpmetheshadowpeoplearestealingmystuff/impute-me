@@ -2,7 +2,7 @@
 
 
 shinyUI(fluidPage(
-	includeHTML('../layout/head.html'),
+	tags$head(includeHTML('../layout/head.html')),
 	includeHTML('../layout/navigation.html'),
 	titlePanel("Expanded BRCA info"),
 	sidebarLayout(
