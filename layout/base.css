@@ -11,7 +11,7 @@ body
 .navbar-default
 {
     background-color: #F6F6F6 !important;
-    border-bottom: 10px solid #26A5FF;
+    
 }
 
 
@@ -54,4 +54,44 @@ h1,h2,h3,h4,h5,h6
 .main-title
 {
     margin: 0 auto 30px;
+}
+
+.top-banner
+{
+    background-color: #6FC3FF;
+    height: 100px;
+        margin-top: -20px;
+}
+
+.top-banner h2
+{
+    color: #fff;
+    line-height: 100px;
+    margin: 0px 20px;
+    font-size: 40px;
+
+}
+
+hr
+{
+    border-top-width: 2px;
+    border-top-color: #333;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 60px;
+    margin-bottom: 50px;
+}
+
+
+h1
+{
+    font-size: 50px;
+    text-align: center;
+    margin-top: 70px;
+}
+
+.row h1
+{
+    text-align: center;
+    padding-bottom: 50px;
 }

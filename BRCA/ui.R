@@ -2,6 +2,8 @@
 
 
 shinyUI(fluidPage(
+	tags$head(includeHTML('../layout/head.html')),
+	includeHTML('../layout/navigation.html'),
 	titlePanel("Expanded BRCA info"),
 	sidebarLayout(
 		sidebarPanel(
@@ -19,7 +21,8 @@ shinyUI(fluidPage(
 			# plotOutput("plot1")
 			
 			
-		)
+		),
+	includeHTML('../layout/footer.html')
 	)
 ))
 
