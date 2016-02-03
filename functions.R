@@ -19,9 +19,6 @@ if(length(hubAddress)!=1)stop("hubAddress not length 1")
 
 
 
-
-
-
 prepare_23andme_genome<-function(path, email, filename){
 	library(tools)
 	

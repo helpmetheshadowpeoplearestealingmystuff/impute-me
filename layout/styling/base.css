@@ -1,0 +1,134 @@
+@import url(https://fonts.googleapis.com/css?family=Lora);
+
+body
+{
+    opacity: 1 !important;
+    background-color: #F7F7F7 !important;
+    padding-top: 70px;
+
+}
+
+.navbar-default
+{
+    background-color: #F6F6F6 !important;
+    
+}
+
+
+h1,h2,h3,h4,h5,h6,.navbar-brand
+{
+   font-family: 'Lora', serif;
+}
+
+
+a,p,body
+{
+    color:#000;
+}
+
+h1,h2,h3,h4,h5,h6
+{
+    color:#444444;
+}
+
+.nav a
+{
+      color:#F6F6F6;
+}
+
+
+.main
+{
+    background-color: #2C2C2C;
+    margin-top: -10px;
+    color:#FFF8EB;
+    height: 400px;
+}
+
+.main h1, .main h2
+{
+    color :#fff;
+    text-align: center;
+}
+
+.main-title
+{
+    margin: 0 auto 30px;
+}
+
+.top-banner
+{
+    background-color: #6FC3FF;
+    height: 100px;
+        margin-top: -20px;
+}
+
+.top-banner h2
+{
+    color: #fff;
+    line-height: 100px;
+    margin: 0px 20px;
+    font-size: 40px;
+
+}
+
+hr
+{
+    border-top-width: 2px;
+    border-top-color: #333;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 60px;
+    margin-bottom: 50px;
+}
+
+
+h1
+{
+    font-size: 50px;
+    text-align: center;
+    margin-top: 70px;
+}
+
+.row h1
+{
+    text-align: center;
+    padding-bottom: 50px;
+}
+
+.title-block h1
+{
+    margin: 0px;
+    line-height: 100px;
+    text-align: left;
+    color:#fff;
+    font-size: 40px;
+}
+
+.title-block
+{
+    background-color: #80C4FF;
+    height: 100px;
+    margin-top: -20px;
+
+}
+
+.table
+{
+    width:auto !important;
+}
+
+.odd
+{
+    background-color: ##E5F3FF !important;
+}
+
+.even
+{
+    background-color: #fff !important;
+}
+
+thead tr
+{
+    background-color: #80C4FF !important;
+}
