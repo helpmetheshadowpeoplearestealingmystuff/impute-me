@@ -19,7 +19,7 @@ shinyUI(bootstrapPage(
 	beginPanel('2/3'),
 	textOutput("text1"),
 	textOutput("text2"),
-	textOutput("text3")
+	textOutput("text3"),
 	endPanel(),
 			
 				

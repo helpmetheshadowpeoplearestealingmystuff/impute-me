@@ -1,34 +1,30 @@
+source("../uifunctions.R")
+initialize('con',TRUE)
 
-
-
-shinyUI(fluidPage(
+shinyUI(bootstrapPage(
+	head(),
+	navigation(),
 	titlePanel("Impute.me"),
-	sidebarLayout(
-		sidebarPanel(
-			# fileInput("largeFile", "Upload genome data", multiple = FALSE, accept = NULL),
-			# textInput(inputId="email", label = "Email", value = ""),
-			a("ImputeMe", href="http://www.impute.me/imputeme"),br(),
-			a("GuessMyHeight", href='http://www.impute.me/guessMyHeight'),br(),
-			a("GuessMyHairColour", href="http://www.impute.me/hairColour"),br(),
-			a("RareGene", href="http://www.impute.me/placeholder.html"),br(),
-			a("MyOffspring", href="http://www.impute.me/placeholder.html"),br(),
-			a("MedicalMe", href="http://www.impute.me/placeholder.html"),br(),
-			a("Contact", href="http://www.impute.me/contact"),br(),
-		
-			
-			# p("Then start imputation. This will take a while, but we'll mail you a download-link when ready"),
-			# actionButton("goButton","Start imputation"),
-			width=4
-		),
-		mainPanel(
-			HTML(	"This page is created and operated by <a href='http://www.cbs.dtu.dk/staff/show-staff.php?id=1202'>Lasse Folkersen</a>.<br><br>I work as a genetics researcher at the Technical University of Denmark. <br><br>Feel free to write me an <a href='http://www.google.com/recaptcha/mailhide/d?k=01pdzWyCfeU-_1PRAPdKlJfg==&amp;c=3eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY=' onclick='window.open('http://www.google.com/recaptcha/mailhide/d?k\07501pdzWyCfeU-_1PRAPdKlJfg\75\75\46c\0753eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY\075', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;' title='Reveal this e-mail address'>email</a>.")
-# 			)
-# 			htmlOutput("text1"),
-# 			plotOutput("load1",width = "50%"),
-# 			htmlOutput("text2")
-		)
-	)
+	beginPage(),
+	HTML(	"This page is created and operated by <a href='http://www.cbs.dtu.dk/staff/show-staff.php?id=1202'>Lasse Folkersen</a>.<br><br>I work as a genetics researcher at the Technical University of Denmark. <br><br>Feel free to write me an <a href='http://www.google.com/recaptcha/mailhide/d?k=01pdzWyCfeU-_1PRAPdKlJfg==&amp;c=3eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY=' onclick='window.open('http://www.google.com/recaptcha/mailhide/d?k\07501pdzWyCfeU-_1PRAPdKlJfg\75\75\46c\0753eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY\075', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;' title='Reveal this e-mail address'>email</a>."),
+# 	endPage(),
+	footer()
 ))
+
+source("../uifunctions.R")
+initialize('sta',TRUE)
+
+shinyUI(bootstrapPage(
+	head(),
+	navigation(),
+	titlePanel("Status"),
+	beginPage(),
+	plotOutput("load1"),
+	endPage(),
+	footer()	
+	
+))
+
 
 
 
