@@ -40,9 +40,25 @@ endPage<-function()
 
 titlePanel<-function(title)
 {
-	HTML(paste('<div class="title-block">
+	HTML(paste0('<div class="title-block">
 	<div class="container">
 		<h1>' , title , '</h1>
 	</div>
 </div>'))
+}
+
+beginPanel<-function(size = '' ,id='')
+{
+	class<-'col-xs-12'
+
+	if(size == '1/2') class<-'col-md-6 layout-panel'
+	if(size == '1/3') class<-'col-md-4 layout-panel'
+	if(size == '2/3') class<-'col-md-8 layout-panel'
+
+	HTML(paste0('<div class="',class,'" id="',id,'">'))
+}
+
+endPanel<-function()
+{
+	HTML('</div>')
 }

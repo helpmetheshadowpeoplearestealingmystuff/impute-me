@@ -1,28 +1,30 @@
 
+source("../uifunctions.R")
+initialize('hc',TRUE)
 
-
-shinyUI(fluidPage(
+shinyUI(bootstrapPage(
+	head(),
+	navigation(),
 	titlePanel("Analyse genome"),
-	sidebarLayout(
-		sidebarPanel(
-			fileInput("largeFile", "Upload genome data", multiple = FALSE, accept = NULL),
-			textInput(inputId="email", label = "Email", value = ""),
-			a("Terms of use", href="http://www.impute.me/www/terms_of_use.html"),
-			# p("Then start imputation. This will take a while, but we'll mail you a download-link when ready"),
-			actionButton("goButton","Start imputation"),
-			width=4
+	beginPage(),
+	beginPanel('1/3'),
+	fileInput("largeFile", "Upload genome data", multiple = FALSE, accept = NULL),
+	textInput(inputId="email", label = "Email", value = ""),
+	a("Terms of use", href="http://www.impute.me/www/terms_of_use.html"),
+	# p("Then start imputation. This will take a while, but we'll mail you a download-link when ready"),
+	actionButton("goButton","Start imputation"),
+
+	
+	endPanel(),
+	beginPanel('2/3'),
+	textOutput("text1"),
+	textOutput("text2"),
+	textOutput("text3")
+	endPanel(),
 			
-			
-			
-		),
-		mainPanel(
-			textOutput("text1"),
-			textOutput("text2"),
-			textOutput("text3")
-			
-			
-		)
-	)
+				
+	endPage(),
+	footer()
 ))
 
 

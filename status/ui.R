@@ -1,28 +1,15 @@
+source("../uifunctions.R")
+initialize('sta',TRUE)
 
-
-
-shinyUI(fluidPage(
-	titlePanel("Impute.me"),
-	sidebarLayout(
-		sidebarPanel(
-			# fileInput("largeFile", "Upload genome data", multiple = FALSE, accept = NULL),
-			# textInput(inputId="email", label = "Email", value = ""),
-			a("ImputeMe", href="http://www.impute.me/imputeme"),br(),
-			a("GuessMyHeight", href='http://www.impute.me/guessMyHeight'),br(),
-			a("GuessMyHairColour", href="http://www.impute.me/hairColour"),br(),
-			a("RareGene", href=""),br(),
-			a("MyOffspring", href=""),br(),
-			a("MedicalMe", href=""),br(),
-		
-			
-			# p("Then start imputation. This will take a while, but we'll mail you a download-link when ready"),
-			# actionButton("goButton","Start imputation"),
-			width=4
-		),
-		mainPanel(
-			plotOutput("load1")
-		)
-	)
+shinyUI(bootstrapPage(
+	head(),
+	navigation(),
+	titlePanel("Status"),
+	beginPage(),
+	plotOutput("load1"),
+	endPage(),
+	footer()	
+	
 ))
 
 
