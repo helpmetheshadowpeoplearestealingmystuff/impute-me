@@ -9,7 +9,7 @@ shinyUI(bootstrapPage(
 	beginPage(),
 	beginPanel('1/3'),
 	HTML("Imputation is a cutting edge computational technology that takes genetic measurements such as those provided by 23andme or ancestry.com and proceeds to impute - or 'guess' millions of additional genetic variations that were not measured in the original data. This is done based on overall knowledge of human ethnicity and ancestry and is further explained in the video of this <a href='https://www.kickstarter.com/projects/1563061294/impute-my-genome'>kickstart project</a>. The first step in using this site is to upload your genetic data (below), and then wait for the analysis to run a few days. After that you'll receive an email with an ID-login that you can use to explore the remaining analysis pages.<br><br>
-			 This service is currently free, but donations are very welcome since there server requirements for analysis are quite high. Likewise the code is free and opensource as detailed on <a href='https://github.com/lassefolkersen/gene-surfer'>github</a>. Finally the service is completely anonymous and we do not keep or store your raw data.<br>")
+			 This service is currently free, but donations are very welcome since there server requirements for analysis are quite high. Likewise the code is free and opensource as detailed on <a href='https://github.com/lassefolkersen/gene-surfer'>github</a>. Finally the service is completely anonymous and we do not keep or store your raw data.<br>"),
 	fileInput("largeFile", "Upload genome data", multiple = FALSE, accept = NULL),
 	textInput(inputId="email", label = "Email", value = ""),
 	a("Terms of use", href="http://www.impute.me/www/terms_of_use.html"),
