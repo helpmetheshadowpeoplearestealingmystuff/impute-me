@@ -31,8 +31,8 @@ shinyServer(function(input, output) {
 		table[,"Your genotype"]<-genotypes[rownames(table),]
 		table<-table[,c("SNP","Your genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Risk allele")
-		rownames(table)<-NULL
 		table<-table["rs2395029",,drop=FALSE]
+		rownames(table)<-NULL
 		return(table)
 
 	})
