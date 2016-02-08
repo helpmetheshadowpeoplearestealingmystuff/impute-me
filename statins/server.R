@@ -9,8 +9,8 @@ source("/srv/shiny-server/gene-surfer/functions.R")
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
 	
-	
-	output$table1 <- renderDataTable({ 
+	output$table1 <- renderTable({ 
+	# output$table1 <- renderDataTable({ 
 		# Take a dependency on input$goButton
 		
 		if(input$goButton == 0){
@@ -31,7 +31,7 @@ shinyServer(function(input, output) {
 
 		
 		table_file <-"/srv/shiny-server/gene-surfer/statins/SNPs_to_analyze.txt"
-		table<-read.table(SLCO1B1_table_file,sep="\t",header=T,stringsAsFactors=F)
+		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
 		rownames(table)<-table[,"SNP"]
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=table)
 		
@@ -45,7 +45,7 @@ shinyServer(function(input, output) {
 	
 	
 	
-	output$table2 <- renderDataTable({ 
+	output$table2 <- renderTable({ 
 		# Take a dependency on input$goButton
 		
 		if(input$goButton == 0){
