@@ -11,6 +11,7 @@ shinyServer(function(input, output) {
 	
 	
 	output$text_height1 <- renderText({ 
+		height_provided<-isolate(input$height_provided)
 		if(height_provided){
 			m<-"This is your height estimate. The large dot indicates your actual height (up the Y-axis) and your genetic height (out the X-axis). If the dot is inside the colour-shading your genetic height matches your actual height."
 		}else{
@@ -43,6 +44,25 @@ shinyServer(function(input, output) {
 		}else if(input$goButton > 0) {
 			print(paste("Ok",input$goButton))
 		}
+		
+		
+		
+		
+		#create the image map
+		edge<-20
+		col<-y<-x<-vector()
+		for(red in seq(0,1,1/edge)){	
+			for(blonde in seq(0,1,1/edge)){
+				col<-c(col,hsv(h=0.1 - (red/10),s=min(c(1,1-blonde + (red/2))),v=blonde))
+				x<-c(x,blonde)
+				y<-c(y,red)
+			}
+		}
+		d<-data.frame(x=x,y=y,col=col,stringsAsFactors=F)
+		d[,"index"]<-d[,"x"]*edge + d[,"y"]*edge*(1+edge)
+		z<-matrix(d[,"index"],ncol=edge+1,nrow=edge+1,byrow=F)
+		x<-y<-seq(0,1,1/edge)
+		
 		
 		uniqueID<-isolate(input$uniqueID)
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
