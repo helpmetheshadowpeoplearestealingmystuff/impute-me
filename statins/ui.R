@@ -17,7 +17,7 @@ shinyUI(bootstrapPage(
 	beginPanel('2/3'),
 	
 	h2("HIV treatment response"),
-	HTML("This is a fairly rare SNP, for which T-alleles are associated with adverse response to the <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/18684101'>HIV-drug abacavir</a></u>. It is sometimes tested for before initiating abacavir treatment. Note however, that the studies supporting this are specifically only valid for caucasian ethnicities. Several other ethnicities are much more likely to have a T-allele, without problems.")
+	HTML("This is a fairly rare SNP, for which T-alleles are associated with adverse response to the <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/18684101'>HIV-drug abacavir</a></u>. It is sometimes tested for before initiating abacavir treatment. Note however, that the studies supporting this are specifically only valid for caucasian ethnicities. Several other ethnicities are much more likely to have a T-allele, without problems."),
 	dataTableOutput("table1"),
 	
 	h2("Statin response"),
