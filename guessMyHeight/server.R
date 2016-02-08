@@ -28,7 +28,7 @@ shinyServer(function(input, output) {
 		if(height_provided){
 			m<-"This is your height estimate. The large dot indicates your actual height (up the Y-axis) and your genetic height (out the X-axis). If the dot is inside the colour-shading your genetic height matches your actual height."
 		}else{
-			m<-"This is your height estimate. The vertical bar indicates your genetic height (out the X-axis). The coloured cloud indicates normal actual heights for people with your specific genetic height. Estimated height can therefore read off on the Y-axis, where the colour-cloud intersect the vertical line."
+			m<-"This is your height estimate. The vertical bar indicates your genetic height. The coloured cloud indicates normal actual heights for people with your specific genetic height. Estimated height can therefore be read off on the Y-axis, where the colour-cloud intersect your genetic height."
 		}
 		return(m)
 	})
@@ -40,9 +40,9 @@ shinyServer(function(input, output) {
 		}else if(input$goButton > 0) {
 			height_provided<-isolate(input$height_provided)
 			if(height_provided){
-				m<-"<small>The large dot shows your height on the Y-axis and your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A>. If smaller dots are show, they represent previous users.</small>"
+				m<-"<small><b>Details:</b> The large dot shows your height on the Y-axis and your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <u><A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A></u>. If smaller dots are show, they represent previous users.</small>"
 			}else{
-				m<-"<small>The vertical bar shows your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A>. If smaller dots are show, they represent previous users.</small>"
+				m<-"<small><b>Details:</b> The vertical bar shows your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A>. If smaller dots are show, they represent previous users.</small>"
 			}
 		}
 		return(m)
@@ -53,7 +53,7 @@ shinyServer(function(input, output) {
 		# Take a dependency on input$goButton
 		
 		if(input$goButton == 0){
-			return("")
+			plot(NULL, xlim=c(-2,2),ylim=c(150,180),xlab="genetic height",ylab="real height (cm)")
 		}else if(input$goButton > 0) {
 			print(paste("Ok",input$goButton))
 		}

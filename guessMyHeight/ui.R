@@ -29,12 +29,13 @@ shinyUI(bootstrapPage(
 	endPanel(),
 	beginPanel('2/3'),
 	
+	h1("Height estimate"),
 	htmlOutput("text_height1"),
 	plotOutput("plot_height1"),
 	htmlOutput("text_height2"),
 	
 	HTML("<br><br><br>"),
-
+	h1("Hair colour estimate"),
 	htmlOutput("text_haircol1"),
 	plotOutput("plot_haircol1"),
 	htmlOutput("text_haircol2"),
