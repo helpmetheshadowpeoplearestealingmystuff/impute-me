@@ -6,7 +6,7 @@ initialize('gmh',TRUE)
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
-	titlePanel("Apperance"),
+	titlePanel("Physical Apperance"),
 	beginPage(),	
 	beginPanel('1/3'),
 	HTML("Appearance traits, such as height and hair colour are highly heritable and your genome can provide clues to them. Of course the best source for this is a mirror. <br><br>Nonetheless it can be  interesting to perform the analysis on e.g. children to provide estimates of their final height and apperance. Other traits such as eye and skin colour and even facial form, may be provided in the future. However, the fact is that these traits are much harder to predict and therefore genetic analysis provides more limited benefit. This module therefore focuses on height, which is highly heritable, and hair-colour which currently is a bit more guess-work.<br><br>To run analysis input your user-id, or use the test-value of id_57n662948:<br><br>"),
