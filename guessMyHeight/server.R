@@ -60,7 +60,7 @@ shinyServer(function(input, output) {
 				x=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%2,"gheight"],
 				y=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%2,"real_height"],
 				xlab="genetic height",ylab="real height (cm)",
-				colramp="dodgerblue"
+				colramp=colorRampPalette(colorRampPalette(c("white", "#08519C"))(10))
 			)
 			
 		}else if(input$goButton > 0) {
