@@ -24,11 +24,12 @@ shinyServer(function(input, output) {
 	
 	
 	output$text_height1 <- renderText({ 
+		input$goButton
 		height_provided<-isolate(input$height_provided)
 		if(height_provided){
 			m<-"The large dot indicates your actual height (up the Y-axis) and your genetic height (out the X-axis). If the dot is inside the colour-shading your genetic height matches your actual height."
 		}else{
-			m<-"The vertical bar indicates your genetic height. The coloured cloud indicates normal actual heights for people with your specific genetic height. Estimated height can therefore be read off on the Y-axis, where the colour-cloud intersect your genetic height."
+			m<-"The vertical bar indicates your genetic height. The coloured cloud indicates normal actual heights for people with your specific genetic height. From these two you can find your estimated actual height."
 		}
 		return(m)
 	})
@@ -179,6 +180,7 @@ shinyServer(function(input, output) {
 	
 	output$text_haircol1 <- renderText({ 
 		col_provided <- isolate(input$col_provided)
+		input$goButton
 		if(!col_provided){
 			m<-"<HTML>This plot shows your estimated genetic hair colour.</HTML>"
 		}else{
