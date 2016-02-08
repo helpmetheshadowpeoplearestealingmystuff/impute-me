@@ -10,26 +10,32 @@ source("/srv/shiny-server/gene-surfer/functions.R")
 shinyServer(function(input, output) {
 	
 	
-	
-	output$text1 <- renderText({ 
-		if(input$goButton == 0){
-			return("")
-		}else if(input$goButton > 0) {
-			height_provided<-isolate(input$height_provided)
-			if(height_provided){
-				m<-"<HTML>The large dot shows your height on the Y-axis and your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A>. If smaller dots are show, they represent previous users.</HTML>"
-			}else{
-				m<-"<HTML>The vertical bar shows your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A>. If smaller dots are show, they represent previous users.</HTML>"
-				
-				
-			}
-
+	output$text_height1 <- renderText({ 
+		if(height_provided){
+			m<-"This is your height estimate. The large dot indicates your actual height (up the Y-axis) and your genetic height (out the X-axis). If the dot is inside the colour-shading your genetic height matches your actual height."
+		}else{
+			m<-"This is your height estimate. The vertical bar indicates your genetic height (out the X-axis). The coloured cloud indicates normal actual heights for people with your specific genetic height. Estimated height can therefore read off on the Y-axis, where the colour-cloud intersect the vertical line."
 		}
 		return(m)
 	})
 	
 	
-	output$plot1 <- renderPlot({ 
+	output$text_height2 <- renderText({ 
+		if(input$goButton == 0){
+			return("")
+		}else if(input$goButton > 0) {
+			height_provided<-isolate(input$height_provided)
+			if(height_provided){
+				m<-"<small>The large dot shows your height on the Y-axis and your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A>. If smaller dots are show, they represent previous users.</small>"
+			}else{
+				m<-"<small>The vertical bar shows your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A>. If smaller dots are show, they represent previous users.</small>"
+			}
+		}
+		return(m)
+	})
+	
+	
+	output$plot_height1 <- renderPlot({ 
 		# Take a dependency on input$goButton
 		
 		if(input$goButton == 0){
@@ -73,20 +79,6 @@ shinyServer(function(input, output) {
 		}else{
 			real_height<-NA	
 			real_age<-NA
-			
-			#these next 10 lines might not actually really be used, since we don't plot if real height is not provided?	
-# 			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
-# 			if("height"%in%colnames(pData)){
-# 				real_height<-pData[1,"height"]
-# 			}else{
-# 				real_height<-NA	
-# 			}
-# 			if("age"%in%colnames(pData)){
-# 				real_age<-pData[1,"age"]
-# 			}else{
-# 				real_age<-NA	
-# 			}
-			
 		}
 		
 		#Get gender
@@ -159,50 +151,123 @@ shinyServer(function(input, output) {
 		}else{
 			abline(v=	gheight, lwd=2, col=mainCol)
 		}
-		
-		
-		
-# 		male_heights<-heights_in_data[heights_in_data[,"gender"]%in%1,]
-# 		female_heights<-heights_in_data[heights_in_data[,"gender"]%in%2,]
-# 		
-# 		xlim<-range(heights_in_data[,"gheight"],na.rm=T)
-# 		ylim_male <-range(male_heights[,"height"],na.rm=T)
-# 		ylim_female <-range(female_heights[,"height"],na.rm=T)
-# 		
-# 		par(mai=c(1.36,1.093333,1.093333,0.960000))
-# 		plot(NULL,xlim=xlim,ylim=c(0,1),xlab="genetic height",yaxt="n",ylab="")
-# 		axis(2,at=seq(0,1,0.1), labels=round(seq(from=ylim_male[1],to=ylim_male[2],length.out=11)))
-# 		axis(4,at=seq(0,1,0.1), labels=round(seq(from=ylim_female[1],to=ylim_female[2],length.out=11)))
-# 		
-# 		mtext("Male height (cm)",side=2,padj=-4)
-# 		points(
-# 			x=male_heights[,"gheight"], 
-# 			y=(male_heights[,"height"]-ylim_male[1])/(ylim_male[2]-ylim_male[1]),#unit scale 
-# 			col="dodgerblue", #gotta love stereotypes for clean communcation
-# 			pch=19
-# 		)
-# 		mtext("Female height (cm)",side=4,padj=4)
-# 		points(
-# 			x=female_heights[,"gheight"], 
-# 			y=(female_heights[,"height"]-ylim_female[1])/(ylim_female[2]-ylim_female[1]),#unit scale 
-# 			col="red", #gotta love stereotypes for clean communcation
-# 			pch=19
-# 		)
-# 		
-# 		if(height_provided){
-# 			if(gender==1){
-# 				y<-(real_height-ylim_male[1])/(ylim_male[2]-ylim_male[1])
-# 				points(x=gheight, y=real_height,cex=3, col="dodgerblue",pch=19)
-# 			}else{
-# 				y<-(real_height-ylim_female[1])/(ylim_female[2]-ylim_female[1])
-# 				points(x=gheight, y=real_height,cex=3, col="red",pch=19)
-# 			}
-# 		}else{
-# 			abline(v=	gheight, lwd=2, col="red")
-# 			
-# 		}
-		
 	})
+	
+	
+	
+	output$text_haircol1 <- renderText({ 
+		col_provided <- isolate(input$col_provided)
+		if(!col_provided){
+			m<-"<HTML>This plot shows your estimated genetic hair colour.</HTML>"
+		}else{
+			m<-"<HTML>This plot shows your estimated genetic hair colour as well as your actual hair colour. Thank you for helping with algorithm optimization.</HTML>"
+		}
+		return(m)
+	})
+	
+	output$text_haircol2 <- renderText({ 
+		if(input$goButton == 0){
+			return("")
+		}else if(input$goButton > 0) {
+			col_provided <- isolate(input$col_provided)
+			if(!col_provided){
+				m<-"<small>The circle shows your estimated genetic hair colour. Please consider providing your own hair colour - these algorithms are not fully tuned yet, and for example we really need to hear from someone with red hair.</small>"
+			}else{
+				m<-"<small>The black/white circle shows your estimated genetic hair colour. The blue circle shows your real hair colour. By providing this information we can fine-tune our estimation algorithms, which currently leaves quite a lot to be wished for. Thank you!</small>"
+			}
+		}
+		return(m)
+	})
+	
+	
+	
+	
+	output$plot_haircol1 <- renderPlot({
+		
+		uniqueID <- isolate(input$uniqueID)
+		col_provided <- isolate(input$col_provided)
+		
+		#paint the image map
+		image(x=x, y=y, z=z, col = d[,"col"], axes = FALSE,xlab="",ylab="")
+		
+		if(input$goButton > 0) {
+			
+			
+			#Check unique ID
+			uniqueID<-isolate(input$uniqueID)
+			if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
+			if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
+			pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+			if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+				Sys.sleep(3) #wait a little to prevent raw-force fishing	
+				stop("Did not find a user with this id")
+			}
+			
+			
+			
+			if(col_provided){
+				real_blonde <- isolate(input$blondeness)/100
+				real_red <- isolate(input$redheadness)/100
+				
+				#also store this in the pData
+				pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+				pData[,"red_hair"]<-real_red
+				pData[,"blonde_hair"]<-real_blonde
+				write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
+			}else{
+				real_brown<-NA	
+				real_red<-NA
+			}
+			
+			
+			
+			#get the gColour
+			GRS_file_name<-"/srv/shiny-server/gene-surfer/hairColour/SNPs_to_analyze.txt"
+			GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F)
+			for(component in c("brown","red")){
+				print(paste("Getting",component,"g-haircolour"))
+				GRS_file_here<-GRS_file[GRS_file[,"Category"]%in%component,]
+				rownames(GRS_file_here)<-GRS_file_here[,"SNP"]
+				#get genotypes and calculate gHairColour
+				genotypes<-get_genotypes(uniqueID=uniqueID,request=GRS_file_here)
+				gHairColour<-get_GRS(genotypes=genotypes,betas=GRS_file_here)
+				assign(paste("gColour",component,sep="_"),gHairColour)
+			}
+			
+			#also store this in the pData
+			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+			pData[,"g_red_hair"]<-gColour_red
+			pData[,"g_brown_hair"]<-gColour_brown
+			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
+			
+			
+			
+			#Calibrating and plotting
+			brown_calibrate<-function(x){max(c(0,min(c(1, ((x-8)/50)))))}
+			red_calibrate<-function(x){max(c(0.1,min(c(1,1-(x/6)))))}
+			
+			blondeness<-brown_calibrate(gColour_brown)
+			redheadness<-red_calibrate(gColour_red)
+			
+			
+			points(x=blondeness,y=redheadness,pch=1,col="white",cex=10,lwd=1)
+			points(x=blondeness,y=redheadness,pch=1,col="gray50",cex=9.8,lwd=1)
+			points(x=blondeness,y=redheadness,pch=1,col="black",cex=9.6,lwd=1)
+			points(x=blondeness,y=redheadness,pch=1,col="gray50",cex=9.4,lwd=1)
+			points(x=blondeness,y=redheadness,pch=1,col="white",cex=9.2,lwd=1)
+			
+			if(col_provided){
+				
+				points(x=real_blonde,y=real_red,pch=1,col="cyan",cex=10,lwd=1)
+				points(x=real_blonde,y=real_red,pch=1,col="dodgerblue",cex=9.8,lwd=1)
+				points(x=real_blonde,y=real_red,pch=1,col="darkblue",cex=9.6,lwd=1)
+				points(x=real_blonde,y=real_red,pch=1,col="dodgerblue",cex=9.4,lwd=1)
+				points(x=real_blonde,y=real_red,pch=1,col="cyan",cex=9.2,lwd=1)
+			}
+		}
+	})#,width=400,height=200)
+	
+	
 	
 })
 
