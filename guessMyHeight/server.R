@@ -57,8 +57,8 @@ shinyServer(function(input, output) {
 			heights_pre_registered_file<-"/home/ubuntu/misc_files/background_heights.txt"
 			heights_pre_registered<-read.table(heights_pre_registered_file,sep="\t",stringsAsFactors=F,header=T)
 			smoothScatter(
-				x=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%"Male","gheight"],
-				y=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%"Male","real_height"],
+				x=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%2,"gheight"],
+				y=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%2,"real_height"],
 				xlab="genetic height",ylab="real height (cm)",
 				colramp="dodgerblue"
 			)
