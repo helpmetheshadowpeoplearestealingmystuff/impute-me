@@ -26,9 +26,9 @@ shinyServer(function(input, output) {
 	output$text_height1 <- renderText({ 
 		height_provided<-isolate(input$height_provided)
 		if(height_provided){
-			m<-"This is your height estimate. The large dot indicates your actual height (up the Y-axis) and your genetic height (out the X-axis). If the dot is inside the colour-shading your genetic height matches your actual height."
+			m<-"The large dot indicates your actual height (up the Y-axis) and your genetic height (out the X-axis). If the dot is inside the colour-shading your genetic height matches your actual height."
 		}else{
-			m<-"This is your height estimate. The vertical bar indicates your genetic height. The coloured cloud indicates normal actual heights for people with your specific genetic height. Estimated height can therefore be read off on the Y-axis, where the colour-cloud intersect your genetic height."
+			m<-"The vertical bar indicates your genetic height. The coloured cloud indicates normal actual heights for people with your specific genetic height. Estimated height can therefore be read off on the Y-axis, where the colour-cloud intersect your genetic height."
 		}
 		return(m)
 	})
@@ -53,7 +53,16 @@ shinyServer(function(input, output) {
 		# Take a dependency on input$goButton
 		
 		if(input$goButton == 0){
-			plot(NULL, xlim=c(-2,2),ylim=c(150,180),xlab="genetic height",ylab="real height (cm)")
+			
+			heights_pre_registered_file<-"/home/ubuntu/misc_files/background_heights.txt"
+			heights_pre_registered<-read.table(heights_pre_registered_file,sep="\t",stringsAsFactors=F,header=T)
+			smoothScatter(
+				x=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%"Male","gheight"],
+				y=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%"Male","real_height"],
+				xlab="genetic height",ylab="real height (cm)",
+				colramp="dodgerblue"
+			)
+			
 		}else if(input$goButton > 0) {
 			
 			uniqueID<-isolate(input$uniqueID)
