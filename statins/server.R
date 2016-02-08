@@ -32,10 +32,10 @@ shinyServer(function(input, output) {
 		table<-table[,c("SNP","Your genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Risk allele")
 		table<-table["rs2395029",,drop=FALSE]
-		rownames(table)<-NULL
+		# rownames(table)<-NULL
 		return(table)
 
-	})
+	},include.rownames = FALSE)
 	
 	
 	
