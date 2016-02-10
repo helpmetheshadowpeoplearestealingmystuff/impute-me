@@ -22,15 +22,20 @@ shinyServer(function(input, output) {
 		
 		#we have to remove the i3003137/Beta-Thalassemia because it's double with sickle-cell anemia
 		table<-table[!(table[,"SNP"]%in%"i3003137" & table[,"disease_name"]%in%"Beta Thalassemia"),]
+		
+		
 		rownames(table)<-table[,"SNP"]
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=table)
 		
 		table[,"Your genotype"]<-genotypes[rownames(table),]
-		table<-table[,c("SNP","Your genotype","risk_allele","non_risk_allele","disease_name")]
-		colnames(table)<-c("SNP","Your genotype","Risk-allele","Non-Risk-allele","Inherited Condition")
-		return(table)
+		# table<-table[,c("SNP","Your genotype","risk_allele","non_risk_allele","disease_name")]
+		# colnames(table)<-c("SNP","Your genotype","Risk-allele","Non-Risk-allele","Inherited Condition")
+		table<-table[,c("SNP","Your genotype","risk_allele","non_risk_allele")]
+		colnames(table)<-c("SNP","Your genotype","Risk-allele","Non-Risk-allele")
 		
-	},include.rownames = FALSE)
+		return(table)
+	}	
+	# },include.rownames = FALSE)
 	
 })
 
