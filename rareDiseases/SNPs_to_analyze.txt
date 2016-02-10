@@ -2,7 +2,7 @@ SNP	chrom_start	chr_name	disease_name	risk_allele	non_risk_allele	alt_risk_allel
 i5012573	NA	input	Agenesis of the Corpus Callosum with Peripheral Neuropathy (ACCPN)	D	I	-	C	NA	NA
 i5012575	NA	input	Agenesis of the Corpus Callosum with Peripheral Neuropathy (ACCPN)	A	G	A	G	NA	NA
 rs28929474	NA	input	Alpha-1 Antitrypsin Deficiency	T	C	T	C	NA	NA
-rs17580	NA	input	Alpha-1 Antitrypsin Deficiency	T	A	T	A	NA	NA
+rs17580	NA	input	Alpha-1 Antitrypsin Deficiency	A	T	A	T	NA	NA
 i5012578	NA	input	ARSACS	D	I	-	A	NA	NA
 rs28939383	NA	input	Autosomal Recessive Polycystic Kidney Disease	A	G	A	G	NA	NA
 i5000047	NA	input	Autosomal Recessive Polycystic Kidney Disease	C	T	C	T	NA	NA
