@@ -17,7 +17,7 @@ shinyUI(bootstrapPage(
 	
 	
 	endPanel(),
-	HTML("This table shows the variants which are known to confer a range of severe inhereted conditions. They are all fairly rare conditions. Slightly more common, however, is the case of being a carrier of the conditions. Being a carrier means that a person have one copy of a disease-causing allele, but will not be affected because the condition only manifests if both copies are of te disease-causing type."),
+	HTML("This table shows the variants which are known to confer a range of severe inherited conditions. They are all fairly rare conditions. Slightly more common, however, is the case of being a carrier of these conditions. Being a carrier means that a person have one copy of a disease-causing allele, but will not be affected because the condition only manifests if both copies are of te disease-causing type."),
 	tableOutput("table1"),
 	# dataTableOutput("table1"),
 	
