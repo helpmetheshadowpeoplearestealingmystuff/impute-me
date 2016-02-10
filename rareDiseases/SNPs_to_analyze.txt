@@ -1,4 +1,4 @@
-SNP	chrom_start	chr_name	NAME	Risk allele	Non risk allele	Alt name	Original allele naming
+SNP	chrom_start	chr_name	disease_name	risk_allele	non_risk_allele	alt_name	original_allele_naming
 Rs28929474	NA	input	Alpha-1 Antitrypsin Deficiency	T	C	NA	NA
 rs17580	NA	input	Alpha-1 Antitrypsin Deficiency	T	A	NA	NA
 rs1800562	NA	input	Hemochromatosis (HFE-related)	A	G	NA	NA
