@@ -30,12 +30,11 @@ shinyServer(function(input, output) {
 		table[,"Your genotype"]<-genotypes[rownames(table),]
 		# table<-table[,c("SNP","Your genotype","risk_allele","non_risk_allele","disease_name")]
 		# colnames(table)<-c("SNP","Your genotype","Risk-allele","Non-Risk-allele","Inherited Condition")
-		table<-table[,c("SNP","Your genotype")]
-		colnames(table)<-c("SNP","Your genotype")
+		table<-table[,c("SNP","Your genotype","disease_name")]
+		colnames(table)<-c("SNP","Your genotype","Inherited Condition")
 		
 		return(table)
-	}	)
-	# },include.rownames = FALSE)
+	},include.rownames = FALSE)
 	
 })
 
