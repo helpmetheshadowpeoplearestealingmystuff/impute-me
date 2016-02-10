@@ -34,7 +34,7 @@ shinyServer(function(input, output) {
 		colnames(table)<-c("SNP","Your genotype","Risk-allele","Non-Risk-allele")
 		
 		return(table)
-	}	
+	}	)
 	# },include.rownames = FALSE)
 	
 })
