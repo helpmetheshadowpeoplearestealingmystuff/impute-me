@@ -9,7 +9,7 @@ shinyUI(bootstrapPage(
 	titlePanel("Rare diseases"),
 	beginPage(),
 	beginPanel('1/3'),
-	HTML("Users with 23andme data had a special 'inherited conditions' analysis tool. However, this was taken off-line leaving only ancestry information availble. In this module the original 'inhereted conditions' are re-analysed:"),
+	HTML("Users with 23andme data had a special 'inherited conditions' analysis tool. However, this was taken off-line leaving only ancestry information availble. In this module the original 'inhereted conditions' are re-analysed:<br>"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	actionButton("goButton","Run analysis"),
 	endPanel(),
