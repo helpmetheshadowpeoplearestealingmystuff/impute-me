@@ -2,6 +2,7 @@
 # sudo crontab -u shiny -e
 # 00 20 * * * Rscript /srv/shiny-server/gene-surfer/imputeme/deletion_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-delete-cron.log 2>&1
 
+source("/srv/shiny-server/gene-surfer/functions.R")
 
 folders<-list.files("/home/ubuntu/data")
 
@@ -18,7 +19,17 @@ for(folder in folders){
 		timedif<-difftime(Sys.time(),start, units="days")
 		if(timedif > keeping_time){
 			print(paste("Deleting",folder,"because it is",timedif,"days old"))	
-			unlink(paste("/home/ubuntu/data/",folder,sep=""),recursive=T)
+			
+			if("data" %in% routinely_delete_this){
+				unlink(paste("/home/ubuntu/data/",folder,sep=""),recursive=T)
+			}
+			if("link" %in% routinely_delete_this){
+				f1<-paste("/srv/shiny-server/gene-surfer/www/",folder,".gen.zip",sep="")
+				f2<-paste("/srv/shiny-server/gene-surfer/www/",folder,".gen.zip",sep="")
+				if(file.exists(f1))unlink(f1)
+				if(file.exists(f2))unlink(f2)
+			}
+			
 		}
 	}
 }

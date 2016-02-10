@@ -21,6 +21,8 @@ if(length(email_password )!=1)stop("email_password  not length 1")
 if(!exists("email_address"))stop("Didn't find email_address")
 if(!is.character(email_address))stop("email_address not character")
 if(length(email_address)!=1)stop("email_address not length 1")
+if(!exists("routinely_delete_this"))stop("Didn't find routinely_delete_this")
+if(!is.character(routinely_delete_this))stop("routinely_delete_this not character")
 
 
 
