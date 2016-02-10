@@ -534,7 +534,12 @@ get_genotypes<-function(
 			input_genotypes[,4]<-sub("\r$","",input_genotypes[,4])
 			
 			
-			input_genotypes[input_genotypes[,2]%in%"X",4] <- paste(input_genotypes[input_genotypes[,2]%in%"X",4]," ",sep="")
+			male_x_chr <- which(input_genotypes[,2]%in%"X" & nchar(input_genotypes[,4])==2)
+			if(length(male_x_chr) > 0){
+				input_genotypes[male_x_chr,4] <- paste(input_genotypes[male_x_chr,4]," ",sep="")	
+			}
+			
+			
 			
 			if(any(nchar(input_genotypes[,4])!=2))stop("input data must have length 2 genotypes")
 			
