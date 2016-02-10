@@ -532,7 +532,12 @@ get_genotypes<-function(
 			input_genotypes<-system(cmd0,intern=T)
 			input_genotypes<-do.call(rbind,strsplit(input_genotypes,"\t"))
 			input_genotypes[,4]<-sub("\r$","",input_genotypes[,4])
+			
+			
+			input_genotypes[input_genotypes[,2]%in%"X",4] <- paste(input_genotypes[input_genotypes[,2]%in%"X",4]," ",sep="")
+			
 			if(any(nchar(input_genotypes[,4])!=2))stop("input data must have length 2 genotypes")
+			
 			input_genotypes[,4]<-paste(substr(input_genotypes[,4],1,1),substr(input_genotypes[,4],2,2),sep="/")
 			genotypes<-data.frame(row.names=input_genotypes[,1],genotype=input_genotypes[,4],stringsAsFactors=F)
 		}else{

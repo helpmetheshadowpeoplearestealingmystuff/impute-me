@@ -4,9 +4,6 @@ library("shiny")
 source("/srv/shiny-server/gene-surfer/functions.R")
 
 
-# uniqueID<-"id_57n662948"
-
-# Define server logic for random distribution application
 shinyServer(function(input, output) {
 	
 	output$table1 <- renderTable({ 
@@ -21,7 +18,10 @@ shinyServer(function(input, output) {
 			stop("Did not find a user with this id")
 		}
 		table_file <-"/srv/shiny-server/gene-surfer/rareDiseases/SNPs_to_analyze.txt"
-		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
+		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")
+		
+		#we have to remove the i3003137/Beta-Thalassemia because it's double with sickle-cell anemia
+		table<-table[!(table[,"SNP"]%in%"i3003137" & table[,"disease_name"]%in%"Beta Thalassemia"),]
 		rownames(table)<-table[,"SNP"]
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=table)
 		
