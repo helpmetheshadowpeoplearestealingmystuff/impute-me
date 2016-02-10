@@ -534,7 +534,7 @@ get_genotypes<-function(
 			input_genotypes[,4]<-sub("\r$","",input_genotypes[,4])
 			
 			
-			male_x_chr <- which(input_genotypes[,2]%in%"X" & nchar(input_genotypes[,4])==2)
+			male_x_chr <- which(input_genotypes[,2]%in%"X" & nchar(input_genotypes[,4])==1)
 			if(length(male_x_chr) > 0){
 				input_genotypes[male_x_chr,4] <- paste(input_genotypes[male_x_chr,4]," ",sep="")	
 			}
@@ -847,4 +847,45 @@ format_ancestry_com_as_23andme<-function(path){
 	unlink("tempOut0.txt")
 	
 	
+}
+
+
+
+
+
+
+
+
+
+snps<-c("rs1050829","rs1050828","Rs28929474")
+
+
+remove_snps_from_cache<-function(snps,verbose=T){
+	if(class(snps)!="character")stop("snps must be class character")
+	if(any(duplicated(snps)))stop("snps must not have duplications")
+	uniqueIDs<-list.files("/home/ubuntu/data/")
+	
+	for(uniqueID in uniqueIDs){
+		cacheFile<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.gz",sep="")
+		if(file.exists(cacheFile)){
+			cache<-read.table(cacheFile,header=T,stringsAsFactors=F,row.names=1)
+		}else{
+			if(verbose)print(paste("Didn't find a cache file for",uniqueID))	
+			next
+		}
+		if(any(snps%in%rownames(cache))){
+			snpsFound<-snps[snps%in%rownames(cache)]
+			if(verbose){
+				print(paste("removing",	length(snpsFound),"snps from",uniqueID,"- they are:",paste(snpsFound,collapse=","),"and have values",paste(cache[snpsFound,"genotype"],collapse=", ")))
+			}
+			
+			cache<-cache[!rownames(cache)%in%snps,,drop=F]
+			
+						f<-gzfile(cacheFile,"w")
+						write.table(cache,file=f,sep="\t",col.names=NA)
+						close(f)
+			
+		}
+		
+	}
 }
