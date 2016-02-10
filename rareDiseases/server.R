@@ -6,7 +6,7 @@ source("/srv/shiny-server/gene-surfer/functions.R")
 
 shinyServer(function(input, output) {
 	
-	output$table1 <- renderTable({ 
+	output$table1 <- renderDataTable({ 
 		if(input$goButton == 0){
 			return(NULL)
 		}
@@ -34,7 +34,7 @@ shinyServer(function(input, output) {
 		colnames(table)<-c("SNP","Your genotype","Inherited Condition")
 		
 		return(table)
-	},include.rownames = FALSE)
+	})
 	
 })
 
