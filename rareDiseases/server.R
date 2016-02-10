@@ -55,7 +55,7 @@ shinyServer(function(input, output) {
 		return(table)
 		
 		
-	})
+	},options =list(pageLength = 100,searching = FALSE))
 	
 	output$text_advice1 <- renderText({ 
 		
