@@ -203,8 +203,8 @@ location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
 
 
 message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br>",
-								 location_23andme,
-								 "<br><br>You can also go to www.impute.me and explore the current analysis-modules using this log-in ID: <u>",uniqueID,"</u>
+								 "<a href=",location_23andme,">",location_23andme,"</a>",
+								 "<br><br>You can also go to <a href='www.impute.me'>www.impute.me</a> and explore the current analysis-modules using this log-in ID: <b>",uniqueID,"</b>
 								 <br><br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format files</a></HTML> ",sep="")
 
 
@@ -215,7 +215,7 @@ while(class(mailingResult) == "try-error"){
 	print(paste("Trying to mail to",email))
 	mailingResult<-try(send.mail(from = email_address,
 															 to = email,
-															 bcc="lasfol@cbs.dtu.dk",
+															 bcc="lassefolkersen@gmail.com",
 															 subject = "Imputation is ready",
 															 body = message,
 															 html=T,
