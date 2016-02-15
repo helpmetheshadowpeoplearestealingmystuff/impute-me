@@ -48,7 +48,7 @@ if(serverRole== "Hub"){
 																	 smtp = list(
 																	 	host.name = "smtp.gmail.com", 
 																	 	port = 465, 
-																	 	user.name = email_password, 
+																	 	user.name = email_address, 
 																	 	passwd = email_password, 
 																	 	ssl = TRUE),
 																	 authenticate = TRUE,
