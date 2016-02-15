@@ -40,7 +40,7 @@ if(serverRole== "Hub"){
 	if(length(foldersToCheck) - runningJobCount - remoteRunningJobCount >0){
 		mailingResult<-try(stop(),silent=TRUE)
 		while(class(mailingResult) == "try-error"){
-			mailingResult<-try(send.mail(from = "analyzer6063@gmail.com",
+			mailingResult<-try(send.mail(from = email_address,
 																	 to = "lassefolkersen@gmail.com",
 																	 subject = "Imputation is waiting",
 																	 body = "There is an imputation waiting. Switch on node",
@@ -48,8 +48,8 @@ if(serverRole== "Hub"){
 																	 smtp = list(
 																	 	host.name = "smtp.gmail.com", 
 																	 	port = 465, 
-																	 	user.name = "analyzer6063@gmail.com", 
-																	 	passwd = "ei1J#bQA^FA$", 
+																	 	user.name = email_password, 
+																	 	passwd = email_password, 
 																	 	ssl = TRUE),
 																	 authenticate = TRUE,
 																	 send = TRUE))
