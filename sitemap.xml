@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+<url>
+  <loc>http://www.impute.me/</loc>
+  <lastmod>2016-04-02T17:38:03+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://www.impute.me/imputeme/</loc>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://www.impute.me/guessMyHeight/</loc>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://www.impute.me/statins/</loc>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://www.impute.me/rareDiseases/</loc>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://www.impute.me/nonsenser/</loc>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://www.impute.me/BRCA/</loc>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://www.impute.me/athletics/</loc>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://www.impute.me/contact/</loc>
+  <changefreq>monthly</changefreq>
+</url>
+</urlset>
