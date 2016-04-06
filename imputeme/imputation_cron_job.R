@@ -61,7 +61,7 @@ if(serverRole== "Hub"){
 }
 
 
-#If the computer is not too busy and the serverRole is node - we fetch a job
+#If the computer is not too busy and the serverRole is node - we fetch ONE job
 if(serverRole== "Node"){
 	cmd1 <- paste("ssh ubuntu@",hubAddress," ls /home/ubuntu/imputations/",sep="")
 	remoteFoldersToCheck<-system(cmd1,intern=T)
@@ -84,6 +84,7 @@ if(serverRole== "Node"){
 			job_status_file<-paste("/home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
 			unlink(job_status_file)
 			write.table("Job is ready",file=job_status_file,col.names=F,row.names=F,quote=F)
+			break
 		}
 	}
 	#Update the local foldersToCheck to reflect new arrivals
