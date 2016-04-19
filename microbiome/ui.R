@@ -8,7 +8,7 @@ shinyUI(bootstrapPage(
 	titlePanel("Microbiome"),
 	beginPage(),
 	beginPanel('1/3'),
-	HTML("Some text that will go above the input ID place"),
+	HTML("Example ID to test: id_57n662948"),
 	
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	actionButton("goButton","Run analysis"),

@@ -21,7 +21,7 @@ shinyServer(function(input, output) {
 		
 		
 		
-		table_file <-"../template/SNPs_to_analyze.txt"
+		table_file <-"../microbiome/SNPs_to_analyze.txt"
 		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
 		rownames(table)<-table[,"SNP"]
 		#This will return a copy of the SNPs_to_analyze.txt, with the genotypes of this specific person (=uniqueID) as a new column
