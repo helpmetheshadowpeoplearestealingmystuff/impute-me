@@ -30,7 +30,7 @@ shinyServer(function(input, output) {
 		
 		
 		
-		table <- table[,c("SNP","Increasing_allele","Bacteria")]
+		table <- table[,c("SNP","Your genotype","Increasing_allele","Bacteria")]
 		
 		#
 		
