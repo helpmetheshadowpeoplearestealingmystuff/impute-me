@@ -5,7 +5,7 @@ initialize('sti',TRUE)
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
-	titlePanel("template"),
+	titlePanel("Microbiome"),
 	beginPage(),
 	beginPanel('1/3'),
 	HTML("Some text that will go above the input ID place"),
