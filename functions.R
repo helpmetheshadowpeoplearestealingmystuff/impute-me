@@ -891,3 +891,44 @@ remove_snps_from_cache<-function(snps,verbose=T){
 		
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+remove_all_temp_folders<-function(uniqueIDs=NULL){
+	#A function that will crawl all data directories and remove any lingering temp folders - only use with manual execution
+	
+	if(is.null(uniqueIDs)){
+		uniqueIDs<-list.files("/home/ubuntu/data/")
+	}else{
+		if(class(uniqueIDs)!="character")stop("UniqueIDs must be of class character")
+		if(!all(file.exists(paste("/home/ubuntu/data/",uniqueIDs,sep=""))))stop("Not all UniqueIDs given were found")
+	}
+	
+
+	for(uniqueID in uniqueIDs){
+		tempFolder<-paste("/home/ubuntu/data/",uniqueID,"/temp",sep="")
+			if(file.exists(tempFolder)){
+				print(paste("Deleting",tempFolder))
+				unlink(tempFolder,recursive=T)
+			}
+	}
+}
+
+
+
