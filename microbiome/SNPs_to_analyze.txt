@@ -1,10 +1,10 @@
 SNP	chr_name	Increasing_allele	Decreasing_allele	P	R2	Consequence	Mutation	FDR	Bacteria
 rs4894707	3	T	C	NA	NA	NA	NA	NA	Akkermansia
-rs1050115	2	NA	NA	6.51E-06	0.027	synonymous	UBXN4:NM_014607:exon4:c.A303G:p.E101E,	0.07742343	Bifidobacterium
-rs2304371	2	NA	NA	4.14E-06	0.025	synonymous	LCT:NM_002299:exon11:c.C4606T:p.L1536L,	0.07742343	Bifidobacterium
-rs3754689	2	NA	NA	1.16E-05	0.033	nonsynonymous	LCT:NM_002299:exon2:c.G655A:p.V219I,	0.09173467	Bifidobacterium
+rs1050115	2	A	G	6.51E-06	0.027	synonymous	UBXN4:NM_014607:exon4:c.A303G:p.E101E,	0.07742343	Bifidobacterium
+rs2304371	2	G	A	4.14E-06	0.025	synonymous	LCT:NM_002299:exon11:c.C4606T:p.L1536L,	0.07742343	Bifidobacterium
+rs3754689	2	C	T	1.16E-05	0.033	nonsynonymous	LCT:NM_002299:exon2:c.G655A:p.V219I,	0.09173467	Bifidobacterium
 rs1110168	3	NA	NA	6.92E-06	0.039	synonymous	PLXND1:NM_015103:exon9:c.G2295C:p.T765T,	0.05488223	Prevotella
-rs1966834	11	NA	NA	4.52E-06	0.039	nonsynonymous	OR1S1:NM_001004458:exon1:c.A404G:p.H135R,	0.05488223	Prevotella
-rs8019270	14	NA	NA	5.84E-06	0.04	nonsynonymous	TBPL2:NM_199047:exon1:c.G92C:p.R31P,	0.05488223	Prevotella
-rs2274669	20	NA	NA	1.49E-06	0.065	synonymous	FAM113A:NM_022760:exon7:c.G981A:p.P327P,	0.03546493	Alistipes
+rs1966834	11	G	A	4.52E-06	0.039	nonsynonymous	OR1S1:NM_001004458:exon1:c.A404G:p.H135R,	0.05488223	Prevotella
+rs8019270	14	C	G	5.84E-06	0.04	nonsynonymous	TBPL2:NM_199047:exon1:c.G92C:p.R31P,	0.05488223	Prevotella
+rs2274669	20	C	NA	1.49E-06	0.065	synonymous	FAM113A:NM_022760:exon7:c.G981A:p.P327P,	0.03546493	Alistipes
 rs10248138	7	NA	NA	1.34E-06	0.096	synonymous	EPDR1:NM_001242948:exon1:c.C34A:p.R12R,	0.03184945	Lachnobacterium
