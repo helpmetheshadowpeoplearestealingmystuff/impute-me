@@ -650,7 +650,7 @@ get_genotypes<-function(
 get_GRS<-function(genotypes, betas){
 	
 	if(class(genotypes)!="data.frame")stop(paste("genotypes must be data.frame, not",class(genotypes)))
-	if(!"genotype"%in%colnames(genotypes))stop(paste("genotypes must have a column genotypes"))
+	if(!"genotype"%in%colnames(genotypes))stop(paste("genotypes must have a column genotype"))
 	if(!all(unique(sub("[0-9].+$","",rownames(genotypes)))%in%c("i","rs"))){
 		
 		stop(paste("genotypes must have rownames starting with rs. You had these:",paste(unique(sub("[0-9].+$","",rownames(genotypes))),collapse=", ")))

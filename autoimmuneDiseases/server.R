@@ -63,69 +63,21 @@ shinyServer(function(input, output) {
 			genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
 			
 			
+			#remember TO REMOVE THE NON-SIGNIFICANTs
+			
 			#get risk score
-			beta_column<-paste0("OR.",disease,".")
-
-			gheight<-get_GRS(genotypes=genotypes,betas=SNPs_to_analyze,beta_column=beta_column)
+			or_column<-paste0("OR.",disease,".")
+			SNPs_to_analyze[,"Beta"]<-log10(SNPs_to_analyze[,or_column])
+			
+			GRS_beta <-get_GRS(genotypes=genotypes,betas=SNPs_to_analyze)
+			
+			GRS_OR <- 10^GRS_beta
 			
 			
-			#also store this in the pData
-			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
-			pData[,"gheight"]<-gheight
-			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
+			#simulate healthy peoples risk score distribution
+			SNPs_to_analyze[,"MAF.CON."]
 			
 			
-			#set gender stereotype colours
-			if(gender == 1){
-				backgroundCol<-colorRampPalette(colorRampPalette(c("white", "#08519C"))(10))
-				mainCol<-"dodgerblue"
-			}else{
-				backgroundCol<-colorRampPalette(colorRampPalette(c("white", "firebrick1"))(10))
-				mainCol<-"red"
-			}
-			
-			
-			#load database for comparison
-			#this is a file that contains the GWAS heights
-			heights_pre_registered_file<-"/home/ubuntu/misc_files/background_heights.txt"
-			heights_pre_registered<-read.table(heights_pre_registered_file,sep="\t",stringsAsFactors=F,header=T)
-			smoothScatter(
-				x=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%gender,"gheight"],
-				y=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%gender,"real_height"],
-				xlab="genetic height",ylab="real height (cm)",
-				colramp=backgroundCol
-			)
-			
-			
-			
-			
-			#load previous users data
-			otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
-			heights_in_data<-data.frame(height=vector(),gheight=vector(),gender=vector(),stringsAsFactors=F)
-			for(otherPerson in otherPersons){
-				if(!file.info(otherPerson)[["isdir"]])next
-				if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-				otherPersonPdata<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F)
-				if(!all(c("gheight","height","gender")%in%colnames(otherPersonPdata)))next
-				if(otherPersonPdata[1,"gender"] != gender) next #only plot persons of the same gender
-				heights_in_data<-rbind(heights_in_data,otherPersonPdata[1,c("height","gheight","gender")])
-			}
-			#then plot them
-			points(
-				x=heights_in_data[,"gheight"],
-				y=heights_in_data[,"height"],
-				col="black",
-				bg=mainCol,
-				pch=21
-			)
-			
-			
-			#Plot the current users data
-			if(height_provided){
-				points(x=gheight, y=real_height,cex=3, col="black",bg=mainCol,pch=21)
-			}else{
-				abline(v=	gheight, lwd=2, col=mainCol)
-			}
 		}
 	})
 	
