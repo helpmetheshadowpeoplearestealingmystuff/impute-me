@@ -56,6 +56,9 @@ shinyServer(function(input, output) {
 			SNPs_to_analyze<-read.table(SNPs_to_analyze_file,sep="\t",stringsAsFactors=F,header=T,row.names=1)
 			
 			
+			GRSs_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/2016-05-17_GRSs_examples.rdata"
+			load(GRSs_file)
+			
 			diseases<-c("AS","CD","PS","PSC","UC")
 			disease <- "AS"
 			
@@ -71,12 +74,10 @@ shinyServer(function(input, output) {
 			
 			GRS_beta <-get_GRS(genotypes=genotypes,betas=SNPs_to_analyze)
 			
-			GRS_OR <- 10^GRS_beta
+			# GRS_OR <- 10^GRS_beta
 			
-			
-			#simulate healthy peoples risk score distribution
-			SNPs_to_analyze[,"MAF.CON."]
-			
+			hist(GRSs[disease,],breaks=30,main="Risk distributions",x="Genetic risk score")
+			abline(v=GRS_beta)
 			
 		}
 	})

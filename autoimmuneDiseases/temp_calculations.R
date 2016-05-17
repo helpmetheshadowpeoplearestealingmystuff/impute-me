@@ -14,7 +14,7 @@ diseases<-c("CON","AS","CD","PS","PSC","UC")
 
 
 #simulating healthy distribution
-n<-100
+n<-500
 out<-list()
 for(disease in diseases){
 	results<-matrix(nrow=nrow(SNPs_to_analyze),ncol=n,dimnames=list(rownames(SNPs_to_analyze),1:n))
