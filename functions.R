@@ -647,7 +647,7 @@ get_genotypes<-function(
 
 
 
-get_GRS<-function(genotypes, betas, beta_column="Beta"){
+get_GRS<-function(genotypes, betas){
 	
 	if(class(genotypes)!="data.frame")stop(paste("genotypes must be data.frame, not",class(genotypes)))
 	if(!"genotype"%in%colnames(genotypes))stop(paste("genotypes must have a column genotypes"))
@@ -658,8 +658,7 @@ get_GRS<-function(genotypes, betas, beta_column="Beta"){
 	}
 	
 	if(class(betas)!="data.frame")stop(paste("genotypes must be data.frame, not",class(betas)))
-	necessary_columns<-c("effect_allele","non_effect_allele",beta_column)
-	if(length(unique(necessary_columns))!=3)stop("Must provide unique beta_column")
+	necessary_columns<-c("effect_allele","non_effect_allele","Beta")
 	if(!all(necessary_columns%in%colnames(betas)))stop(paste("betas must have a column",paste(necessary_columns,collapse=", ")))
 	if(!all(unique(sub("[0-9].+$","",rownames(betas)))%in%c("i","rs")))stop("betas must have rownames starting with rs")
 	
@@ -675,8 +674,8 @@ get_GRS<-function(genotypes, betas, beta_column="Beta"){
 		genotype<-strsplit(genotypes[snp,],"/")[[1]]
 		effect_allele<-betas[snp,"effect_allele"]
 		non_effect_allele<-betas[snp,"non_effect_allele"]
-		all_alleles<-c(non_effect_allele,effect_allele)
-		beta<-betas[snp,beta_column]	
+		# all_alleles<-c(non_effect_allele,effect_allele)
+		beta<-betas[snp,"Beta"]	
 		geneticRiskScore <- geneticRiskScore + sum(genotype%in%effect_allele) * beta
 	}
 	return(geneticRiskScore)
