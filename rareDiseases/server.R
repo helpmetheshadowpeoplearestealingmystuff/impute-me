@@ -50,7 +50,7 @@ shinyServer(function(input, output) {
 		
 		# diseases_of_interest <- unique(table[table[,"Second_carrier"] | table[,"First_carrier"],"disease_name"])
 		
-		table<-table[,c("SNP","Your genotype","alt_risk_allele","alt_non_risk_allele","disease_name")]
+		table<-table[,c("SNP","Your genotype","risk_allele","non_risk_allele","disease_name")]
 		colnames(table)<-c("SNP","Your genotype","Risk-allele","Non-Risk-allele","Inherited Condition")
 		return(table)
 		
