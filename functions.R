@@ -647,7 +647,7 @@ get_genotypes<-function(
 
 
 
-get_GRS<-function(genotypes, betas){
+get_GRS<-function(genotypes, betas, beta_column="Beta"){
 	
 	if(class(genotypes)!="data.frame")stop(paste("genotypes must be data.frame, not",class(genotypes)))
 	if(!"genotype"%in%colnames(genotypes))stop(paste("genotypes must have a column genotypes"))
@@ -658,7 +658,8 @@ get_GRS<-function(genotypes, betas){
 	}
 	
 	if(class(betas)!="data.frame")stop(paste("genotypes must be data.frame, not",class(betas)))
-	necessary_columns<-c("effect_allele","non_effect_allele","Beta")
+	necessary_columns<-c("effect_allele","non_effect_allele",beta_column)
+	if(length(unique(beta_column))!=3)stop("Must provide unique beta_column")
 	if(!all(necessary_columns%in%colnames(betas)))stop(paste("betas must have a column",paste(necessary_columns,collapse=", ")))
 	if(!all(unique(sub("[0-9].+$","",rownames(betas)))%in%c("i","rs")))stop("betas must have rownames starting with rs")
 	
