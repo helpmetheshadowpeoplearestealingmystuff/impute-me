@@ -4,7 +4,7 @@ library("shiny")
 
 source("/srv/shiny-server/gene-surfer/functions.R")
 
-uniqueID <- "id_152N62530"
+# uniqueID <- "id_152N62530"
 
 shinyServer(function(input, output) {
 	
@@ -76,7 +76,7 @@ shinyServer(function(input, output) {
 			
 			# GRS_OR <- 10^GRS_beta
 			
-			hist(GRSs[disease,],breaks=30,main="Risk distributions",x="Genetic risk score")
+			hist(GRSs[disease,],breaks=30,main="Risk distributions",xlab="Genetic risk score")
 			abline(v=GRS_beta)
 			
 		}
