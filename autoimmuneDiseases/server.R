@@ -33,16 +33,10 @@ shinyServer(function(input, output) {
 		
 		if(input$goButton == 0){
 			
-			SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/SNPs_to_analyze.txt"
-			SNPs_to_analyze<-read.table(SNPs_to_analyze_file,sep="\t",stringsAsFactors=F,header=T,stringsAsFactors=F)
-			smoothScatter(
-				x=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%2,"gheight"],
-				y=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%2,"real_height"],
-				xlab="genetic height",ylab="real height (cm)"
-				# colramp=colorRampPalette(colorRampPalette(c("white", "#08519C"))(10))
-			)
-			
+
 		}else if(input$goButton > 0) {
+
+			
 			
 			uniqueID<-isolate(input$uniqueID)
 			if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
@@ -53,45 +47,26 @@ shinyServer(function(input, output) {
 				Sys.sleep(3) #wait a little to prevent raw-force fishing	
 				stop("Did not find a user with this id")
 			}
-			
-			height_provided<-isolate(input$height_provided)
-			if(height_provided){
-				real_height<-as.numeric(isolate(input$real_height))
-				real_age<-as.numeric(isolate(input$real_age))
-				
-				if(is.na(real_height))stop("Must give you real height in cm")
-				if(is.na(real_age))stop("Must give you real age in years")
-				
-				if(real_age<0 | real_age>100)stop("real age must be a number between 0 and 100")
-				if(real_height>210 )stop("real height must be number below 210 cm (or write me an email if you are actually taller than that)")
-				if(real_height<140 ){
-					if(real_age>15){
-						stop("for adults, real height must be number above 150 cm (or write me an email if you are actually shorter than that)")
-					}
-				}
-				
-				#also store this in the pData
-				pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
-				pData[,"height"]<-real_height
-				pData[,"age"]<-real_age
-				write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
-				
-			}else{
-				real_height<-NA	
-				real_age<-NA
-			}
+
 			
 			#Get gender
 			gender<-read.table(pDataFile,header=T,stringsAsFactors=F)[1,"gender"]
 			
+			SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/SNPs_to_analyze.txt"
+			SNPs_to_analyze<-read.table(SNPs_to_analyze_file,sep="\t",stringsAsFactors=F,header=T,row.names=1)
 			
-			giant_sup_path<-"/srv/shiny-server/gene-surfer/guessMyHeight/SNPs_to_analyze.txt"
-			giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
 			
+			diseases<-c("AS","CD","PS","PSC","UC")
+			disease <- "AS"
 			
 			#get genotypes and calculate gheight
-			genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
-			gheight<-get_GRS(genotypes=genotypes,betas=giant_sup)
+			genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
+			
+			
+			#get risk score
+			beta_column<-paste0("OR.",disease,".")
+
+			gheight<-get_GRS(genotypes=genotypes,betas=SNPs_to_analyze,beta_column=beta_column)
 			
 			
 			#also store this in the pData
