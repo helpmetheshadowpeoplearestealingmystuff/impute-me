@@ -30,7 +30,7 @@ shinyUI(bootstrapPage(
 	
 	
 	h2("Opiod receptor"),
-	HTML("This is based <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/18250251'>on a study.</a></u>:<br><br>"),
+	HTML("This is based <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/18250251'>on a study.</a></u> which found that having this opiod receptor variant responded better to naltrexone treatment of alcoholism. It has in subsequent studies been linked to other effects in opiod-receptor related diseases.<br><br>"),
 	tableOutput("table3"),
 	
 	endPanel(),
