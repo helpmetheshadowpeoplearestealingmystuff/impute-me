@@ -153,10 +153,10 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			
 			
 			
-			legend("topleft",legend=c("Disease risk profile","Healthy risk profile","Your genetic risk score"),lty=c(1,1,1),lwd=c(1,1,3),col=c("red","blue","black"))
+			legend("topleft",legend=c("Disease risk profile","Healthy risk profile","Your genetic risk score"),lty=c(1,1,1),lwd=c(2,2,3),col=c("red","blue","black"))
 		}else{
 			
-			legend("topleft",legend=c("Disease risk profile","Healthy risk profile"),lty=c(1,1),lwd=c(1,1),col=c("red","blue"))
+			legend("topleft",legend=c("Disease risk profile","Healthy risk profile"),lty=c(1,1),lwd=c(2,2),col=c("red","blue"))
 			
 			
 		}
