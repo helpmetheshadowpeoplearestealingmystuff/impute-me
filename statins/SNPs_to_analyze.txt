@@ -1,3 +1,4 @@
-SNP	chr_name	Beta	effect_allele	non_effect_allele	ensembl_alleles
-rs4363657	12	NA	C	T	C/T
-rs2395029	input	NA	G	T	G/T
+SNP	chr_name	Beta	effect_allele	non_effect_allele	ensembl_alleles	comment
+rs4363657	12	NA	C	T	C/T	
+rs2395029	input	NA	G	T	G/T	
+rs1799971	6	NA	G	A	G/A	Asn40 is the major allele, and Asp40 is the minor allele. Asp40 (minor) had good outcome and should be effect
