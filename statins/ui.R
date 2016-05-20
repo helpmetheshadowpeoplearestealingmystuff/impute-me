@@ -15,6 +15,8 @@ shinyUI(bootstrapPage(
 	
 	endPanel(),
 	beginPanel('2/3'),
+	h2("Introduction"),
+	HTML("This is currently a collection of actionable pharmacogenetic SNPs. It is by no means meant to be a complete overview of all that exists, but instead is focusing on variants that seems reasonably validated, interesting and useful. Suggestions for further loci are welcome."),
 	
 	h2("HIV treatment response"),
 	HTML("This is a fairly rare SNP, for which T-alleles are associated with adverse response to the <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/18684101'>HIV-drug abacavir</a></u>. It is sometimes tested for before initiating abacavir treatment. Note however, that the studies supporting this are specifically only valid for caucasian ethnicities. Several other ethnicities are much more likely to have a T-allele, without problems. Note, that this SNP is also available in raw 23andme data without imputation. However it is included here because it is one of the more variants more often being checked for actual clinical use"),
@@ -22,9 +24,14 @@ shinyUI(bootstrapPage(
 	# dataTableOutput("table1"),
 	
 	h2("Statin response"),
-	HTML("This is based on the <u><a href='http://www.bostonheartdiagnostics.com/science_portfolio_statin.php'>Boston Heart Diagnostics</a></u> test, which sells for 99$. The interpretation is that if you carry one or two 'C' alleles it is equal to a positive test.	Of note, however, it is a silly idea that you should worry about statins based on this information. The positive prediction rate is 5%, meaning that in 95% of the cases you will not have a problem even though your genotype contains a C. That hasn't stopped 250k US doctors from ordering the test. So it's only included here, because people actually pay money for it - here you can have it automatically:<br><br>"),
+	HTML("This is based on the a test sold by a boston based company working with heart diagnostics. It sells for 99$. The interpretation is that if you carry one or two 'C' alleles it is equal to a positive test.	Of note, however, it is a silly idea that you should worry about statins based on this information. The positive prediction rate is 5%, meaning that in 95% of the cases you will not have a problem even though your genotype contains a C. That hasn't stopped 250k US doctors from ordering the test. So it's only included here, because people actually pay money for it - here you can have it automatically:<br><br>"),
 	tableOutput("table2"),
-	# dataTableOutput("table2"),
+	
+	
+	
+	h2("Opiod receptor"),
+	HTML("This is based <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/18250251'>on a study.</a></u>:<br><br>"),
+	tableOutput("table3"),
 	
 	endPanel(),
 	
