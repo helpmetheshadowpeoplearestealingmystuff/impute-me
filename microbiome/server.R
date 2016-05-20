@@ -6,6 +6,28 @@ source("/srv/shiny-server/gene-surfer/functions.R")
 
 # Define server logic for a template
 shinyServer(function(input, output) {
+	
+	
+	
+	output$text_1 <- renderText({ 
+		if(input$goButton == 0){
+			return("")
+		}else if(input$goButton > 0) {
+			m<-paste0("<small><b>Your interpretation:</b> For each of the strains of bacteria you can read your own genotype and see if your are host-genetically disposed to have an increased proportion of this particular strain. The consequence of being particularly disposed are fairly unclear, however, but refer to the primary literature on gut microbiome for more information.<br><br><br>
+								<b>Methods:</b> The findings were taken from the study by <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/?term=26374288'>Blekhman et al (2015)</a></u>. Supplementary material table S5.</small>")
+			
+		}
+		return(m)
+	})
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	output$table1 <- renderTable({ 
 		if(input$goButton == 0){
 			return(NULL)
