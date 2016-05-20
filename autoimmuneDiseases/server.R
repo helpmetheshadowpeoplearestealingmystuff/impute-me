@@ -33,14 +33,14 @@ shinyServer(function(input, output) {
 		
 		means<-read.table(means_file,sep="\t",header=T,row.names=1,stringsAsFactors=F)
 		case_mean<-signif(means[disease,"case_mean"],2)
-		case_low<-signif(means[disease,"case_mean"] - 2*means[disease,"case_sd"],2)
-		case_high<-signif(means[disease,"case_mean"] +2*means[disease,"case_sd"],2)
 		control_mean<-signif(means[disease,"control_mean"],2)
 		dis<-tolower(diseaseNames[disease])
 		
+		over_prop<-signif(1-pnorm(case_mean,mean=control_mean,sd=control_sd),2)*100
 		
+				
 		m<-paste0("A genetic risk score is an arbitrary value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease.<br><br>
-This plot shows the risk profile for ",dis,". Patients with this disease have genetic risk scores centered around ",case_mean, ", as shown by the shape of the red line. However as also shown, patients with ",dis," often have genetic risk scores as low as ",case_low," and as high as ",case_high,". The blue line, in contrast, shows the genetic risk score profile for a matched group of healthy controls. Even though they are healhty, their genetic risk score for ",dis, " center around ",control_mean,". This means that even with high genetic risk scores, you can be perfectly healthy all your life. It only tweaks the probabities. This illustrates the weak point of using GWAS technology for prognosis"
+This plot shows the risk profile for ",dis,". Patients with this disease have genetic risk scores centered around ",case_mean, ", as shown by the shape of the red line. However as also shown, patients with ",dis," often have higher or lower genetic risk scores. The blue line, in contrast, shows the genetic risk score profile for a matched group of healthy controls. Their genetic risk score for ",dis, " center around ",control_mean,". However even though they are healthy, several have higher genetic risk scores than average patients risk score (",over_prop,"%). This means that even with high genetic risk scores, you can be perfectly healthy all your life. It only tweaks the probabities. This illustrates the weak point of using GWAS technology for prognosis"
 		)
 		return(m)
 	})
