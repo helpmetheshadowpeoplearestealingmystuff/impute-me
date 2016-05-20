@@ -36,7 +36,7 @@ shinyServer(function(input, output) {
 		control_mean<-signif(means[disease,"control_mean"],2)
 		dis<-tolower(diseaseNames[disease])
 		
-		over_prop<-signif(1-pnorm(case_mean,mean=control_mean,sd=control_sd),2)*100
+		over_prop<-signif(1-pnorm(case_mean,mean=means[disease,"control_mean"],sd=means[disease,"control_sd"]),2)*100
 		
 				
 		m<-paste0("A genetic risk score is an arbitrary value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease.<br><br>
