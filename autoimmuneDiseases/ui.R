@@ -3,11 +3,20 @@ source("../uifunctions.R")
 initialize('gmh',TRUE)
 
 
-diseases<-c("Ulcerative colitis"="UC",
-						"Crohn’s disease"="CD",
-						"Psoriasis"="PS",
-						"Primary Sclerosing Cholangitis"="PSC",
-						"Ankylosing Spondylitis"="AS")
+
+diseaseNames<-rbind(
+	c("RA","Rheumatoid Arthritis","Okada"),
+	c("UC","Ulcerative colitis","ellinghaus"),
+	c("CD","Crohn’s disease","ellinghaus"),
+	c("PS","Psoriasis","ellinghaus"),
+	c("PSC","Primary Sclerosing Cholangitis","ellinghaus"),
+	c("AS","Ankylosing Spondylitis","ellinghaus")
+)
+colnames(diseaseNames)<-c("Acronym","Disease","Source")
+rownames(diseaseNames)<-diseaseNames[,"Acronym"]
+
+diseases<-diseaseNames[,"Acronym"]
+names(diseases)<-diseaseNames[,"Disease"]
 
 
 shinyUI(bootstrapPage(

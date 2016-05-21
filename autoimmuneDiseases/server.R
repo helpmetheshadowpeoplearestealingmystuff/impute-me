@@ -13,16 +13,23 @@ library("shiny")
 
 source("/srv/shiny-server/gene-surfer/functions.R")
 dataFolder<-"/home/ubuntu/data/"
-SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/SNPs_to_analyze.txt"
+SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/2016-05-21_SNPs_to_analyze_SOURCE.txt"
+
 means_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/2016-05-18_means.txt"
 
 
 
-diseaseNames<-c("UC"="Ulcerative colitis",
-								"CD"="Crohn’s disease",
-								"PS"="Psoriasis",
-								"PSC"="Primary Sclerosing Cholangitis",
-								"AS"="Ankylosing Spondylitis")
+diseaseNames<-rbind(
+	c("RA","Rheumatoid Arthritis","okada"),
+	c("UC","Ulcerative colitis","ellinghaus"),
+	c("CD","Crohn’s disease","ellinghaus"),
+	c("PS","Psoriasis","ellinghaus"),
+	c("PSC","Primary Sclerosing Cholangitis","ellinghaus"),
+	c("AS","Ankylosing Spondylitis","ellinghaus")
+)
+colnames(diseaseNames)<-c("Acronym","Disease","Source")
+rownames(diseaseNames)<-diseaseNames[,"Acronym"]
+
 
 
 shinyServer(function(input, output) {
@@ -64,7 +71,9 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 	output$plot_1 <- renderPlot({ 
 		
 		disease<-isolate(input$disease)
-		SNPs_to_analyze<-read.table(SNPs_to_analyze_file,sep="\t",stringsAsFactors=F,header=T,row.names=1)
+		source<-diseaseNames[disease,"Source"]
+		
+		SNPs_to_analyze<-read.table(sub("SOURCE",source,SNPs_to_analyze_file),sep="\t",stringsAsFactors=F,header=T,row.names=1)
 		
 		# Take a dependency on input$goButton
 		if(input$goButton > 0) {
@@ -81,7 +90,12 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			
 			
 			#get risk score
-			or_column<-paste0("OR.",disease,".")
+			if(source == "ellinghaus"){
+				or_column<-paste0("OR.",disease,".")
+			}else if(source=="okada"){
+				or_colum<-"OR"
+			}else{stop("!")}
+			
 			SNPs_to_analyze[,"Beta"]<-log10(SNPs_to_analyze[,or_column])
 			GRS_beta <-get_GRS(genotypes=genotypes,betas=SNPs_to_analyze)
 		}
