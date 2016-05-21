@@ -1,13 +1,13 @@
 library("shiny")
 
 #REMOVE LATER
-# rm(list=ls())
-# source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
-# dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
-# uniqueID <- "id_57n662948"
-# disease<-"RA"
-# SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-21_SNPs_to_analyze_SOURCE.txt"
-# means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-21_means.txt"
+rm(list=ls())
+source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
+dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
+uniqueID <- "id_57n662948"
+disease<-"RA"
+SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-21_SNPs_to_analyze_SOURCE.txt"
+means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-21_means.txt"
 
 
 # 
@@ -59,15 +59,15 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			disease<-isolate(input$disease)
 			dis<-tolower(diseaseNames[disease])
 			
-			source<-diseaseNames[dis,"Source"]
-			if(source == "ellinghaus"){
+			sourcePaper<-diseaseNames[disease,"Source"]
+			if(sourcePaper == "ellinghaus"){
 				pubmed<-"26974007"
-			}else if(source == "okada"){
+			}else if(sourcePaper == "okada"){
 				pubmed<-"24390342"
 			}else{stop("!!")}
 			
 			m<-paste0("<small><b>Your interpretation:</b> Your genetic risk score is shown as a vertical black bar. The more to the right it is, the higher a genetic risk score for ",dis," you have. However as explained above, people who remain healthy can also have higher genetic risk scores. The key is therefore to consider how many healthy individuals have a <i>lower</i> score (the blue percentage). The lower the better because it means people with worse genetic profiles than you typically stay healhty. Conversely, the red percentage indicates the fraction of patients with the disease who have a <i>higher</i> genetic risk score than you. The overall point, of course, is also to illustrate that as long as GWAS data cannot separate healthy and patient groups better, their prognistic value is limited: completely separated tops would be nice to have clinically, but this is not what exists from GWAS.<br><br><br>
-<b>Methods:</b> The GWAS findings were taken from the study by <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/",pubmed,"'>",source," et al</a></u>. Probability distributions were calculated as random samplings of genotypes based on the reported minor allele frequency either in cases or controls. Genetic risk scores were calculated as the sum of risk-allele count multiplied with the effect size.</small>")
+<b>Methods:</b> The GWAS findings were taken from the study by <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/",pubmed,"'>",sourcePaper," et al</a></u>. Probability distributions were calculated as random samplings of genotypes based on the reported minor allele frequency either in cases or controls. Genetic risk scores were calculated as the sum of risk-allele count multiplied with the effect size.</small>")
 			
 		}
 		return(m)
