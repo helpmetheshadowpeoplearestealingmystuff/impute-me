@@ -33,6 +33,12 @@ shinyUI(bootstrapPage(
 	HTML("This is based <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/18250251'>on a study.</a></u> which found that having this opiod receptor variant responded better to naltrexone treatment of alcoholism. It has in subsequent studies been linked to other effects in opiod-receptor related diseases.<br><br>"),
 	tableOutput("table3"),
 	
+	
+	h2("CLL treatment response"),
+	HTML("This is based <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/rs3745274'>on a study.</a></u> which found that patients having the minor allele of both rs3745274 (T) and rs2279343 (G) responded worse to fludarabine plus cyclophosphamide treatment of chronic lymphoblastic leukemia (CLL).<br><br>"),
+	tableOutput("table4"),
+	
+	
 	endPanel(),
 	
 	# plotOutput("plot1")

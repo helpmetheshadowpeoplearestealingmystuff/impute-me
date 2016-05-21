@@ -1,6 +1,6 @@
-SNP	chr_name	Beta	effect_allele	non_effect_allele	ensembl_alleles	comment
-rs4363657	12	NA	C	T	C/T	
-rs2395029	input	NA	G	T	G/T	
-rs1799971	6	NA	G	A	G/A	Asn40 is the major allele, and Asp40 is the minor allele. Asp40 (minor) had good outcome and should be effect
-rs3745274	19	NA	NA	NA	NA	The CYP2B6 c.516G.T polymorphism variant from Johnson 2013
-rs2279343	19	NA	NA	NA	NA	The CYP2B6 c.785A.G polymorphism variant from Johnson 2013
+SNP	chr_name	Beta	effect_allele	non_effect_allele	Source_PMID	Direction description	Context	Comment
+rs4363657	12	NA	C	T	22189199	C alleles are claimed to have worse response to statin	Cholesterol lowering with statin	A boston based company working with heart diagnostics, sells this test to determine statin response
+rs2395029	input	NA	G	T	18684101	T-allele carriers have worse response	HIV-treatment with abacavir	Note, that the studies supporting this are specifically only valid for caucasian ethnicities. Several other ethnicities are much more likely to have a T-allele, without problems.
+rs1799971	6	NA	G	A	18250251	The minor allele (G) had a better effect	Alcoholism-treatment with naltrexone	Asn40 is the major allele, and Asp40 is the minor allele. Asp40 (minor) had good outcome and should be effect
+rs3745274	19	NA	G	T	24128861	The minor allele (T) has a worse response	CLL treatment with fludarabine plus cyclophosphamide	The CYP2B6 c.516G.T polymorphism variant from Johnson 2013. 
+rs2279343	19	NA	A	G	24128861	The minor allele (G) has a worse response	CLL treatment with fludarabine plus cyclophosphamide	The CYP2B6 c.785A.G polymorphism variant from Johnson 2013
