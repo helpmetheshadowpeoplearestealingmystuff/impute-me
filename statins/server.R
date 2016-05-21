@@ -88,7 +88,7 @@ shinyServer(function(input, output) {
 		# rownames(table)<-NULL
 		return(table)
 		
-	},include.rownames = FALSE)
+	},include.rownames = FALSE),
 	
 	
 	
@@ -119,5 +119,5 @@ shinyServer(function(input, output) {
 		table<-table[c("rs3745274","rs2279343"),,drop=FALSE]
 		return(table)
 		
-	},include.rownames = FALSE
+	},include.rownames = FALSE)
 })
