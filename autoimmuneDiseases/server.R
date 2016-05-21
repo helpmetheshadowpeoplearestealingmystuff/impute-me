@@ -59,9 +59,10 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			disease<-isolate(input$disease)
 			dis<-tolower(diseaseNames[disease])
 			
-			if(diseaseNames[dis,"Source"] == "ellinghaus"){
+			source<-diseaseNames[dis,"Source"]
+			if(source == "ellinghaus"){
 				pubmed<-"26974007"
-			}else if(diseaseNames[dis,"Source"] == "okada"){
+			}else if(source == "okada"){
 				pubmed<-"24390342"
 			}else{stop("!!")}
 			
