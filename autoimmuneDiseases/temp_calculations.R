@@ -156,9 +156,9 @@ for(disease in c("CON",diseases)){
 	for(snp in rownames(SNPs_to_analyze)){
 		head(SNPs_to_analyze)
 		if(disease=="CON"){
-			maf_col<-"case_freq"
-		}else{
 			maf_col<-"control_freq"
+		}else{
+			maf_col<-"case_freq"
 		}
 		maf<-SNPs_to_analyze[snp,maf_col]
 		selection1<-c(rep(SNPs_to_analyze[snp,"effect_allele"],round(maf*(n*2))),rep(SNPs_to_analyze[snp,"non_effect_allele"],round((1-maf)*(n*2))))
