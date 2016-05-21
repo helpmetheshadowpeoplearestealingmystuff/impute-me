@@ -1,13 +1,13 @@
 library("shiny")
 
 #REMOVE LATER
-rm(list=ls())
-source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
-dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
-uniqueID <- "id_57n662948"
-disease<-"RA"
-SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-21_SNPs_to_analyze_SOURCE.txt"
-means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-21_means.txt"
+# rm(list=ls())
+# source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
+# dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
+# uniqueID <- "id_57n662948"
+# disease<-"RA"
+# SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-21_SNPs_to_analyze_SOURCE.txt"
+# means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-21_means.txt"
 
 
 # 
