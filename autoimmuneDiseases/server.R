@@ -5,17 +5,16 @@ library("shiny")
 # source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
 # dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
 # uniqueID <- "id_57n662948"
-# disease<-"AS"
-# SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/SNPs_to_analyze.txt"
-# means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-18_means.txt"
+# disease<-"RA"
+# SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-21_SNPs_to_analyze_SOURCE.txt"
+# means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-21_means.txt"
 
 
-
+# 
 source("/srv/shiny-server/gene-surfer/functions.R")
 dataFolder<-"/home/ubuntu/data/"
 SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/2016-05-21_SNPs_to_analyze_SOURCE.txt"
-
-means_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/2016-05-18_means.txt"
+means_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/2016-05-21_means.txt"
 
 
 
@@ -93,7 +92,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			if(source == "ellinghaus"){
 				or_column<-paste0("OR.",disease,".")
 			}else if(source=="okada"){
-				or_colum<-"OR"
+				or_column<-"OR"
 			}else{stop("!")}
 			
 			SNPs_to_analyze[,"Beta"]<-log10(SNPs_to_analyze[,or_column])
