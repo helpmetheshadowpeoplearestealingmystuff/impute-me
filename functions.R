@@ -670,11 +670,18 @@ get_GRS<-function(genotypes, betas){
 	
 	geneticRiskScore<-0
 	for(snp in rownames(betas)){
-		if(is.na(genotypes[snp,"genotype"]))next
+		if(is.na(genotypes[snp,"genotype"])){
+			warning(paste("For",snp,"we found missing genotypes. This can cause errors particularly if the data is not mean centered"))
+		}
+		
 		genotype<-strsplit(genotypes[snp,],"/")[[1]]
 		effect_allele<-betas[snp,"effect_allele"]
 		non_effect_allele<-betas[snp,"non_effect_allele"]
-		# all_alleles<-c(non_effect_allele,effect_allele)
+		
+		if(!all(genotype%in%c(effect_allele,non_effect_allele))){
+			stop(paste("For",snp,"we found wrong alleles:",paste(genotype,collapse=""),"and should find",effect_allele,"or",non_effect_allele))
+		}
+		
 		beta<-betas[snp,"Beta"]	
 		geneticRiskScore <- geneticRiskScore + sum(genotype%in%effect_allele) * beta
 	}

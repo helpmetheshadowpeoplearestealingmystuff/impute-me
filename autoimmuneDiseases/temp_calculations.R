@@ -138,6 +138,11 @@ SNPs_to_analyze[,"OR"]<-as.numeric(sub(" .+$","",SNPs_to_analyze[,"OR.(upper.low
 
 SNPs_to_analyze<-SNPs_to_analyze[grep("^rs",rownames(SNPs_to_analyze)),]
 
+#omit these that were frequently found to be missing
+omitThese<-c('rs2301888','rs2228145','rs9268839','rs2736337','rs10774624','rs13330176')
+SNPs_to_analyze<-SNPs_to_analyze[!rownames(SNPs_to_analyze)%in%omitThese,]
+
+
 diseases<-c("RA")
 colnames(SNPs_to_analyze)[2]<-"chr_name"
 
