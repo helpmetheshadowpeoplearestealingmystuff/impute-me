@@ -52,7 +52,7 @@ diseases<-c("CLL")
 
 
 
-
+# write.table(SNPs_to_analyze,file="test.xls",sep="\t",col.names=NA)
 
 
 #simulating distribution
