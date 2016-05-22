@@ -1,0 +1,19 @@
+SNP	chr_name	effect_allele	non_effect_allele	OR	RAF	RAF_case	RAF_control	source			
+rs10936599	3			1.26		0.79	0.75	Speedy 2014			OR
+rs6858698	4			1.31		0.19	0.16	Speedy 2014			
+rs31490	5			1.18		0.48	0.44	Speedy 2014			
+rs2236256	6			1.23		0.49	0.44	Speedy 2014			
+rs17246404	7			1.22		0.76	0.71	Speedy 2014			
+rs10069690	5							Berndt 2013			
+rs2511714	8							Berndt 2013			
+rs9880772	3	T	C	1.19	0.465			Berndt 2015			
+rs73718779	6	A	G	1.26	0.11			Berndt 2015			
+rs9815073	3	C	A	1.18	0.651			Berndt 2015			
+rs9308731	2	A	G	1.19	0.537			Berndt 2015			
+rs10028805	4	G	A	1.16	0.624			Berndt 2015			
+rs1274963	3	T	C	1.18	0.208			Berndt 2015			
+											
+											
+											
+											
+			PROBABLY JUST LOOK AT BERNDT 2015 table 5								
