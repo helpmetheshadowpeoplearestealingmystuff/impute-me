@@ -2,19 +2,19 @@ library("shiny")
 
 #REMOVE LATER
 rm(list=ls())
-source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
-dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
-uniqueID <- "id_57n662948"
-disease<-"CLL"
-SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/CLL/SNPs_to_analyze.txt"
-means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/CLL/2016-05-22_means.txt"
+# source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
+# dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
+# uniqueID <- "id_57n662948"
+# disease<-"CLL"
+# SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/CLL/SNPs_to_analyze.txt"
+# means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/CLL/2016-05-22_means.txt"
 
 
 # 
-# source("/srv/shiny-server/gene-surfer/functions.R")
-# dataFolder<-"/home/ubuntu/data/"
-# SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/CLL/SNPs_to_analyze.txt"
-# means_file<-"/srv/shiny-server/gene-surfer/CLL/2016-05-22_means.txt"
+source("/srv/shiny-server/gene-surfer/functions.R")
+dataFolder<-"/home/ubuntu/data/"
+SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/CLL/SNPs_to_analyze.txt"
+means_file<-"/srv/shiny-server/gene-surfer/CLL/2016-05-22_means.txt"
 
 
 
