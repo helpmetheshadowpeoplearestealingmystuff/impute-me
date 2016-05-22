@@ -672,6 +672,7 @@ get_GRS<-function(genotypes, betas){
 	for(snp in rownames(betas)){
 		if(is.na(genotypes[snp,"genotype"])){
 			warning(paste("For",snp,"we found missing genotypes. This can cause errors particularly if the data is not mean centered"))
+			next
 		}
 		
 		genotype<-strsplit(genotypes[snp,],"/")[[1]]
