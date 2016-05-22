@@ -1,7 +1,7 @@
 library("shiny")
 
 #REMOVE LATER
-rm(list=ls())
+# rm(list=ls())
 # source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
 # dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
 # uniqueID <- "id_57n662948"
@@ -52,7 +52,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			return("")
 		}else if(input$goButton > 0) {
 			disease<-isolate(input$disease)
-			dis<-tolower(diseaseNames[disease])
+			dis<-tolower(diseaseNames[disease,"Disease"])
 			
 			sourcePaper<-diseaseNames[disease,"Source"]
 			if(sourcePaper == "Berndt-2015"){
@@ -70,7 +70,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 	output$plot_1 <- renderPlot({ 
 		
 		disease<-isolate(input$disease)
-		source<-diseaseNames[disease,"Source"]
+		# source<-diseaseNames[disease,"Source"]
 		
 		SNPs_to_analyze<-read.table(SNPs_to_analyze_file,sep="\t",stringsAsFactors=F,header=T,row.names=1)
 		
@@ -94,6 +94,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			SNPs_to_analyze[,"Beta"]<-log10(SNPs_to_analyze[,or_column])
 			GRS_beta <-get_GRS(genotypes=genotypes,betas=SNPs_to_analyze)
 		
+	
 		}
 		means<-read.table(means_file,sep="\t",header=T,row.names=1,stringsAsFactors=F)
 		case_mean<-means[disease,"case_mean"]
@@ -126,6 +127,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			
 				
 			#fill the controls
+			if(all(!x<GRS_beta))stop("Genetic risk score too low to plot. Congratulations.")
 			max_GRS_i<-max(which(x<GRS_beta))
 			upper_x<-x[1:max_GRS_i]
 			upper_y<-y_control_scaled[1:max_GRS_i]

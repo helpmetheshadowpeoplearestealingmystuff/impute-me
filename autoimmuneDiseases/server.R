@@ -136,6 +136,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			
 				
 			#fill the controls
+			if(all(!x<GRS_beta))stop("GRS too low to plot")
 			max_GRS_i<-max(which(x<GRS_beta))
 			upper_x<-x[1:max_GRS_i]
 			upper_y<-y_control_scaled[1:max_GRS_i]

@@ -4,6 +4,8 @@ source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-
 SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/CLL/SNPs_to_analyze.txt"
 
 
+
+
 # source("/srv/shiny-server/gene-surfer/functions.R")
 # SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/SNPs_to_analyze.txt"
 
@@ -98,7 +100,7 @@ for(person in as.character(1:n)){
 }
 
 
-save(GRSs,file="2016-05-18_GRSs_examples.rdata")
+save(GRSs,file="2016-05-22_GRSs_examples.rdata")
 
 
 
