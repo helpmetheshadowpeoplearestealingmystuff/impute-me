@@ -15,9 +15,9 @@ SNPs_to_analyze<-read.table(SNPs_to_analyze_file,sep="\t",stringsAsFactors=F,hea
 
 SNPs_to_analyze<-SNPs_to_analyze[!is.na(SNPs_to_analyze[,"major_allele_SNAP"]),]
 
-SNPs_to_analyze[,"orig_genotypes"]<-apply(t(apply(SNPs_to_analyze[,c("effect_allele","non_effect_allele")],1,sort)),1,paste,collapse="")
-SNPs_to_analyze[,"snap_genotypes"]<-apply(t(apply(SNPs_to_analyze[,c("major_allele_SNAP","minor_allele_SNAP")],1,sort)),1,paste,collapse="")
-all(SNPs_to_analyze[,"orig_genotypes"]==SNPs_to_analyze[,"snap_genotypes"])
+# SNPs_to_analyze[,"orig_genotypes"]<-apply(t(apply(SNPs_to_analyze[,c("effect_allele","non_effect_allele")],1,sort)),1,paste,collapse="")
+# SNPs_to_analyze[,"snap_genotypes"]<-apply(t(apply(SNPs_to_analyze[,c("major_allele_SNAP","minor_allele_SNAP")],1,sort)),1,paste,collapse="")
+# all(SNPs_to_analyze[,"orig_genotypes"]==SNPs_to_analyze[,"snap_genotypes"])
 #Good!
 
 
@@ -77,6 +77,28 @@ for(disease in c("CON",diseases)){
 }
 
 save(out,file="2016-05-22_genotype_examples.rdata")
+
+
+
+
+
+#Optional write some new people with the simulated genotypes
+# dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
+# knownID <- "id_57n662948"
+# for(i in 1:n){
+# 	uniqueID <- paste("id_0",sample(100:900,1),sample(10000:90000,1),sep="")
+# 	dir.create(paste(dataFolder,uniqueID,sep=""))
+# 	
+# 	file.copy(paste(dataFolder,knownID,"/",knownID,".gen.zip",sep=""),paste(dataFolder,uniqueID,"/",uniqueID,".gen.zip",sep=""))
+# 	file.copy(paste(dataFolder,knownID,"/",knownID,".input_data.zip",sep=""),paste(dataFolder,uniqueID,"/",uniqueID,".input_data.zip",sep=""))
+# 	file.copy(paste(dataFolder,knownID,"/pData.txt",sep=""),paste(dataFolder,uniqueID,"/pData.txt",sep=""))
+# 	
+# 	o1<-data.frame(row.names=names(out[["CON"]][,i]),genotype=out[["CON"]][,i])
+# 	f<-gzfile(paste(dataFolder,uniqueID,"/",uniqueID,".cached.gz",sep=""),"w")
+# 	write.table(o1,file=f,sep="\t",col.names=NA)
+# 	close(f)
+# 	
+}
 
 
 GRSs<-matrix(nrow=length(diseases)*2,ncol=n,dimnames=list(c(paste0(diseases,"_case"),paste0(diseases,"_control")),as.character(1:n)))

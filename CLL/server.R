@@ -1,20 +1,20 @@
 library("shiny")
 
 #REMOVE LATER
-# rm(list=ls())
-# source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
-# dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
-# uniqueID <- "id_57n662948"
-# disease<-"CLL"
-# SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/CLL/SNPs_to_analyze.txt"
-# means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/CLL/2016-05-22_means.txt"
+rm(list=ls())
+source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
+dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
+uniqueID <- "id_57n662948"
+disease<-"CLL"
+SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/CLL/SNPs_to_analyze.txt"
+means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/CLL/2016-05-22_means.txt"
 
 
 # 
-source("/srv/shiny-server/gene-surfer/functions.R")
-dataFolder<-"/home/ubuntu/data/"
-SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/CLL/SNPs_to_analyze.txt"
-means_file<-"/srv/shiny-server/gene-surfer/CLL/2016-05-22_means.txt"
+# source("/srv/shiny-server/gene-surfer/functions.R")
+# dataFolder<-"/home/ubuntu/data/"
+# SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/CLL/SNPs_to_analyze.txt"
+# means_file<-"/srv/shiny-server/gene-surfer/CLL/2016-05-22_means.txt"
 
 
 
@@ -113,7 +113,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 				
 		
 		# pdf("test3.pdf")
-		plot(x,y_case,type="l",col="red",ylab="Number of people",xlab="Genetic risk score",yaxt="n",lwd=2)
+		plot(x,y_case,type="l",col="red",ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n",lwd=2)
 		lines(x,y_control_scaled,col="blue",fg="darkred",lwd=2)
 		
 		

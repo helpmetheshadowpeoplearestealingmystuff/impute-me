@@ -122,7 +122,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 				
 		
 		# pdf("test3.pdf")
-		plot(x,y_case,type="l",col="red",ylab="Number of people",xlab="Genetic risk score",yaxt="n",lwd=2)
+		plot(x,y_case,type="l",col="red",ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n",lwd=2)
 		lines(x,y_control_scaled,col="blue",fg="darkred",lwd=2)
 		
 		
