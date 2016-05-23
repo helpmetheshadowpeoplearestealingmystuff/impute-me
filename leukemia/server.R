@@ -5,7 +5,7 @@ library("shiny")
 # source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
 # dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
 # uniqueID <- "id_57n662948"
-# disease<-"CLL"
+# disease<-"ALL"
 # SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/leukemia/SNPs_to_analyze_SOURCE.txt"
 # means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/leukemia/2016-05-22_means.txt"
 
