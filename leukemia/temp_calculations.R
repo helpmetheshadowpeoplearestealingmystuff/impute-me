@@ -215,7 +215,7 @@ SNPs_to_analyze<-read.table(SNPs_to_analyze_file,sep="\t",stringsAsFactors=F,hea
 diseases<-c("ALL")
 
 #simulating distribution
-n<-10
+n<-1000
 out<-list()
 for(disease in c("CON",diseases)){ 
 	results<-matrix(nrow=nrow(SNPs_to_analyze),ncol=n,dimnames=list(rownames(SNPs_to_analyze),1:n))
@@ -255,7 +255,7 @@ for(disease in c("CON",diseases)){
 # 	write.table(o1,file=f,sep="\t",col.names=NA)
 # 	close(f)
 # 	
-}
+# }
 
 
 GRSs<-matrix(nrow=length(diseases)*2,ncol=n,dimnames=list(c(paste0(diseases,"_case"),paste0(diseases,"_control")),as.character(1:n)))
@@ -267,7 +267,7 @@ for(person in as.character(1:n)){
 		genotypes_disease<-data.frame(out[[disease]][,person,drop=FALSE],stringsAsFactors = F)
 		genotypes_control<-data.frame(out[["CON"]][,person,drop=FALSE],stringsAsFactors = F)
 		colnames(genotypes_disease)<-colnames(genotypes_control)<-"genotype"
-		or_column<-"OR.M1"
+		or_column<-"OR"
 		SNPs_to_analyze[,"Beta"]<-log10(SNPs_to_analyze[,or_column])
 		
 		
@@ -303,4 +303,7 @@ for(disease in diseases){
 
 write.table(means,file="2016-05-22_means.txt",sep="\t",col.names=NA)
 
+previous<-read.table("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/leukemia/2016-05-22_means.txt",row.names=1,stringsAsFactors=F,header=T)
 
+means<-rbind(previous,means)
+write.table(means,file="2016-05-22_means.txt",sep="\t",col.names=NA)
