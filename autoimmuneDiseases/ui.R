@@ -33,7 +33,7 @@ shinyUI(bootstrapPage(
 	endPanel(),
 	beginPanel('2/3'),
 	
-	h2("Genetic risk score"),
+	h2("Genetic risk score for autoimmune diseases"),
 	htmlOutput("text_1"),
 	plotOutput("plot_1"),
 	htmlOutput("text_2"),
