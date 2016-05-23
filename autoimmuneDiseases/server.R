@@ -40,7 +40,7 @@ shinyServer(function(input, output) {
 		means<-read.table(means_file,sep="\t",header=T,row.names=1,stringsAsFactors=F)
 		case_mean<-signif(means[disease,"case_mean"],2)
 		control_mean<-signif(means[disease,"control_mean"],2)
-		dis<-tolower(diseaseNames[disease])
+		dis<-tolower(diseaseNames[disease,"Disease"])
 		
 		over_prop<-signif(1-pnorm(case_mean,mean=means[disease,"control_mean"],sd=means[disease,"control_sd"]),2)*100
 		
@@ -57,7 +57,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			return("")
 		}else if(input$goButton > 0) {
 			disease<-isolate(input$disease)
-			dis<-tolower(diseaseNames[disease])
+			dis<-tolower(diseaseNames[disease,"Disease"])
 			
 			sourcePaper<-diseaseNames[disease,"Source"]
 			if(sourcePaper == "ellinghaus"){
@@ -122,7 +122,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 				
 		
 		# pdf("test3.pdf")
-		plot(x,y_case,type="l",col="red",ylab="Frequency",xlab="Genetic risk score",yaxt="n",lwd=2)
+		plot(x,y_case,type="l",col="red",ylab="Number of people",xlab="Genetic risk score",yaxt="n",lwd=2)
 		lines(x,y_control_scaled,col="blue",fg="darkred",lwd=2)
 		
 		
@@ -174,10 +174,10 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			
 			
 			
-			legend("topleft",legend=c("Disease risk profile","Healthy risk profile","Your genetic risk score"),lty=c(1,1,1),lwd=c(2,2,3),col=c("red","blue","black"))
+			legend("topleft",legend=c("People with disease","Healthy people","Your genetic risk score"),lty=c(1,1,1),lwd=c(2,2,3),col=c("red","blue","black"))
 		}else{
 			
-			legend("topleft",legend=c("Disease risk profile","Healthy risk profile"),lty=c(1,1),lwd=c(2,2),col=c("red","blue"))
+			legend("topleft",legend=c("People with disease","Healthy people"),lty=c(1,1),lwd=c(2,2),col=c("red","blue"))
 			
 			
 		}
