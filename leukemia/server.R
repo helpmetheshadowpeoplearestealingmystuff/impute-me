@@ -13,7 +13,7 @@ library("shiny")
 # 
 source("/srv/shiny-server/gene-surfer/functions.R")
 dataFolder<-"/home/ubuntu/data/"
-SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/leukemia/SNPs_to_analyze.txt"
+SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/leukemia/SNPs_to_analyze_SOURCE.txt"
 means_file<-"/srv/shiny-server/gene-surfer/leukemia/2016-05-22_means.txt"
 
 
