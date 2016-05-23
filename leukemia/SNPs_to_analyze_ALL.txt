@@ -1,0 +1,6 @@
+SNP	chr_name	effect_allele	non_effect_allele	EAF_case	EAF_control	OR
+rs11978267	7	G	A	0.39	0.28	1.67
+rs17756311	9	T	C	0.13	0.09	1.43
+rs10821936	10	C	T	0.48	0.33	1.88
+rs4982731	14	C	T	0.34	0.28	1.29
+rs4266962	10	G	C	0.83	0.76	1.41

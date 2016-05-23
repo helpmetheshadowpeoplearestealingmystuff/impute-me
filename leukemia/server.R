@@ -1,27 +1,28 @@
 library("shiny")
 
 #REMOVE LATER
-# rm(list=ls())
-# source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
-# dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
-# uniqueID <- "id_57n662948"
-# disease<-"CLL"
-# SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/CLL/SNPs_to_analyze.txt"
-# means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/CLL/2016-05-22_means.txt"
+rm(list=ls())
+source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
+dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
+uniqueID <- "id_57n662948"
+disease<-"CLL"
+SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/leukemia/SNPs_to_analyze_SOURCE.txt"
+means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/leukemia/2016-05-22_means.txt"
 
 
 # 
 source("/srv/shiny-server/gene-surfer/functions.R")
 dataFolder<-"/home/ubuntu/data/"
-SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/CLL/SNPs_to_analyze.txt"
-means_file<-"/srv/shiny-server/gene-surfer/CLL/2016-05-22_means.txt"
+SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/leukemia/SNPs_to_analyze.txt"
+means_file<-"/srv/shiny-server/gene-surfer/leukemia/2016-05-22_means.txt"
 
 
 
 diseaseNames<-rbind(
-	c("CLL","Chronic Lymphoblastic Leukemia","Berndt-2015")
+	c("CLL","Chronic Lymphoblastic Leukemia","Berndt-2015","26956414"),
+	c("ALL","Acute Lymphoblastic Leukemia","Xu-2013","23512250")
 )
-colnames(diseaseNames)<-c("Acronym","Disease","Source")
+colnames(diseaseNames)<-c("Acronym","Disease","Source","PMID")
 rownames(diseaseNames)<-diseaseNames[,"Acronym"]
 
 
@@ -55,9 +56,8 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			dis<-tolower(diseaseNames[disease,"Disease"])
 			
 			sourcePaper<-diseaseNames[disease,"Source"]
-			if(sourcePaper == "Berndt-2015"){
-				pubmed<-"26956414"
-			}else{stop("!!")}
+			pubmed<-diseaseNames[disease,"PMID"]
+
 			
 			m<-paste0("<small><b>Your interpretation:</b> Your genetic risk score is shown as a vertical black bar. The more to the right it is, the higher a genetic risk score for ",dis," you have. However as explained above, people who remain healthy can also have higher genetic risk scores. The key is therefore to consider how many healthy individuals have a <i>lower</i> score (the blue percentage). The lower the better because it means people with worse genetic profiles than you typically stay healhty. Conversely, the red percentage indicates the fraction of patients with the disease who have a <i>higher</i> genetic risk score than you. The overall point, of course, is also to illustrate that as long as GWAS data cannot separate healthy and patient groups better, their prognistic value is limited: completely separated tops would be nice to have clinically, but this is not what exists from GWAS.<br><br><br>
 <b>Methods:</b> The GWAS findings were taken from the study by <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/",pubmed,"'>",sourcePaper," et al</a></u>. Probability distributions were calculated as random samplings of genotypes based on the reported minor allele frequency either in cases or controls. Genetic risk scores were calculated as the sum of risk-allele count multiplied with the effect size.</small>")
@@ -70,9 +70,8 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 	output$plot_1 <- renderPlot({ 
 		
 		disease<-isolate(input$disease)
-		# source<-diseaseNames[disease,"Source"]
 		
-		SNPs_to_analyze<-read.table(SNPs_to_analyze_file,sep="\t",stringsAsFactors=F,header=T,row.names=1)
+		SNPs_to_analyze<-read.table(sub("SOURCE",disease,SNPs_to_analyze_file),sep="\t",stringsAsFactors=F,header=T,row.names=1)
 		
 		# Take a dependency on input$goButton
 		if(input$goButton > 0) {
@@ -89,7 +88,11 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			
 			
 			#get risk score
-			or_column<-"OR.M1"
+			if(disease == "CLL"){
+				or_column<-"OR.M1"
+			}else if(disease=="ALL"){
+				or_column<-"OR"	
+			}else{stop("!!!")}
 
 			SNPs_to_analyze[,"Beta"]<-log10(SNPs_to_analyze[,or_column])
 			GRS_beta <-get_GRS(genotypes=genotypes,betas=SNPs_to_analyze)
@@ -110,22 +113,12 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 		y_control_scaled <- y_control* (max(y_case)/max(y_control))
 
 		
-				
-		
-		# pdf("test3.pdf")
 		plot(x,y_case,type="l",col="red",ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n",lwd=2)
 		lines(x,y_control_scaled,col="blue",fg="darkred",lwd=2)
 		
 		
 		
-		
-		
-		
-		
 		if(input$goButton > 0) {
-		
-			
-				
 			#fill the controls
 			if(all(!x<GRS_beta))stop("Genetic risk score too low to plot. Congratulations.")
 			max_GRS_i<-max(which(x<GRS_beta))
