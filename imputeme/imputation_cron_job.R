@@ -38,24 +38,24 @@ if(runningJobCount>(maxImputations-1)){
 #money saving implementation. If this is hub and there's a job, just send an email an turn on a node server. That way server can run on a small computer
 if(serverRole== "Hub"){
 	if(length(foldersToCheck) - runningJobCount - remoteRunningJobCount >0){
-		mailingResult<-try(stop(),silent=TRUE)
-		while(class(mailingResult) == "try-error"){
-			mailingResult<-try(send.mail(from = email_address,
-																	 to = "lassefolkersen@gmail.com",
-																	 subject = "Imputation is waiting",
-																	 body = "There is an imputation waiting. Switch on node",
-																	 html=T,
-																	 smtp = list(
-																	 	host.name = "smtp.gmail.com", 
-																	 	port = 465, 
-																	 	user.name = email_address, 
-																	 	passwd = email_password, 
-																	 	ssl = TRUE),
-																	 authenticate = TRUE,
-																	 send = TRUE))
-			Sys.sleep(10)
-			
-		}
+		# mailingResult<-try(stop(),silent=TRUE)
+		# while(class(mailingResult) == "try-error"){
+		# 	mailingResult<-try(send.mail(from = email_address,
+		# 															 to = "lassefolkersen@gmail.com",
+		# 															 subject = "Imputation is waiting",
+		# 															 body = "There is an imputation waiting. Switch on node",
+		# 															 html=T,
+		# 															 smtp = list(
+		# 															 	host.name = "smtp.gmail.com", 
+		# 															 	port = 465, 
+		# 															 	user.name = email_address, 
+		# 															 	passwd = email_password, 
+		# 															 	ssl = TRUE),
+		# 															 authenticate = TRUE,
+		# 															 send = TRUE))
+		# 	Sys.sleep(10)
+		# 	
+		# }
 		stop("Stopping because the node need to be switched on")
 	}
 }
