@@ -1,7 +1,7 @@
 # gene-surfer  
 
 
-#Imputation algorithm description
+##Imputation algorithm description
 
 
 The imputation is performed by three functions from functions.R as well as a cron-job named imputation_cron_job.R
@@ -15,6 +15,13 @@ The three functions are
 *summarize_imputation* is run immediately after run_imputation, in the cron-job, and could probably be merged into this function. The goal of this function is to organize and summarize the per-chromosome gen-files: saving as 1) a gen-file with probability-estimate-containing imputation data, and 2) a '23andme'-format file in which the calls are already made. The current threshold is 0.9, per the <a href='http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool.html'>gtools</a> default setting. Note that there's a lot of splitting taking place to minimize the memory footprint, which could otherwise become very large, particularly for the long chromosomes.
 
 
+The caller function is this script file
+
 *imputation_cron_job.R* (a script file in the imputeme folder). This file calls the two cron-job driven functions. The extra code in the file is used to determine if it should run as a hub-job or a node-job; node jobs are prefered, because they the cron-job driven imputation functions are computationally expensive.
 
 
+
+
+##Module design description.
+
+Each module consists of a ui.R and a server.R file. The details of the setup of this can be found in the <a href='http://shiny.rstudio.com/'>R/Shiny</a> documentation. A template module which contains the very minimal configuration is found in the 'template' folder.
