@@ -26,16 +26,24 @@ if(!is.character(routinely_delete_this))stop("routinely_delete_this not characte
 
 
 
-prepare_23andme_genome<-function(path, email, filename){
+prepare_23andme_genome<-function(path, email, filename, delete2weeks){
 	library(tools)
 	
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
-	
+
+	#Checking if there's no need to have a separate filename variable	
+	if(filename == basename(path)){
+		save(filename, file="~/fileout.rdata")	
+	}
+		
 	if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
 	if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
-	
+
+	if(class(delete2weeks)!="logical")stop(paste("delete2weeks must be logical, not",class(delete2weeks)))
+	if(length(delete2weeks)!=1)stop(paste("delete2weeks must be lengh 1, not",length(delete2weeks)))
+
 	if(class(email)!="character")stop(paste("email must be character, not",class(email)))
 	if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
 	if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
@@ -44,7 +52,7 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	acceptedMails<-read.table("/home/ubuntu/misc_files/accepted_emails.txt",stringsAsFactors=F)[,1]
 	if(!email%in%acceptedMails & FALSE){ #changed to always accept submission for now
-		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,filename)
+		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,path)
 		m<-paste(m,collapse="\t")
 		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
 		stop("At the current stage, the project is only open to backers. Please visit our kickstarter page at: http://kck.st/1VlrTlf - sorry for the inconvenience. Going forward the plan is to run on a more voluntary pricing basis, always as non-profit (see terms-of-use). No data was saved.")
@@ -110,8 +118,15 @@ prepare_23andme_genome<-function(path, email, filename){
 	if(length(gunzipResults)==1){ #then its a zip file
 		file.rename(gunzipResults, newUnzippedPath)		
 	}else{ #then it's probably not
+		#check if it is a gz file
+		filetype<-system(paste("file ", newTempPath),intern=T)
+		if(length(grep("gzip compressed",filetype))==1)stop("Don't submit gz-files. Only uncompressed text or zip-files.")
+		
+		#otherwise just rename
 		file.rename(newTempPath, newUnzippedPath)		
 	}
+	
+	
 	path <- newUnzippedPath
 	
 	#checking if it is a consistent file
@@ -152,7 +167,7 @@ prepare_23andme_genome<-function(path, email, filename){
 	
 	
 	print("Finalize")
-	save(uniqueID,email,filename,file=paste(homeFolder,"variables.rdata",sep=""))
+	save(uniqueID,email,filename,delete2weeks,file=paste(homeFolder,"variables.rdata",sep=""))
 	unlink("job_status.txt")
 	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
 	
