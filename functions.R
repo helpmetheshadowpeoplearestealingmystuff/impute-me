@@ -951,3 +951,27 @@ remove_all_temp_folders<-function(uniqueIDs=NULL){
 
 
 
+remove_all_empty_data_folders<-function(uniqueIDs=NULL){
+	#A function that will crawl all data directories and remove any that are empty. These can happen on submission errors. Best to just execute manually
+	
+	if(is.null(uniqueIDs)){
+		uniqueIDs<-list.files("/home/ubuntu/data/")
+	}else{
+		if(class(uniqueIDs)!="character")stop("UniqueIDs must be of class character")
+		if(!all(file.exists(paste("/home/ubuntu/data/",uniqueIDs,sep=""))))stop("Not all UniqueIDs given were found")
+	}
+	
+	
+	for(uniqueID in uniqueIDs){
+		dataFolder<-paste("/home/ubuntu/data/",uniqueID,sep="")
+		filesInside<-list.files(dataFolder)
+		if(length(filesInside) == 0){
+			print(paste("Deleting",dataFolder,"because it was empty"))
+			unlink(dataFolder,recursive=T)
+		}
+	}
+}
+
+
+
+
