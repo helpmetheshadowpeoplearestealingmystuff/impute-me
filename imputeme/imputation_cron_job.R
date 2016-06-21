@@ -153,7 +153,7 @@ md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
 gender<-system(paste("cut --delimiter=' ' -f 5 ",runDir,"/step_1.ped",sep=""),intern=T)
 f<-file(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),"w")
 writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion"),collapse="\t"),f)
-writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,FALSE),collapse="\t"),f)
+writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,protect_from_deletion),collapse="\t"),f)
 close(f)
 
 

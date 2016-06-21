@@ -39,10 +39,10 @@ shinyServer(function(input, output) {
 		if(input$goButton == 1){
 			path <- isolate(input$largeFile[["datapath"]])
 			email <- isolate(input$email)
-			delete2weeks <- isolate(input$delete2weeks)
+			protect_from_deletion <- !isolate(input$delete2weeks)
 			filename <- isolate(input$largeFile[["name"]])
 			if(is.null(path))return("No file selected")
-			out<-prepare_23andme_genome(path,email,filename, delete2weeks)
+			out<-prepare_23andme_genome(path,email,filename, protect_from_deletion)
 			return(out)
 		}
 	})

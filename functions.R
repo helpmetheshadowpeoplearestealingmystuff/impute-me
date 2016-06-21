@@ -26,23 +26,18 @@ if(!is.character(routinely_delete_this))stop("routinely_delete_this not characte
 
 
 
-prepare_23andme_genome<-function(path, email, filename, delete2weeks){
+prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 	library(tools)
 	
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
 
-	#Checking if there's no need to have a separate filename variable	
-	if(filename == basename(path)){
-		save(filename, file="~/fileout.rdata")	
-	}
-		
 	if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
 	if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
 
-	if(class(delete2weeks)!="logical")stop(paste("delete2weeks must be logical, not",class(delete2weeks)))
-	if(length(delete2weeks)!=1)stop(paste("delete2weeks must be lengh 1, not",length(delete2weeks)))
+	if(class(protect_from_deletion)!="logical")stop(paste("protect_from_deletion must be logical, not",class(protect_from_deletion)))
+	if(length(protect_from_deletion)!=1)stop(paste("protect_from_deletion must be lengh 1, not",length(protect_from_deletion)))
 
 	if(class(email)!="character")stop(paste("email must be character, not",class(email)))
 	if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
@@ -167,7 +162,7 @@ prepare_23andme_genome<-function(path, email, filename, delete2weeks){
 	
 	
 	print("Finalize")
-	save(uniqueID,email,filename,delete2weeks,file=paste(homeFolder,"variables.rdata",sep=""))
+	save(uniqueID,email,filename,protect_from_deletion,file=paste(homeFolder,"variables.rdata",sep=""))
 	unlink("job_status.txt")
 	write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
 	
@@ -443,7 +438,7 @@ summarize_imputation<-function(
 	#preparing destinationDir
 	prepDestinationDir<-paste(destinationDir,"/",uniqueID,sep="")
 	
-	#zipping and mvoing 23andme files
+	#zipping and moving 23andme files
 	zipFile23andme<-paste(runDir,paste(uniqueID,".23andme.zip",sep=""),sep="/")
 	twentythreeandmeFiles<-paste(uniqueID,"_chr",chromosomes,".23andme.txt",sep="")
 	zip(zipFile23andme, twentythreeandmeFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
