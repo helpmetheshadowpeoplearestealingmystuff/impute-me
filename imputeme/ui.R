@@ -10,8 +10,9 @@ shinyUI(bootstrapPage(
 	beginPanel('1/3'),
 	fileInput("largeFile", "Upload genome data", multiple = FALSE, accept = NULL),
 	textInput(inputId="email", label = "Email", value = ""),
-	a("Terms of use", href="http://www.impute.me/www/terms_of_use.html"),
-	checkboxInput("delete2weeks", "<u><a href='http://www.impute.me/www/deletion.html'>Delete genome-wide data after 2 weeks</a></u>", value = TRUE, width = NULL),
+	html("<u><a href='http://www.impute.me/www/terms_of_use.html'>Terms of use.</a></u>"),
+	html("<u><a href='http://www.impute.me/www/deletion.html'>Delete data after two weeks:</a></u>"),
+	checkboxInput("delete2weeks", "", value = TRUE, width = NULL),
 	actionButton("goButton","Start imputation"),
 
 	
