@@ -603,7 +603,13 @@ get_genotypes<-function(
 					
 					if(class(ped)!="try-error" & class(map)!="try-error"){
 						ped<-ped[7:length(ped)]
-						genotypes_here<-data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F)
+						genotypes_here<-try(data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F))
+						#error where there's duplicate row names
+						if(class(genotypes_here)=="try-error"){
+							print("Found a duplicate row names error")
+							include_these<-which(!duplicated(map[,2]))
+							genotypes_here<-try(data.frame(row.names=map[include_these,2],genotype=sub(" ","/",ped[include_these]),stringsAsFactors=F))
+						}						
 						break
 					}else{
 						genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
