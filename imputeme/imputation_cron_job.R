@@ -158,7 +158,7 @@ close(f)
 
 
 #Run the genotype extraction routine
-crawl_for_snps_to_analyze(uniqueIDs=uniqueID)
+try(crawl_for_snps_to_analyze(uniqueIDs=uniqueID))
 
 
 
