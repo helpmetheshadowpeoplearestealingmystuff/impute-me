@@ -35,7 +35,7 @@ shinyUI(bootstrapPage(
 	
 	
 	h2("CLL treatment response"),
-	HTML("This is based <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/rs3745274'>on a study.</a></u> which found that patients having the minor allele of both rs3745274 (T) and rs2279343 (G) responded worse to fludarabine plus cyclophosphamide treatment of chronic lymphoblastic leukemia (CLL).<br><br>"),
+	HTML("This is based <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/24128861'>on a study.</a></u> which found that patients having the minor allele of both rs3745274 (T) and rs2279343 (G) responded worse to fludarabine plus cyclophosphamide treatment of chronic lymphoblastic leukemia (CLL).<br><br>"),
 	tableOutput("table4"),
 	
 	
