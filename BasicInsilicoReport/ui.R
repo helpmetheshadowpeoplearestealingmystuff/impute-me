@@ -5,10 +5,10 @@ initialize('sti',TRUE)
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
-	titlePanel("template"),
+	titlePanel("BasicInsilicoReport"),
 	beginPage(),
 	beginPanel('1/3'),
-	HTML("Some text that will go above the input ID place"),
+	HTML("Input ID"),
 	
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	actionButton("goButton","Run analysis"),
