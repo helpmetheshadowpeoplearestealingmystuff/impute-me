@@ -14,7 +14,7 @@ rs9939609	16	PHYSICAL	FTO	Effect of physical activity on body mass index (BMI)
 rs1801282	3	NUTRITIONAL	PPARG	Improvement in glucose tolerance with regular exercise
 rs1800588	15	PHYSICAL	LIPC	Insulin sensitivity response to exercise
 rs1051730	15	BEHAVIORAL	CHRNA3	Smoking Behavior
-"rs601338"	19	NUTRITIONAL	FUT2	NOROVIRUS resistance
+rs601338	19	NUTRITIONAL	FUT2	NOROVIRUS resistance
 rs16991615	20	BEHAVIORAL	MCM8	menopause
 rs17070145	5	BEHAVIORAL	KIBRA	memory
 rs1953558	14	BEHAVIORAL	OR11H7	odour detection
