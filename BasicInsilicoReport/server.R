@@ -14,10 +14,10 @@ shinyServer(function(input, output) {
 		uniqueID<-isolate(input$uniqueID)
 		# if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
-		if(!file.exists(paste(path_data,uniqueID,sep=""))){
-			Sys.sleep(3) #wait a little to prevent raw-force fishing	
-			stop("Did not find a user with this id")
-		}
+		# if(!file.exists(paste(path_data,uniqueID,sep=""))){
+		# 	Sys.sleep(3) #wait a little to prevent raw-force fishing	
+		# 	stop("Did not find a user with this id")
+		# }
 
 		
 		
