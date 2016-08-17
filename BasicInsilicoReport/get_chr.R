@@ -18,3 +18,35 @@ d[,"ensembl_alleles"]<-query[rownames(d),"allele"]
 d[,"chr_name"]<-query[d[,"SNP"],"chr_name"]
 
 write.table(d,"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/BasicInsilicoReport/SNPs_to_analyze.txt",sep="\t",col.names=NA)
+
+
+
+
+
+
+
+
+
+rm(list=ls())
+source("/srv/shiny-server/gene-surfer/functions.R")
+
+table_file <-"/srv/shiny-server/gene-surfer/BasicInsilicoReport/SNPs_to_analyze.txt"
+table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
+table<-table[!duplicated(table[,"SNP"]),]
+rownames(table)<-table[,"SNP"]
+
+for(uniqueID in list.files("/home/ubuntu/data")){
+	genotypes<-try(get_genotypes(uniqueID=uniqueID,request=table))
+	if(class(genotypes)!="try-error"){
+		genotypes
+		table[,uniqueID]<-genotypes[rownames(table),]
+	}
+	
+}
+
+
+write.table(table,"/home/ubuntu/SNPs_to_analyze.txt",sep="\t",col.names=NA)
+
+
+
+
