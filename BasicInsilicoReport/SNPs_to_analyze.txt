@@ -1,0 +1,21 @@
+SNP	chr_name	category	gene		Description	Source	Status	X	link	ensembl_alleles
+rs1726866	7	NUTRITIONAL	TAS2R38		Woman tendency to overeat	23andMe		X	https://drive.google.com/open?id=0B1bc1Qxjjb7KZzl0bHkwSjNYTzQ	NA
+rs671	12	NUTRITIONAL	ALDH2		Alcohol Flush Reaction	23andMe		X	https://drive.google.com/open?id=0B1bc1Qxjjb7KallQNzB4eEt2T0k	NA
+rs4778138	15	PHYSICAL	1) BNC2, 2) OCA2, 3) MC1R		1) Freckles 2) Freckles and moles 3) Freckling and scin sensitivity to sun	23andMe	POSTPONE	X	https://drive.google.com/open?id=0B1bc1Qxjjb7KcHJ4NUdMNi1wU1E	NA
+rs1805007	16	PHYSICAL	1) BNC2, 2) OCA2, 3) MC1R		1) Freckles 2) Freckles and moles 3) Freckling and scin sensitivity to sun	23andMe	POSTPONE	X	https://drive.google.com/open?id=0B1bc1Qxjjb7KcHJ4NUdMNi1wU1E	NA
+rs2153271	9	PHYSICAL	1) BNC2, 2) OCA2, 3) MC1R		1) Freckles 2) Freckles and moles 3) Freckling and scin sensitivity to sun	23andMe	POSTPONE	X	https://drive.google.com/open?id=0B1bc1Qxjjb7KcHJ4NUdMNi1wU1E	NA
+rs4988235	2	NUTRITIONAL	MCM6		Lactose intolerent			X	https://drive.google.com/drive/u/0/folders/0B1bc1Qxjjb7KRXBKajV3Szh3TUU	NA
+rs17819126	15	BEHAVIORAL	DYX1C1		Reading Ability - NonWord Reading	23andMe	POSTPONE	X	https://drive.google.com/drive/u/0/folders/0B1bc1Qxjjb7KRXBKajV3Szh3TUU	NA
+rs11857829	15	BEHAVIORAL	DYX1C1		Reading Ability - NonWord Reading	23andMe	POSTPONE	X	https://drive.google.com/drive/u/0/folders/0B1bc1Qxjjb7KRXBKajV3Szh3TUU	NA
+rs1801282	3	NUTRITIONAL	PPARG		Effect of monounsaturated fat	23andMe		X	https://drive.google.com/drive/u/0/folders/0B1bc1Qxjjb7KRXBKajV3Szh3TUU	NA
+rs5082	1	NUTRITIONAL	APOA2		Effect of saturated fat on obesity risk	23andMe		X	https://drive.google.com/drive/u/0/folders/0B1bc1Qxjjb7KRXBKajV3Szh3TUU	NA
+rs662799	11	NUTRITIONAL	APOA5		Effect of fat intake on body mass index (BMI)	23andMe		X	https://drive.google.com/drive/u/0/folders/0B1bc1Qxjjb7KRXBKajV3Szh3TUU	NA
+rs9939609	16	PHYSICAL	FTO		Effect of physical activity on body mass index (BMI)	23andMe		X	https://drive.google.com/drive/u/0/folders/0B1bc1Qxjjb7KRXBKajV3Szh3TUU	NA
+rs1801282	3	NUTRITIONAL	PPARG		Improvement in glucose tolerance with regular exercise	23andMe		X	https://drive.google.com/drive/u/0/folders/0B1bc1Qxjjb7KRXBKajV3Szh3TUU	NA
+rs1800588	15	PHYSICAL	LIPC		Insulin sensitivity response to exercise	23andMe		X	https://drive.google.com/drive/u/0/folders/0B1bc1Qxjjb7KRXBKajV3Szh3TUU	NA
+rs1051730	15	BEHAVIORAL	CHRNA3		Smoking Behavior	23andMe		X	https://drive.google.com/drive/u/0/folders/0B1bc1Qxjjb7KRXBKajV3Szh3TUU	NA
+"rs601338"	19	NUTRITIONAL	FUT2		NOROVIRUS resistance	23andMe		X	https://drive.google.com/open?id=0BwTXeuuI8tSlUWNfV0Fab2RsS1E	NA
+rs16991615	20	BEHAVIORAL	MCM8		menopause	23andMe		X	https://drive.google.com/open?id=0BwTXeuuI8tSlckVxZHFVRk9ham8	NA
+rs17070145	5	BEHAVIORAL	KIBRA		memory	23andMe		X	https://drive.google.com/open?id=0BwTXeuuI8tSlTUdmVjdFcXRtcG8	NA
+rs1953558	14	BEHAVIORAL	OR11H7		odour detection	23andMe		X	https://drive.google.com/open?id=0BwTXeuuI8tSlUVZ5cnV3R2dGTHM	NA
+rs6269	22	PHYSICAL	COMT		pain sensitivity	23andMe		X	https://drive.google.com/open?id=0BwTXeuuI8tSlYWdWNHBQR05GUlU	NA
