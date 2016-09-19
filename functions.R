@@ -116,6 +116,9 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 		#check if it is a gz file
 		filetype<-system(paste("file ", newTempPath),intern=T)
 		unlink(homeFolder,recursive=T)
+		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"gzip_file",email,uniqueID)
+		m<-paste(m,collapse="\t")
+		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
 		if(length(grep("gzip compressed",filetype))==1)stop("Don't submit gz-files. Only uncompressed text or zip-files.")
 		
 		#otherwise just rename
@@ -131,7 +134,12 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 	if(ncol(testRead)==5){
 		#This could be an ancestry.com file. Check that first
 		testRead2<-read.table(path,nrow=10,stringsAsFactors=F,header=T)
-		if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs")stop("testRead seemed like ancestry.com data, but didn't have rs IDs in column 1")
+		if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs"){
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ancestry_problem",email,uniqueID)
+			m<-paste(m,collapse="\t")
+			write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+			stop("testRead seemed like ancestry.com data, but didn't have rs IDs in column 1")
+		}
 		#ok, this is probably an ancestry.com file. Let's reformat.
 		format_ancestry_com_as_23andme(path)
 
