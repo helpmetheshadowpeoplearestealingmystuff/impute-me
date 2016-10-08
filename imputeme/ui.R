@@ -1,5 +1,5 @@
 
-source("../uifunctions.R")
+# source("../uifunctions.R")
 initialize('hc',TRUE)
 
 shinyUI(bootstrapPage(
