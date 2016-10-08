@@ -1,4 +1,4 @@
-
+print(getwd())
 source("../uifunctions.R")
 initialize('hc',TRUE)
 
