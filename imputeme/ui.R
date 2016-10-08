@@ -1,5 +1,6 @@
-stop(getwd())
-# source("../uifunctions.R")
+# stop(getwd())
+setwd("/srv/shiny-server/gene-surfer/imputeme")
+source("../uifunctions.R")
 # source("/srv/shiny-server/gene-surfer/uifunctions.R")
 initialize('hc',TRUE)
 
