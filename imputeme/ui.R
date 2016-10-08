@@ -1,6 +1,6 @@
-print(getwd())
+stop(getwd())
 # source("../uifunctions.R")
-source("/srv/shiny-server/gene-surfer/uifunctions.R")
+# source("/srv/shiny-server/gene-surfer/uifunctions.R")
 initialize('hc',TRUE)
 
 shinyUI(bootstrapPage(
