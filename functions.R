@@ -115,14 +115,16 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 	}else{ #then it's probably not
 		#check if it is a gz file
 		filetype<-system(paste("file ", newTempPath),intern=T)
-		unlink(homeFolder,recursive=T)
-		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"gzip_file",email,uniqueID)
-		m<-paste(m,collapse="\t")
-		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-		if(length(grep("gzip compressed",filetype))==1)stop("Don't submit gz-files. Only uncompressed text or zip-files.")
-		
-		#otherwise just rename
-		file.rename(newTempPath, newUnzippedPath)		
+		if(length(grep("gzip compressed",filetype))==1){
+			unlink(homeFolder,recursive=T)
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"gzip_file",email,uniqueID)
+			m<-paste(m,collapse="\t")
+			write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+			stop("Don't submit gz-files. Only uncompressed text or zip-files.")
+		}else{
+			#otherwise just rename
+			file.rename(newTempPath, newUnzippedPath)		
+		}
 	}
 	
 	
