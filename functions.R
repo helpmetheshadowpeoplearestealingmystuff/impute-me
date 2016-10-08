@@ -32,13 +32,13 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
-	
+
 	if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
 	if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
-	
+
 	if(class(protect_from_deletion)!="logical")stop(paste("protect_from_deletion must be logical, not",class(protect_from_deletion)))
 	if(length(protect_from_deletion)!=1)stop(paste("protect_from_deletion must be lengh 1, not",length(protect_from_deletion)))
-	
+
 	if(class(email)!="character")stop(paste("email must be character, not",class(email)))
 	if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
 	if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
@@ -115,16 +115,14 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 	}else{ #then it's probably not
 		#check if it is a gz file
 		filetype<-system(paste("file ", newTempPath),intern=T)
-		if(length(grep("gzip compressed",filetype))==1){
-			unlink(homeFolder,recursive=T)
-			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"gzip_file",email,uniqueID)
-			m<-paste(m,collapse="\t")
-			write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-			stop("Don't submit gz-files. Only uncompressed text or zip-files.")
-		}else{
-			#otherwise just rename
-			file.rename(newTempPath, newUnzippedPath)		
-		}
+		unlink(homeFolder,recursive=T)
+		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"gzip_file",email,uniqueID)
+		m<-paste(m,collapse="\t")
+		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+		if(length(grep("gzip compressed",filetype))==1)stop("Don't submit gz-files. Only uncompressed text or zip-files.")
+		
+		#otherwise just rename
+		file.rename(newTempPath, newUnzippedPath)		
 	}
 	
 	
@@ -144,7 +142,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 		}
 		#ok, this is probably an ancestry.com file. Let's reformat.
 		format_ancestry_com_as_23andme(path)
-		
+
 	}
 	testRead2<-read.table(path,nrow=10,stringsAsFactors=F)
 	if(ncol(testRead2)!=4)stop("testRead2 didn't have 4 columns (or 5 for ancestry.com data)")
@@ -837,7 +835,7 @@ make_overview_of_samples<-function(verbose=T){
 
 format_ancestry_com_as_23andme<-function(path){
 	#this is a function to be called whenever a text file with 5 columns and header row needs to be reformatted to a text file with 4 columns and no header rows (and 20 commented out lines at the top). I.e. when reforming from ancestry.com to 23andme format.
-	
+
 	if(class(path)!="character")stop(paste("path must be character, not",class(path)))
 	if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
 	if(!file.exists(path))stop(paste("Did not find file at path:",path))
@@ -845,7 +843,7 @@ format_ancestry_com_as_23andme<-function(path){
 	testRead<-read.table(path,nrow=10,stringsAsFactors=F,header=T)
 	if(ncol(testRead)!=5){stop("testRead of file didn't have 5 columns (as it should have when invoking ancestry.com conversion)")}
 	if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead seemed like ancestry.com data, but didn't have rs IDs in column 1")
-	
+		
 	
 	
 	#inserting # at first rsid palce
@@ -919,9 +917,9 @@ remove_snps_from_cache<-function(snps,verbose=T){
 			
 			cache<-cache[!rownames(cache)%in%snps,,drop=F]
 			
-			f<-gzfile(cacheFile,"w")
-			write.table(cache,file=f,sep="\t",col.names=NA)
-			close(f)
+						f<-gzfile(cacheFile,"w")
+						write.table(cache,file=f,sep="\t",col.names=NA)
+						close(f)
 			
 		}
 		
@@ -956,13 +954,13 @@ remove_all_temp_folders<-function(uniqueIDs=NULL){
 		if(!all(file.exists(paste("/home/ubuntu/data/",uniqueIDs,sep=""))))stop("Not all UniqueIDs given were found")
 	}
 	
-	
+
 	for(uniqueID in uniqueIDs){
 		tempFolder<-paste("/home/ubuntu/data/",uniqueID,"/temp",sep="")
-		if(file.exists(tempFolder)){
-			print(paste("Deleting",tempFolder))
-			unlink(tempFolder,recursive=T)
-		}
+			if(file.exists(tempFolder)){
+				print(paste("Deleting",tempFolder))
+				unlink(tempFolder,recursive=T)
+			}
 	}
 }
 

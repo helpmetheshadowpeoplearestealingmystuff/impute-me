@@ -1,3 +1,4 @@
+
 source("../uifunctions.R")
 initialize('hc',TRUE)
 
@@ -12,7 +13,7 @@ shinyUI(bootstrapPage(
 	HTML("<u><a href='http://www.impute.me/www/terms_of_use.html'>Terms of use.</a></u>"),
 	checkboxInput("delete2weeks", "Delete data after two weeks", value = TRUE, width = NULL),
 	actionButton("goButton","Start imputation"),
-	
+
 	
 	endPanel(),
 	beginPanel('2/3'),
@@ -23,11 +24,11 @@ shinyUI(bootstrapPage(
 	textOutput("text2"),
 	textOutput("text3"),
 	endPanel(),
-	
-	
+			
+				
 	endPage(),
 	footer()
-	))
+))
 
 
 
@@ -51,3 +52,4 @@ shinyUI(bootstrapPage(
 # 				<input type="image" src="https://www.paypalobjects.com/da_DK/DK/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal – den sikre og nemme måde at betale på nettet.">
 # 				<img alt="" border="0" src="https://www.paypalobjects.com/da_DK/i/scr/pixel.gif" width="1" height="1">
 # 				</form>
+# 				
