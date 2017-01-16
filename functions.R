@@ -192,7 +192,7 @@ run_imputation<-function(
 	shapeit="/home/ubuntu/impute_dir/bin/shapeit",
 	plink="/home/ubuntu/impute_dir/plink",
 	impute2="/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static/impute2",
-	sample_ref="/home/ubuntu/misc_files/sample.reference.txt"
+	sample_ref="/home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3.sample"
 ){
 	
 	
