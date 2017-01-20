@@ -150,7 +150,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 	if(ncol(testRead2)!=4){
 		unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
 		unlink(homeFolder,recursive=T)
-		stop("test-read didn't have 4 columns (or 5 for ancestry.com data)")
+		stop("test-read didn't have 4 columns (or 5 for ancestry.com data). If you think this data type should be supported, then you are welcome to write an email an attached a snippet of the data for our inspection.")
 	}
 	if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs"){
 		unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
