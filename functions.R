@@ -147,8 +147,16 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 
 	}
 	testRead2<-read.table(path,nrow=10,stringsAsFactors=F)
-	if(ncol(testRead2)!=4)stop("testRead2 didn't have 4 columns (or 5 for ancestry.com data)")
-	if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs")stop("testRead2 didn't have rs IDs in column 1")
+	if(ncol(testRead2)!=4){
+		unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
+		unlink(homeFolder,recursive=T)
+		stop("test-read didn't have 4 columns (or 5 for ancestry.com data)")
+	}
+	if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs"){
+		unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
+		unlink(homeFolder,recursive=T)
+		stop("test-read didn't have rs IDs in column 1")
+	}
 	
 	
 	
