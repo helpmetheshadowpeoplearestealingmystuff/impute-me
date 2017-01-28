@@ -7,7 +7,7 @@ existing<-list.files("~/data")
 
 for(uniqueID in existing){
 	pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
-	pData<-try(read.table(pDataFile,sep="\t",header=T,stringsAsFactors=FALSE))
+	pData<-try(read.table(pDataFile,sep="\t",header=T,stringsAsFactors=FALSE,sep="\t"))
 	if(class(pData)=="try-error"){
 		print(uniqueID)
 		stop()

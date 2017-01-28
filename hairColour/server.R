@@ -71,7 +71,7 @@ shinyServer(function(input, output) {
 				real_red <- isolate(input$redheadness)/100
 				
 				#also store this in the pData
-				pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+				pData<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")
 				pData[,"red_hair"]<-real_red
 				pData[,"blonde_hair"]<-real_blonde
 				write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
@@ -96,7 +96,7 @@ shinyServer(function(input, output) {
 			}
 			
 			#also store this in the pData
-			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+			pData<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")
 			pData[,"g_red_hair"]<-gColour_red
 			pData[,"g_brown_hair"]<-gColour_brown
 			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)

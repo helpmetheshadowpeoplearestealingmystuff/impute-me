@@ -30,7 +30,7 @@ shinyServer(function(input, output) {
 		
 		
 		#Get gender
-		gender<-read.table(pDataFile,header=T,stringsAsFactors=F)[1,"gender"]
+		gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
 		
 		
 		BRCA_table_file <-"/srv/shiny-server/gene-surfer/BRCA/SNPs_to_analyze.txt"

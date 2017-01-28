@@ -93,7 +93,7 @@ shinyServer(function(input, output) {
 				}
 				
 				#also store this in the pData
-				pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+				pData<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")
 				pData[,"height"]<-real_height
 				pData[,"age"]<-real_age
 				write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
@@ -104,7 +104,7 @@ shinyServer(function(input, output) {
 			}
 			
 			#Get gender
-			gender<-read.table(pDataFile,header=T,stringsAsFactors=F)[1,"gender"]
+			gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
 			
 			
 			giant_sup_path<-"/srv/shiny-server/gene-surfer/guessMyHeight/SNPs_to_analyze.txt"
@@ -117,7 +117,7 @@ shinyServer(function(input, output) {
 			
 			
 			#also store this in the pData
-			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+			pData<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")
 			pData[,"gheight"]<-gheight
 			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 			
@@ -258,7 +258,7 @@ shinyServer(function(input, output) {
 			}
 			
 			#also store this in the pData
-			pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+			pData<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")
 			pData[,"g_red_hair"]<-gColour_red
 			pData[,"g_brown_hair"]<-gColour_brown
 			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)

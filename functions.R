@@ -825,7 +825,7 @@ make_overview_of_samples<-function(verbose=T){
 	for(uniqueID in uniqueIDs){
 		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
 		if(file.exists(pDataFile)){
-			all_pData[[uniqueID]]<-read.table(pDataFile,header=T,stringsAsFactors=F)
+			all_pData[[uniqueID]]<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
 		}else{
 			if(verbose)print(paste("Didn't find a pData file for",uniqueID))	
 		}
