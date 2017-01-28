@@ -8,7 +8,7 @@ shinyUI(bootstrapPage(
 	titlePanel("Microbiome"),
 	beginPage(),
 	beginPanel('1/3'),
-	HTML("Example ID to test: id_57n662948"),
+	HTML("Example ID to test: id_613z86871"),
 	
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	actionButton("goButton","Run analysis"),
