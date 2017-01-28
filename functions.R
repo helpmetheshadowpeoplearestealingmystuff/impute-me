@@ -551,9 +551,9 @@ get_genotypes<-function(
 	if(nrow(requestDeNovo)>0){
 		
 		#only here need to check that raw data is there
-		if(!file.exists(genZipFile))stop(paste("Did not find a .gen file in idFolder at",idFolder))
-		if(!file.exists(inputZipFile))stop(paste("Did not find a .input_data file in idFolder at",idFolder))
-		
+		if(!file.exists(genZipFile) | !file.exists(inputZipFile)){
+			stop(paste("Did not find and .input_data or a .gen file in idFolder. This probably means that raw data has been deleted and no furter SNP-data can be retrieved."))
+		}
 		
 		
 		dir.create(idTempFolder)
