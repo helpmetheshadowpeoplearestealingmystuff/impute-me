@@ -513,9 +513,7 @@ get_genotypes<-function(
 	idFolder<-paste("/home/ubuntu/data",uniqueID,sep="/")
 	if(!file.exists(idFolder))stop(paste("Did not find an idFolder at",idFolder))
 	genZipFile<-paste(idFolder,"/",uniqueID,".gen.zip",sep="")
-	if(!file.exists(genZipFile))stop(paste("Did not find a .gen file in idFolder at",idFolder))
 	inputZipFile<-paste(idFolder,"/",uniqueID,".input_data.zip",sep="")
-	if(!file.exists(inputZipFile))stop(paste("Did not find a .input_data file in idFolder at",idFolder))
 	cachedGenotypeFile<-paste(idFolder,"/",uniqueID,".",namingLabel,".gz",sep="")
 	if(!file.exists(cachedGenotypeFile))print(paste("Did not find a chachedGenotypeFile file in idFolder at",idFolder,"but that's no problem"))
 	
@@ -551,6 +549,13 @@ get_genotypes<-function(
 	
 	#If there are anything novel, extract it from zip (takes a long time)
 	if(nrow(requestDeNovo)>0){
+		
+		#only here need to check that raw data is there
+		if(!file.exists(genZipFile))stop(paste("Did not find a .gen file in idFolder at",idFolder))
+		if(!file.exists(inputZipFile))stop(paste("Did not find a .input_data file in idFolder at",idFolder))
+		
+		
+		
 		dir.create(idTempFolder)
 		chromosomes<-unique(requestDeNovo[,"chr_name"])
 		contents<-unzip(genZipFile,list=T)
