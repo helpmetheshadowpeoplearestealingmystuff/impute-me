@@ -96,6 +96,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 
 			SNPs_to_analyze[,"Beta"]<-log10(SNPs_to_analyze[,or_column])
 			GRS_beta <-get_GRS(genotypes=genotypes,betas=SNPs_to_analyze)
+			
 		
 	
 		}
@@ -132,7 +133,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			prop<-signif(pnorm(GRS_beta,mean=control_mean,sd=control_sd),2)
 			x_text<-upper_x[round(length(upper_x)/2)]
 			y_text<-upper_y[round(length(upper_y)/2)] / 2
-			text(x_text,y_text,paste0(prop*100,"%"),col="blue")
+			try(text(x_text,y_text,paste0(prop*100,"%"),col="blue"))
 			
 			
 			
@@ -148,7 +149,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			prop<-signif(1-pnorm(GRS_beta,mean=case_mean,sd=case_sd),2)
 			x_text<-upper_x[round(length(upper_x)/2)]
 			y_text<-upper_y[round(length(upper_y)/2)] / 2
-			text(x_text,y_text,paste0(prop*100,"%"),col="red")
+			try(text(x_text,y_text,paste0(prop*100,"%"),col="red"))
 			
 			
 			#draw the main line
