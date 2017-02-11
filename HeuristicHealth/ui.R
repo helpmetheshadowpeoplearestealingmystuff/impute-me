@@ -11,6 +11,12 @@ shinyUI(bootstrapPage(
 				beginPanel('1/3'),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	textInput(inputId="uniqueID", label = "Disease Context", value = ""),
+	checkboxInput("advanced", label ="Advanced", value = FALSE),
+	conditionalPanel(
+		condition = "input.advanced",
+		fileInput("rules_definition", "Upload new rules-defintion", multiple = FALSE, accept = NULL)
+	),
+	
 	actionButton("goButton","Run analysis"),
 	endPanel(),
 	beginPanel('2/3'),
