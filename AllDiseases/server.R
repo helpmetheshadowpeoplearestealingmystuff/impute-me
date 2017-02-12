@@ -167,14 +167,33 @@ shinyServer(function(input, output) {
 			return("")
 		}else if(input$goButton > 0) {
 			
+			#getting data
 			o<-get_data()
 			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
 			genotypes<-o[["genotypes"]]
-			col_to_remove<-c("DATE","sampleSize","ensembl_alleles","LINK","FIRST.AUTHOR","PUBMEDID")
-			for(col in col_to_remove){SNPs_to_analyze[,col]<-NULL}
+
+			#summarising allele info into single-columns
+			SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
+			SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
 			
+			# col_to_remove<-c("DATE","sampleSize","ensembl_alleles","LINK","FIRST.AUTHOR","PUBMEDID","chr_name","CHR_POS","effect_allele","non_effect_allele","major_allele","minor_allele","DISEASE.TRAIT")
+			# for(col in col_to_remove){SNPs_to_analyze[,col]<-NULL}
+			
+			
+			#adding genotype GRS and rounding MAF
 			SNPs_to_analyze[,"Your Genotype"]<-genotypes[SNPs_to_analyze[,"SNP"],"genotype"]
 			SNPs_to_analyze[,"GRS"]<-genotypes[SNPs_to_analyze[,"SNP"],"GRS"]
+			SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
+			
+			
+			#shortening the reported gene count
+			SNPs_to_analyze[,"Reported Gene"]<-sapply(strsplit(SNPs_to_analyze[,"REPORTED.GENE.S."],", "),function(x){
+				paste(x[1:min(c(2,length(x)))],collapse=", ")
+			})
+			
+			keep<-c("SNP","REGION","Your Genotype","Risk/non-risk Allele","Beta","P.VALUE","GRS","Major/minor Allele","minor_allele_freq","Reported Gene")
+			SNPs_to_analyze<-SNPs_to_analyze[,keep]
+			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/non-risk Allele","Beta","P-value","Genetic Risk Core","Major/minor Allele","Minor Allele Frequency","Reported Gene")
 			
 			return(SNPs_to_analyze)
 		}
