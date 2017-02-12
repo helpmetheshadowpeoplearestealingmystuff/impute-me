@@ -194,3 +194,31 @@ rownames(gwas_snps) <- gwas_snps[,"SNP"]
 save(gwas_snps,file="AllDiseases/2017-02-12_all_gwas_snps.rdata")
 
 
+
+
+
+
+
+
+
+#then create an overview trait list
+data[,"trait_PMID"]<-paste(data[,"DISEASE.TRAIT"], data[,"PUBMEDID"],sep=" // ")
+
+traits<-data.frame(row.names=unique(data[,"trait_PMID"]), trait_pmid=unique(data[,"trait_PMID"]),stringsAsFactors=F)
+for(trait in rownames(traits)){
+	traits[trait,"trait"] <- strsplit(trait," // ")[[1]][1]
+	traits[trait,"PMID"] <- strsplit(trait," // ")[[1]][2]
+}
+traits<-traits[order(rownames(traits)),]
+for(trait in rownames(traits)){
+	traitName<-traits[trait,"trait"]	
+	PMID<-traits[trait,"PMID"]	
+	if(sum(traits[,"trait"]%in%traitName)>1){
+		traits[trait ,"niceName"] <- paste0(traitName," (PMID ",PMID,")")
+	}else{
+		traits[trait ,"niceName"] <- traitName
+	}
+	
+}
+
+save(traits, file="AllDiseases/2017-02-12_trait_overoverview.rdata")
