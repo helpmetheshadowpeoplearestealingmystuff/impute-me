@@ -17,8 +17,6 @@ shinyServer(function(input, output) {
 	output$text_1 <- renderText({ 
 		
 		if(input$goButton == 0){
-			trait_pmid<-isolate(input$trait)
-			uniqueID<-isolate(input$uniqueID)
 			m<-paste0("A genetic risk score is an arbitrary value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the <u><a href='http://www.impute.me/autoimmuneDiseases/'>specialized trait GWAS modules</a></u>"
 			)
 			
@@ -37,7 +35,7 @@ shinyServer(function(input, output) {
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 		if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
-			stop("Did not find a user with this id")
+			stop(paste("Did not find a user with this id",uniqueID))
 		}
 		trait<-strsplit(trait_pmid," // ")[[1]][1]
 		pmid<-strsplit(trait_pmid," // ")[[1]][2]
