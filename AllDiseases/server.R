@@ -71,7 +71,7 @@ shinyServer(function(input, output) {
 				if(any(duplicated(SNPs_to_analyze[,"SNP"])))stop(paste("Some of the SNPs requested for PMID",pmid,"were duplicated"))
 				rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
 				
-				genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="all_gwas")
+				genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
 				GRS_beta <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
 			}
 			control_mean<-0
