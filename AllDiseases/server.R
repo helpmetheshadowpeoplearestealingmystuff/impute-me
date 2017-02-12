@@ -29,8 +29,8 @@ shinyServer(function(input, output) {
 	
 	
 	get_data <- reactive({
-		trait_pmid<-isolate(input$trait)
-		uniqueID<-isolate(input$uniqueID)
+		trait_pmid<-input$trait
+		uniqueID<-input$uniqueID
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 		if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
