@@ -105,7 +105,7 @@ shinyServer(function(input, output) {
 		#write the score to the pData file
 		log_function<-function(uniqueID,trait_pmid,genotypes){
 			gwas_log_file<-paste("/home/ubuntu/data/",uniqueID,"/gwas_log_file.txt",sep="")
-			safe_name<-gsub(" ","_",gsub("[?&/\\-]", "", trait_pmid))
+			safe_name<-gsub(" ","_",gsub("[?&/\\-\\.\\(\\)]", "", trait_pmid))
 			str<-signif(mean(genotypes[,"GRS"],na.rm=T),3)
 			if(file.exists(gwas_log_file)){
 				gwas_log<-read.table(gwas_log_file,header=T,stringsAsFactors=F)	
