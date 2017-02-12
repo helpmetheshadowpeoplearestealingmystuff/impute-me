@@ -7,6 +7,7 @@ trait_file<-"/srv/shiny-server/gene-surfer/AllDiseases/2017-02-12_trait_overover
 
 
 #testing
+
 # snps_file<-"AllDiseases/2017-02-12_semi_curated_version_gwas_central.rdata"
 # trait_file<-"AllDiseases/2017-02-12_trait_overoverview.rdata"
 
@@ -69,8 +70,8 @@ shinyServer(function(input, output) {
 				
 				if(any(duplicated(SNPs_to_analyze[,"SNP"])))stop(paste("Some of the SNPs requested for PMID",pmid,"were duplicated"))
 				rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
-				stop("made it to here")
-				genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
+				
+				genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="all_gwas")
 				GRS_beta <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
 			}
 			control_mean<-0
