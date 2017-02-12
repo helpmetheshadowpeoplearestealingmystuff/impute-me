@@ -203,7 +203,6 @@ save(gwas_snps,file="AllDiseases/2017-02-12_all_gwas_snps.rdata")
 
 
 
-
 #then create an overview trait list
 data[,"trait_PMID"]<-paste(data[,"DISEASE.TRAIT"], data[,"PUBMEDID"],sep=" // ")
 

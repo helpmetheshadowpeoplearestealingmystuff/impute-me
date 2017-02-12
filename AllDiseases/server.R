@@ -29,17 +29,6 @@ shinyServer(function(input, output) {
 	})
 	
 	
-	output$text_2 <- renderText({ 
-		if(input$goButton == 0){
-			return("")
-		}else if(input$goButton > 0) {
-			trait_pmid<-isolate(input$trait)
-			uniqueID<-isolate(input$uniqueID)
-			m<-"Further description"			
-			
-		}
-		return(m)
-	})
 	
 	get_data <- reactive({
 		trait_pmid<-isolate(input$trait)
@@ -59,16 +48,19 @@ shinyServer(function(input, output) {
 		SNPs_to_analyze<-data[data[,"PUBMEDID"]%in%pmid & data[,"DISEASE.TRAIT"]%in%trait ,]
 		
 		
+		#gathering some background info for the study		
 		link<-unique(SNPs_to_analyze[,"LINK"])
 		if(length(link)!=1)stop("Problem with link length")
 		author<-unique(SNPs_to_analyze[,"FIRST.AUTHOR"])
 		if(length(author)!=1)stop("Problem with author length")
-		
-		
-		
+		sampleSize<-unique(SNPs_to_analyze[,"sampleSize"])
+		if(length(sampleSize)!=1)stop("Problem with sampleSize length")
+		DATE<-unique(SNPs_to_analyze[,"DATE"])
+		if(length(DATE)!=1)stop("Problem with DATE length")
 		textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a href='",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",trait,".")
+		textToReturn <- paste0(textToReturn," This study reports a total sample size of ",sampleSize,". The entry data is ",DATE,".")
 		
-		textToReturn <- paste0("
+		
 		
 		#if any of the SNPs are duplicated we have to merge them (this by the way is an odd situation
 		#why would a SNP be listed twice in the results for the same trait - let's aim to merge only in GRS
@@ -108,20 +100,23 @@ shinyServer(function(input, output) {
 		
 		return(list(
 			SNPs_to_analyze=SNPs_to_analyze,
-			genotypes=genotypes))
-				 
+			genotypes=genotypes,
+			textToReturn=textToReturn))
+		
 		
 		
 		
 	})
-
 	
 	
-		
+	
+	
 	output$plot_1 <- renderPlot({ 
-		SNPs_to_analyze<-get_data()
+		o<-get_data()
+		SNPs_to_analyze<-o[["SNPs_to_analyze"]]
+		genotypes<-o[["genotypes"]]
 		
-		
+		GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
 		
 		control_mean<-0
 		control_sd<-1
@@ -147,14 +142,8 @@ shinyServer(function(input, output) {
 		y_text<-upper_y[round(length(upper_y)/2)] / 2
 		text(x_text,y_text,paste0(prop*100,"%"),col="blue")
 		
-		
-		
 		#draw the main line
 		abline(v=GRS_beta,lwd=3)
-		
-		
-		
-		
 		
 		legend("topleft",legend=c("Population distribution","Your genetic risk score"),lty=c(1,1),lwd=c(2,3),col=c("blue","black"))
 		
@@ -162,9 +151,35 @@ shinyServer(function(input, output) {
 	})
 	
 	
+	output$text_2 <- renderText({ 
+		if(input$goButton == 0){
+			return("")
+		}else if(input$goButton > 0) {
+			o<-get_data()
+			m<-o[["textToReturn"]]
+			
+		}
+		return(m)
+	})
 	
 	
-	
+	output$table1 <- renderDataTable({ 
+		if(input$goButton == 0){
+			return("")
+		}else if(input$goButton > 0) {
+			
+			o<-get_data()
+			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
+			genotypes<-o[["genotypes"]]
+			col_to_remove<-c("DATE","sampleSize","ensembl_alleles","LINK","FIRST.AUTHOR","PUBMEDID")
+			for(col in col_to_remove){SNPs_to_analyze[,col]<-NULL}
+			
+			SNPs_to_analyze[,"Your Genotype"]<-genotypes[SNPs_to_analyze[,"SNP"],"genotype"]
+			SNPs_to_analyze[,"GRS"]<-genotypes[SNPs_to_analyze[,"SNP"],"GRS"]
+			
+			return(SNPs_to_analyze)
+		}
+	})
 	
 })
 
