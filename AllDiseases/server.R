@@ -155,7 +155,7 @@ shinyServer(function(input, output) {
 			return("")
 		}else if(input$goButton > 0) {
 			o<-get_data()
-			m<-o[["textToReturn"]]
+			m<-paste0("<br><br>",o[["textToReturn"]],"<br><br>")
 			
 		}
 		return(m)
@@ -182,7 +182,7 @@ shinyServer(function(input, output) {
 			
 			#adding genotype GRS and rounding MAF
 			SNPs_to_analyze[,"Your Genotype"]<-genotypes[SNPs_to_analyze[,"SNP"],"genotype"]
-			SNPs_to_analyze[,"GRS"]<-genotypes[SNPs_to_analyze[,"SNP"],"GRS"]
+			SNPs_to_analyze[,"GRS"]<-signif(genotypes[SNPs_to_analyze[,"SNP"],"GRS"],2)
 			SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
 			
 			
@@ -193,11 +193,11 @@ shinyServer(function(input, output) {
 			
 			keep<-c("SNP","REGION","Your Genotype","Risk/non-risk Allele","Beta","P.VALUE","GRS","Major/minor Allele","minor_allele_freq","Reported Gene")
 			SNPs_to_analyze<-SNPs_to_analyze[,keep]
-			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/non-risk Allele","Beta","P-value","Genetic Risk Core","Major/minor Allele","Minor Allele Frequency","Reported Gene")
+			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/non-risk Allele","Beta","P-value","Genetic Risk Score","Major/minor Allele","Minor Allele Frequency","Reported Gene")
 			
 			return(SNPs_to_analyze)
 		}
-	})
+	},options = list(searching = FALSE,paging = FALSE))
 	
 })
 
