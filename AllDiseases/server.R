@@ -52,11 +52,14 @@ shinyServer(function(input, output) {
 		author<-unique(SNPs_to_analyze[,"FIRST.AUTHOR"])
 		if(length(author)!=1)stop("Problem with author length")
 		sampleSize<-unique(SNPs_to_analyze[,"sampleSize"])
-		if(length(sampleSize)!=1)stop("Problem with sampleSize length")
+		if(length(sampleSize)!=1){
+			print("Problem with sampleSize length - but just took mean")
+			sampleSize <- round(mean(sampleSize,na.rm=T))
+		}
 		DATE<-unique(SNPs_to_analyze[,"DATE"])
 		if(length(DATE)!=1)stop("Problem with DATE length")
-		textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a href='",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",trait,".")
-		textToReturn <- paste0(textToReturn," This study reports a total sample size of ",sampleSize,". The entry data is ",DATE,".")
+		textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a href='",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",trait,". We highly recommend you to check the original study for further details.")
+		textToReturn <- paste0(textToReturn," This study reports a total sample size of ",sampleSize,", as entered on date ",DATE,".")
 		
 		
 		
@@ -111,42 +114,45 @@ shinyServer(function(input, output) {
 	
 	
 	output$plot_1 <- renderPlot({ 
-		o<-get_data()
-		SNPs_to_analyze<-o[["SNPs_to_analyze"]]
-		genotypes<-o[["genotypes"]]
-		
-		GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
-		
-		control_mean<-0
-		control_sd<-1
-		xlim<-c(control_mean - control_sd*3, control_mean + control_sd*3)
-		
-		x<-seq(xlim[1],xlim[2],length.out=100)
-		y_control<-dnorm(x,mean=control_mean,sd=control_sd)
-		plot(x,y_control,type="l",col="blue",ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n",lwd=2)
-		
-		
-		#fill the controls
-		if(all(!x<GRS_beta))stop("GRS too low to plot")
-		max_GRS_i<-max(which(x<GRS_beta))
-		upper_x<-x[1:max_GRS_i]
-		upper_y<-y_control[1:max_GRS_i]
-		x_lines <- c(upper_x,GRS_beta,GRS_beta,xlim[1])
-		y_lines <- c(upper_y,upper_y[length(upper_y)],0,0)
-		polygon(x=x_lines, y = y_lines, density = NULL, angle = 45,border = NA, col = rgb(0,0,1,0.3), lty = par("lty"))
-		
-		#add control text
-		prop<-signif(pnorm(GRS_beta,mean=control_mean,sd=control_sd),2)
-		x_text<-upper_x[round(length(upper_x)/2)]
-		y_text<-upper_y[round(length(upper_y)/2)] / 2
-		text(x_text,y_text,paste0(prop*100,"%"),col="blue")
-		
-		#draw the main line
-		abline(v=GRS_beta,lwd=3)
-		
-		legend("topleft",legend=c("Population distribution","Your genetic risk score"),lty=c(1,1),lwd=c(2,3),col=c("blue","black"))
-		
-		
+		if(input$goButton == 0){
+			return(NULL)
+		}else if(input$goButton > 0) {
+			o<-get_data()
+			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
+			genotypes<-o[["genotypes"]]
+			
+			GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
+			
+			control_mean<-0
+			control_sd<-1
+			xlim<-c(control_mean - control_sd*3, control_mean + control_sd*3)
+			
+			x<-seq(xlim[1],xlim[2],length.out=100)
+			y_control<-dnorm(x,mean=control_mean,sd=control_sd)
+			plot(x,y_control,type="l",col="blue",ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n",lwd=2)
+			
+			
+			#fill the controls
+			if(all(!x<GRS_beta))stop("GRS too low to plot")
+			max_GRS_i<-max(which(x<GRS_beta))
+			upper_x<-x[1:max_GRS_i]
+			upper_y<-y_control[1:max_GRS_i]
+			x_lines <- c(upper_x,GRS_beta,GRS_beta,xlim[1])
+			y_lines <- c(upper_y,upper_y[length(upper_y)],0,0)
+			polygon(x=x_lines, y = y_lines, density = NULL, angle = 45,border = NA, col = rgb(0,0,1,0.3), lty = par("lty"))
+			
+			#add control text
+			prop<-signif(pnorm(GRS_beta,mean=control_mean,sd=control_sd),2)
+			x_text<-upper_x[round(length(upper_x)/2)]
+			y_text<-upper_y[round(length(upper_y)/2)] / 2
+			text(x_text,y_text,paste0(prop*100,"%"),col="blue")
+			
+			#draw the main line
+			abline(v=GRS_beta,lwd=3)
+			
+			legend("topleft",legend=c("Population distribution","Your genetic risk score"),lty=c(1,1),lwd=c(2,3),col=c("blue","black"))
+			
+		}		
 	})
 	
 	
@@ -171,7 +177,7 @@ shinyServer(function(input, output) {
 			o<-get_data()
 			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
 			genotypes<-o[["genotypes"]]
-
+			
 			#summarising allele info into single-columns
 			SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
 			SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
@@ -193,7 +199,7 @@ shinyServer(function(input, output) {
 			
 			keep<-c("SNP","REGION","Your Genotype","Risk/non-risk Allele","Beta","P.VALUE","GRS","Major/minor Allele","minor_allele_freq","Reported Gene")
 			SNPs_to_analyze<-SNPs_to_analyze[,keep]
-			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/non-risk Allele","Beta","P-value","Genetic Risk Score","Major/minor Allele","Minor Allele Frequency","Reported Gene")
+			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","Beta","P-value","Your GRS here","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
 			
 			return(SNPs_to_analyze)
 		}
