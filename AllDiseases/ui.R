@@ -20,7 +20,7 @@ shinyUI(bootstrapPage(
 	titlePanel("All diseases - genetic risk"),
 	beginPage(),	
 	beginPanel('1/3'),
-	HTML("Thousands of GWAS studies have been performed. This module allows the calculation of genetic risk score for any of them.<br>"),
+	HTML("Thousands of GWAS studies have been performed. This module allows the calculation of genetic risk score for any of them.<br>To run analysis input your user-id, or use the test-value of id_613z86871:<br>"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	selectInput("trait", "Traits:", choices = selections),
 	
