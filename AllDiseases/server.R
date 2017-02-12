@@ -17,7 +17,7 @@ shinyServer(function(input, output) {
 	output$text_1 <- renderText({ 
 		
 		if(input$goButton == 0){
-			m<-paste0("A genetic risk score is an arbitrary value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the <u><a href='http://www.impute.me/autoimmuneDiseases/'>specialized trait GWAS modules</a></u>"
+			m<-paste0("A genetic risk score is an arbitrary value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the <u><a href='http://www.impute.me/autoimmuneDiseases/'>specialized trait GWAS modules</a></u><br><br>"
 			)
 			
 		}else{
@@ -88,9 +88,9 @@ shinyServer(function(input, output) {
 			}
 			duplicates_example<-paste(duplicates[1:min(c(5,length(duplicates)))],collapse=", ")			
 			if(warnForDiscrepancyInBeta){
-				textToReturn <- paste0(textToReturn," Note ",length(duplicate)," SNPs were entered twice for this GWAS, and the effect-size and direction was not consistent. An arbitrary choice was made, but please check the results table carefully for details (",duplicates_example,").")
+				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNPs were entered twice for this GWAS, and the effect-size and direction was not consistent. An arbitrary choice was made, but please check the results table carefully for details (",duplicates_example,").")
 			}else{
-				textToReturn <- paste0(textToReturn," Note ",length(duplicate)," SNPs were entered twice for this GWAS, but the effect-size and direction was consistent (",duplicates_example,").")
+				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNPs were entered twice for this GWAS, but the effect-size and direction was consistent (",duplicates_example,").")
 			}
 		}else{
 			
@@ -216,9 +216,9 @@ shinyServer(function(input, output) {
 				paste(x[1:min(c(2,length(x)))],collapse=", ")
 			})
 			
-			keep<-c("SNP","REGION","Your Genotype","Risk/non-risk Allele","Beta","P.VALUE","GRS","Major/minor Allele","minor_allele_freq","Reported Gene")
+			keep<-c("SNP","REGION","Your Genotype","Risk/non-risk Allele","GRS","Beta","P.VALUE","Major/minor Allele","minor_allele_freq","Reported Gene")
 			SNPs_to_analyze<-SNPs_to_analyze[,keep]
-			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","Beta","P-value","Your GRS here","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
+			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","Your GRS here","Beta","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
 			
 			return(SNPs_to_analyze)
 		}
