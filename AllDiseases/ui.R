@@ -30,7 +30,7 @@ shinyUI(bootstrapPage(
 	
 	h2("Genetic risk score:"),
 	htmlOutput("text_1"),
-	# plotOutput("plot_1"),
+	plotOutput("plot_1"),
 	htmlOutput("text_2"),
 	
 	
