@@ -6,15 +6,18 @@ initialize('gmh',TRUE)
 
 load("/srv/shiny-server/gene-surfer/AllDiseases/2017-02-12_trait_overoverview.rdata")
 
+#testing
+# load("AllDiseases/2017-02-12_trait_overoverview.rdata")
 
-head(traits)
+
+
 selections<-traits[,"trait_pmid"]
 names(selections)<-traits[,"niceName"]
 
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
-	titlePanel("Autoimmune disease risk"),
+	titlePanel("All disease risk"),
 	beginPage(),	
 	beginPanel('1/3'),
 	HTML("Thousands of GWAS studies have been performed. This module allows the calculation of genetic risk score for any of them.<br>"),
@@ -26,9 +29,9 @@ shinyUI(bootstrapPage(
 	beginPanel('2/3'),
 	
 	h2("Genetic risk score:"),
-	htmlOutput("text_1"),
-	plotOutput("plot_1"),
-	htmlOutput("text_2"),
+	# htmlOutput("text_1"),
+	# plotOutput("plot_1"),
+	# htmlOutput("text_2"),
 	
 	
 	
