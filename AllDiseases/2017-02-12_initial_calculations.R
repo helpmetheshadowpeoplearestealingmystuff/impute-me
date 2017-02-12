@@ -28,16 +28,6 @@ hist(data[,"sampleSize"],breaks=1000,xlim=c(0,10000),xlab="sample size",main="Sa
 #decision - remove all studies with sample size < 2000 (because, they may or may not be good)
 data<-data[data[,"sampleSize"]> 2000,]
 
-#remove sets that have too few SNPs per study
-studies<-data.frame(row.names=unique(data[,"PUBMEDID"]))
-for(study in rownames(studies)){
-	d1<-data[data[,"PUBMEDID"]%in%study,]
-	studies[study,"SNPs"]<-nrow(d1)
-}
-hist(studies[,"SNPs"],breaks=10000,xlim=c(0,100))
-#decision - remove all studies with SNP-count < 10 (because the GRS may be odd)
-data<-data[!data[,"PUBMEDID"]%in%rownames(studies)[studies[,"SNPs"]<10],]
-
 
 #check that the strongest SNP entry is consistent with the SNPs entry (remove otherwise)
 data[data[,"STRONGEST.SNP.RISK.ALLELE"]%in%"rs12449664A","STRONGEST.SNP.RISK.ALLELE"]<-"rs12449664-A" #clear typo
@@ -52,8 +42,8 @@ data<-data[s1 == data[,"SNPS"],]
 data[,"risk_allele"]<-sub("^.+-","",data[,"STRONGEST.SNP.RISK.ALLELE"])
 sum(data[,"risk_allele"]=="?") #3242 - definetly must remove these
 data<-data[data[,"risk_allele"]!="?",]
-# sum(is.na(data[,"OR.or.BETA"])) #810 - we could probably save these, since we have the risk-allele... but it's going to be a head-ache so we'll just remove them. Still got 18699.
-data<-data[!is.na(data[,"OR.or.BETA"]),]
+
+
 
 
 
@@ -80,7 +70,7 @@ data<-data[!data[,"DISEASE.TRAIT"]%in%omit,]
 
 
 #remove some columns that are not needed
-col_to_remove<-c("MAPPED_GENE","UPSTREAM_GENE_ID","DOWNSTREAM_GENE_ID","SNP_GENE_IDS","UPSTREAM_GENE_DISTANCE","DOWNSTREAM_GENE_DISTANCE")
+col_to_remove<-c("MAPPED_GENE","UPSTREAM_GENE_ID","DOWNSTREAM_GENE_ID","SNP_GENE_IDS","UPSTREAM_GENE_DISTANCE","DOWNSTREAM_GENE_DISTANCE","PLATFORM..SNPS.PASSING.QC.","CNV","X95..CI..TEXT.","P.VALUE..TEXT.","PVALUE_MLOG","RISK.ALLELE.FREQUENCY","CONTEXT","INTERGENIC","SNP_ID_CURRENT","MERGED","STUDY","JOURNAL","DATE.ADDED.TO.CATALOG","INITIAL.SAMPLE.SIZE","REPLICATION.SAMPLE.SIZE")
 for(col in col_to_remove){data[,col]<-NULL}
 
 
@@ -100,12 +90,10 @@ data[,"minor_allele"]<-query[data[,"SNPS"],"minor_allele"]
 
 #remove the ones with no known MAF
 sum(is.na(data[,"minor_allele_freq"]))
-#472
+#488
 data<-data[!is.na(data[,"minor_allele_freq"]),]
 
-
 #check the two chr-names are the same
-colnames(data)
 sum(data[,"CHR_ID" ] != data[,"chr_name"])
 #0
 #good! can remove the original one then
@@ -114,8 +102,11 @@ data[,"CHR_ID"] <- NULL
 
 #perhaps remove the tri-allelics
 sum(sapply(strsplit(data[,"ensembl_alleles"],"/"),length) != 2)
-#  516 of 16508 -- should be ok to remove - probably the safer option
+#  535 of 16744 -- should be ok to remove - probably the safer option
 data<-data[sapply(strsplit(data[,"ensembl_alleles"],"/"),length) == 2,]
+
+
+
 
 #assign major allele from the ensembl alleles
 a1<-sapply(strsplit(data[,"ensembl_alleles"],"/"),function(x){x[1]})
@@ -131,6 +122,17 @@ data<-data[!is.na(data[,"major_allele"]),]
 set.seed(42)
 data[sample(1:nrow(data),3),c("SNPS","minor_allele_freq","major_allele","minor_allele")]
 #seems ok
+
+
+#remove sets that have too few SNPs per study
+studies<-data.frame(row.names=unique(data[,"PUBMEDID"]))
+for(study in rownames(studies)){
+	d1<-data[data[,"PUBMEDID"]%in%study,]
+	studies[study,"SNPs"]<-nrow(d1)
+}
+hist(studies[,"SNPs"],breaks=10000,xlim=c(0,100))
+#decision - remove all studies with SNP-count < 5 (because the GRS may be odd)
+data<-data[!data[,"PUBMEDID"]%in%rownames(studies)[studies[,"SNPs"]<5],]
 
 
 
@@ -149,7 +151,7 @@ data[data[,"major_allele"]==data[,"risk_allele"],"non_risk_allele"]<-data[data[,
 
 #check often minor allele is risk
 sum(data[,"minor_allele"]==data[,"risk_allele"]) / nrow(data)
-#0.59 -- I would have expected less, but that's probably just for old rare-variant studies that we'd think so.
+#0.58 -- I would have expected less, but that's probably just for old rare-variant studies that we'd think so.
 
 
 #check some 7 random ones with their literature entries

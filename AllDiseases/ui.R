@@ -17,7 +17,7 @@ names(selections)<-traits[,"niceName"]
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
-	titlePanel("All disease risk"),
+	titlePanel("All diseases - genetic risk"),
 	beginPage(),	
 	beginPanel('1/3'),
 	HTML("Thousands of GWAS studies have been performed. This module allows the calculation of genetic risk score for any of them.<br>"),
@@ -31,7 +31,7 @@ shinyUI(bootstrapPage(
 	h2("Genetic risk score:"),
 	htmlOutput("text_1"),
 	plotOutput("plot_1"),
-	htmlOutput("text_2"),
+	# htmlOutput("text_2"),
 	
 	
 	
