@@ -19,7 +19,7 @@ shinyServer(function(input, output) {
 		uniqueID<-isolate(input$uniqueID)
 		
 		
-		m<-paste0("A genetic risk score is an arbitrary value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its meaning, calculation and limitations can be found in the <u><a href='www.impute.me/autoimmuneDiseases/'>specialized trait GWAS modules</a></u>"
+		m<-paste0("A genetic risk score is an arbitrary value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its meaning, calculation and limitations can be found in the <u><a href='http://www.impute.me/autoimmuneDiseases/'>specialized trait GWAS modules</a></u>"
 		)
 		return(m)
 	})
@@ -69,8 +69,8 @@ shinyServer(function(input, output) {
 				
 				if(any(duplicated(SNPs_to_analyze[,"SNP"])))stop(paste("Some of the SNPs requested for PMID",pmid,"were duplicated"))
 				rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
-				
-				genotypes<-get_genotypes(uniqueID=uniqueID,request=d1)
+				stop("made it to here")
+				genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
 				GRS_beta <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
 			}
 			control_mean<-0
