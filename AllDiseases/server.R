@@ -89,6 +89,7 @@ shinyServer(function(input, output) {
 				textToReturn <- paste0(textToReturn," Note ",length(duplicate)," SNPs were entered twice for this GWAS, but the effect-size and direction was consistent (",duplicates_example,").")
 			}
 		}else{
+			rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
 			genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
 			genotypes[,"GRS"] <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
 			
