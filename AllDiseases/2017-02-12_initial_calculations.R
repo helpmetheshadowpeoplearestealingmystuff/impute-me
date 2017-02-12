@@ -20,23 +20,10 @@ data<-read.table("AllDiseases/gwas_catalog_v1.0-associations_e87_r2017-02-06.tsv
 
 
 
-#check that the strongest SNP entry is consistent with the SNPs entry (remove otherwise)
-data[data[,"STRONGEST.SNP.RISK.ALLELE"]%in%"rs12449664A","STRONGEST.SNP.RISK.ALLELE"]<-"rs12449664-A" #clear typo
-s1<-gsub(" ","",sub("\\?","",sub("NR$","",sub("-.+$","",data[,"STRONGEST.SNP.RISK.ALLELE"]))))
-data[s1 != data[,"SNPS"],c("STRONGEST.SNP.RISK.ALLELE","SNPS")] #6 entries
-data<-data[s1 == data[,"SNPS"],]
-
-
-#remove SNPs that don't have OR/beta or risk-allele indication
-sum(is.na(data[,"OR.or.BETA"]))
-#1662
-data<-data[!is.na(data[,"OR.or.BETA"]),]
-
 #remove sets that are too small
 d<-gsub(",","",gsub("[A-Za-z]","",data[,"INITIAL.SAMPLE.SIZE"]))
 data[,"sampleSize"]<-sapply(strsplit(d," +"),function(x){sum(as.numeric(x),na.rm=T)})
 data<-data[order(data[,"sampleSize"]),]
-
 hist(data[,"sampleSize"],breaks=1000,xlim=c(0,10000),xlab="sample size",main="Sample sizes")
 #decision - remove all studies with sample size < 2000 (because, they may or may not be good)
 data<-data[data[,"sampleSize"]> 2000,]
@@ -50,6 +37,24 @@ for(study in rownames(studies)){
 hist(studies[,"SNPs"],breaks=10000,xlim=c(0,100))
 #decision - remove all studies with SNP-count < 10 (because the GRS may be odd)
 data<-data[!data[,"PUBMEDID"]%in%rownames(studies)[studies[,"SNPs"]<10],]
+
+
+#check that the strongest SNP entry is consistent with the SNPs entry (remove otherwise)
+data[data[,"STRONGEST.SNP.RISK.ALLELE"]%in%"rs12449664A","STRONGEST.SNP.RISK.ALLELE"]<-"rs12449664-A" #clear typo
+s1<-gsub(" ","",sub("\\?","",sub("NR$","",sub("-.+$","",data[,"STRONGEST.SNP.RISK.ALLELE"]))))
+sum(s1 != data[,"SNPS"]) #154
+s2<-data[s1 != data[,"SNPS"],c("STRONGEST.SNP.RISK.ALLELE","SNPS")] 
+#ok could probably save some of these, but on later testing it is found that all but 6 are removed by other filters anyway... so just get rid of them
+data<-data[s1 == data[,"SNPS"],]
+
+
+#remove SNPs that don't have OR/beta or risk-allele indication
+data[,"risk_allele"]<-sub("^.+-","",data[,"STRONGEST.SNP.RISK.ALLELE"])
+sum(data[,"risk_allele"]=="?") #3242 - definetly must remove these
+data<-data[data[,"risk_allele"]!="?",]
+# sum(is.na(data[,"OR.or.BETA"])) #810 - we could probably save these, since we have the risk-allele... but it's going to be a head-ache so we'll just remove them. Still got 18699.
+data<-data[!is.na(data[,"OR.or.BETA"]),]
+
 
 
 #investigating number of studies per trait
@@ -94,7 +99,7 @@ data[,"minor_allele"]<-query[data[,"SNPS"],"minor_allele"]
 
 #remove the ones with no known MAF
 sum(is.na(data[,"minor_allele_freq"]))
-#760
+#472
 data<-data[!is.na(data[,"minor_allele_freq"]),]
 
 
@@ -108,7 +113,7 @@ data[,"CHR_ID"] <- NULL
 
 #perhaps remove the tri-allelics
 sum(sapply(strsplit(data[,"ensembl_alleles"],"/"),length) != 2)
-# 581 of 18456 -- should be ok to remove - probably the safer option
+#  516 of 16508 -- should be ok to remove - probably the safer option
 data<-data[sapply(strsplit(data[,"ensembl_alleles"],"/"),length) == 2,]
 
 #assign major allele from the ensembl alleles
@@ -123,7 +128,7 @@ data<-data[!is.na(data[,"major_allele"]),]
 
 #double check a few with online browsers
 set.seed(42)
-data[sample(1:nrow(data),5),c("SNPS","minor_allele_freq","major_allele","minor_allele")]
+data[sample(1:nrow(data),3),c("SNPS","minor_allele_freq","major_allele","minor_allele")]
 #seems ok
 
 
@@ -131,22 +136,61 @@ data[sample(1:nrow(data),5),c("SNPS","minor_allele_freq","major_allele","minor_a
 #now let's try to assign effect allele (scared-smiley goes here)
 sum(data[,"OR.or.BETA"]<0,na.rm=T)
 #none are below 0, so at least the betas are not inverted or something... could be problematic with <1 ORs, but -- we'll see
-data[,"risk_allele"]<-sub("^.+-","",data[,"STRONGEST.SNP.RISK.ALLELE"])
-sum(is.na(data[,"risk_allele"]))
 
 
 #check places were the risk-allele is not found in ensembl minor or major allele
 data[is.na(data[,"risk_allele"] != data[,"minor_allele"] & data[,"risk_allele"] != data[,"major_allele"]),]
 #ok - none found that's quite nice
 
-
-# data[,"risk_allele"] == data[,"minor_allele"]
+#insert the non-risk allele as being the allele that is not risk, and is the other allele (taking from major/minor info)
 data[data[,"minor_allele"]==data[,"risk_allele"],"non_risk_allele"]<-data[data[,"minor_allele"]==data[,"risk_allele"],"major_allele"]
 data[data[,"major_allele"]==data[,"risk_allele"],"non_risk_allele"]<-data[data[,"major_allele"]==data[,"risk_allele"],"minor_allele"]
 
 #check often minor allele is risk
 sum(data[,"minor_allele"]==data[,"risk_allele"]) / nrow(data)
-#0.52 -- I would have expected less, but that's probably just for old rare-variant studies that we'd think so.
+#0.59 -- I would have expected less, but that's probably just for old rare-variant studies that we'd think so.
 
 
-c(data)
+#check some 7 random ones with their literature entries
+set.seed(42)
+data[sample(1:nrow(data),7),c("SNPS","minor_allele_freq","major_allele","minor_allele","risk_allele","non_risk_allele","PUBMEDID","DISEASE.TRAIT")]
+# SNPS minor_allele_freq major_allele minor_allele risk_allele non_risk_allele PUBMEDID
+# 21156  rs13017997       0.291733000            T            A           T               A 26198764
+# 21526   rs7610761       0.371406000            T            A           A               T 26198764
+# 26326  rs11217863       0.100639000            G            A           A               G 25637523
+# 14040   rs2606736       0.481230000            T            C           C               T 24097068
+# 13043    rs865686       0.291933000            T            G           T               G 23535729
+# 32885 rs188657011       0.000199681            C            A           A               C 26634245
+# 27881   rs1859962       0.424920000            T            G           G               T 26034056
+#1) rs2045517 is not present in original paper - but likely rs66831316, at almost same location and at least same P-value. Unable to estimate direction. Conclusion: unsure.
+#2) rs7610761 is not present in original paper - but likely rs4685495, at almost same location and at least same P-value. Unable to estimate direction. Conclusion: unsure.
+#3) rs11217863 checks out, both minor/major and risk. Conclusion: correct.
+#4) rs2606736 checks out, both minor/major and risk. Conclusion: correct.
+#5) rs865686 is present in original paper, well hidden in supplementary. minor/major is correct. Odds ratio 0.89 for minor allele. So it's correct that T is risk. Conclusion: correct.
+#6) rs188657011 well hidden in supplementary, and also have a mistake indication that Coded_Allele_/Beta/P is reported for the number block e.g. A/0.999/0.043/0.4566 or A/0.999/0.367/1.56e-06, but surely that must be allele/frequency/beta/P -- # rs188657011	6	SUPT3H A/0.999/0.043/0.4566	A/0.998/-0.001/0.9865	A/0.999/0.367/1.56e-06	A/0.998/0.189/0.009	NA	A/0.002/0.001/0.986. Anyway - looks correct. Conclusion: correct.
+#7) rs1859962 from supplementary: 17q24 69108753 G T 1.19 (1.14, 1.24) 0.48 1.13 (1.09, 1.18) 7.7e-09 1.00 0.55 1.16 (0.99, 1.36) 0.06 1.00 0.4 1.03 (0.85, 1.24) 0.79 1.00 0.32 1.08 (0.93, 1.24) 0.31 0.97 1.13 (1.08, 1.17) 1.6e-09 1.13 (1.08, 1.17) 1.6e-09. Conclusion: correct.
+#overall - quite encouraging!
+
+
+
+
+
+
+#re-order colnames so that the essential are first
+
+putFirst<-c("SNPS", "chr_name","risk_allele","non_risk_allele","OR.or.BETA",  "minor_allele_freq","minor_allele","major_allele")
+data<-data[,c(putFirst,colnames(data)[!colnames(data)%in%putFirst])]
+colnames(data)[1]<-"SNP"
+colnames(data)[3]<-"effect_allele"
+colnames(data)[4]<-"non_effect_allele"
+colnames(data)[5]<-"Beta"
+save(data, file="AllDiseases/2017-02-12_semi_curated_version_gwas_central")
+
+
+#then save a SNPs_to_analyze.txt (which just contains snp, chr, effect_allele and non_effect_allele and NO duplicate SNPs)
+gwas_snps <- data[,c("SNP","chr_name","effect_allele","non_effect_allele")]
+gwas_snps <- gwas_snps[!duplicated(gwas_snps[,"SNP"]),]
+rownames(gwas_snps) <- gwas_snps[,"SNP"]
+save(gwas_snps,file="AllDiseases/2017-02-12_all_gwas_snps.rdata")
+
+
