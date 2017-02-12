@@ -59,7 +59,7 @@ shinyServer(function(input, output) {
 		}
 		DATE<-unique(SNPs_to_analyze[,"DATE"])
 		if(length(DATE)!=1)stop("Problem with DATE length")
-		textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a href='",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",trait,". We highly recommend you to check the original study for further details.")
+		textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a href='http://",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",trait,". We highly recommend you to check the original study for further details.")
 		textToReturn <- paste0(textToReturn," This study reports a total sample size of ",sampleSize,", as entered on date ",DATE,".")
 		
 		
@@ -88,7 +88,7 @@ shinyServer(function(input, output) {
 			}
 			duplicates_example<-paste(duplicates[1:min(c(5,length(duplicates)))],collapse=", ")			
 			if(warnForDiscrepancyInBeta){
-				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNPs were entered twice for this GWAS, and the effect-size and direction was not consistent. An arbitrary choice was made, but please check the results table carefully for details (",duplicates_example,").")
+				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNPs were entered twice for this GWAS, and the effect-size and direction was <b>not consistent</b>. An arbitrary choice was made, but please check the results table carefully for details (",duplicates_example,").")
 			}else{
 				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNPs were entered twice for this GWAS, but the effect-size and direction was consistent (",duplicates_example,").")
 			}
