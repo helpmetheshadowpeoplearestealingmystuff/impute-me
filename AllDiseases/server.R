@@ -37,6 +37,7 @@ shinyServer(function(input, output) {
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
 			stop(paste("Did not find a user with this id",uniqueID))
 		}
+		
 		trait<-strsplit(trait_pmid," // ")[[1]][1]
 		pmid<-strsplit(trait_pmid," // ")[[1]][2]
 		if(!pmid%in%data[,"PUBMEDID"])stop(paste("PMID",pmid,"was not found in system"))
@@ -92,6 +93,8 @@ shinyServer(function(input, output) {
 				textToReturn <- paste0(textToReturn," Note ",length(duplicate)," SNPs were entered twice for this GWAS, but the effect-size and direction was consistent (",duplicates_example,").")
 			}
 		}else{
+			
+			#if no duplicates this is the much simpler solution
 			rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
 			genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
 			genotypes[,"GRS"] <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
@@ -99,7 +102,23 @@ shinyServer(function(input, output) {
 		}
 		
 		
+		#write the score to the pData file
+		log_function<-function(uniqueID,trait_pmid,genotypes){
+			gwas_log_file<-paste("/home/ubuntu/data/",uniqueID,"/gwas_log_file.txt",sep="")
+			safe_name<-gsub(" ","_",gsub("[?&/\\-]", "", trait_pmid))
+			str<-signif(mean(genotypes[,"GRS"],na.rm=T),3)
+			if(file.exists(gwas_log_file)){
+				gwas_log<-read.table(gwas_log_file,header=T,stringsAsFactors=F)	
+				gwas_log[,safe_name] <- str
+			}else{
+				gwas_log<-data.frame(safe_name=str,stringsAsFactors=F)
+				colnames(gwas_log) <- safe_name
+			}
+			write.table(gwas_log,file=gwas_log_file,sep="\t",col.names=T,row.names=F,quote=F)
+		}
+		try(log_function(uniqueID,trait_pmid,genotypes))
 		
+		#then return the overall list		
 		return(list(
 			SNPs_to_analyze=SNPs_to_analyze,
 			genotypes=genotypes,
