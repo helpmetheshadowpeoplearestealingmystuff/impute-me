@@ -73,7 +73,8 @@ omit<-unique(c(
 	grep("height",rownames(traits),ignore.case=T,value=T),
 	grep("hair",rownames(traits),ignore.case=T,value=T),
 	grep("economic",rownames(traits),ignore.case=T,value=T),
-	grep("political",rownames(traits),ignore.case=T,value=T)
+	grep("political",rownames(traits),ignore.case=T,value=T),
+	grep("word reading",rownames(traits),ignore.case=T,value=T)
 ))
 data<-data[!data[,"DISEASE.TRAIT"]%in%omit,]
 
