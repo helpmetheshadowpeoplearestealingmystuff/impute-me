@@ -187,7 +187,7 @@ colnames(data)[1]<-"SNP"
 colnames(data)[3]<-"effect_allele"
 colnames(data)[4]<-"non_effect_allele"
 colnames(data)[5]<-"Beta"
-save(data, file="AllDiseases/2017-02-12_semi_curated_version_gwas_central")
+save(data, file="AllDiseases/2017-02-12_semi_curated_version_gwas_central.rdata")
 
 
 #then save a SNPs_to_analyze.txt (which just contains snp, chr, effect_allele and non_effect_allele and NO duplicate SNPs)

@@ -64,9 +64,11 @@ shinyServer(function(input, output) {
 		author<-unique(SNPs_to_analyze[,"FIRST.AUTHOR"])
 		if(length(author)!=1)stop("Problem with author length")
 		
+		
+		
 		textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a href='",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",trait,".")
 		
-		
+		textToReturn <- paste0("
 		
 		#if any of the SNPs are duplicated we have to merge them (this by the way is an odd situation
 		#why would a SNP be listed twice in the results for the same trait - let's aim to merge only in GRS
