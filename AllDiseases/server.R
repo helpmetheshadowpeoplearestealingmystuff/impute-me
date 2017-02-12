@@ -7,8 +7,8 @@ trait_file<-"/srv/shiny-server/gene-surfer/AllDiseases/2017-02-12_trait_overover
 
 
 #testing
-snps_file<-"AllDiseases/2017-02-12_semi_curated_version_gwas_central.rdata"
-trait_file<-"AllDiseases/2017-02-12_trait_overoverview.rdata"
+# snps_file<-"AllDiseases/2017-02-12_semi_curated_version_gwas_central.rdata"
+# trait_file<-"AllDiseases/2017-02-12_trait_overoverview.rdata"
 
 
 shinyServer(function(input, output) {

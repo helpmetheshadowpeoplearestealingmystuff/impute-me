@@ -4,7 +4,7 @@ initialize('gmh',TRUE)
 
 
 
-load("AllDiseases/AllDiseases/2017-02-12_trait_overoverview.rdata")
+load("/srv/shiny-server/gene-surfer/AllDiseases/AllDiseases/2017-02-12_trait_overoverview.rdata")
 
 
 head(traits)
