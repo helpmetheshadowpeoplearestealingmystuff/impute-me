@@ -206,7 +206,10 @@ location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
 message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br>",
 								 "<a href=",location_23andme,">",location_23andme,"</a>",
 								 "<br><br>You can also go to <a href='www.impute.me'>www.impute.me</a> and explore the current analysis-modules using this log-in ID: <b>",uniqueID,"</b>
-								 <br><br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format files</a></HTML> ",sep="")
+								 <br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format files</a>
+								<br><br><small>The service is non-profit, but the computing price for an imputation is 2-5 USD per imputation (depending on load). Please consider making a contribution to keep the servers running (<u><a href='http://paypal.me/LFolkersen'>paypal</a></u> or <u><a href='bitcoin:1MMTnaFN5MhYZktcEjAZDZKhjWrUsZz5ZA'>bitcoin</a></u>).</small><br>
+								 
+								 </HTML> ",sep="")
 
 
 
