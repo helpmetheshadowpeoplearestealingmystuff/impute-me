@@ -166,9 +166,9 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 			
 
 			#write the score to the log file
-			log_function<-function(uniqueID,disease,GRS_beta){
+			log_function<-function(uniqueID){
 				user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
-				m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"leukemia",uniqueID,disease,GRS_beta)
+				m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"leukemia",uniqueID)
 				m<-paste(m,collapse="\t")
 				if(file.exists(user_log_file)){
 					write(m,file=user_log_file,append=TRUE)
@@ -176,7 +176,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 					write(m,file=user_log_file,append=FALSE)
 				}
 			}
-			try(log_function(uniqueID,disease,GRS_beta))
+			try(log_function(uniqueID))
 			
 		}
 	})
