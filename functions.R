@@ -515,7 +515,7 @@ get_genotypes<-function(
 	genZipFile<-paste(idFolder,"/",uniqueID,".gen.zip",sep="")
 	inputZipFile<-paste(idFolder,"/",uniqueID,".input_data.zip",sep="")
 	cachedGenotypeFile<-paste(idFolder,"/",uniqueID,".",namingLabel,".gz",sep="")
-	if(!file.exists(cachedGenotypeFile))print(paste("Did not find a chachedGenotypeFile file in idFolder at",idFolder,"but that's no problem"))
+	if(!file.exists(cachedGenotypeFile))print(paste("Did not find a",namingLabel, "chachedGenotypeFile file in idFolder at",idFolder,"but that's no problem"))
 	
 	#creating a temp folder to use
 	idTempFolder<-paste("/home/ubuntu/data",uniqueID,"temp",sep="/")
