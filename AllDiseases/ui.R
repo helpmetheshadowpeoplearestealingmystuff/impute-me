@@ -11,7 +11,7 @@ load("/srv/shiny-server/gene-surfer/AllDiseases/2017-02-12_trait_overoverview.rd
 
 
 
-selections<-traits[,"trait_pmid"]
+selections<-traits[,"study_id"]
 names(selections)<-traits[,"niceName"]
 
 shinyUI(bootstrapPage(
@@ -33,6 +33,7 @@ shinyUI(bootstrapPage(
 	plotOutput("plot_1"),
 	htmlOutput("text_2"),
 	dataTableOutput("table1"),
+	htmlOutput("text_3"),
 	
 	
 	

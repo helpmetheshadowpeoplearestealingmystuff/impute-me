@@ -10,7 +10,11 @@ trait_file<-"/srv/shiny-server/gene-surfer/AllDiseases/2017-02-12_trait_overover
 
 # snps_file<-"AllDiseases/2017-02-12_semi_curated_version_gwas_central.rdata"
 # trait_file<-"AllDiseases/2017-02-12_trait_overoverview.rdata"
+
+
+#preload
 load(snps_file)
+load(trait_file)
 
 shinyServer(function(input, output) {
 	
@@ -29,7 +33,9 @@ shinyServer(function(input, output) {
 	
 	
 	get_data <- reactive({
-		trait_pmid<-input$trait
+		
+		#initial UI data gathering and user-check
+		study_id<-input$trait
 		uniqueID<-input$uniqueID
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
@@ -38,13 +44,13 @@ shinyServer(function(input, output) {
 			stop(paste("Did not find a user with this id",uniqueID))
 		}
 		
-		trait<-strsplit(trait_pmid," // ")[[1]][1]
-		pmid<-strsplit(trait_pmid," // ")[[1]][2]
+		
+		#getting the relevant trait name, pmid and SNPs to analyze
+		trait<-traits[study_id,"trait"]
+		pmid<-traits[study_id,"PMID"]
 		if(!pmid%in%data[,"PUBMEDID"])stop(paste("PMID",pmid,"was not found in system"))
 		if(!trait%in%data[,"DISEASE.TRAIT"])stop(paste("trait",trait,"was not found"))
-		
-		
-		SNPs_to_analyze<-data[data[,"PUBMEDID"]%in%pmid & data[,"DISEASE.TRAIT"]%in%trait ,]
+		SNPs_to_analyze<-data[data[,"study_id"]%in%study_id ,]
 		
 		
 		#gathering some background info for the study		
@@ -94,7 +100,7 @@ shinyServer(function(input, output) {
 			}
 		}else{
 			
-			#if no duplicates this is the much simpler solution
+			#if no duplicates this is the much simpler solution, and the above 30 lines would be unnecessary
 			rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
 			genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
 			genotypes[,"GRS"] <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
@@ -102,21 +108,18 @@ shinyServer(function(input, output) {
 		}
 		
 		
-		#write the score to the pData file
-		log_function<-function(uniqueID,trait_pmid,genotypes){
-			gwas_log_file<-paste("/home/ubuntu/data/",uniqueID,"/gwas_log_file.txt",sep="")
-			safe_name<-gsub(" ","_",gsub("[?&/\\-\\.\\(\\)]", "", trait_pmid))
-			str<-signif(mean(genotypes[,"GRS"],na.rm=T),3)
-			if(file.exists(gwas_log_file)){
-				gwas_log<-read.table(gwas_log_file,header=T,stringsAsFactors=F)	
-				gwas_log[,safe_name] <- str
+		#write the score to the log file
+		log_function<-function(uniqueID,study_id,genotypes){
+			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"AllDisease",uniqueID,study_id,signif(mean(genotypes[,"GRS"],na.rm=T),3))
+			m<-paste(m,collapse="\t")
+			if(file.exists(user_log_file)){
+				write(m,file=user_log_file,append=TRUE)
 			}else{
-				gwas_log<-data.frame(safe_name=str,stringsAsFactors=F)
-				colnames(gwas_log) <- safe_name
+				write(m,file=user_log_file,append=FALSE)
 			}
-			write.table(gwas_log,file=gwas_log_file,sep="\t",col.names=T,row.names=F,quote=F)
 		}
-		try(log_function(uniqueID,trait_pmid,genotypes))
+		try(log_function(uniqueID,study_id,genotypes))
 		
 		#then return the overall list		
 		return(list(
@@ -218,12 +221,28 @@ shinyServer(function(input, output) {
 			
 			keep<-c("SNP","REGION","Your Genotype","Risk/non-risk Allele","GRS","Beta","P.VALUE","Major/minor Allele","minor_allele_freq","Reported Gene")
 			SNPs_to_analyze<-SNPs_to_analyze[,keep]
-			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","Your GRS here","Beta","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
+			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","Your GRS here","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
 			
 			return(SNPs_to_analyze)
 		}
 	},options = list(searching = FALSE,paging = FALSE))
+
 	
+	output$text_3 <- renderText({ 
+		
+		if(input$goButton == 0){
+			m<-""
+			
+			
+		}else{
+			m<-paste0("<small><br><b>Methods</b><br>
+								A per-SNP genetic risk score (GRS) is calculated by counting the risk-alleles multiplied by the effect size (OR or beta). The per-trait GRS is simply the mean of all per-SNP GRS. Importantly the GRS is here scaled to mean-center and unit-variance relative to the population distribution of possible genotypes, effectively making the scores <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-scores</a></u>. This is done using the minor-allele frequency (MAF) for each SNP. If a person is homozygote for a very rare risk variant this will result in a very high GRS Z-score. Further details of the calculation can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/6c05cef7a182c895fa88cd741e4d529e4bfb8200/functions.R#L1103-L1169'>source code</a></u>. The advantage of this approach is that it is robust without need for further data input than MAF. The disadvantage is that particularly ethnicity-specific genetics may be skewed. This is however also the case for the GWAS reported risk-SNPs and effect sizes to begin with, and it is recommended to check the original study to see what ethnicity was investigated.</small>")
+								
+		}
+		return(m)
+	})
+	
+		
 })
 
 

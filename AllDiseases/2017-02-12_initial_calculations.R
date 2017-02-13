@@ -54,7 +54,7 @@ for(trait in rownames(traits)){
 	traits[trait,"SNPs"]<-nrow(d2)
 	traits[trait,"studies"]<-length(unique(d2[,"PUBMEDID"]))
 }
-traits[order(traits[,"studies"]),]
+# traits[order(traits[,"studies"]),]
 #conclusion - some have more than 10 studies, probably most transparent to let users select the specific study
 
 
@@ -64,13 +64,14 @@ omit<-unique(c(
 	grep("hair",rownames(traits),ignore.case=T,value=T),
 	grep("economic",rownames(traits),ignore.case=T,value=T),
 	grep("political",rownames(traits),ignore.case=T,value=T),
-	grep("word reading",rownames(traits),ignore.case=T,value=T)
+	grep("word reading",rownames(traits),ignore.case=T,value=T),
+	grep("eyes",rownames(traits),ignore.case=T,value=T)
 ))
 data<-data[!data[,"DISEASE.TRAIT"]%in%omit,]
 
 
 #remove some columns that are not needed
-col_to_remove<-c("MAPPED_GENE","UPSTREAM_GENE_ID","DOWNSTREAM_GENE_ID","SNP_GENE_IDS","UPSTREAM_GENE_DISTANCE","DOWNSTREAM_GENE_DISTANCE","PLATFORM..SNPS.PASSING.QC.","CNV","X95..CI..TEXT.","P.VALUE..TEXT.","PVALUE_MLOG","RISK.ALLELE.FREQUENCY","CONTEXT","INTERGENIC","SNP_ID_CURRENT","MERGED","STUDY","JOURNAL","DATE.ADDED.TO.CATALOG","INITIAL.SAMPLE.SIZE","REPLICATION.SAMPLE.SIZE")
+col_to_remove<-c("MAPPED_GENE","UPSTREAM_GENE_ID","DOWNSTREAM_GENE_ID","SNP_GENE_IDS","UPSTREAM_GENE_DISTANCE","DOWNSTREAM_GENE_DISTANCE","PLATFORM..SNPS.PASSING.QC.","CNV","X95..CI..TEXT.","P.VALUE..TEXT.","PVALUE_MLOG","RISK.ALLELE.FREQUENCY","CONTEXT","INTERGENIC","SNP_ID_CURRENT","MERGED","STUDY","JOURNAL","DATE.ADDED.TO.CATALOG","INITIAL.SAMPLE.SIZE","REPLICATION.SAMPLE.SIZE","CHR_POS")
 for(col in col_to_remove){data[,col]<-NULL}
 
 
@@ -90,7 +91,7 @@ data[,"minor_allele"]<-query[data[,"SNPS"],"minor_allele"]
 
 #remove the ones with no known MAF
 sum(is.na(data[,"minor_allele_freq"]))
-#488
+#539
 data<-data[!is.na(data[,"minor_allele_freq"]),]
 
 #check the two chr-names are the same
@@ -102,7 +103,7 @@ data[,"CHR_ID"] <- NULL
 
 #perhaps remove the tri-allelics
 sum(sapply(strsplit(data[,"ensembl_alleles"],"/"),length) != 2)
-#  535 of 16744 -- should be ok to remove - probably the safer option
+#  613 of 16744 -- should be ok to remove - probably the safer option
 data<-data[sapply(strsplit(data[,"ensembl_alleles"],"/"),length) == 2,]
 
 
@@ -176,11 +177,13 @@ data[sample(1:nrow(data),7),c("SNPS","minor_allele_freq","major_allele","minor_a
 
 
 
+#add a 'safe_name' trait/PMID no-special characters identifier to each
+data[,"study_id"]<-tolower(gsub(" ","_",gsub("[?&/\\-\\.\\(\\)\\']", "", paste(data[,"DISEASE.TRAIT"],data[,"PUBMEDID"],sep="_"))))
+
 
 
 
 #re-order colnames so that the essential are first
-
 putFirst<-c("SNPS", "chr_name","risk_allele","non_risk_allele","OR.or.BETA",  "minor_allele_freq","minor_allele","major_allele")
 data<-data[,c(putFirst,colnames(data)[!colnames(data)%in%putFirst])]
 colnames(data)[1]<-"SNP"
@@ -206,7 +209,7 @@ save(gwas_snps,file="AllDiseases/2017-02-12_all_gwas_snps.rdata")
 #then create an overview trait list
 data[,"trait_PMID"]<-paste(data[,"DISEASE.TRAIT"], data[,"PUBMEDID"],sep=" // ")
 
-traits<-data.frame(row.names=unique(data[,"trait_PMID"]), trait_pmid=unique(data[,"trait_PMID"]),stringsAsFactors=F)
+traits<-data.frame(row.names=unique(data[,"trait_PMID"]), study_id=unique(data[,"study_id"]),stringsAsFactors=F)
 for(trait in rownames(traits)){
 	traits[trait,"trait"] <- strsplit(trait," // ")[[1]][1]
 	traits[trait,"PMID"] <- strsplit(trait," // ")[[1]][2]
@@ -220,7 +223,10 @@ for(trait in rownames(traits)){
 	}else{
 		traits[trait ,"niceName"] <- traitName
 	}
-	
 }
+rownames(traits)<-traits[,"study_id"]
+head(traits)
 
 save(traits, file="AllDiseases/2017-02-12_trait_overoverview.rdata")
+
+

@@ -31,6 +31,8 @@ for(uniqueID in uniqueIDs){
 				if(file.exists(f3))unlink(f3)
 				if(file.exists(f4))unlink(f4)
 				if(file.exists(f5))unlink(f5)
+				#earlier version just deleted the entire folder, including submitter information and md5sums
+				#but this resulted in too many repetitive re-submissions from users.
 				
 			}
 			if("link" %in% routinely_delete_this){
