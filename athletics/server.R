@@ -30,7 +30,7 @@ shinyServer(function(input, output) {
 		
 		
 		#Get gender
-		gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
+		# gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
 		
 		
 		table_file <-"/srv/shiny-server/gene-surfer/athletics/SNPs_to_analyze.txt"
@@ -45,6 +45,21 @@ shinyServer(function(input, output) {
 
 		table<-table[,c("SNP","Your genotype","Comment")]
 		colnames(table)<-c("SNP","Your genotype","Description")
+		
+		
+		#write the score to the log file
+		log_function<-function(uniqueID){
+			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"atheltics",uniqueID)
+			m<-paste(m,collapse="\t")
+			if(file.exists(user_log_file)){
+				write(m,file=user_log_file,append=TRUE)
+			}else{
+				write(m,file=user_log_file,append=FALSE)
+			}
+		}
+		try(log_function(uniqueID))
+		
 		
 		return(table)
 		

@@ -49,13 +49,28 @@ shinyServer(function(input, output) {
 		BRCA_table["i4000379","consequence_type_tv"]<-"Direct from 23andme"
 		
 		
-		#get genotypes and calculate gheight
+		#get genotypes 
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=BRCA_table)
 		
 		BRCA_table[,"Your genotype"]<-genotypes[rownames(BRCA_table),]
 
 		BRCA_table<-BRCA_table[,c("SNP","gene","Your genotype","normal","polyphen_prediction","sift_prediction","consequence_type_tv")]
+
 		
+		#write the score to the log file
+		log_function<-function(uniqueID){
+			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"BRCA",uniqueID)
+			m<-paste(m,collapse="\t")
+			if(file.exists(user_log_file)){
+				write(m,file=user_log_file,append=TRUE)
+			}else{
+				write(m,file=user_log_file,append=FALSE)
+			}
+		}
+		try(log_function(uniqueID))
+		
+				
 		return(BRCA_table)
 		
 		

@@ -76,7 +76,22 @@ shinyServer(function(input, output) {
 			m <- paste("According to this analysis, you should pay particular attention to these",length(diseases_of_interest),"inherited conditions:",paste(diseases_of_interest,collapse=", "))	
 		}
 		m <- paste(m,".<br>",sep="")
+
 		
+		#write the query to the log file
+		log_function<-function(uniqueID,diseases_of_interest){
+			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"rareDiseases",uniqueID,paste(diseases_of_interest,collapse=";"))
+			m<-paste(m,collapse="\t")
+			if(file.exists(user_log_file)){
+				write(m,file=user_log_file,append=TRUE)
+			}else{
+				write(m,file=user_log_file,append=FALSE)
+			}
+		}
+		try(log_function(uniqueID,diseases_of_interest))
+		
+				
 		return(m)
 	})
 	

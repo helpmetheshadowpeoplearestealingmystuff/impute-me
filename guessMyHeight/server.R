@@ -173,6 +173,21 @@ shinyServer(function(input, output) {
 			}else{
 				abline(v=	gheight, lwd=2, col=mainCol)
 			}
+			
+			
+			#write the score to the log file
+			log_function<-function(uniqueID,gheight,gender){
+				user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+				m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"guessMyHeight",uniqueID,gheight,gender)
+				m<-paste(m,collapse="\t")
+				if(file.exists(user_log_file)){
+					write(m,file=user_log_file,append=TRUE)
+				}else{
+					write(m,file=user_log_file,append=FALSE)
+				}
+			}
+			try(log_function(uniqueID,gheight,gender))
+			
 		}
 	})
 	
@@ -288,6 +303,10 @@ shinyServer(function(input, output) {
 				points(x=real_blonde,y=real_red,pch=1,col="cyan",cex=9.2,lwd=1)
 			}
 		}
+		
+		
+		
+		
 	})#,width=400,height=200)
 	
 	

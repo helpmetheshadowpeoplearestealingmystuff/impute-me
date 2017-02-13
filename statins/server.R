@@ -117,6 +117,25 @@ shinyServer(function(input, output) {
 		table<-table[,c("SNP","Your genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Effect allele")
 		table<-table[c("rs3745274","rs2279343"),,drop=FALSE]
+	
+		
+		
+		
+		#write the query to the log file
+		log_function<-function(uniqueID){
+			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"drug_response",uniqueID)
+			m<-paste(m,collapse="\t")
+			if(file.exists(user_log_file)){
+				write(m,file=user_log_file,append=TRUE)
+			}else{
+				write(m,file=user_log_file,append=FALSE)
+			}
+		}
+		try(log_function(uniqueID))
+		
+		
+		
 		return(table)
 		
 	},include.rownames = FALSE)
