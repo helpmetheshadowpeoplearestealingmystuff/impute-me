@@ -591,7 +591,9 @@ get_genotypes<-function(
 			gensToExtract<-paste(uniqueID,"_chr",chromosomes,".gen",sep="")
 			if(!all(gensToExtract%in%contents[,"Name"])){
 				missing<-gensToExtract[!gensToExtract%in%contents[,"Name"]]
-				stop(paste("These were missing in the zip-gen file:",paste(missing,collapse=", ")))
+				gensToExtract<-gensToExtract[!gensToExtract%in%missing]
+				chromosomes<-chromosomes[!chromosomes%in%sub("\\.gen$","",sub("^.+_chr","",missing))]
+				warning(paste("These were missing in the zip-gen file:",paste(missing,collapse=", ")))
 			}
 			outZip<-unzip(genZipFile, files = gensToExtract, overwrite = TRUE,exdir = idTempFolder, unzip = "internal",)
 			
