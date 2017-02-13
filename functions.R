@@ -803,7 +803,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 	e<-try(load("/srv/shiny-server/gene-surfer/nonsenser/2015-12-16_all_coding_SNPs.rdata"))
 	if(class(e)!="try-error"){
 		for(uniqueID in uniqueIDs){
-			genotypes<-get_genotypes(uniqueID,coding_snps,namingLabel="cached.nonsenser")
+			genotypes<-try(get_genotypes(uniqueID,coding_snps,namingLabel="cached.nonsenser"))
 		}
 	}
 	
@@ -811,7 +811,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 	e<-try(load("/srv/shiny-server/gene-surfer/AllDiseases/2017-02-12_all_gwas_snps.rdata"))
 	if(class(e)!="try-error"){
 		for(uniqueID in uniqueIDs){
-			genotypes<-get_genotypes(uniqueID,gwas_snps,namingLabel="cached.all_gwas")
+			genotypes<-try(get_genotypes(uniqueID,gwas_snps,namingLabel="cached.all_gwas"))
 		}
 	}
 }
