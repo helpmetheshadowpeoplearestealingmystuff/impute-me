@@ -1097,6 +1097,12 @@ get_GRS_2<-function(genotypes, betas, mean_scale=T, unit_variance=T, verbose=T){
 		beta<-betas[snp,"Beta"]	
 		
 		
+		if(is.na(beta)){
+			missing_effect_info_snps <- c(missing_effect_info_snps, snp)
+			geneticRiskScore <- c(geneticRiskScore, NA)
+			next
+		}
+		
 		if(!mean_scale){
 			personal_effect_allele_count <- sum(genotype%in%effect_allele)
 			geneticRiskScoreHere <-  personal_effect_allele_count *  beta
