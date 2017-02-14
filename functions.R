@@ -95,7 +95,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
 		stop("Problem with unique ID generation. Please re-load and try again.")
 	}
-	dir.create(paste("/home/ubuntu/data/",uniqueID,sep=""))
+	# dir.create(paste("/home/ubuntu/data/",uniqueID,sep=""))
 	homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
 	dir.create(homeFolderShort)
 	setwd(homeFolderShort)
@@ -456,6 +456,7 @@ summarize_imputation<-function(
 	
 	#preparing destinationDir
 	prepDestinationDir<-paste(destinationDir,"/",uniqueID,sep="")
+	if(!file.exists(prepDestinationDir))dir.create(prepDestinationDir)
 	
 	#zipping and moving 23andme files
 	zipFile23andme<-paste(runDir,paste(uniqueID,".23andme.zip",sep=""),sep="/")

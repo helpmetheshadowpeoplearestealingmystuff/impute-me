@@ -164,12 +164,13 @@ try(crawl_for_snps_to_analyze(uniqueIDs=uniqueID))
 
 #If this is running as a node, we need to copy it back around here
 if(serverRole== "Node"){
-	#Have to do the * thing, because the directory already exists
-	cmd5 <- paste("scp -r /home/ubuntu/data/",uniqueID,"/* ubuntu@",hubAddress,":/home/ubuntu/data/",uniqueID,sep="")
+	cmd5 <- paste("scp -r /home/ubuntu/data/",uniqueID," ubuntu@",hubAddress,":/home/ubuntu/data",sep="")
 	system(cmd5)
 	
 	
 }
+
+
 
 
 #making a link out to where the data can be retrieved	(different on hub and node)
