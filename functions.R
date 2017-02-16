@@ -1209,5 +1209,69 @@ get_GRS_2<-function(genotypes, betas, mean_scale=T, unit_variance=T, verbose=T){
 
 
 
-
+generate_report<-function(uniqueIDs=NULL, filename=NULL){
+	#A function that will crawl all data directories and generate report with various 
+	
+	if(is.null(uniqueIDs)){
+		uniqueIDs<-list.files("/home/ubuntu/data/")
+	}else{
+		if(class(uniqueIDs)!="character")stop("UniqueIDs must be of class character")
+		if(!all(file.exists(paste("/home/ubuntu/data/",uniqueIDs,sep=""))))stop("Not all UniqueIDs given were found")
+	}
+	
+	if(is.null(filename)){
+		filename <- paste0(sample(1000:9999,1),sample(1000:9999,1),"_report.pdf")	
+	}else{
+		if(class(filename)!="character")stop("filename must be of class character")
+		if(length(filename)!=1)stop("filename must be of length 1")
+		
+	}
+	filepath <- paste0("/srv/shiny-server/gene-surfer/www/",filename)
+	relative_webpath <- filepath <- paste0("www/",filename)
+	pdf(filepath,width=5,height=8)
+	layout(matrix(1:6,nrow=3,byrow=T))
+	
+	
+	first_timeStamps<-vector()
+	user_log<-data.frame(uniqueIDs=vector(),modules=vector(),dates=vector(),stringsAsFactors=F)
+	for(uniqueID in uniqueIDs){
+		pData_file<-paste("/home/ubuntu/data",uniqueID,"pData.txt",sep="/")
+		if(!file.exists(pData_file))next
+		pData<-read.table(pData_file,sep="\t",header=T,stringsAsFactors=F)
+		first_timeStamps<-c(first_timeStamps,pData[1,"first_timeStamp"])
+		
+		user_log_file<-paste("/home/ubuntu/data",uniqueID,"user_log_file.txt",sep="/")
+		if(file.exists(user_log_file)){
+			user_log_here<-readLines(user_log_file)
+			s<-strsplit(user_log_here,"\t")
+			dates<-sapply(s,function(x){x[1]})
+			modules<-sapply(s,function(x){x[2]})
+			o<-data.frame(uniqueIDs=rep(uniqueID,length(user_log_here)),modules=modules,dates=dates,stringsAsFactors=F)
+			user_log<-rbind(user_log,o)
+		}else{
+			# user_log<-c()
+		}
+		
+	}
+	
+	sampleSize<-data.frame(dates=sort(as.Date(first_timeStamps)),count=1:length(first_timeStamps))
+	plot(type='l',x=sampleSize[,"dates"],sampleSize[,"count"],xlab="Date",ylab="Sample Count",lwd=2,main="Sample size")
+	frame()
+	
+	user_log[,"dates"]<-as.Date(user_log[,"dates"])
+	user_log<-user_log[order(user_log[,"dates"]),]
+	
+	for(module in sort(unique(user_log[,"modules"]))){
+		u1<-user_log[user_log[,"modules"]%in%module,]
+		u1[,"count"]<-1:nrow(u1)
+		plot(type='l',x=u1[,"dates"],u1[,"count"],xlab="Date",ylab="Sample Count",lwd=2,main=paste(module,"request-count"))
+		
+		u2<-u1[!duplicated(u1[,"uniqueIDs"]),,drop=FALSE]
+		u2[,"count"]<-1:nrow(u2)
+		plot(type='l',x=u2[,"dates"],u2[,"count"],xlab="Date",ylab="Sample Count",lwd=2,main=paste(module,"unique user-count"))
+		
+	}
+	dev.off()
+	return(relative_webpath)
+}
 

@@ -47,9 +47,14 @@ shinyServer(function(input, output) {
 		if(input$goButton > 0){
 			library("mailR")
 			
-			message <- paste("<HTML>Test-message</HTML> ",sep="")
 			
-			mailingResult<-send.mail(from = email_address,
+			relative_webpath<-generate_report()
+			link<-paste0("http://www.impute.me/",relative_webpath)
+			
+			
+			message <- paste("<HTML>The report can be downloaded from <u><a href='",link,"'>this link</a></u></HTML> ",sep="")
+			
+			send.mail(from = email_address,
 															 to = "lassefolkersen@gmail.com",
 															 subject = "Status report",
 															 body = message,
@@ -64,7 +69,7 @@ shinyServer(function(input, output) {
 															 send = TRUE)
 			
 			
-			stop("past the send argument")	
+			return("Status report have been mailed")
 		}
 	})
 })
