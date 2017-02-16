@@ -42,8 +42,32 @@ shinyServer(function(input, output) {
 		
 	})
 	
-
 	
+	make_report <- reactive({
+		
+	if(input$goButton > 0){
+		library("mailR")
+		
+		message <- paste("<HTML>Test-message</HTML> ",sep="")
+		
+		mailingResult<-try(send.mail(from = email_address,
+																 to = "lassefolkersen@gmail.com",
+																 subject = "Status report",
+																 body = message,
+																 html=T,
+																 smtp = list(
+																 	host.name = "smtp.gmail.com", 
+																 	port = 465, 
+																 	user.name = email_address, 
+																 	passwd = email_password, 
+																 	ssl = TRUE),
+																 authenticate = TRUE,
+																 send = TRUE))
+		
+		
+	}
+	
+	})
 })
 
 

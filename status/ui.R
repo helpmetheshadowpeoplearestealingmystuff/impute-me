@@ -7,6 +7,7 @@ shinyUI(bootstrapPage(
 	titlePanel("Status"),
 	beginPage(),
 	plotOutput("load1"),
+	actionButton("goButton","Generate report"),
 	endPage(),
 	footer()	
 	
