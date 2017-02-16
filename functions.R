@@ -1227,7 +1227,7 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
 		
 	}
 	filepath <- paste0("/srv/shiny-server/gene-surfer/www/",filename)
-	relative_webpath <- filepath <- paste0("www/",filename)
+	relative_webpath <- paste0("www/",filename)
 	pdf(filepath,width=5,height=8)
 	layout(matrix(1:6,nrow=3,byrow=T))
 	
