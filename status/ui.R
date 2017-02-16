@@ -8,6 +8,7 @@ shinyUI(bootstrapPage(
 	beginPage(),
 	plotOutput("load1"),
 	actionButton("goButton","Generate report"),
+	textOutput("text1"),
 	endPage(),
 	footer()	
 	

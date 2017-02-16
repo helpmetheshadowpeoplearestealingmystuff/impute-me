@@ -27,9 +27,9 @@ shinyServer(function(input, output) {
 			}
 		}
 		
-# 		remoteRunningProcesses<-2
-# 		runningProcesses<-1
-# 		totalProcesses<-6
+		# 		remoteRunningProcesses<-2
+		# 		runningProcesses<-1
+		# 		totalProcesses<-6
 		currentLoad<-matrix(c(runningProcesses,remoteRunningProcesses,totalProcesses-remoteRunningProcesses-runningProcesses),ncol=1)
 		barplot(currentLoad,xlim=c(0,maxImputationsInQueue+4),ylim=c(0,2),main="",horiz=T,xaxt="n",col=c("grey20","grey40","grey70"))
 		axis(side=1,at=seq(1,maxImputationsInQueue,2),labels=seq(1,maxImputationsInQueue,2))
@@ -42,32 +42,30 @@ shinyServer(function(input, output) {
 		
 	})
 	
-	
-	make_report <- reactive({
+	output$text1 <- renderText({ 
 		
-	if(input$goButton > 0){
-		library("mailR")
-		
-		message <- paste("<HTML>Test-message</HTML> ",sep="")
-		
-		mailingResult<-send.mail(from = email_address,
-																 to = "lassefolkersen@gmail.com",
-																 subject = "Status report",
-																 body = message,
-																 html=T,
-																 smtp = list(
-																 	host.name = "smtp.gmail.com", 
-																 	port = 465, 
-																 	user.name = email_address, 
-																 	passwd = email_password, 
-																 	ssl = TRUE),
-																 authenticate = TRUE,
-																 send = TRUE)
-	
-	
-		stop("past the send argument")	
-	}
-	
+		if(input$goButton > 0){
+			library("mailR")
+			
+			message <- paste("<HTML>Test-message</HTML> ",sep="")
+			
+			mailingResult<-send.mail(from = email_address,
+															 to = "lassefolkersen@gmail.com",
+															 subject = "Status report",
+															 body = message,
+															 html=T,
+															 smtp = list(
+															 	host.name = "smtp.gmail.com", 
+															 	port = 465, 
+															 	user.name = email_address, 
+															 	passwd = email_password, 
+															 	ssl = TRUE),
+															 authenticate = TRUE,
+															 send = TRUE)
+			
+			
+			stop("past the send argument")	
+		}
 	})
 })
 
