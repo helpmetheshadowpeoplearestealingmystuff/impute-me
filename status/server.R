@@ -50,7 +50,7 @@ shinyServer(function(input, output) {
 		
 		message <- paste("<HTML>Test-message</HTML> ",sep="")
 		
-		mailingResult<-try(send.mail(from = email_address,
+		mailingResult<-send.mail(from = email_address,
 																 to = "lassefolkersen@gmail.com",
 																 subject = "Status report",
 																 body = message,
@@ -62,9 +62,10 @@ shinyServer(function(input, output) {
 																 	passwd = email_password, 
 																 	ssl = TRUE),
 																 authenticate = TRUE,
-																 send = TRUE))
-		
-		
+																 send = TRUE)
+	
+	
+		stop("past the send argument")	
 	}
 	
 	})
