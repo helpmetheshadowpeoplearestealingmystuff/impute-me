@@ -155,9 +155,9 @@ write.table(out,file="BRCA/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,
 #2015-10-14 checking the normal in all current data sets
 rm(list=ls())
 
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 
-BRCA_table_file <-"/srv/shiny-server/gene-surfer/BRCA/SNPs_to_analyze.txt"
+BRCA_table_file <-"/home/ubuntu/srv/impute-me/BRCA/SNPs_to_analyze.txt"
 BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F)
 
 rownames(BRCA_table)<-BRCA_table[,"SNP"]
@@ -206,7 +206,7 @@ BRCA_table[,"normal"]<-unlist(lapply(normals,function(x){x[!is.na(x)]}))
 
 BRCA_table<-BRCA_table[,grep("^id",colnames(BRCA_table),invert=T)]
 
-BRCA_table_file <-"/srv/shiny-server/gene-surfer/BRCA/SNPs_to_analyze.txt"
+BRCA_table_file <-"/home/ubuntu/srv/impute-me/BRCA/SNPs_to_analyze.txt"
 BRCA_table<-write.table(BRCA_table,file="SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
 
 

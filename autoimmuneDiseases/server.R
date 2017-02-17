@@ -11,10 +11,10 @@ library("shiny")
 
 
 # 
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 dataFolder<-"/home/ubuntu/data/"
-SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/2016-05-21_SNPs_to_analyze_SOURCE.txt"
-means_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/2016-05-21_means.txt"
+SNPs_to_analyze_file<-"/home/ubuntu/srv/impute-me/autoimmuneDiseases/2016-05-21_SNPs_to_analyze_SOURCE.txt"
+means_file<-"/home/ubuntu/srv/impute-me/autoimmuneDiseases/2016-05-21_means.txt"
 
 
 

@@ -1,8 +1,8 @@
 
 # sudo crontab -u shiny -e
-# 00 20 * * * Rscript /srv/shiny-server/gene-surfer/imputeme/deletion_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-delete-cron.log 2>&1
+# 00 20 * * * Rscript /home/ubuntu/srv/impute-me/imputeme/deletion_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-delete-cron.log 2>&1
 
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 
 uniqueIDs<-list.files("/home/ubuntu/data")
 
@@ -21,8 +21,8 @@ for(uniqueID in uniqueIDs){
 			print(paste("Deleting",uniqueID,"because it is",timedif,"days old"))	
 			
 			if("data" %in% routinely_delete_this){
-				f1<-paste("/srv/shiny-server/gene-surfer/www/",uniqueID,".23andme.zip",sep="")
-				f2<-paste("/srv/shiny-server/gene-surfer/www/",uniqueID,".gen.zip",sep="")
+				f1<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip",sep="")
+				f2<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip",sep="")
 				f3<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip",sep="")
 				f4<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip",sep="")
 				f5<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".input_data.zip",sep="")
@@ -36,8 +36,8 @@ for(uniqueID in uniqueIDs){
 				
 			}
 			if("link" %in% routinely_delete_this){
-				f1<-paste("/srv/shiny-server/gene-surfer/www/",uniqueID,".23andme.zip",sep="")
-				f2<-paste("/srv/shiny-server/gene-surfer/www/",uniqueID,".gen.zip",sep="")
+				f1<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip",sep="")
+				f2<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip",sep="")
 				if(file.exists(f1))unlink(f1)
 				if(file.exists(f2))unlink(f2)
 			}
@@ -50,4 +50,4 @@ for(uniqueID in uniqueIDs){
 
 
 #also delete the usage reports, just to clean up a little
-unlink(list.files("/srv/shiny-server/gene-surfer/www/",pattern="_report\\.pdf$"))
+unlink(list.files("/home/ubuntu/srv/impute-me/www/",pattern="_report\\.pdf$"))

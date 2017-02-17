@@ -1,7 +1,7 @@
 library("shiny")
 
 
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 # uniqueID<-"id_57n662948"
@@ -33,7 +33,7 @@ shinyServer(function(input, output) {
 		# gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
 		
 		
-		table_file <-"/srv/shiny-server/gene-surfer/athletics/SNPs_to_analyze.txt"
+		table_file <-"/home/ubuntu/srv/impute-me/athletics/SNPs_to_analyze.txt"
 		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")
 
 		rownames(table)<-table[,"SNP"]

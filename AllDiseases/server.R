@@ -1,9 +1,9 @@
 library("shiny")
 
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 dataFolder<-"/home/ubuntu/data/"
-snps_file<-"/srv/shiny-server/gene-surfer/AllDiseases/2017-02-12_semi_curated_version_gwas_central.rdata"
-trait_file<-"/srv/shiny-server/gene-surfer/AllDiseases/2017-02-12_trait_overoverview.rdata"
+snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2017-02-12_semi_curated_version_gwas_central.rdata"
+trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2017-02-12_trait_overoverview.rdata"
 
 
 #testing

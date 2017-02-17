@@ -1,7 +1,7 @@
 library("shiny")
 
 
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 #create the image map
@@ -107,7 +107,7 @@ shinyServer(function(input, output) {
 			gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
 			
 			
-			giant_sup_path<-"/srv/shiny-server/gene-surfer/guessMyHeight/SNPs_to_analyze.txt"
+			giant_sup_path<-"/home/ubuntu/srv/impute-me/guessMyHeight/SNPs_to_analyze.txt"
 			giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
 			
 			
@@ -260,7 +260,7 @@ shinyServer(function(input, output) {
 			
 			
 			#get the gColour
-			GRS_file_name<-"/srv/shiny-server/gene-surfer/hairColour/SNPs_to_analyze.txt"
+			GRS_file_name<-"/home/ubuntu/srv/impute-me/hairColour/SNPs_to_analyze.txt"
 			GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F)
 			for(component in c("brown","red")){
 				print(paste("Getting",component,"g-haircolour"))

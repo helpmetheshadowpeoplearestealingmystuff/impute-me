@@ -753,7 +753,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 	
 	#getting a list of SNPs to analyze
 	all_SNPs<-data.frame(SNP=vector(),chr_name=vector(),stringsAsFactors = F)		
-	for(module in list.files("/srv/shiny-server/gene-surfer",full.names=T)){
+	for(module in list.files("/home/ubuntu/srv/impute-me",full.names=T)){
 		if(!file.info(module)["isdir"])next
 		if("SNPs_to_analyze.txt" %in% list.files(module)){
 			SNPs_to_analyze<-read.table(paste(module,"/SNPs_to_analyze.txt",sep=""),sep="\t",stringsAsFactors=F,header=T,quote="",comment="")
@@ -801,7 +801,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 	
 	
 	#getting the nonsenser SNPs if possible
-	e<-try(load("/srv/shiny-server/gene-surfer/nonsenser/2015-12-16_all_coding_SNPs.rdata"))
+	e<-try(load("/home/ubuntu/srv/impute-me/nonsenser/2015-12-16_all_coding_SNPs.rdata"))
 	if(class(e)!="try-error"){
 		for(uniqueID in uniqueIDs){
 			genotypes<-try(get_genotypes(uniqueID,coding_snps,namingLabel="cached.nonsenser"))
@@ -809,7 +809,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 	}
 	
 	#getting the AllDiseases SNPs if possible
-	e<-try(load("/srv/shiny-server/gene-surfer/AllDiseases/2017-02-12_all_gwas_snps.rdata"))
+	e<-try(load("/home/ubuntu/srv/impute-me/AllDiseases/2017-02-12_all_gwas_snps.rdata"))
 	if(class(e)!="try-error"){
 		for(uniqueID in uniqueIDs){
 			genotypes<-try(get_genotypes(uniqueID,gwas_snps,namingLabel="cached.all_gwas"))
@@ -1226,7 +1226,7 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
 		if(length(filename)!=1)stop("filename must be of length 1")
 		
 	}
-	filepath <- paste0("/srv/shiny-server/gene-surfer/www/",filename)
+	filepath <- paste0("/home/ubuntu/srv/impute-me/www/",filename)
 	relative_webpath <- paste0("www/",filename)
 	pdf(filepath,width=5,height=8)
 	layout(matrix(1:6,nrow=3,byrow=T))

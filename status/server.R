@@ -1,7 +1,7 @@
 library("shiny")
 
 
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 
 shinyServer(function(input, output) {
 	

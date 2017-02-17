@@ -4,7 +4,7 @@ initialize('gmh',TRUE)
 
 
 
-load("/srv/shiny-server/gene-surfer/AllDiseases/2017-02-12_trait_overoverview.rdata")
+load("/home/ubuntu/srv/impute-me/AllDiseases/2017-02-12_trait_overoverview.rdata")
 
 #testing
 # load("AllDiseases/2017-02-12_trait_overoverview.rdata")

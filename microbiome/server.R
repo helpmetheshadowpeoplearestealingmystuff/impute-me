@@ -1,5 +1,5 @@
 library("shiny")
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 #Replace 'template' with name of module throughout the script

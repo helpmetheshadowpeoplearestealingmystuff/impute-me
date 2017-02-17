@@ -1,7 +1,7 @@
 library("shiny")
 
 
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 # uniqueID<-"id_57n662948"
@@ -20,7 +20,7 @@ shinyServer(function(input, output) {
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
 			stop("Did not find a user with this id")
 		}
-		table_file <-"/srv/shiny-server/gene-surfer/statins/SNPs_to_analyze.txt"
+		table_file <-"/home/ubuntu/srv/impute-me/statins/SNPs_to_analyze.txt"
 		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
 		rownames(table)<-table[,"SNP"]
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=table)
@@ -46,7 +46,7 @@ shinyServer(function(input, output) {
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
 			stop("Did not find a user with this id")
 		}
-		table_file <-"/srv/shiny-server/gene-surfer/statins/SNPs_to_analyze.txt"
+		table_file <-"/home/ubuntu/srv/impute-me/statins/SNPs_to_analyze.txt"
 		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
 		rownames(table)<-table[,"SNP"]
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=table)
@@ -76,7 +76,7 @@ shinyServer(function(input, output) {
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
 			stop("Did not find a user with this id")
 		}
-		table_file <-"/srv/shiny-server/gene-surfer/statins/SNPs_to_analyze.txt"
+		table_file <-"/home/ubuntu/srv/impute-me/statins/SNPs_to_analyze.txt"
 		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
 		rownames(table)<-table[,"SNP"]
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=table)
@@ -106,7 +106,7 @@ shinyServer(function(input, output) {
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
 			stop("Did not find a user with this id")
 		}
-		table_file <-"/srv/shiny-server/gene-surfer/statins/SNPs_to_analyze.txt"
+		table_file <-"/home/ubuntu/srv/impute-me/statins/SNPs_to_analyze.txt"
 		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
 		rownames(table)<-table[,"SNP"]
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=table)

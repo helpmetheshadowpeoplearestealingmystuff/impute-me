@@ -4,13 +4,13 @@
 # 	
 #Don't run it as root. THis is better
 # crontab -u ubuntu -e
-# 50 * * * * Rscript /srv/shiny-server/gene-surfer/imputeme/imputation_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
+# 50 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
 
 
 library("mailR")
 library("rJava")
 library("tools")
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 
@@ -175,21 +175,21 @@ if(serverRole== "Node"){
 
 #making a link out to where the data can be retrieved	(different on hub and node)
 if(serverRole== "Node"){
-	cmd6 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip /srv/shiny-server/gene-surfer/www/",uniqueID,".23andme.zip'",sep="")
+	cmd6 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip /home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip'",sep="")
 	system(cmd6)
 	
-	cmd7 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip /srv/shiny-server/gene-surfer/www/",uniqueID,".gen.zip'",sep="")
+	cmd7 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip /home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip'",sep="")
 	system(cmd7)
 	
 	
 }else if(serverRole== "Hub"){
 	file.symlink(
 		from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip",sep=""),
-		to=paste("/srv/shiny-server/gene-surfer/www/",uniqueID,".23andme.zip",sep="")
+		to=paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip",sep="")
 	)
 	file.symlink(
 		from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip",sep=""),
-		to=paste("/srv/shiny-server/gene-surfer/www/",uniqueID,".gen.zip",sep="")
+		to=paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip",sep="")
 	)
 }else{stop("very odd")}
 

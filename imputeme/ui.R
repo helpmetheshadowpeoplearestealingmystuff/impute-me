@@ -1,7 +1,7 @@
 # stop(getwd())
-setwd("/srv/shiny-server/gene-surfer/imputeme")
+setwd("/home/ubuntu/srv/impute-me/imputeme")
 source("../uifunctions.R")
-# source("/srv/shiny-server/gene-surfer/uifunctions.R")
+# source("/home/ubuntu/srv/impute-me/uifunctions.R")
 initialize('hc',TRUE)
 
 shinyUI(bootstrapPage(

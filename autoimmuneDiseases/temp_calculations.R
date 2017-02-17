@@ -4,8 +4,8 @@ source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-
 SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/SNPs_to_analyze.txt"
 
 
-# source("/srv/shiny-server/gene-surfer/functions.R")
-# SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/SNPs_to_analyze.txt"
+# source("/home/ubuntu/srv/impute-me/functions.R")
+# SNPs_to_analyze_file<-"/home/ubuntu/srv/impute-me/autoimmuneDiseases/SNPs_to_analyze.txt"
 
 SNPs_to_analyze<-read.table(SNPs_to_analyze_file,sep="\t",stringsAsFactors=F,header=T,row.names=1)
 
@@ -119,8 +119,8 @@ source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-
 SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/autoimmuneDiseases/2016-05-21_okada_et_al_S3.xlsx"
 
 library(openxlsx)
-# source("/srv/shiny-server/gene-surfer/functions.R")
-# SNPs_to_analyze_file<-"/srv/shiny-server/gene-surfer/autoimmuneDiseases/SNPs_to_analyze.txt"
+# source("/home/ubuntu/srv/impute-me/functions.R")
+# SNPs_to_analyze_file<-"/home/ubuntu/srv/impute-me/autoimmuneDiseases/SNPs_to_analyze.txt"
 
 SNPs_to_analyze<-read.xlsx(SNPs_to_analyze_file)
 SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"Population"]%in%"Trans-ethnic",]

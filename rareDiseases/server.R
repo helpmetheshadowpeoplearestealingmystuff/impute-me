@@ -1,7 +1,7 @@
 library("shiny")
 
 
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 shinyServer(function(input, output) {
@@ -17,7 +17,7 @@ shinyServer(function(input, output) {
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
 			stop("Did not find a user with this id")
 		}
-		table_file <-"/srv/shiny-server/gene-surfer/rareDiseases/SNPs_to_analyze.txt"
+		table_file <-"/home/ubuntu/srv/impute-me/rareDiseases/SNPs_to_analyze.txt"
 		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")
 		
 		#we have to remove the i3003137/Beta-Thalassemia because it's double with sickle-cell anemia

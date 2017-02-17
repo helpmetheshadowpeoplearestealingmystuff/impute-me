@@ -1,7 +1,7 @@
 library("shiny")
 
 
-source("/srv/shiny-server/gene-surfer/functions.R")
+source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 # uniqueID<-"id_57n662948"
@@ -32,7 +32,7 @@ shinyServer(function(input, output) {
 		#Get gender
 		gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
 		
-		load("/srv/shiny-server/gene-surfer/nonsenser/2015-12-16_all_coding_SNPs.rdata")
+		load("/home/ubuntu/srv/impute-me/nonsenser/2015-12-16_all_coding_SNPs.rdata")
 		
 		coding_snps[,"SNP"]<-rownames(coding_snps)
 
