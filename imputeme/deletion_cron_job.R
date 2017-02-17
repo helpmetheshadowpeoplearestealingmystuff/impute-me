@@ -45,3 +45,9 @@ for(uniqueID in uniqueIDs){
 		}
 	}
 }
+
+
+
+
+#also delete the usage reports, just to clean up a little
+unlink(list.files("/srv/shiny-server/gene-surfer/www/",pattern="_report\\.pdf$"))
