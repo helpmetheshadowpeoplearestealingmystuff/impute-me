@@ -1264,16 +1264,15 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
 		u1<-user_log[user_log[,"modules"]%in%module,]
 		u1[,"count"]<-1:nrow(u1)
 		# strptime(user_log[,"dates"],format="%Y-%m-%d-%H-%S"))
-		plot(type='l',x=strptime(u1[,"dates"],format="%Y-%m-%d-%H-%S"),u1[,"count"],xlab="Date",ylab="Request Count",lwd=2,main=module,col="red")
+		plot(type='l',x=strptime(u1[,"dates"],format="%Y-%m-%d-%H-%S"),u1[,"count"],xlab="Date",ylab="",lwd=2,main=module,col="red")
 		
 		par(new = T)
 		u2<-u1[!duplicated(u1[,"uniqueIDs"]),,drop=FALSE]
 		u2[,"count"]<-1:nrow(u2)
 		plot(type='l',x=strptime(u2[,"dates"],format="%Y-%m-%d-%H-%S"),u2[,"count"],lwd=2,col="blue",xaxt="n",yaxt="n",xlab="",ylab="")
 		axis(4)
-		mtext("User Count",side=4)
 		
-		legend("topleft",col=c("red","blue"),lty=1,legend=c("Requests","Unique Users"))
+		legend("topleft",col=c("red","blue"),lty=1,legend=c("Requests (left)","Unique Users (right)"),cex=0.7,lwd=2)
 		
 		
 	}
