@@ -1256,19 +1256,25 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
 	
 	sampleSize<-data.frame(dates=sort(as.Date(first_timeStamps)),count=1:length(first_timeStamps))
 	plot(type='l',x=sampleSize[,"dates"],sampleSize[,"count"],xlab="Date",ylab="Sample Count",lwd=2,main="Sample size")
-	frame()
 	
-	user_log[,"dates"]<-as.Date(user_log[,"dates"])
-	user_log<-user_log[order(user_log[,"dates"]),]
+	
+	user_log<-user_log[order(strptime(user_log[,"dates"],format="%Y-%m-%d-%H-%S")),]
 	
 	for(module in sort(unique(user_log[,"modules"]))){
 		u1<-user_log[user_log[,"modules"]%in%module,]
 		u1[,"count"]<-1:nrow(u1)
-		plot(type='l',x=u1[,"dates"],u1[,"count"],xlab="Date",ylab="Sample Count",lwd=2,main=paste(module,"request-count"))
+		# strptime(user_log[,"dates"],format="%Y-%m-%d-%H-%S"))
+		plot(type='l',x=strptime(u1[,"dates"],format="%Y-%m-%d-%H-%S"),u1[,"count"],xlab="Date",ylab="Request Count",lwd=2,main=module,col="red")
 		
+		par(new = T)
 		u2<-u1[!duplicated(u1[,"uniqueIDs"]),,drop=FALSE]
 		u2[,"count"]<-1:nrow(u2)
-		plot(type='l',x=u2[,"dates"],u2[,"count"],xlab="Date",ylab="Sample Count",lwd=2,main=paste(module,"unique user-count"))
+		plot(type='l',x=strptime(u2[,"dates"],format="%Y-%m-%d-%H-%S"),u2[,"count"],lwd=2,col="blue",xaxt="n",yaxt="n",xlab="",ylab="")
+		axis(4)
+		mtext("User Count",side=4)
+		
+		legend("topleft",col=c("red","blue"),lty=1,legend=c("Requests","Unique Users"))
+		
 		
 	}
 	dev.off()
