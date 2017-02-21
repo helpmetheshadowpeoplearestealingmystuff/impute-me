@@ -809,7 +809,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 	}
 	
 	#getting the AllDiseases SNPs if possible
-	e<-try(load("/home/ubuntu/srv/impute-me/AllDiseases/2017-02-12_all_gwas_snps.rdata"))
+	e<-try(load("/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_all_gwas_snps.rdata"))
 	if(class(e)!="try-error"){
 		for(uniqueID in uniqueIDs){
 			genotypes<-try(get_genotypes(uniqueID,gwas_snps,namingLabel="cached.all_gwas"))

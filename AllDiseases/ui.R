@@ -4,10 +4,10 @@ initialize('gmh',TRUE)
 
 
 
-load("/home/ubuntu/srv/impute-me/AllDiseases/2017-02-12_trait_overoverview.rdata")
+load("/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_trait_overoverview.rdata")
 
 #testing
-# load("AllDiseases/2017-02-12_trait_overoverview.rdata")
+# load("AllDiseases/2017-02-21_trait_overoverview.rdata")
 
 
 
