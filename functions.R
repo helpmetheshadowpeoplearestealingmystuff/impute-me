@@ -1291,31 +1291,23 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
 
 
 
-run_export_script<-function(uniqueIDs=NULL,modules=NULL, mode ="remote"){
+run_export_script<-function(uniqueIDs=NULL,modules=NULL){
   require(jsonlite)
   #A function that will crawl all module directories and execute the export script if present
   
-  if(!mode %in% c("remote","local"))stop("mode must be remote or local")
-  if(mode =="remote"){
-    pd<-path_data_remote
-  }else{
-    pd<-path_data
-  }
-  
-  
   if(is.null(uniqueIDs)){
-    uniqueIDs<-list.files(pd)
+  uniqueIDs<-list.files(pd)
   }else{
     if(class(uniqueIDs)!="character")stop("UniqueIDs must be of class character")
-    if(!all(file.exists(paste(pd,uniqueIDs,sep=""))))stop("Not all UniqueIDs given were found")
+    if(!all(file.exists(paste("/home/ubuntu/data/",uniqueIDs,sep=""))))stop("Not all UniqueIDs given were found")
   }
   
   if(is.null(modules)){
-    modules<-list.files(path_imputeme_scripts)
+    modules<-list.files("/home/ubuntu/srv/impute-me/")
     
   }else{
     if(class(modules)!="character")stop("modules must be of class character")
-    if(!all(file.exists(paste(path_imputeme_scripts,modules,sep=""))))stop("Not all UniqueIDs given were found")
+    if(!all(file.exists(paste("/home/ubuntu/srv/impute-me/",modules,sep=""))))stop("Not all UniqueIDs given were found")
   }
   
   
@@ -1324,7 +1316,7 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, mode ="remote"){
     outputList <- list()
     outputList[["current_date_stamp"]] <- as.character(format(Sys.time(),"%Y-%m-%d_%H-%M-%S"))
     #importing standard pData stuff
-    pDataFile<-paste(pd,uniqueID,"/pData.txt",sep="")
+    pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
     pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F),silent=T)
     if(class(pData)=="try-error"){
       print(paste("uniqueID",uniqueID,"was skipped due to inavailability of pData file"))
@@ -1333,7 +1325,7 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, mode ="remote"){
     if(nrow(pData)!=1)stop("pData file must have 1 row")
     
     #check existence of cached file
-    cachedFile<-paste(pd,uniqueID,"/",uniqueID,".cached.gz",sep="")
+    cachedFile<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.gz",sep="")
     cachedData<-try(read.table(cachedFile,header=T,stringsAsFactors=F),silent=T)
     if(class(cachedData)=="try-error"){
       print(paste("uniqueID",uniqueID,"was skipped due to inavailability of cachedData file"))
@@ -1349,13 +1341,13 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, mode ="remote"){
     
     
     for(module in modules){
-      if(!file.info(paste0(path_imputeme_scripts,module))["isdir"])next
-      if("export_script.R" %in% list.files(paste0(path_imputeme_scripts,module))){
+      if(!file.info(paste0("/home/ubuntu/srv/impute-me/",module))["isdir"])next
+      if("export_script.R" %in% list.files(paste0("/home/ubuntu/srv/impute-me/",module))){
         print(paste("Running",module,"for",uniqueID))
         if(exists("export_function"))suppressWarnings(rm("export_function"))
-        source(paste(paste0(path_imputeme_scripts,module,"/export_script.R")))
-        if(!exists("export_function"))stop(paste("In module",module,"there was an export_script.R without and export_function"))
-        exp <- export_function(uniqueID, mode=mode)
+        source(paste(paste0("/home/ubuntu/srv/impute-me/",module,"/export_script.R")))
+        if(!exists("export_function"))stop(paste("In module",module,"there was an export_script.R without an export_function"))
+        exp <- export_function(uniqueID)
         outputList[[module]] <-exp
         
       }
@@ -1363,7 +1355,7 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, mode ="remote"){
     
     JSON<-toJSON(outputList)
     
-    filename <- paste0(pd,uniqueID,"/",paste(uniqueID,"data.json",sep="_"))
+    filename <- paste0("/home/ubuntu/data/",uniqueID,"/",paste(uniqueID,"data.json",sep="_"))
     
     
     f<-file(filename,"w")
