@@ -94,9 +94,9 @@ shinyServer(function(input, output) {
 			}
 			duplicates_example<-paste(duplicates[1:min(c(5,length(duplicates)))],collapse=", ")			
 			if(warnForDiscrepancyInBeta){
-				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNPs were entered twice for this GWAS, and the effect-size and direction was <b>not consistent</b>. An arbitrary choice was made, but please check the results table carefully for details (",duplicates_example,").")
+				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNP(s) were entered twice for this GWAS, and the effect-size and direction was <b>not consistent</b>. An arbitrary choice was made, but please cross-check the results table with the original study carefully for details (e.g. ",duplicates_example,").")
 			}else{
-				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNPs were entered twice for this GWAS, but the effect-size and direction was consistent (",duplicates_example,").")
+				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNP(s) were entered twice for this GWAS, but the effect-size and direction was consistent (e.g. ",duplicates_example,").")
 			}
 		}else{
 			
@@ -106,6 +106,14 @@ shinyServer(function(input, output) {
 			genotypes[,"GRS"] <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
 			
 		}
+		
+		
+		#check for question marks in risk-allele
+		c1<-apply(SNPs_to_analyze[,c("minor_allele","major_allele","effect_allele","non_effect_allele")]=="?",1,sum)
+		if(sum(c1>0)){
+		  textToReturn <- paste0(textToReturn," Also note that ",sum(c1>0)," SNP(s) had missing or discrepant allele information, meaning that risk-allele or minor/major allele could not be assign. This is indicated with a '?' in the results table and causes the SNP to be omitted from the GRS-calculation.")
+		}
+		
 		
 		
 		#write the score to the log file
@@ -145,7 +153,7 @@ shinyServer(function(input, output) {
 			
 			GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
 			
-			if(is.na(GRS_beta))stop("Could not calculate overall GRS")
+			if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missinginformation about either risk-allele, effect-size or minor-allele-frequency.")
 			
 			control_mean<-0
 			control_sd<-1

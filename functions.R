@@ -1190,7 +1190,7 @@ get_GRS_2<-function(genotypes, betas, mean_scale=T, unit_variance=T, verbose=T){
 	}
 	
 	if(length(missing_effect_info_snps)>0  & verbose){
-		warning(paste("Note, for",length(missing_effect_info_snps),"SNPs, we found wrong or missing information on what was effect-allele and what was non-effect-allele. They were skipped:",paste(missing_effect_info_snps,collapse="")))
+		warning(paste("Note, for",length(missing_effect_info_snps),"SNPs, we found wrong or missing information on what was effect-allele and what was non-effect-allele. They were skipped:",paste(missing_effect_info_snps,collapse=", ")))
 		
 	}
 	
