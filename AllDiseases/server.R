@@ -74,7 +74,10 @@ shinyServer(function(input, output) {
 		#why would a SNP be listed twice in the results for the same trait - let's aim to merge only in GRS
 		#but list all in table for the sake of transparency)
 		if(any(duplicated(SNPs_to_analyze[,"SNP"]))){
-			SNPs_requested<-SNPs_to_analyze[!duplicated(SNPs_to_analyze[,"SNP"]),]
+			
+		  SNPs_requested<-SNPs_to_analyze[!duplicated(SNPs_to_analyze[,"SNP"]),]
+			
+			
 			# SNPs_requested<-SNPs_requested[,c("SNP","chr_name")]
 			rownames(SNPs_requested)<-SNPs_requested[,"SNP"]
 			genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_requested, namingLabel="cached.all_gwas")
@@ -94,7 +97,7 @@ shinyServer(function(input, output) {
 			}
 			duplicates_example<-paste(duplicates[1:min(c(5,length(duplicates)))],collapse=", ")			
 			if(warnForDiscrepancyInBeta){
-				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNP(s) were entered twice for this GWAS, and the effect-size and direction was <b>not consistent</b>. An arbitrary choice was made, but please cross-check the results table with the original study carefully for details (e.g. ",duplicates_example,").")
+				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNP(s) were entered twice for this GWAS, and the effect-size and direction was <b>not consistent</b>. The beta from the first listed SNP was used, but please cross-check the results table with the original study carefully for details (e.g. ",duplicates_example,").")
 			}else{
 				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNP(s) were entered twice for this GWAS, but the effect-size and direction was consistent (e.g. ",duplicates_example,").")
 			}
@@ -216,6 +219,8 @@ shinyServer(function(input, output) {
 			
 			# col_to_remove<-c("DATE","sampleSize","ensembl_alleles","LINK","FIRST.AUTHOR","PUBMEDID","chr_name","CHR_POS","effect_allele","non_effect_allele","major_allele","minor_allele","DISEASE.TRAIT")
 			# for(col in col_to_remove){SNPs_to_analyze[,col]<-NULL}
+			
+			
 			
 			
 			#adding genotype GRS and rounding MAF
