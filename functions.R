@@ -1296,7 +1296,7 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL){
   #A function that will crawl all module directories and execute the export script if present
   
   if(is.null(uniqueIDs)){
-  uniqueIDs<-list.files(pd)
+    uniqueIDs<-list.files("/home/ubuntu/data/")
   }else{
     if(class(uniqueIDs)!="character")stop("UniqueIDs must be of class character")
     if(!all(file.exists(paste("/home/ubuntu/data/",uniqueIDs,sep=""))))stop("Not all UniqueIDs given were found")
