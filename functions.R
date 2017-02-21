@@ -1080,7 +1080,7 @@ get_GRS_2<-function(genotypes, betas, mean_scale=T, unit_variance=T, verbose=T){
 		non_effect_allele<-betas[snp,"non_effect_allele"]
 		
 		#check if the effect allele info is missing
-		if(any(is.na(c(effect_allele,non_effect_allele)))){
+		if(any(is.na(c(effect_allele,non_effect_allele))) | any(c(effect_allele,non_effect_allele)%in%"?")){
 			missing_effect_info_snps <- c(missing_effect_info_snps, snp)
 			geneticRiskScore <- c(geneticRiskScore, NA)
 			next
@@ -1117,7 +1117,7 @@ get_GRS_2<-function(genotypes, betas, mean_scale=T, unit_variance=T, verbose=T){
 			minor_allele_freq<-betas[snp,"minor_allele_freq"]
 			
 			#check if they are missing
-			if(is.na(major_allele) | is.na(minor_allele) | is.na(minor_allele_freq)){
+			if(is.na(major_allele) | is.na(minor_allele) | is.na(minor_allele_freq) | minor_allele=="?" | major_allele=="?"){
 				missing_major_minor_snps <- c(snp, missing_major_minor_snps)  
 				geneticRiskScore <- c(geneticRiskScore, NA)
 				next

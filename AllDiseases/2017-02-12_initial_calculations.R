@@ -29,6 +29,7 @@ hist(data[,"sampleSize"],breaks=1000,xlim=c(0,10000),xlab="sample size",main="Sa
 data<-data[data[,"sampleSize"]> 2000,]
 
 
+
 #check that the strongest SNP entry is consistent with the SNPs entry (remove otherwise)
 data[data[,"STRONGEST.SNP.RISK.ALLELE"]%in%"rs12449664A","STRONGEST.SNP.RISK.ALLELE"]<-"rs12449664-A" #clear typo
 s1<-gsub(" ","",sub("\\?","",sub("NR$","",sub("-.+$","",data[,"STRONGEST.SNP.RISK.ALLELE"]))))
@@ -91,12 +92,13 @@ data[,"minor_allele"]<-query[data[,"SNPS"],"minor_allele"]
 
 #remove the ones with no known MAF
 sum(is.na(data[,"minor_allele_freq"]))
-#539
+#610
 data<-data[!is.na(data[,"minor_allele_freq"]),]
 
 #check the two chr-names are the same
-sum(data[,"CHR_ID" ] != data[,"chr_name"])
+sum(data[,"CHR_ID" ] != data[,"chr_name"],na.rm=F)
 #0
+data[is.na(data[,"chr_name" ]),]
 #good! can remove the original one then
 data[,"CHR_ID"] <- NULL
 
@@ -116,8 +118,18 @@ data[,"major_allele"] <- NA
 data[data[,"minor_allele"]==a1,"major_allele"]<-a2[data[,"minor_allele"]==a1]
 data[data[,"minor_allele"]==a2,"major_allele"]<-a1[data[,"minor_allele"]==a2]
 
-#check some cases were minor allele is not even found in the ensembl alleles (these should probably be removed)
-data<-data[!is.na(data[,"major_allele"]),]
+
+#check some cases were minor allele is not even found in the ensembl alleles. These should probably be removed; they are cases were ensembl_alleles is on the opposite strand. Could be flipped, but better to be safe.
+data[is.na(data[,"major_allele"]),"minor_allele"]<-"?"
+data[is.na(data[,"major_allele"]),"major_allele"]<-"?"
+
+
+
+#check cases were risk allele is not found in minor or major allele
+sum(!(data[,"risk_allele"] %in% data[,"minor_allele"] | data[,"risk_allele"] %in% data[,"major_allele"] ))
+#23
+#probably also best to remove these
+data[!(data[,"risk_allele"] %in% data[,"minor_allele"] | data[,"risk_allele"] %in% data[,"major_allele"] ),"risk_allele"]<-"?"
 
 #double check a few with online browsers
 set.seed(42)
@@ -132,8 +144,8 @@ for(study in rownames(studies)){
 	studies[study,"SNPs"]<-nrow(d1)
 }
 hist(studies[,"SNPs"],breaks=10000,xlim=c(0,100))
-#decision - remove all studies with SNP-count < 5 (because the GRS may be odd)
-data<-data[!data[,"PUBMEDID"]%in%rownames(studies)[studies[,"SNPs"]<5],]
+# decision - remove all studies with SNP-count < 5 (because the GRS may be odd)
+# data<-data[!data[,"PUBMEDID"]%in%rownames(studies)[studies[,"SNPs"]<5],]
 
 
 
@@ -150,9 +162,9 @@ data[is.na(data[,"risk_allele"] != data[,"minor_allele"] & data[,"risk_allele"] 
 data[data[,"minor_allele"]==data[,"risk_allele"],"non_risk_allele"]<-data[data[,"minor_allele"]==data[,"risk_allele"],"major_allele"]
 data[data[,"major_allele"]==data[,"risk_allele"],"non_risk_allele"]<-data[data[,"major_allele"]==data[,"risk_allele"],"minor_allele"]
 
-#check often minor allele is risk
+#check how often minor allele is risk
 sum(data[,"minor_allele"]==data[,"risk_allele"]) / nrow(data)
-#0.58 -- I would have expected less, but that's probably just for old rare-variant studies that we'd think so.
+#0.49 
 
 
 #check some 7 random ones with their literature entries
@@ -182,6 +194,23 @@ data[,"study_id"]<-tolower(gsub(" ","_",gsub("[?&/\\-\\.\\(\\)\\']", "", paste(d
 
 
 
+#ensure only standard values A G C T ? are present
+table(data[,"major_allele"])
+table(data[,"minor_allele"])
+table(data[,"risk_allele"])
+table(data[,"non_risk_allele"])
+ok_values <- c("A","C","T","G","?")
+for(col in c("major_allele","minor_allele","risk_allele","non_risk_allele")){
+  data[!data[,col]%in%ok_values,col]<-"?"
+}
+
+#ensure match between risk/non-risk and major/minor
+g1<-apply(t(apply(data[,c("major_allele","minor_allele")],1,sort,decreasing=F)),1,paste,collapse="")
+g2<-apply(t(apply(data[,c("risk_allele","non_risk_allele")],1,sort,decreasing=F)),1,paste,collapse="")
+have_unknown <- apply(data[,c("major_allele","minor_allele","risk_allele","non_risk_allele")]=="?",1,sum)>0
+have_unknown
+sum(g1!=g2 & !have_unknown)
+# 0 #good!
 
 #re-order colnames so that the essential are first
 putFirst<-c("SNPS", "chr_name","risk_allele","non_risk_allele","OR.or.BETA",  "minor_allele_freq","minor_allele","major_allele")
@@ -190,14 +219,16 @@ colnames(data)[1]<-"SNP"
 colnames(data)[3]<-"effect_allele"
 colnames(data)[4]<-"non_effect_allele"
 colnames(data)[5]<-"Beta"
-save(data, file="AllDiseases/2017-02-12_semi_curated_version_gwas_central.rdata")
+save(data, file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
+
 
 
 #then save a SNPs_to_analyze.txt (which just contains snp, chr, effect_allele and non_effect_allele and NO duplicate SNPs)
 gwas_snps <- data[,c("SNP","chr_name","effect_allele","non_effect_allele")]
 gwas_snps <- gwas_snps[!duplicated(gwas_snps[,"SNP"]),]
 rownames(gwas_snps) <- gwas_snps[,"SNP"]
-save(gwas_snps,file="AllDiseases/2017-02-12_all_gwas_snps.rdata")
+save(gwas_snps,file="AllDiseases/2017-02-21_all_gwas_snps.rdata")
 
 
 
@@ -207,19 +238,19 @@ save(gwas_snps,file="AllDiseases/2017-02-12_all_gwas_snps.rdata")
 
 
 #then create an overview trait list
-data[,"trait_PMID"]<-paste(data[,"DISEASE.TRAIT"], data[,"PUBMEDID"],sep=" // ")
-
-traits<-data.frame(row.names=unique(data[,"trait_PMID"]), study_id=unique(data[,"study_id"]),stringsAsFactors=F)
+traits<-data.frame(row.names=unique(paste(data[,"DISEASE.TRAIT"], data[,"PUBMEDID"],data[, "FIRST.AUTHOR"],sep=" // ")), study_id=unique(data[,"study_id"]),stringsAsFactors=F)
 for(trait in rownames(traits)){
 	traits[trait,"trait"] <- strsplit(trait," // ")[[1]][1]
 	traits[trait,"PMID"] <- strsplit(trait," // ")[[1]][2]
+	traits[trait,"Author"] <- strsplit(trait," // ")[[1]][3]
 }
 traits<-traits[order(rownames(traits)),]
 for(trait in rownames(traits)){
 	traitName<-traits[trait,"trait"]	
 	PMID<-traits[trait,"PMID"]	
+	Author<-traits[trait,"Author"]	
 	if(sum(traits[,"trait"]%in%traitName)>1){
-		traits[trait ,"niceName"] <- paste0(traitName," (PMID ",PMID,")")
+		traits[trait ,"niceName"] <- paste0(traitName," (",Author," et al)")
 	}else{
 		traits[trait ,"niceName"] <- traitName
 	}
@@ -227,6 +258,6 @@ for(trait in rownames(traits)){
 rownames(traits)<-traits[,"study_id"]
 head(traits)
 
-save(traits, file="AllDiseases/2017-02-12_trait_overoverview.rdata")
+save(traits, file="AllDiseases/2017-02-21_trait_overoverview.rdata")
 
 
