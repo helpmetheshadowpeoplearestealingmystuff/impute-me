@@ -62,11 +62,13 @@ for(trait in rownames(traits)){
 #remove some traits because they are better handled in other modules and/or too weird/difficult to explain easily and/or conflict with module title (or perhaps just ideas for new modules?)
 omit<-unique(c(
 	grep("height",rownames(traits),ignore.case=T,value=T),
-	grep("hair",rownames(traits),ignore.case=T,value=T),
-	grep("economic",rownames(traits),ignore.case=T,value=T),
-	grep("political",rownames(traits),ignore.case=T,value=T),
-	grep("word reading",rownames(traits),ignore.case=T,value=T),
-	grep("eyes",rownames(traits),ignore.case=T,value=T)
+	grep("hair",rownames(traits),ignore.case=T,value=T)
+	# grep("economic",rownames(traits),ignore.case=T,value=T),
+	# grep("political",rownames(traits),ignore.case=T,value=T),
+	# grep("word reading",rownames(traits),ignore.case=T,value=T),
+	# grep("eyes",rownames(traits),ignore.case=T,value=T),
+	# social_communication_problems
+	# wine_liking
 ))
 data<-data[!data[,"DISEASE.TRAIT"]%in%omit,]
 
@@ -250,13 +252,13 @@ for(trait in rownames(traits)){
 	PMID<-traits[trait,"PMID"]	
 	Author<-traits[trait,"Author"]	
 	if(sum(traits[,"trait"]%in%traitName)>1){
-		traits[trait ,"niceName"] <- paste0(traitName," (",Author," et al)")
+		traits[trait ,"niceName"] <- paste0(traitName," [PMID ",PMID,"]")
 	}else{
 		traits[trait ,"niceName"] <- traitName
 	}
 }
 rownames(traits)<-traits[,"study_id"]
-head(traits)
+# head(traits)
 
 save(traits, file="AllDiseases/2017-02-21_trait_overoverview.rdata")
 
