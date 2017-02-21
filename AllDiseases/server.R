@@ -156,7 +156,7 @@ shinyServer(function(input, output) {
 			
 			GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
 			
-			if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missinginformation about either risk-allele, effect-size or minor-allele-frequency.")
+			if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
 			
 			control_mean<-0
 			control_sd<-1
