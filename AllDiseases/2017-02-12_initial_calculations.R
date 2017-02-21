@@ -147,7 +147,7 @@ for(study in rownames(studies)){
 }
 hist(studies[,"SNPs"],breaks=10000,xlim=c(0,100))
 # decision - remove all studies with SNP-count < 5 (because the GRS may be odd)
-# data<-data[!data[,"PUBMEDID"]%in%rownames(studies)[studies[,"SNPs"]<5],]
+data<-data[!data[,"PUBMEDID"]%in%rownames(studies)[studies[,"SNPs"]<5],]
 
 
 
