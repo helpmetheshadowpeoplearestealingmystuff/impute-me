@@ -221,7 +221,7 @@ shinyServer(function(input, output) {
 			
 			keep<-c("SNP","REGION","Your Genotype","Risk/non-risk Allele","GRS","Beta","P.VALUE","Major/minor Allele","minor_allele_freq","Reported Gene")
 			SNPs_to_analyze<-SNPs_to_analyze[,keep]
-			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","Your GRS here","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
+			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","Your GRS (this SNP)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
 			
 			return(SNPs_to_analyze)
 		}
