@@ -145,6 +145,8 @@ shinyServer(function(input, output) {
 			
 			GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
 			
+			if(is.na(GRS_beta))stop("Could not calculate overall GRS")
+			
 			control_mean<-0
 			control_sd<-1
 			xlim<-c(control_mean - control_sd*3, control_mean + control_sd*3)
