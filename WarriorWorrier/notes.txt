@@ -1,8 +1,0 @@
-Warrior worrier gene notes
-rs4680 seems to be one if these - it is already measured in 23andme, though. So not much new is brought in.
-
-Then there's something in the MAOA that could be of interest?
-SNPedia mentions this one rs909525. That one is also measured. Oh well.
-THere's a good view of the region here:
-http://genome-euro.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=chrX%3A43513464-43515263&hgsid=209581349_vA1SA63yA2FwlvCOuUycyhZ0b5AD
-Many papers publish their PCR primers around this one. But it's not in the 1000genomes track so probably not callable. Could perhaps have something to do with this one: chrX:43514418:D - it's a 13 bp deletion exactly in that region. According to PMID 18212819, they find something like 2% of their (violent) subject have the deletion, so it's kinda odd that's it not found in thousand genomes.
