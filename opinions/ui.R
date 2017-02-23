@@ -14,7 +14,7 @@ shinyUI(bootstrapPage(
 	titlePanel("GWAS Calculator"),
 	beginPage(),	
 	beginPanel('1/3'),
-	HTML("Participate in a sanity check asking if genetics-predicted political opinion match with real opinion:<br><br>To run analysis input your user-id, or use the test-value of id_613z86871 (but please don't input new political-opinions for the test-user, because that's me):<br>"),
+	HTML("Participate in a sanity check asking if genetics-predicted political opinion match with real opinion:<br><br>To run analysis input your user-id, or use the test-value of id_613z86871 <small>(but please don't input new political-opinions for the test-user, because that's me):</small><br>"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	# selectInput("trait", "Traits:", choices = selections),
 	

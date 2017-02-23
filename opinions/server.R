@@ -32,7 +32,7 @@ shinyServer(function(input, output) {
 		
 		
 		#getting the relevant trait name, pmid and SNPs to analyze
-		SNPs_to_analyze<-read.table("opinions/SNPs_to_analyze.txt",sep="\t",stringsAsFactors = F,row.names=1)
+		SNPs_to_analyze<-read.table("/home/ubuntu/srv/impute-me/opinions/SNPs_to_analyze.txt",sep="\t",stringsAsFactors = F,row.names=1)
 		
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
 		genotypes[,"GRS"] <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
