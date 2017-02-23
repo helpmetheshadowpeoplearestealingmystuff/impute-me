@@ -93,7 +93,7 @@ shinyServer(function(input, output) {
 			
 			GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
 			
-			if(GRS_beta<-3 | GRS_beta>3)stop("Your genetic political score is off the scale")
+			if(GRS_beta < -3 | GRS_beta > 3)stop("Your genetic political score is off the scale")
 			if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
 			
       plot(NULL,xlim=c(-3,3),ylim=c(-3,3),xlab="Stated political opinion",ylab="Genetic opinion score")
