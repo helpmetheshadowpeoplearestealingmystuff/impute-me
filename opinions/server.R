@@ -99,10 +99,25 @@ shinyServer(function(input, output) {
 			
 			GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
 			
-			if(GRS_beta < -3 | GRS_beta > 3)stop("Your genetic political score is off the scale")
+			# if(GRS_beta < -3 | GRS_beta > 3)stop("Your genetic political score is off the scale")
 			if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
 			
-      plot(NULL,xlim=c(-3,3),ylim=c(-3,3),xlab="Stated political opinion",ylab="Genetic opinion score")
+			#get all the other persons in the list
+			otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+			opinions_in_data<-data.frame(real_opinion=vector(),g_opinion=vector(),gender=vector(),real_age=vector(),stringsAsFactors=F)
+			for(otherPerson in otherPersons){
+			  if(!file.info(otherPerson)[["isdir"]])next
+			  if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+			  otherPersonPdata<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F)
+			  if(!all(c("real_opinion","g_opinion","gender","real_age")%in%colnames(otherPersonPdata)))next
+			  opinions_in_data<-rbind(opinions_in_data,otherPersonPdata[1,c("real_opinion","g_opinion","gender","real_age")])
+			}
+			
+			xlim <- range(c(opinions_in_data[,"real_opinion"],o[["real_opinion"]]),na.rm=T)
+			ylim <- range(c(opinions_in_data[,"g_opinion"],o[["g_opinion"]]),na.rm=T)
+			
+			
+      plot(NULL,xlim=xlim,ylim=ylim,xlab="Stated political opinion",ylab="Genetic opinion score")
 			pch <- c(15,16)
       names(pch)<-c("1","2") #i.e. man/woman (according to plink notation)
       
@@ -124,29 +139,23 @@ shinyServer(function(input, output) {
       legend("topleft",legend=c("Male","Female"),pch=pch,bty = "n",col=cols["50"])
       
       
-      points(o[["real_opinion"]], y=GRS_beta,pch=pch[o[["gender"]]],cex=2,col=cols[as.character(10*round(o[["real_age"]]/10))])
-      abline(h=GRS_beta,lty=2)
-      abline(v=o[["real_opinion"]],lty=2)
 			
 
 						
-			otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
-			opinions_in_data<-data.frame(real_opinion=vector(),g_opinion=vector(),gender=vector(),real_age=vector(),stringsAsFactors=F)
-			for(otherPerson in otherPersons){
-			  if(!file.info(otherPerson)[["isdir"]])next
-			  if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-			  otherPersonPdata<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F)
-			  if(!all(c("real_opinion","g_opinion","gender","real_age")%in%colnames(otherPersonPdata)))next
-			  opinions_in_data<-rbind(opinions_in_data,otherPersonPdata[1,c("real_opinion","g_opinion","gender","real_age")])
-			}
-			#then plot them
+			# plot all the others
 			points(
 			  x=opinions_in_data[,"real_opinion"],
 			  y=opinions_in_data[,"g_opinion"],
 			  col=cols[as.character(10*round(opinions_in_data[,"real_age"]/10))],
 			  pch=pch[opinions_in_data[,"gender"]]
 			)
+
+			#then plot main person
+			points(o[["real_opinion"]], y=GRS_beta,pch=pch[o[["gender"]]],cex=2,col=cols[as.character(10*round(o[["real_age"]]/10))])
+			abline(h=GRS_beta,lty=2)
+			abline(v=o[["real_opinion"]],lty=2)
 			
+						
 		}		
 	})
 	
