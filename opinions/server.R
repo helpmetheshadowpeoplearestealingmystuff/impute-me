@@ -116,8 +116,7 @@ shinyServer(function(input, output) {
 			xlim <- range(c(opinions_in_data[,"real_opinion"],o[["real_opinion"]]),na.rm=T)
 			ylim <- range(c(opinions_in_data[,"g_opinion"],o[["g_opinion"]]),na.rm=T)
 			
-			
-      plot(NULL,xlim=xlim,ylim=ylim,xlab="Stated political opinion",ylab="Genetic opinion score")
+			plot(NULL,xlim=xlim,ylim=ylim,xlab="Stated political opinion",ylab="Genetic opinion score")
 			pch <- c(15,16)
       names(pch)<-c("1","2") #i.e. man/woman (according to plink notation)
       
@@ -126,16 +125,18 @@ shinyServer(function(input, output) {
       cols<-rev(rgb(seq(0,0.5,length.out=colRes),seq(0.5,1,length.out=colRes),seq(0,0.5,length.out=colRes)))
       names(cols) <- as.character(1:length(cols))
       cols<-cols[seq(0,length(cols),by=10)]
-      min<- -3.2
-      max<- -2.8
-      scale = (length(cols)-1)/(max-min)
+      xmin<- xlim[1]
+      xmax<- xlim[1] + (xlim[2] - xlim[1])*0.06
+      ymin <- ylim[1] + (ylim[2] - ylim[1])*0.7
+      ymax <- ylim[1] + (ylim[2] - ylim[1])*0.78
+      scale = (length(cols)-1)/(xmax-xmin)
       # plot(NULL,xlim=c(-4,4),ylim=c(-4,4),ylab="",xlab="",xaxt="n",yaxt="n")
       for (i in 1:(length(cols)-1)) {
-        x = (i-1)/scale + min
-        rect(x,1.2,x+1/scale,1.6, col=cols[i], border=NA)
+        x = (i-1)/scale + xmin
+        rect(x,ymin,x+1/scale,ymax, col=cols[i], border=NA)
          
       }
-      text(x=-2.4,y=1.4,"Age",adj=0)
+      text(x=xmax,y=mean(c(ymin,ymax)),"Age",adj=-0.2)
       legend("topleft",legend=c("Male","Female"),pch=pch,bty = "n",col=cols["50"])
       
       
