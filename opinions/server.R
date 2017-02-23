@@ -127,8 +127,8 @@ shinyServer(function(input, output) {
       cols<-cols[seq(0,length(cols),by=10)]
       xmin<- xlim[1]
       xmax<- xlim[1] + (xlim[2] - xlim[1])*0.06
-      ymin <- ylim[1] + (ylim[2] - ylim[1])*0.7
-      ymax <- ylim[1] + (ylim[2] - ylim[1])*0.78
+      ymin <- ylim[1] + (ylim[2] - ylim[1])*0.74
+      ymax <- ylim[1] + (ylim[2] - ylim[1])*0.82
       scale = (length(cols)-1)/(xmax-xmin)
       # plot(NULL,xlim=c(-4,4),ylim=c(-4,4),ylab="",xlab="",xaxt="n",yaxt="n")
       for (i in 1:(length(cols)-1)) {
@@ -165,7 +165,7 @@ shinyServer(function(input, output) {
 		if(input$goButton == 0){
 			return("")
 		}else if(input$goButton > 0) {
-			m<-"some text about the results"
+			m<-"Currently the module only plots stated and genetic opinion. I expect a very poor correlation, but once I have more data-points I'll try to add some statistics to it."
 			
 		}
 		return(m)
@@ -187,8 +187,8 @@ shinyServer(function(input, output) {
 			SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
 			
 			#adding genotype GRS and rounding MAF
-			SNPs_to_analyze[,"Your Genotype"]<-genotypes[SNPs_to_analyze[,"SNP"],"genotype"]
-			SNPs_to_analyze[,"GRS"]<-signif(genotypes[SNPs_to_analyze[,"SNP"],"GRS"],2)
+			SNPs_to_analyze[,"Your Genotype"]<-genotypes[rownames(SNPs_to_analyze),"genotype"]
+			SNPs_to_analyze[,"GRS"]<-signif(genotypes[rownames(SNPs_to_analyze),"GRS"],2)
 			SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
 			
 			# keep<-c("SNP","REGION","Your Genotype","Risk/non-risk Allele","GRS","Beta","P.VALUE","Major/minor Allele","minor_allele_freq","Reported Gene")
