@@ -16,7 +16,7 @@ shinyUI(bootstrapPage(
 	beginPanel('1/3'),
 	HTML("Participate in a sanity check asking if genetics-predicted political opinion match with real opinion:<br><br>To run analysis input your user-id, and your political opinion on a scale from far-left/liberal to far-right/conservative. We also need to know your age, since age has a strong effect on political opinion.<br>"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
-	sliderInput("real_opinion", "Your political opinion (left=liberal, right=conservative)",min=-3, max=3, value=0),
+	sliderInput("real_opinion", "Your political opinion (left=liberal, right=conservative)",min=-3, max=3, value=0,step =0.1),
 	textInput(inputId="real_age", label = "Your age", value = ""),
 	
 	actionButton("goButton","Run analysis"),
