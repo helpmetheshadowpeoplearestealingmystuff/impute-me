@@ -116,6 +116,6 @@ colnames(data)[4]<-"non_effect_allele"
 colnames(data)[5]<-"Beta"
 
 
-write.table(data,file="opinions/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F)
+write.table(data,file="opinions/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
 
 
