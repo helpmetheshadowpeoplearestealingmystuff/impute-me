@@ -20,7 +20,12 @@ shinyServer(function(input, output) {
 	
 	
 	get_data <- reactive({
-		
+	  if(input$goButton == 0){
+	    return(NULL)
+	  }else if(input$goButton > 1){
+	    stop("Please only run algorithm - or else reload web-page")
+	  }else{
+	    
 		#initial UI data gathering and user-check
 		uniqueID<-input$uniqueID
 		real_age<-input$real_age
@@ -78,6 +83,7 @@ shinyServer(function(input, output) {
 			real_age=real_age,
 			real_opinion=real_opinion
 			))
+	  }
 	})
 	
 	
