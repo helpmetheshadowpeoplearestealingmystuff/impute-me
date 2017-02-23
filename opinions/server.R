@@ -23,6 +23,9 @@ shinyServer(function(input, output) {
 		
 		#initial UI data gathering and user-check
 		uniqueID<-input$uniqueID
+		real_age<-input$real_age
+		real_opinion<-input$real_opinion
+		
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
@@ -30,13 +33,27 @@ shinyServer(function(input, output) {
 			stop(paste("Did not find a user with this id",uniqueID))
 		}
 		
+		real_age <- as.numeric(real_age)
+		if(is.na(real_age))stop("Must give your age to participate")
+		if(real_age < 1 | real_age > 120)stop("Must your current real age in years to participate")
+		
+		gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
+		
 		
 		#getting the relevant trait name, pmid and SNPs to analyze
-		SNPs_to_analyze<-read.table("/home/ubuntu/srv/impute-me/opinions/SNPs_to_analyze.txt",sep="\t",stringsAsFactors = F,row.names=1)
+		SNPs_to_analyze<-read.table("/home/ubuntu/srv/impute-me/opinions/SNPs_to_analyze.txt",sep="\t",stringsAsFactors = F,row.names=1,header=T)
 		
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
 		genotypes[,"GRS"] <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
 		
+		
+		
+		#store the new info in the pData
+		pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
+		pData[,"real_age"]<-real_age
+		pData[,"real_opinion"]<-real_opinion
+		pData[,"g_opinion"]<-mean(genotypes[,"GRS"],na.rm=T)
+		write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 		
 		
 		#write the score to the log file
@@ -55,7 +72,10 @@ shinyServer(function(input, output) {
 		#then return the overall list		
 		return(list(
 			SNPs_to_analyze=SNPs_to_analyze,
-			genotypes=genotypes
+			genotypes=genotypes,
+			gender=gender,
+			real_age=real_age,
+			real_opinion=real_opinion
 			))
 	})
 	
@@ -67,41 +87,58 @@ shinyServer(function(input, output) {
 			return(NULL)
 		}else if(input$goButton > 0) {
 			o<-get_data()
-			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
+			# SNPs_to_analyze<-o[["SNPs_to_analyze"]]
 			genotypes<-o[["genotypes"]]
 			
 			GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
 			
+			if(GRS_beta<-3 | GRS_beta>3)stop("Your genetic political score is off the scale")
 			if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
 			
-			control_mean<-0
-			control_sd<-1
-			xlim<-c(control_mean - control_sd*3, control_mean + control_sd*3)
+      plot(NULL,xlim=c(-3,3),ylim=c(-3,3),xlab="Stated political opinion",ylab="Genetic opinion score")
+			pch <- c(15,16)
+      names(pch)<-c("1","2") #i.e. man/woman (according to plink notation)
+      
+      
+      colRes<-100
+      cols<-rev(rgb(seq(0,0.5,length.out=colRes),seq(0.5,1,length.out=colRes),seq(0,0.5,length.out=colRes)))
+      names(cols) <- as.character(1:length(cols))
+      cols<-cols[seq(0,length(cols),by=10)]
+      min<- -3.2
+      max<- -2.8
+      scale = (length(cols)-1)/(max-min)
+      # plot(NULL,xlim=c(-4,4),ylim=c(-4,4),ylab="",xlab="",xaxt="n",yaxt="n")
+      for (i in 1:(length(cols)-1)) {
+        x = (i-1)/scale + min
+        rect(x,1.2,y+1/scale,1.6, col=cols[i], border=NA)
+         
+      }
+      text(x=-2.4,y=1.4,"Age",adj=0)
+      legend("topleft",legend=c("Male","Female"),pch=pch,bty = "n",col=cols["50"])
+      
+      
+      points(o[["real_opinion"]], y=GRS_beta,pch=pch[o[["gender"]]],cex=2,col=cols[as.character(10*round(o[["real_age"]]/10))])
+      abline(v=GRS_beta,lty=2)
+      abline(h=o[["real_opinion"]],lty=2)
 			
-			x<-seq(xlim[1],xlim[2],length.out=100)
-			y_control<-dnorm(x,mean=control_mean,sd=control_sd)
-			plot(x,y_control,type="l",col="blue",ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n",lwd=2)
-			
-			
-			#fill the controls
-			if(all(!x<GRS_beta))stop("GRS too low to plot")
-			max_GRS_i<-max(which(x<GRS_beta))
-			upper_x<-x[1:max_GRS_i]
-			upper_y<-y_control[1:max_GRS_i]
-			x_lines <- c(upper_x,GRS_beta,GRS_beta,xlim[1])
-			y_lines <- c(upper_y,upper_y[length(upper_y)],0,0)
-			polygon(x=x_lines, y = y_lines, density = NULL, angle = 45,border = NA, col = rgb(0,0,1,0.3), lty = par("lty"))
-			
-			#add control text
-			prop<-signif(pnorm(GRS_beta,mean=control_mean,sd=control_sd),2)
-			x_text<-upper_x[round(length(upper_x)/2)]
-			y_text<-upper_y[round(length(upper_y)/2)] / 2
-			text(x_text,y_text,paste0(prop*100,"%"),col="blue")
-			
-			#draw the main line
-			abline(v=GRS_beta,lwd=3)
-			
-			legend("topleft",legend=c("Population distribution","Your genetic opinion score"),lty=c(1,1),lwd=c(2,3),col=c("blue","black"))
+
+						
+			otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+			opinions_in_data<-data.frame(real_opinion=vector(),g_opinion=vector(),gender=vector(),real_age=vector(),stringsAsFactors=F)
+			for(otherPerson in otherPersons){
+			  if(!file.info(otherPerson)[["isdir"]])next
+			  if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+			  otherPersonPdata<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F)
+			  if(!all(c("real_opinion","g_opinion","gender","real_age")%in%colnames(otherPersonPdata)))next
+			  opinions_in_data<-rbind(opinions_in_data,otherPersonPdata[1,c("real_opinion","g_opinion","gender","real_age")])
+			}
+			#then plot them
+			points(
+			  x=opinions_in_data[,"real_opinion"],
+			  y=opinions_in_data[,"g_opinion"],
+			  col=cols[as.character(10*round(opinions_in_data[,"real_age"]/10))],
+			  pch=pch[opinions_in_data[,"gender"]]
+			)
 			
 		}		
 	})

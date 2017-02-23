@@ -14,9 +14,10 @@ shinyUI(bootstrapPage(
 	titlePanel("GWAS Calculator"),
 	beginPage(),	
 	beginPanel('1/3'),
-	HTML("Participate in a sanity check asking if genetics-predicted political opinion match with real opinion:<br><br>To run analysis input your user-id, or use the test-value of id_613z86871 <small>(but please don't input new political-opinions for the test-user, because that's me):</small><br>"),
+	HTML("Participate in a sanity check asking if genetics-predicted political opinion match with real opinion:<br><br>To run analysis input your user-id, and your political opinion on a scale from far-left/liberal to far-right/conservative. We also need to know your age, since age has a strong effect on political opinion.<br>"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
-	# selectInput("trait", "Traits:", choices = selections),
+	sliderInput("real_opinion", "Your political opinion (left=liberal, right=conservative)",min=-3, max=3, value=0),
+	textInput(inputId="real_age", label = "Your age", value = ""),
 	
 	actionButton("goButton","Run analysis"),
 	endPanel(),
