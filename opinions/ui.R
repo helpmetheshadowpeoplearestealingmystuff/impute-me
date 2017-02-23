@@ -20,7 +20,7 @@ shinyUI(bootstrapPage(
 	textInput(inputId="real_age", label = "Your age", value = ""),
 	
 	actionButton("goButton","Run analysis"),
-	HTML("<small>You can use the test-value of id_613z86871, but please don't change my political opinion too much</small>"),
+	HTML("<br><br><small>You can use the test-value of id_613z86871, but please don't change my political opinion too much</small>"),
 	endPanel(),
 	beginPanel('2/3'),
 	

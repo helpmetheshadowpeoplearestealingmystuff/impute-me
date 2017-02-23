@@ -111,7 +111,7 @@ shinyServer(function(input, output) {
       # plot(NULL,xlim=c(-4,4),ylim=c(-4,4),ylab="",xlab="",xaxt="n",yaxt="n")
       for (i in 1:(length(cols)-1)) {
         x = (i-1)/scale + min
-        rect(x,1.2,y+1/scale,1.6, col=cols[i], border=NA)
+        rect(x,1.2,x+1/scale,1.6, col=cols[i], border=NA)
          
       }
       text(x=-2.4,y=1.4,"Age",adj=0)
@@ -119,8 +119,8 @@ shinyServer(function(input, output) {
       
       
       points(o[["real_opinion"]], y=GRS_beta,pch=pch[o[["gender"]]],cex=2,col=cols[as.character(10*round(o[["real_age"]]/10))])
-      abline(v=GRS_beta,lty=2)
-      abline(h=o[["real_opinion"]],lty=2)
+      abline(h=GRS_beta,lty=2)
+      abline(v=o[["real_opinion"]],lty=2)
 			
 
 						
