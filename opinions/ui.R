@@ -16,7 +16,7 @@ shinyUI(bootstrapPage(
 	beginPanel('1/3'),
 	HTML("Particpate in a sanity check asking if genetics-predicted political opinion match with real opinion:<br><br>To run analysis input your user-id, or use the test-value of id_613z86871 (but please don't input new political-opinions for the test-user, because that's me):<br>"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
-	selectInput("trait", "Traits:", choices = selections),
+	# selectInput("trait", "Traits:", choices = selections),
 	
 	actionButton("goButton","Run analysis"),
 	endPanel(),
