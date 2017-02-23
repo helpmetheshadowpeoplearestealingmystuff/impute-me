@@ -165,7 +165,7 @@ shinyServer(function(input, output) {
 		if(input$goButton == 0){
 			return("")
 		}else if(input$goButton > 0) {
-			m<-"Currently the module only plots stated and genetic opinion. I expect a very poor correlation, but once I have more data-points I'll try to add some statistics to it."
+			m<-"<br>Currently the module only plots stated and genetic opinion. I expect a very poor correlation, but once I have more data-points I'll try to add some statistics to it.<br>"
 			
 		}
 		return(m)
@@ -190,10 +190,11 @@ shinyServer(function(input, output) {
 			SNPs_to_analyze[,"Your Genotype"]<-genotypes[rownames(SNPs_to_analyze),"genotype"]
 			SNPs_to_analyze[,"GRS"]<-signif(genotypes[rownames(SNPs_to_analyze),"GRS"],2)
 			SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
+			SNPs_to_analyze[,"SNP"]<-rownames(SNPs_to_analyze)
 			
-			# keep<-c("SNP","REGION","Your Genotype","Risk/non-risk Allele","GRS","Beta","P.VALUE","Major/minor Allele","minor_allele_freq","Reported Gene")
-			# SNPs_to_analyze<-SNPs_to_analyze[,keep]
-			# colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","Your GRS (this SNP)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
+			keep<-c("SNP","Your Genotype","Risk/non-risk Allele","GRS","Beta","PVALUE","Major/minor Allele","minor_allele_freq")
+			SNPs_to_analyze<-SNPs_to_analyze[,keep]
+			colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Your GRS (this SNP)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency")
 			
 			return(SNPs_to_analyze)
 		}
