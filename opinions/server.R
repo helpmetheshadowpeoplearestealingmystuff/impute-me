@@ -37,6 +37,7 @@ shinyServer(function(input, output) {
 		if(is.na(real_age))stop("Must give your age to participate")
 		if(real_age < 1 | real_age > 120)stop("Must your current real age in years to participate")
 		
+		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
 		gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
 		
 		
