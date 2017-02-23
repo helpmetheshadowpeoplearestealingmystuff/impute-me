@@ -125,10 +125,10 @@ shinyServer(function(input, output) {
       cols<-rev(rgb(seq(0,0.5,length.out=colRes),seq(0.5,1,length.out=colRes),seq(0,0.5,length.out=colRes)))
       names(cols) <- as.character(1:length(cols))
       cols<-cols[seq(0,length(cols),by=10)]
-      xmin<- xlim[1]
-      xmax<- xlim[1] + (xlim[2] - xlim[1])*0.06
-      ymin <- ylim[1] + (ylim[2] - ylim[1])*0.74
-      ymax <- ylim[1] + (ylim[2] - ylim[1])*0.82
+      xmin<- xlim[1] + (xlim[2] - xlim[1])* -0.02
+      xmax<- xlim[1] + (xlim[2] - xlim[1])*0.05
+      ymin <- ylim[1] + (ylim[2] - ylim[1])*0.78
+      ymax <- ylim[1] + (ylim[2] - ylim[1])*0.86
       scale = (length(cols)-1)/(xmax-xmin)
       # plot(NULL,xlim=c(-4,4),ylim=c(-4,4),ylab="",xlab="",xaxt="n",yaxt="n")
       for (i in 1:(length(cols)-1)) {
