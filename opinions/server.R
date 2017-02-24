@@ -8,7 +8,7 @@ shinyServer(function(input, output) {
 	output$text_1 <- renderText({ 
 		
 		if(input$goButton == 0){
-			m<-paste0("An interesting study of political opinion was performed by <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/24569950'>Hatemi et al</a></u> in 2014. While the authors themselves conclude that results are too weak to be formally significant, it can provide the basis of an interesting self-check on genetics of politics. Note, I <b>don't</b> believe this willshow any connection between genetics and politics, but it is fun to test.<br><br>"
+			m<-paste0("An interesting study of political opinion was performed by <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/24569950'>Hatemi et al</a></u> in 2014. While the authors themselves conclude that results are too weak to be formally significant, it can provide the basis of an interesting self-check on genetics of politics. Note, I <b>don't</b> believe this will show any connection between genetics and politics, but it is fun to test.<br><br>"
 			)
 			
 		}else{
