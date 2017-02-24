@@ -8,7 +8,7 @@ shinyServer(function(input, output) {
 	output$text_1 <- renderText({ 
 		
 		if(input$goButton == 0){
-			m<-paste0("An interesting study of political opinion was performed by <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/24569950'>Hatemi et al</a></u> in 2014. While the authors themselves conclude that results are too weak to be formally significant, it can provide the basis of an interesting self-check on genetics of politics.<br><br>"
+			m<-paste0("An interesting study of political opinion was performed by <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/24569950'>Hatemi et al</a></u> in 2014. While the authors themselves conclude that results are too weak to be formally significant, it can provide the basis of an interesting self-check on genetics of politics. Note, I <b>don't</b> believe this willshow any connection between genetics and politics, but it is fun to test.<br><br>"
 			)
 			
 		}else{
@@ -116,7 +116,7 @@ shinyServer(function(input, output) {
 			xlim <- range(c(opinions_in_data[,"real_opinion"],o[["real_opinion"]]),na.rm=T)
 			ylim <- range(c(opinions_in_data[,"g_opinion"],o[["g_opinion"]]),na.rm=T)
 			
-			plot(NULL,xlim=xlim,ylim=ylim,xlab="Stated political opinion",ylab="Genetic opinion score")
+			plot(NULL,xlim=xlim,ylim=ylim,xlab="Stated political opinion\n(left is 'left', right is 'right')",ylab="Genetic opinion score\n(up is 'right', down is 'left')")
 			pch <- c(15,16)
       names(pch)<-c("1","2") #i.e. man/woman (according to plink notation)
       
