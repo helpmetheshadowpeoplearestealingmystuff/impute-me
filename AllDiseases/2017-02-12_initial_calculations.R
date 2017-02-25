@@ -19,6 +19,11 @@ rm(list=ls())
 data<-read.table("AllDiseases/gwas_catalog_v1.0-associations_e87_r2017-02-06.tsv.gz",header=T,sep="\t",comment.char="",quote="",stringsAsFactors=F)
 
 
+#replace the rs12682352 snp with a proxy
+data[data[,"SNPS"]%in%"rs12682352","STRONGEST.SNP.RISK.ALLELE"]<-"rs7823757-T"
+data[data[,"SNPS"]%in%"rs12682352","SNPS"]<-"rs7823757"
+
+
 
 #remove sets that are too small
 d<-gsub(",","",gsub("[A-Za-z]","",data[,"INITIAL.SAMPLE.SIZE"]))
@@ -210,7 +215,7 @@ for(col in c("major_allele","minor_allele","risk_allele","non_risk_allele")){
 g1<-apply(t(apply(data[,c("major_allele","minor_allele")],1,sort,decreasing=F)),1,paste,collapse="")
 g2<-apply(t(apply(data[,c("risk_allele","non_risk_allele")],1,sort,decreasing=F)),1,paste,collapse="")
 have_unknown <- apply(data[,c("major_allele","minor_allele","risk_allele","non_risk_allele")]=="?",1,sum)>0
-have_unknown
+# have_unknown
 sum(g1!=g2 & !have_unknown)
 # 0 #good!
 
