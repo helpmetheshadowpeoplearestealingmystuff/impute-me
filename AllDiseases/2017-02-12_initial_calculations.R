@@ -19,10 +19,7 @@ rm(list=ls())
 data<-read.table("AllDiseases/gwas_catalog_v1.0-associations_e87_r2017-02-06.tsv.gz",header=T,sep="\t",comment.char="",quote="",stringsAsFactors=F)
 
 
-#replace the rs12682352 snp with a proxy
-data[data[,"SNPS"]%in%"rs12682352","STRONGEST.SNP.RISK.ALLELE"]<-"rs13259216-A"
-data[data[,"SNPS"]%in%"rs12682352","SNPS"]<-"rs13259216"
- 
+
 
 
 #remove sets that are too small
@@ -219,8 +216,6 @@ have_unknown <- apply(data[,c("major_allele","minor_allele","risk_allele","non_r
 sum(g1!=g2 & !have_unknown)
 # 0 #good!
 
-#this is also an odd exception
-data[data[,"SNPS"]%in%"rs13259216","chr_name"]<-"input"
 
 
 #re-order colnames so that the essential are first
