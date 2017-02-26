@@ -108,7 +108,8 @@ shinyServer(function(input, output) {
 			for(otherPerson in otherPersons){
 			  if(!file.info(otherPerson)[["isdir"]])next
 			  if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-			  otherPersonPdata<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F)
+			  otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F),silent=T)
+			  if(class(otherPersonPdata)=="try-error")next
 			  if(!all(c("real_opinion","g_opinion","gender","real_age")%in%colnames(otherPersonPdata)))next
 			  opinions_in_data<-rbind(opinions_in_data,otherPersonPdata[1,c("real_opinion","g_opinion","gender","real_age")])
 			}
