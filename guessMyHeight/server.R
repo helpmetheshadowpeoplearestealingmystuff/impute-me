@@ -152,7 +152,7 @@ shinyServer(function(input, output) {
 			for(otherPerson in otherPersons){
 				if(!file.info(otherPerson)[["isdir"]])next
 				if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-				otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F))
+				otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F),silent=T)
 				if(class(otherPersonPdata)=="try-error")next
 				if(!all(c("gheight","height","gender")%in%colnames(otherPersonPdata)))next
 				if(otherPersonPdata[1,"gender"] != gender) next #only plot persons of the same gender

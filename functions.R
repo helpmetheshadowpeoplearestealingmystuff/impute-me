@@ -167,7 +167,8 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 	for(otherPerson in otherPersons){
 		if(!file.info(otherPerson)[["isdir"]])next
 		if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-		other_person_md5sum<-read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F)[1,"md5sum"]
+		other_person_md5sum<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F)[1,"md5sum"],silent=T)
+		if(class(other_person_md5sum)=="try-error")next
 		if(is.null(other_person_md5sum))next
 		if(this_person_md5sum == other_person_md5sum){
 			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
