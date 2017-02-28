@@ -64,14 +64,15 @@ shinyServer(function(input, output) {
       
       #adding genotype GRS and rounding MAF
       SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
+      SNPs_to_analyze[,"GRS"] <- signif(SNPs_to_analyze[,"GRS"], 2)
       
       
       
       keep<-c("SNP","Your genotype","Risk/non-risk Allele","GRS","Beta","Major/minor Allele","minor_allele_freq","Source_PMID","gene","Context","Comment")
       SNPs_to_analyze<-SNPs_to_analyze[,keep]
-      colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Your GRS (this SNP)","Effect Size","Major/ minor Allele","Minor Allele Frequency","Gene","Context","Comment")
+      colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Your GRS (this SNP)","Effect Size","Major/ minor Allele","Minor Allele Frequency","Source PMID","Gene","Context","Comment")
       
-      write.xlsx(x=SNPs_to_analyze,file=file,rowNames=T)
+      write.xlsx(x=SNPs_to_analyze,file=file,rowNames=F)
       
     }
   )
@@ -101,10 +102,12 @@ shinyServer(function(input, output) {
 		
 		GRS_beta<-mean(SNPs_to_analyze[,"GRS"],na.rm=T)
 
-		Proportion<-signif(pnorm(GRS_beta,mean=0,sd=1),2)
+		Proportion<-signif(pnorm(GRS_beta,mean=0,sd=1),2)*100
+		high_level<- Proportion > 50
 		
 		
-		return(data.frame(GRS_beta,Proportion))
+		
+		return(data.frame("Z-score"=GRS_beta,"%-score"=paste0(Proportion,"%"),Level=high_level)
 		
 	},include.rownames = FALSE)
 	
