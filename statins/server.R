@@ -74,8 +74,6 @@ shinyServer(function(input, output) {
 		SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
 		
 		#adding genotype GRS and rounding MAF
-		SNPs_to_analyze[,"Your Genotype"]<-genotypes[rownames(SNPs_to_analyze),"genotype"]
-		SNPs_to_analyze[,"GRS"]<-signif(genotypes[rownames(SNPs_to_analyze),"GRS"],2)
 		SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
 		SNPs_to_analyze[,"SNP"]<-rownames(SNPs_to_analyze)
 		
