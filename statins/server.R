@@ -67,6 +67,8 @@ shinyServer(function(input, output) {
 		
 	  SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"Source_PMID"]%in%"28223407",]
 		tempFrame<-data.frame(row.names=rownames(SNPs_to_analyze),genotype=SNPs_to_analyze[,"Your genotype"],stringsAsFactors = F)
+		SNPs_to_analyze[,"Beta"]<-log2(SNPs_to_analyze[,"Beta"]) # because it is actually saved as OR in the data
+		
 		SNPs_to_analyze[,"GRS"]<-get_GRS_2(genotypes=tempFrame, betas=SNPs_to_analyze)
 
 		#summarising allele info into single-columns

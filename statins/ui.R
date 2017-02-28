@@ -8,7 +8,7 @@ shinyUI(bootstrapPage(
 	titlePanel("Pharmacogenetics"),
 	beginPage(),
 	beginPanel('1/3'),
-	HTML("Some drug response genetic tests can be bought, that are directed against just one specific gene. However, when buying genome-wide kits such as those sold by ancestry.com or 23andme you can obtain the very same information from your raw data, at no extra cost. In this module that analysis is provided.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:<br><br>"),
+	HTML("To run analysis input your user-id, or use the test-value of id_613z86871:<br><br>"),
 	
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	actionButton("goButton","Run analysis"),
