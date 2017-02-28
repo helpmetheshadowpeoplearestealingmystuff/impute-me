@@ -24,7 +24,7 @@ shinyUI(bootstrapPage(
 	# dataTableOutput("table1"),
 	
 	h2("Statin response"),
-	HTML("This is based on a recent publication of the magnitude of <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/?term=28223407'>statin response in three large randomized clinical trials</a></u>. The score is calculated as closely as possible to what is described in the paper: by weighting the total number of risk alleles by their effects (log of the odds ratios) of CHD risk from the published literature. But -- still work in progress, need to calculate the sum-score"),
+	HTML("This is based on a recent publication of the magnitude of <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/?term=28223407'>statin response in three large randomized clinical trials</a></u>. The score is calculated as closely as possible to what is described in the paper: by weighting the total number of risk alleles by their effects (log of the odds ratios) of CHD risk from the published literature, and filling out with frequency-averaged values at missing data points. Further details can be gained by using the download button and investigating the per-SNP overview."),
 	tableOutput("table2"),
 	
 	
