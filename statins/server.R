@@ -25,11 +25,8 @@ shinyServer(function(input, output) {
     table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
     rownames(table)<-table[,"SNP"]
     genotypes<-get_genotypes(uniqueID=uniqueID,request=table)
-    
     table[,"Your genotype"]<-genotypes[rownames(table),]
-    
-    
-    
+
     #write the query to the log file
     log_function<-function(uniqueID){
       user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
@@ -42,18 +39,16 @@ shinyServer(function(input, output) {
       }
     }
     try(log_function(uniqueID))
-    
     return(table)
-  
   })
   
-	output$table1 <- renderTable({ 
+
+  
+  output$table1 <- renderTable({ 
 		if(input$goButton == 0){
 			return(NULL)
 		}
 	  table<-get_data()
-	  
-	  
 		table<-table[,c("SNP","Your genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Risk allele")
 		table<-table["rs2395029",,drop=FALSE]
@@ -69,9 +64,9 @@ shinyServer(function(input, output) {
 		}
 	  table<-get_data()
 	  
-		table<-table[,c("SNP","Your genotype","effect_allele")]
-		colnames(table)<-c("SNP","Your genotype","Risk allele")
-		table<-table["rs4363657",,drop=FALSE]
+		# table<-table[,c("SNP","Your genotype","effect_allele")]
+		table<-table[table[,"Source_PMID"]%in%"28223407",]
+		# table<-table["rs4363657",,drop=FALSE]
 		# rownames(table)<-NULL
 		return(table)
 		

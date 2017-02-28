@@ -24,7 +24,7 @@ shinyUI(bootstrapPage(
 	# dataTableOutput("table1"),
 	
 	h2("Statin response"),
-	HTML("This is based on the a test sold by a boston based company working with heart diagnostics. It sells for 99$. The interpretation is that if you carry one or two 'C' alleles it is equal to a positive test.	Of note, however, it is a silly idea that you should worry about statins based on this information. The positive prediction rate is 5%, meaning that in 95% of the cases you will not have a problem even though your genotype contains a C. That hasn't stopped 250k US doctors from ordering the test. So it's only included here, because people actually pay money for it - here you can have it automatically:<br><br>"),
+	HTML("This is based on a recent publication of the magnitude of <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/?term=28223407'>statin response in three large randomized clinical trials</a></u>. :<br><br>. The score is calculated as closely as possible to what is described in the paper: by weighting the total number of risk alleles by their effects (log of the odds ratios) of CHD risk from the published literature."),
 	tableOutput("table2"),
 	
 	
