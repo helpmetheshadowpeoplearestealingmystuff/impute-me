@@ -77,7 +77,6 @@ shinyServer(function(input, output) {
 		SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
 		
 		
-		keep%in%colnames(SNPs_to_analyze)
 		keep<-c("SNP","Your Genotype","Risk/non-risk Allele","GRS","Beta","Major/minor Allele","minor_allele_freq")
 		SNPs_to_analyze<-SNPs_to_analyze[,keep]
 		colnames(SNPs_to_analyze)<-c("SNP","Your genotype","Risk/ non-risk Allele","Your GRS (this SNP)","Effect Size","Major/ minor Allele","Minor Allele Frequency")
