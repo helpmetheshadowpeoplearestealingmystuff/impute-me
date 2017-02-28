@@ -106,7 +106,7 @@ shinyServer(function(input, output) {
 		high_level<- Proportion > 50
 		
 		
-		out<-data.frame("Z-score"=GRS_beta,"%-score"=paste0(Proportion,"%"),Level=high_level)
+		out<-data.frame("Z-score"=GRS_beta,"Percent-score"=paste0(Proportion,"%"),"High level?"=high_level)
 		return(out)
 		
 	},include.rownames = FALSE)
