@@ -17,7 +17,7 @@ shinyServer(function(input, output) {
     uniqueID<-input$uniqueID
     if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
     if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
-    if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
+    if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
       Sys.sleep(3) #wait a little to prevent raw-force fishing	
       stop(paste("Did not find a user with this id",uniqueID))
     }
