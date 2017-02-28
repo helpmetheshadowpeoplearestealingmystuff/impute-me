@@ -66,8 +66,9 @@ shinyServer(function(input, output) {
 	  
 		
 		table<-table[table[,"Source_PMID"]%in%"28223407",]
-		table<-table[,c("SNP","Your genotype","effect_allele")]
-		get_GRS_2(genotypes=table[,"Your genotype",drop=F], betas=table)
+		# table<-table[,c("SNP","Your genotype","effect_allele")]
+		tempFrame<-data.frame(row.names=rownames(table),genotype=table[,"Your genotype"],stringsAsFactors = F)
+		get_GRS_2(genotypes=tempFrame, betas=table)
 		
 		# table<-table["rs4363657",,drop=FALSE]
 		# rownames(table)<-NULL
