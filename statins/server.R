@@ -62,17 +62,31 @@ shinyServer(function(input, output) {
 		if(input$goButton == 0){
 			return(NULL)
 		}
-	  table<-get_data()
+	  SNPs_to_analyze<-get_data()
 	  
 		
-		table<-table[table[,"Source_PMID"]%in%"28223407",]
-		# table<-table[,c("SNP","Your genotype","effect_allele")]
-		tempFrame<-data.frame(row.names=rownames(table),genotype=table[,"Your genotype"],stringsAsFactors = F)
-		get_GRS_2(genotypes=tempFrame, betas=table)
+	  SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"Source_PMID"]%in%"28223407",]
+		tempFrame<-data.frame(row.names=rownames(SNPs_to_analyze),genotype=SNPs_to_analyze[,"Your genotype"],stringsAsFactors = F)
+		SNPs_to_analyze[,"GRS"]<-get_GRS_2(genotypes=tempFrame, betas=SNPs_to_analyze)
+
+		#summarising allele info into single-columns
+		SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
+		SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
 		
-		# table<-table["rs4363657",,drop=FALSE]
-		# rownames(table)<-NULL
-		return(table)
+		#adding genotype GRS and rounding MAF
+		SNPs_to_analyze[,"Your Genotype"]<-genotypes[rownames(SNPs_to_analyze),"genotype"]
+		SNPs_to_analyze[,"GRS"]<-signif(genotypes[rownames(SNPs_to_analyze),"GRS"],2)
+		SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
+		SNPs_to_analyze[,"SNP"]<-rownames(SNPs_to_analyze)
+		
+		
+		
+		keep<-c("SNP","Your Genotype","Risk/non-risk Allele","GRS","Beta","Major/minor Allele","minor_allele_freq")
+		SNPs_to_analyze<-SNPs_to_analyze[,keep]
+		colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Your GRS (this SNP)","Effect Size","Major/ minor Allele","Minor Allele Frequency")
+		
+		
+				return(table)
 		
 	},include.rownames = FALSE)
 	

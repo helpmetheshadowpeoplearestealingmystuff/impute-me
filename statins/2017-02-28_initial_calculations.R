@@ -65,12 +65,24 @@ sum(!(data[,"risk_allele"] %in% data[,"minor_allele"] | data[,"risk_allele"] %in
 non_matching<-which(data[,"risk_allele"] != data[,"minor_allele"] & data[,"risk_allele"] != data[,"major_allele"])
 #ok - quite a few. Damn looks like we have to flip
 data[non_matching,c("minor_allele_freq","woscops_freq","bioimage_freq")]
-
 nuc<-c("A","C","G","T")
 names(nuc)<-c("T","G","C","A")
 data[non_matching,"risk_allele"]<-nuc[data[non_matching,"risk_allele"]]
 
 
+
+
+#because we flipped - check frequencies
+data[,c("minor_allele","minor_allele_freq","risk_allele","woscops_freq","bioimage_freq")]
+#check for minor == risk cases (freqs should match)
+data[data[,"risk_allele"] == data[,"minor_allele"],c("minor_allele_freq","woscops_freq","bioimage_freq")]
+#a few are wrong is too close to 0.5 to be safe remove it
+data["rs1333049","risk_allele"]<-"?"
+data["rs15563","risk_allele"]<-"?"
+
+#check for major == risk cases (freqs should not-match)
+data[data[,"risk_allele"] == data[,"major_allele"],c("minor_allele_freq","woscops_freq","bioimage_freq")]
+data["rs2252641","risk_allele"]<-"?"
 
 
 #insert the non-risk allele as being the allele that is not risk, and is the other allele (taking from major/minor info)
@@ -98,6 +110,10 @@ have_unknown <- apply(data[,c("major_allele","minor_allele","risk_allele","non_r
 sum(g1!=g2 & !have_unknown)
 # 0 #good!
 
+
+
+
+
 #re-order colnames so that the essential are first
 colnames(data)
 putFirst<-c("SNP", "chr_name","risk_allele","non_risk_allele","Beta",  "minor_allele_freq","minor_allele","major_allele")
@@ -108,6 +124,9 @@ colnames(data)[4]<-"non_effect_allele"
 colnames(data)[5]<-"Beta"
 
 data["rs2279343","non_effect_allele"]<-"G" #this one got lost but didn't have to
+
+
+
 
 
 write.table(data,file="statins/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
