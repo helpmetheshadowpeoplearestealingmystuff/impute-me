@@ -22,11 +22,17 @@ shinyServer(function(input, output) {
       stop(paste("Did not find a user with this id",uniqueID))
     }
     table_file <-"/home/ubuntu/srv/impute-me/statins/SNPs_to_analyze.txt"
-    table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
-    rownames(table)<-table[,"SNP"]
-    genotypes<-get_genotypes(uniqueID=uniqueID,request=table)
-    table[,"Your genotype"]<-genotypes[rownames(table),]
+    SNPs_to_analyze<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
+    rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
+    genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
+    SNPs_to_analyze[,"GRS"]<-get_GRS_2(genotypes=genotypes, betas=SNPs_to_analyze)
+    SNPs_to_analyze[,"Your genotype"]<-genotypes[rownames(SNPs_to_analyze),]
+    
+    
+    keep<-c("SNP","locus","Your genotype","effect_allele","non_effect_allele","GRS","Beta","minor_allele","major_allele","minor_allele_freq","Source_PMID","Direction","gene","Context","Comment")
+    SNPs_to_analyze<-SNPs_to_analyze[,keep]
 
+    
     #write the query to the log file
     log_function<-function(uniqueID){
       user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
@@ -39,9 +45,35 @@ shinyServer(function(input, output) {
       }
     }
     try(log_function(uniqueID))
-    return(table)
+    return(SNPs_to_analyze)
   })
   
+  
+  
+  
+  output$downloadData <- downloadHandler(
+    filename = paste(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"data.xlsx",sep="_"),
+    content = function(file){
+
+      SNPs_to_analyze<-get_data()
+      
+      #summarising allele info into single-columns
+      SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
+      SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
+      
+      #adding genotype GRS and rounding MAF
+      SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
+      
+      
+      
+      keep<-c("SNP","Your genotype","Risk/non-risk Allele","GRS","Beta","Major/minor Allele","minor_allele_freq","Source_PMID","gene","Context","Comment")
+      SNPs_to_analyze<-SNPs_to_analyze[,keep]
+      colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Your GRS (this SNP)","Effect Size","Major/ minor Allele","Minor Allele Frequency","Gene","Context","Comment")
+      
+      write.xlsx(x=SNPs_to_analyze,file=file,rowNames=T)
+      
+    }
+  )
 
   
   output$table1 <- renderTable({ 
