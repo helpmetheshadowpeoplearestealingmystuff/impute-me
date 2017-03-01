@@ -103,10 +103,15 @@ shinyServer(function(input, output) {
 		GRS_beta<-mean(SNPs_to_analyze[,"GRS"],na.rm=T)
 
 		Proportion<-signif(pnorm(GRS_beta,mean=0,sd=1),2)*100
-		high_level<- Proportion > 50
+		if(Proportion > 80){
+		  type <- "High Genetic Risk"
+		}else{
+		  type<-"All Others"
+		}
 		
 		
-		out<-data.frame("Z-score"=GRS_beta,"Percent-score"=paste0(Proportion,"%"),"High level?"=high_level)
+		out<-data.frame("Z_score"=GRS_beta,"Percent_score"=paste0(Proportion,"%"),"risk_level"=type)
+		colname(out)<-c("GRS Z-score","Percentile Score","'Score category")
 		return(out)
 		
 	},include.rownames = FALSE)
