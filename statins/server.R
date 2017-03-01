@@ -111,7 +111,7 @@ shinyServer(function(input, output) {
 		
 		
 		out<-data.frame("Z_score"=GRS_beta,"Percent_score"=paste0(Proportion,"%"),"risk_level"=type)
-		colnames(out)<-c("GRS Z-score","Percentile Score","'Score category")
+		colnames(out)<-c("GRS Z-score","Percentile Score","'Score category'")
 		return(out)
 		
 	},include.rownames = FALSE)
