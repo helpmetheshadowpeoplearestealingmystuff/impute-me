@@ -138,7 +138,7 @@ shinyServer(function(input, output) {
          
       }
       text(x=xmax,y=mean(c(ymin,ymax)),"Age",adj=-0.2)
-      legend("topleft",legend=c("Male","Female"),pch=pch,bty = "n",col=cols["50"])
+      legend("topleft",legend=c("Male","Female"),pch=pch,bty = "n",col="black")
       
       
 			
