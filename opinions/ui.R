@@ -11,7 +11,7 @@ initialize('gmh',TRUE)
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
-	titlePanel("Political Opinion Module (under development)"),
+	titlePanel("Political Opinion Module"),
 	beginPage(),	
 	beginPanel('1/3'),
 	HTML("Participate in a sanity check asking if genetics-predicted political opinion match with real opinion:<br><br>To run analysis input your user-id, and your political opinion on a scale from far-left/liberal to far-right/conservative. We also need to know your age, since age has a strong effect on political opinion.<br>"),
