@@ -124,6 +124,7 @@ shinyServer(function(input, output) {
 			return(NULL)
 		}else if(input$goButton > 0) {
 			o<-get_data()
+			opinions_in_data<-o[["opinions_in_data"]]
 
 			xlim <- range(c(opinions_in_data[,"g_opinion"],o[["g_opinion"]]),na.rm=T)
 			ylim <- range(c(opinions_in_data[,"real_opinion"],o[["real_opinion"]]),na.rm=T)
