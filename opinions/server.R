@@ -51,15 +51,42 @@ shinyServer(function(input, output) {
 		
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
 		genotypes[,"GRS"] <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
-		
+		GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
+		if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
 		
 		
 		#store the new info in the pData
 		pData<-read.table(pDataFile,header=T,stringsAsFactors=F)
 		pData[,"real_age"]<-real_age
 		pData[,"real_opinion"]<-real_opinion
-		pData[,"g_opinion"]<-mean(genotypes[,"GRS"],na.rm=T)
+		pData[,"g_opinion"]<-GRS_beta
 		write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
+		
+		
+		
+		
+		
+		#get all the other persons in the list
+		otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+		opinions_in_data<-data.frame(real_opinion=vector(),g_opinion=vector(),gender=vector(),real_age=vector(),stringsAsFactors=F)
+		for(otherPerson in otherPersons){
+		  if(!file.info(otherPerson)[["isdir"]])next
+		  if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+		  otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F),silent=T)
+		  if(class(otherPersonPdata)=="try-error")next
+		  if(!all(c("uniqueID","real_opinion","g_opinion","gender","real_age")%in%colnames(otherPersonPdata)))next
+		  opinions_in_data<-rbind(opinions_in_data,otherPersonPdata[1,c("uniqueID","real_opinion","g_opinion","gender","real_age")])
+		}
+		if(!uniqueID%in%opinions_in_data[,"uniqueID"])stop("There was a problem with the registered pData")
+		
+		
+		
+		
+		#do statistics
+		models<-list()
+		models[["lm"]]<-lm(real_opinion~g_opinion,data=opinions_in_data)
+		models[["lm-corrected"]]<-lm(real_opinion ~ g_opinion + gender + real_age,data=opinions_in_data)
+		models[["spearman"]]<-suppressWarnings(cor.test(opinions_in_data[,"g_opinion"],opinions_in_data[,"real_opinion"],method="spearman"))
 		
 		
 		#write the score to the log file
@@ -81,7 +108,10 @@ shinyServer(function(input, output) {
 			genotypes=genotypes,
 			gender=gender,
 			real_age=real_age,
-			real_opinion=real_opinion
+			real_opinion=real_opinion,
+			g_opinion=GRS_beta,
+			models=models,
+			opinions_in_data=opinions_in_data
 			))
 	  }
 	})
@@ -94,30 +124,10 @@ shinyServer(function(input, output) {
 			return(NULL)
 		}else if(input$goButton > 0) {
 			o<-get_data()
-			# SNPs_to_analyze<-o[["SNPs_to_analyze"]]
-			genotypes<-o[["genotypes"]]
-			
-			GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
-			
-			# if(GRS_beta < -3 | GRS_beta > 3)stop("Your genetic political score is off the scale")
-			if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
-			
-			#get all the other persons in the list
-			otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
-			opinions_in_data<-data.frame(real_opinion=vector(),g_opinion=vector(),gender=vector(),real_age=vector(),stringsAsFactors=F)
-			for(otherPerson in otherPersons){
-			  if(!file.info(otherPerson)[["isdir"]])next
-			  if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-			  otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F),silent=T)
-			  if(class(otherPersonPdata)=="try-error")next
-			  if(!all(c("real_opinion","g_opinion","gender","real_age")%in%colnames(otherPersonPdata)))next
-			  opinions_in_data<-rbind(opinions_in_data,otherPersonPdata[1,c("real_opinion","g_opinion","gender","real_age")])
-			}
-			
-			xlim <- range(c(opinions_in_data[,"real_opinion"],o[["real_opinion"]]),na.rm=T)
-			ylim <- range(c(opinions_in_data[,"g_opinion"],o[["g_opinion"]]),na.rm=T)
-			
-			plot(NULL,xlim=xlim,ylim=ylim,xlab="Stated political opinion\n(left is 'left', right is 'right')",ylab="Genetic opinion score (up is 'right', down is 'left')")
+
+			xlim <- range(c(opinions_in_data[,"g_opinion"],o[["g_opinion"]]),na.rm=T)
+			ylim <- range(c(opinions_in_data[,"real_opinion"],o[["real_opinion"]]),na.rm=T)
+			plot(NULL,ylim=ylim,xlim=xlim,ylab="Stated political opinion (down is 'left', up is 'right')",xlab="Genetic opinion score (right is 'right', left is 'left')")
 			pch <- c(15,16)
       names(pch)<-c("1","2") #i.e. man/woman (according to plink notation)
       
@@ -140,24 +150,25 @@ shinyServer(function(input, output) {
       text(x=xmax,y=mean(c(ymin,ymax)),"Age",adj=-0.2)
       legend("topleft",legend=c("Male","Female"),pch=pch,bty = "n",col="black")
       
-      
-			
 
 						
-			# plot all the others
+			# plot all registered people
 			points(
-			  x=opinions_in_data[,"real_opinion"],
-			  y=opinions_in_data[,"g_opinion"],
+			  y=opinions_in_data[,"real_opinion"],
+			  x=opinions_in_data[,"g_opinion"],
 			  col=cols[as.character(10*round(opinions_in_data[,"real_age"]/10))],
 			  pch=pch[opinions_in_data[,"gender"]]
 			)
 
-			#then plot main person
-			points(o[["real_opinion"]], y=GRS_beta,pch=pch[o[["gender"]]],cex=2,col=cols[as.character(10*round(o[["real_age"]]/10))])
-			abline(h=GRS_beta,lty=2)
+			#highlight main person
+			points(o[["real_opinion"]], y=o[["g_opinion"]],pch=pch[o[["gender"]]],cex=2,col=cols[as.character(10*round(o[["real_age"]]/10))])
+			abline(h=o[["g_opinion"]],lty=2)
 			abline(v=o[["real_opinion"]],lty=2)
 			
-						
+			
+      
+			
+			
 		}		
 	})
 	
@@ -166,7 +177,36 @@ shinyServer(function(input, output) {
 		if(input$goButton == 0){
 			return("")
 		}else if(input$goButton > 0) {
-			m<-"<br>Currently the module only plots stated and genetic opinion. I expect a very poor correlation, but once I have more data-points I'll try to add some statistics to it.<br>"
+		  o<-get_data()
+		  model1_p<-signif(summary(o[["models"]][["lm"]])[["coefficients"]]["g_opinion","Pr(>|t|)"],2)
+		  model1_percent_explained<-signif(100*summary(o[["models"]][["lm"]])$r.squared,2)
+		  
+		  model2_p<-signif(summary(o[["models"]][["lm-corrected"]])[["coefficients"]]["g_opinion","Pr(>|t|)"],2)
+		  model2_percent_explained<-signif(100*summary(o[["models"]][["lm-corrected"]])$r.squared,2)
+		  
+		  spearman_p<-signif(o[["models"]][["spearman"]][["p.value"]],2)
+		  spearman_rho<-signif(o[["models"]][["spearman"]][["estimate"]],2)
+		  
+		  n <- nrow(o[["opinions_in_data"]])
+		  
+		  if(model2_p < 0.05){
+		    outcome1 <- "is"
+		    outcome2 <- "is"
+		  }else{
+		    outcome1 <- "is not"
+		    outcome2 <- "would have been"
+		  }
+		  
+		  if(spearman_rho<0.3){
+		    outcome3 <- "a fairly low association score"
+		  }else if(spearman_rho < 0.5){
+		    outcome3 <- "a medium association score"
+		  }else{
+		    outcome3 <- "a high association score"
+		  }
+	
+		  
+		  m<-paste0("<br>With current input from ",n," users, we can calculate that there <b>",outcome1,"</b> any significant political opinion effect from genetics. The percent of political opinion variation that ",outcome2," explained by genetics is ",model2_percent_explained,"% when correcting for age and gender (P=",model2_p,") and ",model1_percent_explained,"% unadjusted (P=",model1_p,"). Spearman rank correlation gives rho=",spearman_rho," (P=",spearman_p,"), which is ",outcome3,"<br>")
 			
 		}
 		return(m)
