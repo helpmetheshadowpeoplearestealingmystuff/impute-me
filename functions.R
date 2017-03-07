@@ -148,14 +148,20 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
 	}
 	testRead2<-read.table(path,nrow=10,stringsAsFactors=F)
 	if(ncol(testRead2)!=4){
-		unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
+		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"test_read_4_columns",email,uniqueID)
+	  m<-paste(m,collapse="\t")
+	  write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+	  unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
 		unlink(homeFolder,recursive=T)
-		stop("test-read didn't have 4 columns (or 5 for ancestry.com data). If you think this data type should be supported, then you are welcome to write an email an attached a snippet of the data for our inspection.")
+		stop("test-read didn't have 4 columns (or 5 for ancestry.com data). If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection.")
 	}
 	if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs"){
 		unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
 		unlink(homeFolder,recursive=T)
-		stop("test-read didn't have rs IDs in column 1")
+		m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"test_read_no_rs_id",email,uniqueID)
+		m<-paste(m,collapse="\t")
+		write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+		stop("test-read didn't have rs IDs in column 1. If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection.")
 	}
 	
 	
