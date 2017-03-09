@@ -257,10 +257,7 @@ run_imputation<-function(
 	    system(cmd1_3)
 	    out1<-system(cmd1)
 	    if(out1 == 3)stop("Something odd with the MT presence reverter I")
-	    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"invoking the MT remover",rawdata)
-	    m<-paste(m,collapse="\t")
-	    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-	    
+
 	  }else{
 	    stop("Something odd with the MT presence reverter II")
 	  }
