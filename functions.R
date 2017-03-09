@@ -248,9 +248,9 @@ run_imputation<-function(
   out1<-system(cmd1)
   
   
-  #check for MT presence
+  #check for MT presence and other non-sorted behaviour (note this is an exception. Best to submit sorted data)
   if(out1 == 3){
-    print("First trying to just remove the mitochondrial SNPS (not needed)")
+    print("First trying to just remove the mitochondrial SNPS (they are not needed)")
     cmd1_2<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
     out1_2<-system(cmd1_2,intern=T)
     if(length(grep("are out of order",out1_2))>0){
@@ -263,15 +263,13 @@ run_imputation<-function(
         system(cmd1_4)
         cmd1_5<-paste("sed -i.bak '/\\tY\\t/d'",rawdata)
         system(cmd1_5)
-        cmd1_6<-paste("sed -i.bak '/\\tX\\t/d'",rawdata)
-        system(cmd1_6)
-        
+        # cmd1_6<-paste("sed -i.bak '/\\tX\\t/d'",rawdata)
+        # system(cmd1_6)
         out1<-system(cmd1)
         if(out1 == 3){
           stop("Something odd with the MT presence reverter I")
         }
       }
-      
     }else{
       stop("Something odd with the MT presence reverter II")
     }
@@ -291,7 +289,13 @@ run_imputation<-function(
     
     #First in loop - extract only one specific chromosome
     cmd2<-paste(plink," --file step_1 --chr ",chr," --recode --out step_2_chr",chr," --exclude step_2_exclusions",sep="")
-    system(cmd2)
+    out2<-system(cmd2)
+    
+    #if X chromosome is missing it is allowed to skip forward
+    if(out2 == 13 & chr == "X"){
+      print("Didn't find X-chr data, so skipping that")
+       next
+    }
     
     #Then check for strand flips etc. 
     cmd3<-paste(shapeit," -check --input-ped step_2_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_2_chr",chr,"_shapeit_log",sep="")
