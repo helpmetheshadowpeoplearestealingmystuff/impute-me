@@ -245,8 +245,22 @@ run_imputation<-function(
 	
 	#Load data using plink 1.9
 	cmd1<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
-	system(cmd1)
+	out1<-system(cmd1)
 	
+	
+	#check for MT presence
+	if(out1 == 3){
+	  cmd1_2<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
+	  out1_2<-system(cmd1_2,intern=T)
+	  if(length(grep("are out of order",out1_2))>0){
+	    cmd1_3<-paste("sed -i.bak '/\\tMT\\t/d'",rawdata)
+	    system(cmd1_3)
+	    out1<-system(cmd1)
+	    if(out1 == 3)stop("Something odd with the MT presence reverter I")
+	  }else{
+	    stop("Something odd with the MT presence reverter II")
+	  }
+	}
 	
 	
 	#Rscript to omit duplicates
