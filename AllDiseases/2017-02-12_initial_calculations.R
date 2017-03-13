@@ -217,7 +217,12 @@ sum(g1!=g2 & !have_unknown)
 
 
 #flip effect size whenever the word 'decrease' is used (note, this seems a bit inconsistenly done in GWAS central, but at least on sample checkups it's rare)
-data[grep('decrease',data[,"X95..CI..TEXT."]),"OR.or.BETA"] <-  -data[grep('decrease',data[,"X95..CI..TEXT."]),"OR.or.BETA"]
+
+w<-grep('decrease',data[,"X95..CI..TEXT."])
+r1<-data[w,"risk_allele"]
+r2<-data[w,"non_risk_allele"]
+data[w,"risk_allele"]<-r2
+data[w,"non_risk_allele"]<-r1
 
 
 #re-order colnames so that the essential are first
