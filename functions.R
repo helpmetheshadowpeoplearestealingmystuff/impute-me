@@ -95,7 +95,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
     stop("Problem with unique ID generation. Please re-load and try again.")
   }
-  # dir.create(paste("/home/ubuntu/data/",uniqueID,sep=""))
+  
   homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
   dir.create(homeFolderShort)
   setwd(homeFolderShort)
@@ -103,8 +103,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   write.table("Job is not ready yet",file="job_status.txt",col.names=F,row.names=F,quote=F)
   # 	
   
-  # 	
-  # 	#unzipping (or not) and moving to new place
+  #unzipping (or not) and moving to new place
   print("#unzipping (or not) and moving to new place")
   newTempPath <- paste(homeFolder,paste(uniqueID,"_raw_data",sep=""),sep="/")
   newUnzippedPath <- paste(homeFolder,paste(uniqueID,"_raw_data.txt",sep=""),sep="/")
@@ -120,7 +119,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"gzip_file",email,uniqueID)
       m<-paste(m,collapse="\t")
       write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-      stop("Don't submit gz-files. Only uncompressed text or zip-files.")
+      stop("Don't submit gz-files. Only uncompressed text or zip-files. If you already know what a gz file is, this should be easy for you. Please format as tab separated text files.")
     }else{
       #otherwise just rename
       file.rename(newTempPath, newUnzippedPath)		
@@ -132,15 +131,26 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   
   #checking if it is a consistent file
   print("checking if it is a consistent file")
-  testRead<-read.table(path,nrow=10,stringsAsFactors=F)
+  testRead<-try(read.table(path,nrow=10,stringsAsFactors=F))
+  if(class(testRead)=="try-error"){
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"general_data_file_problem",email,uniqueID)
+    m<-paste(m,collapse="\t")
+    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)	
+    unlink(homeFolder,recursive=T)
+    stop("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype")
+    
+    
+  }
+  
   if(ncol(testRead)==5){
     #This could be an ancestry.com file. Check that first
     testRead2<-read.table(path,nrow=10,stringsAsFactors=F,header=T)
     if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs"){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ancestry_problem",email,uniqueID)
       m<-paste(m,collapse="\t")
-      write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-      stop("testRead seemed like ancestry.com data, but didn't have rs IDs in column 1")
+      write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)	
+      unlink(homeFolder,recursive=T)
+      stop("Your file seemed like ancestry.com data, but didn't have rs IDs in column 1")
     }
     #ok, this is probably an ancestry.com file. Let's reformat.
     format_ancestry_com_as_23andme(path)
@@ -157,9 +167,8 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"test_read_4_columns",email,uniqueID)
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-    unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
     unlink(homeFolder,recursive=T)
-    stop("test-read didn't have 4 columns (or 5 for ancestry.com data). If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection.")
+    stop("Your file didn't have 4 columns (or 5 for ancestry.com data). If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection.")
   }
   if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs"){
     unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
@@ -167,7 +176,8 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"test_read_no_rs_id",email,uniqueID)
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-    stop("test-read didn't have rs IDs in column 1. If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection.")
+    unlink(homeFolder,recursive=T)
+    stop("Your file didn't have rs IDs in column 1. If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection.")
   }
   
   
@@ -186,7 +196,6 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
       m<-paste(m,collapse="\t")
       write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-      unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
       unlink(homeFolder,recursive=T)
       stop("A person with this genome was already analyzed by the system. Write an email if you wish to clear this flag.")
     }
