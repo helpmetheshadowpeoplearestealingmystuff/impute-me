@@ -21,7 +21,6 @@ data<-read.table("AllDiseases/gwas_catalog_v1.0-associations_e87_r2017-02-06.tsv
 
 
 
-
 #remove sets that are too small
 d<-gsub(",","",gsub("[A-Za-z]","",data[,"INITIAL.SAMPLE.SIZE"]))
 data[,"sampleSize"]<-sapply(strsplit(d," +"),function(x){sum(as.numeric(x),na.rm=T)})
@@ -76,7 +75,7 @@ data<-data[!data[,"DISEASE.TRAIT"]%in%omit,]
 
 
 #remove some columns that are not needed
-col_to_remove<-c("MAPPED_GENE","UPSTREAM_GENE_ID","DOWNSTREAM_GENE_ID","SNP_GENE_IDS","UPSTREAM_GENE_DISTANCE","DOWNSTREAM_GENE_DISTANCE","PLATFORM..SNPS.PASSING.QC.","CNV","X95..CI..TEXT.","P.VALUE..TEXT.","PVALUE_MLOG","RISK.ALLELE.FREQUENCY","CONTEXT","INTERGENIC","SNP_ID_CURRENT","MERGED","STUDY","JOURNAL","DATE.ADDED.TO.CATALOG","INITIAL.SAMPLE.SIZE","REPLICATION.SAMPLE.SIZE","CHR_POS")
+col_to_remove<-c("MAPPED_GENE","UPSTREAM_GENE_ID","DOWNSTREAM_GENE_ID","SNP_GENE_IDS","UPSTREAM_GENE_DISTANCE","DOWNSTREAM_GENE_DISTANCE","PLATFORM..SNPS.PASSING.QC.","CNV","P.VALUE..TEXT.","PVALUE_MLOG","RISK.ALLELE.FREQUENCY","CONTEXT","INTERGENIC","SNP_ID_CURRENT","MERGED","STUDY","JOURNAL","DATE.ADDED.TO.CATALOG","INITIAL.SAMPLE.SIZE","REPLICATION.SAMPLE.SIZE","CHR_POS")
 for(col in col_to_remove){data[,col]<-NULL}
 
 
@@ -216,6 +215,9 @@ have_unknown <- apply(data[,c("major_allele","minor_allele","risk_allele","non_r
 sum(g1!=g2 & !have_unknown)
 # 0 #good!
 
+
+#flip effect size whenever the word 'decrease' is used (note, this seems a bit inconsistenly done in GWAS central, but at least on sample checkups it's rare)
+data[grep('decrease',data[,"X95..CI..TEXT."]),"OR.or.BETA"] <-  -data[grep('decrease',data[,"X95..CI..TEXT."]),"OR.or.BETA"]
 
 
 #re-order colnames so that the essential are first
