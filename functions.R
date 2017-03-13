@@ -137,7 +137,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)	
     unlink(homeFolder,recursive=T)
-    stop("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype")
+    stop("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported.")
     
     
   }
