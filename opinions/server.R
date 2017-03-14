@@ -96,7 +96,7 @@ shinyServer(function(input, output) {
 		#write the score to the log file
 		log_function<-function(uniqueID,study_id,genotypes){
 			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
-			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"opinions",uniqueID,signif(mean(genotypes[,"GRS"],na.rm=T),3),gender,real_age,real_opinion)
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"opinions",uniqueID,GRS_beta,gender,real_age,real_opinion)
 			m<-paste(m,collapse="\t")
 			if(file.exists(user_log_file)){
 				write(m,file=user_log_file,append=TRUE)
@@ -226,21 +226,21 @@ shinyServer(function(input, output) {
 			#getting data
 			o<-get_data()
 			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
-			genotypes<-o[["genotypes"]]
-			
+
 			#summarising allele info into single-columns
 			SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
 			SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
 			
 			#adding genotype GRS and rounding MAF
 			SNPs_to_analyze[,"Your Genotype"]<-genotypes[rownames(SNPs_to_analyze),"genotype"]
-			SNPs_to_analyze[,"GRS"]<-signif(genotypes[rownames(SNPs_to_analyze),"GRS"],2)
+			# SNPs_to_analyze[,"GRS"]<-signif(genotypes[rownames(SNPs_to_analyze),"GRS"],2)
 			SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
 			SNPs_to_analyze[,"SNP"]<-rownames(SNPs_to_analyze)
 			
-			keep<-c("SNP","Your Genotype","Risk/non-risk Allele","GRS","Beta","PVALUE","Major/minor Allele","minor_allele_freq")
+			keep<-c("SNP","Your Genotype","Risk/non-risk Allele","personal_score","population_score_average","effect_size","PVALUE","Major/minor Allele","minor_allele_freq")
 			SNPs_to_analyze<-SNPs_to_analyze[,keep]
-			colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Your GRS (this SNP)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency")
+			colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Personal SNP-score","Personal SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency")
+			
 			
 			return(SNPs_to_analyze)
 		}
