@@ -74,7 +74,7 @@ shinyServer(function(input, output) {
         
         keep<-c("SNP","genotype","Risk/non-risk Allele","personal_score","population_score_average","effect_size","Major/minor Allele","minor_allele_freq","Source_PMID","gene","Context","Comment")
         SNPs_to_analyze<-SNPs_to_analyze[,keep]
-        colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Personal SNP-score","Personal SNP-score (population normalized)","Effect Size","Major/ minor Allele","Minor Allele Frequency","Source PMID","Gene","Context","Comment")
+        colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","Major/ minor Allele","Minor Allele Frequency","Source PMID","Gene","Context","Comment")
       
       write.xlsx(x=SNPs_to_analyze,file=file,rowNames=F)
       
