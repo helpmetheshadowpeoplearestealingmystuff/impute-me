@@ -7,10 +7,12 @@ shinyUI(bootstrapPage(
 	titlePanel("Contact"),
 	beginPage(),
 	HTML(	"
-Genetics lead: <a href='http://www.cbs.dtu.dk/staff/show-staff.php?id=1202'>Lasse Folkersen</a> (<u><a href='http://www.google.com/recaptcha/mailhide/d?k=01pdzWyCfeU-_1PRAPdKlJfg==&amp;c=3eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY=' onclick='window.open('http://www.google.com/recaptcha/mailhide/d?k\07501pdzWyCfeU-_1PRAPdKlJfg\75\75\46c\0753eyQPG-VqkHu6ECGRBSHdRraKCXOUsVtLpuyWWt-dpY\075', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;' title='Reveal this e-mail address'>email</a></u>).<br>
+Genetics lead: <a href='http://www.cbs.dtu.dk/staff/show-staff.php?id=1202'>Lasse Folkersen</a>.<br>
 				
 Design and interface lead: Stefan Delport.<br>
 Microbiome Genetics: <a href='http://www.cbs.dtu.dk/staff/show-staff.php?id=1064'>Lea Benedicte Skov Hansen</a>.<br>
+<br><br>
+We welcome suggestions for other analysis types, particularly if you can program them yourself - the system is highly modular and can easily be extended even with just a limited knowledge of R-programming and genetics.<br>
 				"),
 # 	endPage(),
 	footer()
