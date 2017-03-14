@@ -115,7 +115,6 @@ shinyServer(function(input, output) {
 		GRS <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
 		
 		
-		SNPs_to_analyze<-rbind(SNPs_to_analyze,SNPs_to_analyze_duplicates)
 		
 		
 		#check for question marks in risk-allele
@@ -124,6 +123,15 @@ shinyServer(function(input, output) {
 		  textToReturn <- paste0(textToReturn," Also note that ",sum(c1>0)," SNP(s) had <b>missing or discrepant</b> allele information, meaning that risk-allele or minor/major allele could not be correctly assigned. This is indicated with a '?' in the results table and causes the SNP to be omitted from the GRS-calculation. This is likely due to strand-reporting issues, and may be fixable by checking the original study.")
 		}
 		
+		
+		
+		#add the overall population SD value
+		textToReturn <- paste0(textToReturn," The population-wide standard deviation of this GRS was calculated to be ",signif(population_sum_sd,2)," which is taken into account when arriving at a trait GRS Z-score of ",signif(GRS,2),".")
+		
+		
+		
+		#add in the (damn) duplicates
+		SNPs_to_analyze<-rbind(SNPs_to_analyze,SNPs_to_analyze_duplicates)
 		
 		
 		#write the score to the log file
