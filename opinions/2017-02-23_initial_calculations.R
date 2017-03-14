@@ -119,3 +119,57 @@ colnames(data)[5]<-"Beta"
 write.table(data,file="opinions/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+#2017-03-14 re-calculate
+rm(list=ls())
+source("/home/ubuntu/srv/impute-me/functions.R")
+SNPs_to_analyze<-read.table("/home/ubuntu/srv/impute-me/opinions/SNPs_to_analyze.txt",sep="\t",stringsAsFactors = F,row.names=1,header=T)
+
+
+previous_g_opinions<-vector()
+new_g_opinions<-vector()
+
+otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+opinions_in_data<-data.frame(real_opinion=vector(),g_opinion=vector(),gender=vector(),real_age=vector(),stringsAsFactors=F)
+for(otherPerson in otherPersons){
+  if(!file.info(otherPerson)[["isdir"]])next
+  if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+  otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F),silent=T)
+  if(class(otherPersonPdata)=="try-error")next
+  if(!all(c("uniqueID","real_opinion","g_opinion","gender","real_age")%in%colnames(otherPersonPdata)))next
+  
+  previous_g_opinion<-signif(otherPersonPdata[1,"g_opinion"],2)
+  previous_g_opinions<-c(previous_g_opinions,previous_g_opinion)
+  
+  genotypes<-get_genotypes(uniqueID=basename(otherPerson),request=SNPs_to_analyze)
+  SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
+  SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T, verbose=T)
+  population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
+  GRS_beta <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
+  if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
+  new_g_opinion<-signif(GRS_beta,3)
+  new_g_opinions<-c(new_g_opinions,new_g_opinion)
+  
+  print(paste("changing ",basename(otherPerson),"from",previous_g_opinion, "to",new_g_opinion))
+  
+  # if(new_g_opinion< -6)stop()
+  otherPersonPdata[1,"g_opinion"]<-new_g_opinion
+  write.table(otherPersonPdata,file=paste(otherPerson,"pData.txt",sep="/"),sep="\t",col.names=T,row.names=F,quote=F)
+  
+  
+}
+
+
+
+plot(new_g_opinions,previous_g_opinions)

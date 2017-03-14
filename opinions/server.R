@@ -131,6 +131,10 @@ shinyServer(function(input, output) {
 			opinions_in_data<-o[["opinions_in_data"]]
 
 			xlim <- range(c(opinions_in_data[,"g_opinion"],o[["g_opinion"]]),na.rm=T)
+			
+			#temporary fix for some clear ethnicity effects
+			xlim[1]<-0
+			
 			ylim <- range(c(opinions_in_data[,"real_opinion"],o[["real_opinion"]]),na.rm=T)
 			plot(NULL,ylim=ylim,xlim=xlim,ylab="Stated political opinion (down is 'left', up is 'right')",xlab="Genetic opinion score (right is 'right', left is 'left')")
 			pch <- c(15,16)
@@ -203,15 +207,18 @@ shinyServer(function(input, output) {
 		  }
 		  
 		  if(spearman_rho<0.3){
-		    outcome3 <- "a fairly low association score"
+		    outcome3 <- "a fairly low association score."
 		  }else if(spearman_rho < 0.5){
-		    outcome3 <- "a medium association score"
+		    outcome3 <- "a medium association score."
 		  }else{
-		    outcome3 <- "a high association score"
+		    outcome3 <- "a high association score."
 		  }
 	
+		  notShown<-sum(o[["opinions_in_data"]][,"g_opinion"]< 0,na.rm=T)
 		  
-		  m<-paste0("<br>With current input from ",n," users, we can calculate that there <b>",outcome1,"</b> any significant political opinion effect from genetics. The percent of political opinion variation that ",outcome2," explained by genetics is ",model2_percent_explained,"% when correcting for age and gender (P=",model2_p,") and ",model1_percent_explained,"% unadjusted (P=",model1_p,"). Spearman rank correlation gives rho=",spearman_rho," (P=",spearman_p,"), which is ",outcome3,"<br>")
+		  
+		  
+		  m<-paste0("<br>With current input from ",n," users, we can calculate that there <b>",outcome1,"</b> any significant political opinion effect from genetics. The percent of political opinion variation that ",outcome2," explained by genetics is ",model2_percent_explained,"% when correcting for age and gender (P=",model2_p,") and ",model1_percent_explained,"% unadjusted (P=",model1_p,"). Spearman rank correlation gives rho=",spearman_rho," (P=",spearman_p,"), which is ",outcome3," Note that ",notShown," samples are not shown because of extreme genetic values (possibly ethnicity effects). They are included in statistics however.<br>")
 			
 		}
 		return(m)
