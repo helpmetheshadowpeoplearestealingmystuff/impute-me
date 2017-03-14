@@ -133,7 +133,7 @@ shinyServer(function(input, output) {
 		}
 	  table<-get_data()
 	  
-		table<-table[,c("SNP","Your genotype","effect_allele")]
+		table<-table[,c("SNP","genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Effect allele")
 		table<-table["rs1799971",,drop=FALSE]
 		# rownames(table)<-NULL
@@ -152,7 +152,7 @@ shinyServer(function(input, output) {
 		}
 	  table<-get_data()
 	  
-		table<-table[,c("SNP","Your genotype","effect_allele")]
+		table<-table[,c("SNP","genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Effect allele")
 		table<-table[c("rs3745274","rs2279343"),,drop=FALSE]
 	
