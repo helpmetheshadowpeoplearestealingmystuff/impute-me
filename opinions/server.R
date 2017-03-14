@@ -214,11 +214,17 @@ shinyServer(function(input, output) {
 		    outcome3 <- "a high association score."
 		  }
 	
+		  #handling that outlier
 		  notShown<-sum(o[["opinions_in_data"]][,"g_opinion"]< 0,na.rm=T)
 		  
+		  if(o[["g_opinion"]]<0){
+		    notShownInsert<-", <i>including yours</i>, "
+		  }else{
+		    notShownInsert<-""
+		  }
 		  
 		  
-		  m<-paste0("<br>With current input from ",n," users, we can calculate that there <b>",outcome1,"</b> any significant political opinion effect from genetics. The percent of political opinion variation that ",outcome2," explained by genetics is ",model2_percent_explained,"% when correcting for age and gender (P=",model2_p,") and ",model1_percent_explained,"% unadjusted (P=",model1_p,"). Spearman rank correlation gives rho=",spearman_rho," (P=",spearman_p,"), which is ",outcome3," Note that ",notShown," samples are not shown because of extreme genetic values (possibly ethnicity effects). They are included in statistics however.<br>")
+		  m<-paste0("<br>With current input from ",n," users, we can calculate that there <b>",outcome1,"</b> any significant political opinion effect from genetics. The percent of political opinion variation that ",outcome2," explained by genetics is ",model2_percent_explained,"% when correcting for age and gender (P=",model2_p,") and ",model1_percent_explained,"% unadjusted (P=",model1_p,"). Spearman rank correlation gives rho=",spearman_rho," (P=",spearman_p,"), which is ",outcome3," Note that ",notShown,notShownInsert," samples are not shown because of extreme genetic values (possibly ethnicity effects). They are included in statistics however.<br>")
 			
 		}
 		return(m)
