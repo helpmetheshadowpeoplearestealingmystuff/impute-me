@@ -303,7 +303,7 @@ run_imputation<-function(
     #if X chromosome is missing it is allowed to skip forward
     if(out2 == 13 & chr == "X"){
       print("Didn't find X-chr data, so skipping that")
-       next
+      next
     }
     
     #Then check for strand flips etc. 
@@ -1163,28 +1163,31 @@ remove_all_empty_data_folders<-function(uniqueIDs=NULL){
 
 
 
-
-
-get_GRS_2<-function(genotypes, betas, mean_scale=T, unit_variance=T, verbose=T){
+get_GRS_2<-function(snp_data, mean_scale=T, unit_variance=T, verbose=T){
+  #snp_data       a data frame with genotype, effect sizes and information on effect/non-effect allele. Optionally also information about minor allele frequency and minor/major allele (for use with mean scaling etc)
+  #mean_scale     logical. If TRUE the GRS output is scaled so that the average person, by MAF-information, will have a score of 0
+  #unit_variance  logical. If TRUE the GRS output is scaled so that 68% of everyone, by MAF/HWE-information, are within 1 unit of 0 (=1 SD)
   
-  if(class(genotypes)!="data.frame")stop(paste("genotypes must be data.frame, not",class(genotypes)))
-  if(!"genotype"%in%colnames(genotypes))stop(paste("genotypes must have a column genotype"))
-  if(!all(unique(sub("[0-9].+$","",rownames(genotypes)))%in%c("i","rs"))){
-    stop(paste("genotypes must have rownames starting with rs. You had these:",paste(unique(sub("[0-9].+$","",rownames(genotypes))),collapse=", ")))
+  
+  
+  if(class(snp_data)!="data.frame")stop(paste("snp_data must be data.frame, not",class(snp_data)))
+  if("Beta"%in%colnames(snp_data) & !"effect_size"%in%colnames(snp_data)){
+    warning("No 'effect_size' column was found, as is necessary per 2017-03-14 - but a 'Beta' column was renamed to 'effect_size'. Do fix in the future")
+    colnames(snp_data)[colnames(snp_data)%in%"Beta"]<-"effect_size"
   }
-  
-  if(class(betas)!="data.frame")stop(paste("betas must be data.frame, not",class(betas)))
-  necessary_columns<-c("effect_allele","non_effect_allele","Beta")
-  if(!all(necessary_columns%in%colnames(betas)))stop(paste("betas must have a columns",paste(necessary_columns,collapse=", ")))
-  if(!all(unique(sub("[0-9].+$","",rownames(betas)))%in%c("i","rs")))stop("betas must have rownames starting with rs")
-  if(class(betas[,"Beta"])!="numeric")stop("Class of the Beta column in the betas object must be numeric")
+  necessary_columns<-c("genotype","effect_allele","non_effect_allele","effect_size")
+  if(!all(necessary_columns%in%colnames(snp_data))){
+    stop(paste("snp_data was lacking necessary columns",paste(necessary_columns[!necessary_columns%in%colnames(snp_data)],collapse=", ")))
+  }
+  if(!all(unique(sub("[0-9].+$","",rownames(snp_data)))%in%c("i","rs")))stop("snp_data must have rownames starting with rs")
+  if(class(snp_data[,"effect_size"])!="numeric")stop("Class of the effect_size column in the snp_data object must be numeric")
   
   
   if(class(mean_scale)!="logical")stop(paste("mean_scale must be logical, not",class(mean_scale)))
   if(length(mean_scale)!=1)stop(paste("mean_scale must be length 1"))
   if(mean_scale){
     necessary_columns_2<-c("minor_allele","major_allele","minor_allele_freq")
-    if(!all(necessary_columns_2%in%colnames(betas)))stop(paste("in mean-scaling, betas must have columns",paste(necessary_columns_2,collapse=", ")))
+    if(!all(necessary_columns_2%in%colnames(snp_data)))stop(paste("in mean-scaling, snp_data must have columns",paste(necessary_columns_2,collapse=", ")))
   }
   
   if(class(unit_variance)!="logical")stop(paste("unit_variance must be logical, not",class(unit_variance)))
@@ -1197,130 +1200,91 @@ get_GRS_2<-function(genotypes, betas, mean_scale=T, unit_variance=T, verbose=T){
   
   
   
-  if(!all(rownames(betas)%in%rownames(genotypes)))stop("all SNPs in betas must be present in genotypes")
   
-  
-  
-  geneticRiskScore<- vector()
+  snp_data[,"personal_score"] <- NA
+  snp_data[,"population_score_average"] <- NA
+  snp_data[,"population_score_sd"] <- NA
+  snp_data[,"score_diff"] <- NA
   missing_snps<-vector()
   missing_major_minor_snps<-vector()
   missing_effect_info_snps <- vector()
   
-  for(snp in rownames(betas)){
-    
+  for(snp in rownames(snp_data)){
     #check for missing genotype
-    if(is.na(genotypes[snp,"genotype"])){
+    if(is.na(snp_data[snp,"genotype"])){
       missing_snps <- c(snp, missing_snps)  
-      geneticRiskScore <- c(geneticRiskScore, NA)
       next
     }
     
-    
     #get effect/non-effect-alleles and genotypes
-    genotype<-strsplit(genotypes[snp,],"/")[[1]]
-    effect_allele<-betas[snp,"effect_allele"]
-    non_effect_allele<-betas[snp,"non_effect_allele"]
+    genotype<-strsplit(snp_data[snp,"genotype"],"/")[[1]]
+    effect_allele<-snp_data[snp,"effect_allele"]
+    non_effect_allele<-snp_data[snp,"non_effect_allele"]
     
     #check if the effect allele info is missing
     if(any(is.na(c(effect_allele,non_effect_allele))) | any(c(effect_allele,non_effect_allele)%in%"?")){
       missing_effect_info_snps <- c(missing_effect_info_snps, snp)
-      geneticRiskScore <- c(geneticRiskScore, NA)
       next
     }
     
     #check if the genotype is part of these
     if(!all(genotype%in%c(effect_allele,non_effect_allele))){
       missing_effect_info_snps <- c(missing_effect_info_snps, snp)
-      geneticRiskScore <- c(geneticRiskScore, NA)
       next
     }
     
-    #get Beta      
-    beta<-betas[snp,"Beta"]	
-    
-    
-    if(is.na(beta)){
+    #get effect_size      
+    effect_size<-snp_data[snp,"effect_size"]	
+    if(is.na(effect_size)){
       missing_effect_info_snps <- c(missing_effect_info_snps, snp)
-      geneticRiskScore <- c(geneticRiskScore, NA)
       next
     }
+    personal_effect_allele_count <- sum(genotype%in%effect_allele)
+    snp_data[snp,"personal_score"] <- personal_effect_allele_count *  effect_size
     
-    if(!mean_scale){
-      personal_effect_allele_count <- sum(genotype%in%effect_allele)
-      geneticRiskScoreHere <-  personal_effect_allele_count *  beta
-      
-    }
-    
+    #if mean scale, then also calculate the average score in this population (based on MAF)    
     if(mean_scale){
-      
-      #get freq and major/minor allale
-      major_allele<-betas[snp,"major_allele"]
-      minor_allele<-betas[snp,"minor_allele"]
-      minor_allele_freq<-betas[snp,"minor_allele_freq"]
+      #get major/minor/maf info
+      major_allele<-snp_data[snp,"major_allele"]
+      minor_allele<-snp_data[snp,"minor_allele"]
+      minor_allele_freq<-snp_data[snp,"minor_allele_freq"]
       
       #check if they are missing
       if(is.na(major_allele) | is.na(minor_allele) | is.na(minor_allele_freq) | minor_allele=="?" | major_allele=="?"){
         missing_major_minor_snps <- c(snp, missing_major_minor_snps)  
-        geneticRiskScore <- c(geneticRiskScore, NA)
         next
       }
       
-      #check if major-minor and effect-non-effect
+      #check if major-minor and effect-non-effect are consistent, and get effect_allele_freq
       if(minor_allele == effect_allele & major_allele == non_effect_allele){
         effect_allele_freq <- minor_allele_freq
-        # average_effect_allele_count <- minor_allele_freq * 2
       }else if(minor_allele == non_effect_allele & major_allele == effect_allele){
         effect_allele_freq <-  1 - minor_allele_freq
-        # average_effect_allele_count <- (1-minor_allele_freq) * 2
       }else{
         stop(paste("discrepancy between effect/non-effect allele and major/minor allele for SNP",snp))
       }
       
-      
-      
-      #calculate the population mean-score and subtract it from the         
+      #Calculate what the average score is for this population and also the difference with personal score
       average_effect_allele_count <- effect_allele_freq * 2
-      personal_effect_allele_count <- sum(genotype%in%effect_allele)
-      personal_score <-  personal_effect_allele_count *  beta
-      population_average_score <- average_effect_allele_count * beta
-      mean_scaled_score <- personal_score - population_average_score
-      geneticRiskScoreHere <- mean_scaled_score
-    }
-    
-    #calculate the extent of possible variance of the score
-    if(unit_variance){
-      #skip if we anyway don't know the geneticRiskScoreHere
-      if(is.na(geneticRiskScoreHere)){
-        stop("This should't happen - geneticRiskScoreHere is NA and we are in unit_variance section")
+      snp_data[snp,"population_score_average"] <- average_effect_allele_count * effect_size
+      snp_data[snp,"score_diff"]<-snp_data[snp,"personal_score"] - snp_data[snp,"population_score_average"]
+      
+            
+      #calculate the extent of possible variance of the score
+      #in other words -- Z-scores. The population mean will always be zero... but now we can ensure that 68% (1 SD) is within "1" and 95% (2 SD) is within "2"...
+      if(unit_variance){
+        frac_0 <- (1-effect_allele_freq)^2
+        frac_1 <- (1-effect_allele_freq)*(effect_allele_freq)*2
+        frac_2 <- (effect_allele_freq)^2
+        mean <- (frac_1 * 1 * effect_size + frac_2 * 2 * effect_size)
+        sigma<-(0*effect_size - mean)^2 * frac_0  + (1*effect_size - mean)^2 * frac_1  + (2*effect_size - mean)^2 * frac_2 
+        population_sd<-( sigma)^0.5
+        snp_data[snp,"population_score_sd"] <- population_sd
       }
-      
-      #in other words -- Z-scores. The population mean will always be zero... but we ensure that 68% (1 SD) is within "1" and 95% (2 SD) is within "2"...
-      frac_0 <- (1-effect_allele_freq)^2
-      frac_1 <- (1-effect_allele_freq)*(effect_allele_freq)*2
-      frac_2 <- (effect_allele_freq)^2
-      mean <- (frac_1 * 1 * beta + frac_2 * 2 * beta)
-      sigma<-(0*beta - mean)^2 * frac_0  + (1*beta - mean)^2 * frac_1  + (2*beta - mean)^2 * frac_2 
-      population_sd<-( sigma)^0.5
-      
-      # see 2017-01-05_test_GRS_2 for explanation of why this could be substituted with above
-      # repeats<-1000
-      # g<-vector()
-      # for(i in 1:repeats){
-      #   g1<-sample(
-      #     x=c(1, 0),
-      #     size=2,
-      #     replace=T,
-      #     prob=c(effect_allele_freq,1-effect_allele_freq))
-      #   g<-c(g,sum(g1))
-      # }
-      # population_sd<-sd(g * beta)
-      # 
-      
-      geneticRiskScoreHere<- geneticRiskScoreHere/population_sd
-    }
-    
-    geneticRiskScore <- c(geneticRiskScore, geneticRiskScoreHere)
-  }
+    }      
+  }      
+  
+
   
   #follow up on the warning message  
   if(length(missing_snps)>0 & verbose){
@@ -1337,9 +1301,25 @@ get_GRS_2<-function(genotypes, betas, mean_scale=T, unit_variance=T, verbose=T){
   }
   
   
-  return(geneticRiskScore)
   
+  #the output can be summarized in several ways summarize results
+  #in the no-mean scale no-unit variance case, the choice is simply between sum and mean of personal score.
+  # GRS <- sum(snp_data[,"personal_score"],na.rm=T)
+
+  #In the mean-scale but no-unit variance, one should use the score_diff, either as sum or mean.
+  #Using the mean is compatible with default settings for plink 1.9
+  # GRS <- mean(snp_data[,"score_diff"],na.rm=T)
+    
+  #In the mean-scale and unit-variance case - one should (could) use the population_score_sd to
+  #normalize the overall GRS to unit-variance. This is done first by summing all the per-SNP GRS's
+  #like this (see http://mathworld.wolfram.com/NormalSumDistribution.html for details)
+  # population_sum_sd<-sqrt(sum(snp_data[,"population_score_sd"]^2))
+  # GRS <-sum(snp_data[,"score_diff"],na.rm=T) / population_sum_sd
+  
+  
+  return(snp_data)
 }
+
 
 
 
