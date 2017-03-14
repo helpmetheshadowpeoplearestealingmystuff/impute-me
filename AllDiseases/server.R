@@ -52,6 +52,8 @@ shinyServer(function(input, output) {
 		if(!trait%in%data[,"DISEASE.TRAIT"])stop(paste("trait",trait,"was not found"))
 		SNPs_to_analyze<-data[data[,"study_id"]%in%study_id ,]
 		
+		#rename beta to effect_size (should probably be removed later)
+		colnames(SNPs_to_analyze)[colnames(SNPs_to_analyze)%in%"Beta"]<-"effect_size"
 		
 		#gathering some background info for the study		
 		link<-unique(SNPs_to_analyze[,"LINK"])
@@ -74,15 +76,6 @@ shinyServer(function(input, output) {
 		#why would a SNP be listed twice in the results for the same trait - let's aim to merge only in GRS
 		#but list all in table for the sake of transparency)
 		if(any(duplicated(SNPs_to_analyze[,"SNP"]))){
-			
-		  SNPs_requested<-SNPs_to_analyze[!duplicated(SNPs_to_analyze[,"SNP"]),]
-			
-			
-			# SNPs_requested<-SNPs_requested[,c("SNP","chr_name")]
-			rownames(SNPs_requested)<-SNPs_requested[,"SNP"]
-			genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_requested, namingLabel="cached.all_gwas")
-			genotypes[,"GRS"] <-get_GRS_2(genotypes=genotypes,betas=SNPs_requested)
-			
 			#Handle the duplications and make a proper warning
 			duplicates<-sort(unique(SNPs_to_analyze[duplicated(SNPs_to_analyze[,"SNP"]),"SNP"]))
 			warnForDiscrepancyInBeta<-FALSE
@@ -91,24 +84,38 @@ shinyServer(function(input, output) {
 				if(
 					length(unique(s1[,"effect_allele"]))!=1|
 					length(unique(s1[,"non_effect_allele"]))!=1|
-					length(unique(s1[,"Beta"]))!=1){
+					length(unique(s1[,"effect_size"]))!=1){
 					warnForDiscrepancyInBeta<-TRUE
 				}
 			}
 			duplicates_example<-paste(duplicates[1:min(c(5,length(duplicates)))],collapse=", ")			
 			if(warnForDiscrepancyInBeta){
-				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNP(s) were entered twice for this GWAS, and the effect-size and direction was <b>not consistent</b>. The beta from the first listed SNP was used, but please cross-check the results table with the original study carefully for details (e.g. ",duplicates_example,").")
+				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNP(s) were entered twice for this GWAS, and the effect-size and direction was <b>not consistent</b>. The beta from the first listed SNP was used, but please cross-check the results table with the original study carefully for details (e.g. ",duplicates_example,"). Duplicates are indicated in the end of table but don't contribute to results.")
 			}else{
-				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNP(s) were entered twice for this GWAS, but the effect-size and direction was consistent (e.g. ",duplicates_example,").")
+				textToReturn <- paste0(textToReturn," Note ",length(duplicates)," SNP(s) were entered twice for this GWAS, but the effect-size and direction was consistent (e.g. ",duplicates_example,"). Duplicates are indicated in the end of table but don't contribute to results.")
 			}
+			
+			#then we handle it so that the extra lines are removed and inserted in the end instead
+			SNPs_to_analyze_duplicates<-SNPs_to_analyze[duplicated(SNPs_to_analyze[,"SNP"]),]
+			rownames(SNPs_to_analyze_duplicates) <- paste0("duplicate_",1:nrow(SNPs_to_analyze_duplicates))
+			for(col in c("genotype","personal_score","population_score_average","population_score_sd","score_diff")){
+			  SNPs_to_analyze_duplicates[,col]<-NA
+			}
+			SNPs_to_analyze<-SNPs_to_analyze[!duplicated(SNPs_to_analyze[,"SNP"]),]
 		}else{
-			
-			#if no duplicates this is the much simpler solution, and the above 30 lines would be unnecessary
-			rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
-			genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
-			genotypes[,"GRS"] <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
-			
+		  SNPs_to_analyze_duplicates<-SNPs_to_analyze[0,]
 		}
+		
+			
+		rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
+		genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
+		SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
+		SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T, verbose=T)
+		population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
+		GRS <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
+		
+		
+		SNPs_to_analyze<-rbind(SNPs_to_analyze,SNPs_to_analyze_duplicates)
 		
 		
 		#check for question marks in risk-allele
@@ -122,7 +129,7 @@ shinyServer(function(input, output) {
 		#write the score to the log file
 		log_function<-function(uniqueID,study_id,genotypes){
 			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
-			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"AllDisease",uniqueID,study_id,signif(mean(genotypes[,"GRS"],na.rm=T),3))
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"AllDisease",uniqueID,study_id,GRS)
 			m<-paste(m,collapse="\t")
 			if(file.exists(user_log_file)){
 				write(m,file=user_log_file,append=TRUE)
@@ -135,12 +142,8 @@ shinyServer(function(input, output) {
 		#then return the overall list		
 		return(list(
 			SNPs_to_analyze=SNPs_to_analyze,
-			genotypes=genotypes,
-			textToReturn=textToReturn))
-		
-		
-		
-		
+			textToReturn=textToReturn,
+			GRS=GRS))
 	})
 	
 	
@@ -152,9 +155,7 @@ shinyServer(function(input, output) {
 		}else if(input$goButton > 0) {
 			o<-get_data()
 			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
-			genotypes<-o[["genotypes"]]
-			
-			GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
+			GRS_beta<-o[["GRS"]]
 			
 			if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
 			
@@ -211,7 +212,7 @@ shinyServer(function(input, output) {
 			#getting data
 			o<-get_data()
 			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
-			genotypes<-o[["genotypes"]]
+			GRS<-o[["GRS"]]
 			
 			#summarising allele info into single-columns
 			SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
@@ -223,22 +224,28 @@ shinyServer(function(input, output) {
 			
 			
 			
-			#adding genotype GRS and rounding MAF
-			SNPs_to_analyze[,"Your Genotype"]<-genotypes[SNPs_to_analyze[,"SNP"],"genotype"]
-			SNPs_to_analyze[,"GRS"]<-signif(genotypes[SNPs_to_analyze[,"SNP"],"GRS"],2)
+			#rounding MAF
 			SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
 			
 			#removing duplicate GRS
-			SNPs_to_analyze[duplicated(SNPs_to_analyze[,"SNP"]),"GRS"]<-""
+			# SNPs_to_analyze[duplicated(SNPs_to_analyze[,"SNP"]),"GRS"]<-""
 			
 			#shortening the reported gene count
 			SNPs_to_analyze[,"Reported Gene"]<-sapply(strsplit(SNPs_to_analyze[,"REPORTED.GENE.S."],", "),function(x){
 				paste(x[1:min(c(2,length(x)))],collapse=", ")
 			})
 			
-			keep<-c("SNP","REGION","Your Genotype","Risk/non-risk Allele","GRS","Beta","P.VALUE","Major/minor Allele","minor_allele_freq","Reported Gene")
+			
+			#marking duplicates
+			for(col in c("genotype","personal_score","score_diff")){
+			  SNPs_to_analyze[is.na(SNPs_to_analyze[,col]),col] <- ""
+			}
+			
+			
+			keep<-c("SNP","REGION","genotype","Risk/non-risk Allele","personal_score","score_diff"
+,"effect_size","P.VALUE","Major/minor Allele","minor_allele_freq","Reported Gene")
 			SNPs_to_analyze<-SNPs_to_analyze[,keep]
-			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","Your GRS (this SNP)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
+			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","Personal SNP-score","Personal SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
 			
 			return(SNPs_to_analyze)
 		}
@@ -252,7 +259,7 @@ shinyServer(function(input, output) {
 			
 			
 		}else{
-			m<-paste0("<small><br><b>Methods</b><br>GWAS data was downloaded from <u><a href='http://www.gwascentral.org/'>GWAS central</a></u>, curated as further described in the paper by <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/?term=24301061'>Beck et al</a></u>. First a per-SNP genetic risk score (GRS) is calculated by counting the risk-alleles multiplied by the effect size (OR or beta as reported in original paper). However, before multiplying with effect size, the GRS is scaled to mean-center and unit-variance relative to the population distribution of possible genotypes. This effectively makes the scores <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-scores</a></u>. This is done using the minor-allele frequency (MAF) for each SNP, as taken from the 1000 genomes project v3. If a person is homozygote for a very rare risk variant this will result in a very high GRS Z-score, conversely if the SNP is common, the Z-score will be less extreme. The per-trait GRS is then simply the mean of all per-SNP GRS. Further details of the calculation can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/6c05cef7a182c895fa88cd741e4d529e4bfb8200/functions.R#L1023-L1172'>source code</a></u>. The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype. The disadvantage is that particularly ethnicity-specific genetics may be skewed, according to differences in MAF. This is however anyway the case for the GWAS reported risk-SNPs and effect sizes to begin with, and it is always recommended to check the original study to see what ethnicity was investigated. Another potential issue is that in some cases the term genetic <i>risk</i> score may be problematic. This is for example the case for GWAS of biological quantities were it is not clear if higher values are <i>more</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also check out the <u><a href='http://www.impute.me/HeuristicHealth'>HeuresticHealth-module</a></u> under development - based on this info, but without having to scroll through all entries</small>")
+			m<-paste0("<small><br><b>Methods</b><br>GWAS data was downloaded from <u><a href='http://www.gwascentral.org/'>GWAS central</a></u>, curated as further described in the paper by <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/?term=24301061'>Beck et al</a></u>. First a per-SNP score is calculated by counting the risk-alleles multiplied by the effect size (OR or beta as reported in original paper). This is centered so that the average score in the general population is zero. The sum of these normalized SNP-scores is additionally scaled so that standard-deviation in the general population is exactly 1 (unit-variance). This effectively makes the scores <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-scores</a></u>. This is done using the minor-allele frequency (MAF) for each SNP, as taken from the 1000 genomes project v3. If a person is homozygote for a very rare risk variant this will result in a very high GRS Z-score, conversely if the SNP is common, the Z-score will be less extreme. The per-trait GRS is then simply the mean of all per-SNP GRS. Further details of the calculation can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/6c05cef7a182c895fa88cd741e4d529e4bfb8200/functions.R#L1023-L1172'>source code</a></u>. The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype. The disadvantage is that particularly ethnicity-specific genetics may be skewed, according to differences in MAF. This is however anyway the case for the GWAS reported risk-SNPs and effect sizes to begin with, and it is always recommended to check the original study to see what ethnicity was investigated. Another potential issue is that in some cases the term genetic <i>risk</i> score may be problematic. This is for example the case for GWAS of biological quantities were it is not clear if higher values are <i>more</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also check out the <u><a href='http://www.impute.me/HeuristicHealth'>HeuresticHealth-module</a></u> under development - based on this info, but without having to scroll through all entries</small>")
 								
 		}
 		return(m)

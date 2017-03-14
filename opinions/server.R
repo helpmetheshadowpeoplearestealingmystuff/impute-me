@@ -50,8 +50,12 @@ shinyServer(function(input, output) {
 		SNPs_to_analyze<-read.table("/home/ubuntu/srv/impute-me/opinions/SNPs_to_analyze.txt",sep="\t",stringsAsFactors = F,row.names=1,header=T)
 		
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
-		genotypes[,"GRS"] <-get_GRS_2(genotypes=genotypes,betas=SNPs_to_analyze)
-		GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
+		
+		
+		SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
+		SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T, verbose=T)
+		population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
+		GRS_beta <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
 		if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
 		
 		
@@ -162,9 +166,9 @@ shinyServer(function(input, output) {
 			)
 
 			#highlight main person
-			points(o[["real_opinion"]], y=o[["g_opinion"]],pch=pch[o[["gender"]]],cex=2,col=cols[as.character(10*round(o[["real_age"]]/10))])
-			abline(h=o[["g_opinion"]],lty=2)
-			abline(v=o[["real_opinion"]],lty=2)
+			points(x=o[["g_opinion"]],y=o[["real_opinion"]],pch=pch[o[["gender"]]],cex=2,col=cols[as.character(10*round(o[["real_age"]]/10))])
+			abline(v=o[["g_opinion"]],lty=2)
+			abline(h=o[["real_opinion"]],lty=2)
 			
 			
       

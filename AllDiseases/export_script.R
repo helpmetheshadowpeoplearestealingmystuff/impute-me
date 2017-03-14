@@ -27,9 +27,13 @@ export_function<-function(uniqueID){
     SNPs_requested<-SNPs_to_analyze[!duplicated(SNPs_to_analyze[,"SNP"]),]
     rownames(SNPs_requested)<-SNPs_requested[,"SNP"]
     genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_requested, namingLabel="cached.all_gwas")
-    genotypes[,"GRS"] <-get_GRS_2(genotypes=genotypes,betas=SNPs_requested)
     
-    GRS_beta<-mean(genotypes[,"GRS"],na.rm=T)
+    snp_data<-SNPs_requested
+    snp_data[,"genotype"] <- genotypes[rownames(snp_data),"genotype"]
+    snp_data <-get_GRS_2(snp_data,mean_scale=T, unit_variance=T, verbose=T)
+    population_sum_sd<-sqrt(sum(snp_data[,"population_score_sd"]^2))
+    GRS_beta <-sum(snp_data[,"score_diff"],na.rm=T) / population_sum_sd
+    
     
     output[[study_id]]<- GRS_beta
            

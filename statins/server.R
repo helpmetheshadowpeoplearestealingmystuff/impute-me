@@ -21,17 +21,23 @@ shinyServer(function(input, output) {
       Sys.sleep(3) #wait a little to prevent raw-force fishing	
       stop(paste("Did not find a user with this id",uniqueID))
     }
+    
     table_file <-"/home/ubuntu/srv/impute-me/statins/SNPs_to_analyze.txt"
     SNPs_to_analyze<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
     rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
     genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
-    SNPs_to_analyze[,"GRS"]<-get_GRS_2(genotypes=genotypes, betas=SNPs_to_analyze)
-    SNPs_to_analyze[,"Your genotype"]<-genotypes[rownames(SNPs_to_analyze),]
     
     
-    keep<-c("SNP","locus","Your genotype","effect_allele","non_effect_allele","GRS","Beta","minor_allele","major_allele","minor_allele_freq","Source_PMID","Direction","gene","Context","Comment")
+    SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
+    SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T, verbose=T)
+    # population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
+    # GRS_beta <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
+    
+    
+    keep<-c("SNP","locus","genotype","effect_allele","non_effect_allele","effect_size","minor_allele","major_allele","minor_allele_freq","Source_PMID","Direction","gene","Context","Comment","personal_score","population_score_average","population_score_sd","score_diff")
     SNPs_to_analyze<-SNPs_to_analyze[,keep]
-
+    
+    
     
     #write the query to the log file
     log_function<-function(uniqueID){
@@ -57,20 +63,18 @@ shinyServer(function(input, output) {
       library(openxlsx)
 
       SNPs_to_analyze<-get_data()
-      
-      #summarising allele info into single-columns
-      SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
-      SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
-      
-      #adding genotype GRS and rounding MAF
-      SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
-      SNPs_to_analyze[,"GRS"] <- signif(SNPs_to_analyze[,"GRS"], 2)
-      
-      
-      
-      keep<-c("SNP","Your genotype","Risk/non-risk Allele","GRS","Beta","Major/minor Allele","minor_allele_freq","Source_PMID","gene","Context","Comment")
-      SNPs_to_analyze<-SNPs_to_analyze[,keep]
-      colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Your GRS (this SNP)","Effect Size","Major/ minor Allele","Minor Allele Frequency","Source PMID","Gene","Context","Comment")
+        
+        #summarising allele info into single-columns
+        SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
+        SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
+        
+        #adding genotype GRS and rounding MAF
+        SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
+        
+        
+        keep<-c("SNP","genotype","Risk/non-risk Allele","personal_score","population_score_average","effect_size","Major/minor Allele","minor_allele_freq","Source_PMID","gene","Context","Comment")
+        SNPs_to_analyze<-SNPs_to_analyze[,keep]
+        colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Personal SNP-score","Personal SNP-score (population normalized)","Effect Size","Major/ minor Allele","Minor Allele Frequency","Source PMID","Gene","Context","Comment")
       
       write.xlsx(x=SNPs_to_analyze,file=file,rowNames=F)
       
@@ -98,10 +102,12 @@ shinyServer(function(input, output) {
 		}
 	  SNPs_to_analyze<-get_data()
 	  
-		
-		
-		GRS_beta<-mean(SNPs_to_analyze[,"GRS"],na.rm=T)
-
+	  SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"Source_PMID"]%in%"28223407",]
+	  
+	  population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
+	  GRS_beta <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
+	  
+	  
 		Proportion<-signif(pnorm(GRS_beta,mean=0,sd=1),2)*100
 		if(Proportion > 80){
 		  type <- "High Genetic Risk"

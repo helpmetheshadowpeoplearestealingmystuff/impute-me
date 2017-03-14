@@ -1285,6 +1285,11 @@ get_GRS_2<-function(snp_data, mean_scale=T, unit_variance=T, verbose=T){
   }      
   
 
+  #round values
+  for(col in c("personal_score","population_score_average","population_score_sd","score_diff")){
+    SNPs_to_analyze_duplicates[,col]<-signif(SNPs_to_analyze_duplicates[,col],2)
+  }
+  
   
   #follow up on the warning message  
   if(length(missing_snps)>0 & verbose){
