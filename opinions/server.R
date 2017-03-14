@@ -231,13 +231,11 @@ shinyServer(function(input, output) {
 			SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
 			SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
 			
-			#adding genotype GRS and rounding MAF
-			SNPs_to_analyze[,"Your Genotype"]<-genotypes[rownames(SNPs_to_analyze),"genotype"]
-			# SNPs_to_analyze[,"GRS"]<-signif(genotypes[rownames(SNPs_to_analyze),"GRS"],2)
+			#round MAF
 			SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
 			SNPs_to_analyze[,"SNP"]<-rownames(SNPs_to_analyze)
 			
-			keep<-c("SNP","Your Genotype","Risk/non-risk Allele","personal_score","population_score_average","effect_size","PVALUE","Major/minor Allele","minor_allele_freq")
+			keep<-c("SNP","genotype","Risk/non-risk Allele","personal_score","population_score_average","effect_size","PVALUE","Major/minor Allele","minor_allele_freq")
 			SNPs_to_analyze<-SNPs_to_analyze[,keep]
 			colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Personal SNP-score","Personal SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency")
 			
