@@ -130,6 +130,18 @@ shinyServer(function(input, output) {
 		
 		
 		
+		#add the final summary
+		percentage<-signif(pnorm(GRS_beta,mean=control_mean,sd=control_sd),2)*100
+		if(percentage < 33.3){
+		  summary <- " This is a low score."
+		}else if(percentage > 66.6){
+		  summary <- " This is a high score."
+		}else{
+		  summary <- " This fairly average score."
+		}
+		textToReturn <- paste0(textToReturn," This means that <b>your genetic risk score for this trait will be higher than ",percentage,"% of the general population</>.",summary)
+		
+		
 		#add in the (damn) duplicates
 		SNPs_to_analyze<-rbind(SNPs_to_analyze,SNPs_to_analyze_duplicates)
 		
