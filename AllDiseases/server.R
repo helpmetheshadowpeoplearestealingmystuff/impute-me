@@ -139,7 +139,7 @@ shinyServer(function(input, output) {
 		}else{
 		  summary <- " This fairly average score."
 		}
-		textToReturn <- paste0(textToReturn," This means that <b>your genetic risk score for this trait will be higher than ",percentage,"% of the general population</>.",summary)
+		textToReturn <- paste0(textToReturn," This means that your genetic risk score for this trait will be <b>higher than ",percentage,"% of the general population</b>.",summary)
 		
 		
 		#add in the (damn) duplicates
