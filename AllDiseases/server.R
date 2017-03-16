@@ -131,7 +131,7 @@ shinyServer(function(input, output) {
 		
 		
 		#add the final summary
-		percentage<-signif(pnorm(GRS_beta,mean=control_mean,sd=control_sd),2)*100
+		percentage<-signif(pnorm(GRS,mean=0,sd=1),2)*100
 		if(percentage < 33.3){
 		  summary <- " This is a low score."
 		}else if(percentage > 66.6){
