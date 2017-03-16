@@ -137,7 +137,7 @@ shinyServer(function(input, output) {
 		}else if(percentage > 66.6){
 		  summary <- " This is a high score."
 		}else{
-		  summary <- " This fairly average score."
+		  summary <- " This is a fairly average score."
 		}
 		textToReturn <- paste0(textToReturn," This means that your genetic risk score for this trait will be <b>higher than ",percentage,"% of the general population</b>.",summary)
 		
