@@ -37,6 +37,8 @@ shinyServer(function(input, output) {
 		#initial UI data gathering and user-check
 		study_id<-input$trait
 		uniqueID<-gsub(" ","",input$uniqueID)
+		ethnicity_group<-input$ethnicity_group
+		if(ethnicity_group != "Global average")stop("Only global average frequencies are currently implemented")
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 		if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
