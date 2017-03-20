@@ -1430,12 +1430,12 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
   waiting_files<-vector()
   for(w1 in list.files("/home/ubuntu/imputations",full.names=T)){
     load(paste0(w1,"/variables.rdata"))
-    status<-read.table(paste0(w1,"/job_status.txt"),sep="\t",stringsAsFactors = F)[1,1]
+    status<-sub("Job is ","",read.table(paste0(w1,"/job_status.txt"),sep="\t",stringsAsFactors = F)[1,1])
     waiting_files<-c(waiting_files,paste(uniqueID,email,status,sep=" - "))
   }
   plot(NULL,ylim=c(0,length(waiting_files)+1),xlim=c(0,1),frame=F,xaxt="n",yaxt="n",xlab="",ylab="")
   for(w2 in 1:length(waiting_files)){
-    text(x=0.1,y=length(waiting_files)-w2,label=waiting_files[w2],adj=0,cex=0.6)
+    text(x=0.02,y=length(waiting_files)-w2,label=waiting_files[w2],adj=0,cex=0.6)
   }
   
   
