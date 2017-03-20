@@ -8,7 +8,7 @@ shinyServer(function(input, output) {
 		if(input$goButton == 0){
 			return(NULL)
 		}
-		uniqueID<-isolate(input$uniqueID)
+	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){

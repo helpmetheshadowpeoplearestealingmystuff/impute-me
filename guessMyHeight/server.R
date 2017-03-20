@@ -66,7 +66,7 @@ shinyServer(function(input, output) {
 			
 		}else if(input$goButton > 0) {
 			
-			uniqueID<-isolate(input$uniqueID)
+		  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 			if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 			if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 			pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
@@ -223,7 +223,7 @@ shinyServer(function(input, output) {
 	
 	
 	output$plot_haircol1 <- renderPlot({
-		uniqueID <- isolate(input$uniqueID)
+	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 		col_provided <- isolate(input$col_provided)
 		
 		#paint the image map
@@ -233,7 +233,7 @@ shinyServer(function(input, output) {
 			
 			
 			#Check unique ID
-			uniqueID<-isolate(input$uniqueID)
+		  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 			if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 			if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 			pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")

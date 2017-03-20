@@ -83,7 +83,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 		
 		# Take a dependency on input$goButton
 		if(input$goButton > 0) {
-			uniqueID<-isolate(input$uniqueID)
+		  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 			if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 			if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 			# pDataFile<-paste(dataFolder,uniqueID,"/pData.txt",sep="")

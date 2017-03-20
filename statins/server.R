@@ -14,7 +14,7 @@ shinyServer(function(input, output) {
   get_data <- reactive({
     
     #initial UI data gathering and user-check
-    uniqueID<-input$uniqueID
+    uniqueID<-gsub(" ","",input$uniqueID)
     if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
     if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
     if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){

@@ -27,7 +27,7 @@ shinyServer(function(input, output) {
 	  }else{
 	    
 		#initial UI data gathering and user-check
-		uniqueID<-input$uniqueID
+	  uniqueID<-gsub(" ","",input$uniqueID)
 		real_age<-input$real_age
 		real_opinion<-input$real_opinion
 		

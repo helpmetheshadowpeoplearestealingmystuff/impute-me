@@ -17,8 +17,8 @@ shinyServer(function(input, output) {
 		}else if(input$goButton > 0) {
 			print(paste("Ok",input$goButton))
 		}
-		
-		uniqueID<-isolate(input$uniqueID)
+	  
+		uniqueID<-isolate(gsub(" ","",input$uniqueID))
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")

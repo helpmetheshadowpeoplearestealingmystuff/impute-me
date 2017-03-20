@@ -10,7 +10,7 @@ shinyServer(function(input, output) {
 		# 				if(input$goButton == 0){
 		# 					return(NULL)
 		# 				}
-		uniqueID<-isolate(input$uniqueID)
+	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
@@ -45,7 +45,7 @@ shinyServer(function(input, output) {
 		if(input$goButton == 0){
 			return(NULL)
 		}
-		uniqueID<-isolate(input$uniqueID)
+	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 		table<-get_table_here()
 		
 		# diseases_of_interest <- unique(table[table[,"Second_carrier"] | table[,"First_carrier"],"disease_name"])
@@ -62,7 +62,7 @@ shinyServer(function(input, output) {
 		if(input$goButton == 0){
 			return(NULL)
 		}
-		uniqueID<-isolate(input$uniqueID)
+	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 		table<-get_table_here()
 		
 		diseases_of_interest <- unique(table[table[,"Second_carrier"] | table[,"First_carrier"],"disease_name"])
