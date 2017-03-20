@@ -1358,7 +1358,6 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
   pdf(filepath,width=5,height=8)
   layout(matrix(1:6,nrow=3,byrow=T))
   
-  
   first_timeStamps<-vector()
   user_log<-data.frame(uniqueIDs=vector(),modules=vector(),dates=vector(),stringsAsFactors=F)
   for(uniqueID in uniqueIDs){
@@ -1383,14 +1382,18 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
   
   sampleSize<-data.frame(dates=sort(as.Date(first_timeStamps)),count=1:length(first_timeStamps))
   plot(type='l',x=sampleSize[,"dates"],sampleSize[,"count"],xlab="Date",ylab="Sample Count",lwd=2,main="Sample size")
-  
-  
   user_log<-user_log[order(strptime(user_log[,"dates"],format="%Y-%m-%d-%H-%S")),]
   
+  special_ids<-c("id_613z86871","id_4K806Dh21","id_8E523a1t7")
+  
   for(module in sort(unique(user_log[,"modules"]))){
+    #only grab for this module
     u1<-user_log[user_log[,"modules"]%in%module,]
+    #omit the special-users (e.g. myself)
+    u1<-u1[!u1[,"uniqueIDs"]%in%special_ids,]
+    
+    #get cum-count
     u1[,"count"]<-1:nrow(u1)
-    # strptime(user_log[,"dates"],format="%Y-%m-%d-%H-%S"))
     plot(type='s',x=strptime(u1[,"dates"],format="%Y-%m-%d-%H-%S"),u1[,"count"],xlab="Date",ylab="",lwd=2,main=module,col=rgb(1,0,0,0.7))
     
     par(new = T)
@@ -1404,7 +1407,45 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
     
     
   }
+  
+  
+  
+  #plot only special ids (myself)
+  u1<-user_log
+  u1<-u1[u1[,"uniqueIDs"]%in%special_ids,]
+  #get cum-count
+  u1[,"count"]<-1:nrow(u1)
+  plot(type='s',x=strptime(u1[,"dates"],format="%Y-%m-%d-%H-%S"),u1[,"count"],xlab="Date",ylab="",lwd=2,main="Special users",col=rgb(1,0,0,0.7))
+  par(new = T)
+  u2<-u1[!duplicated(u1[,"uniqueIDs"]),,drop=FALSE]
+  u2[,"count"]<-1:nrow(u2)
+  plot(type='s',x=strptime(u2[,"dates"],format="%Y-%m-%d-%H-%S"),u2[,"count"],lwd=2,col="blue",xaxt="n",yaxt="n",xlab="",ylab="")
+  axis(4)
+  legend("topleft",col=c(rgb(1,0,0,0.7),rgb(0,0,1,0.7)),lty=1,legend=c("Unique Requests (left)","Unique Users (right)"),cex=0.7,lwd=2)
+  
+  
+  
+  
+  #generate list of waiting genomes
+  waiting_files<-vector()
+  for(w1 in list.files("/home/ubuntu/imputations",full.names=T)){
+    load(paste0(w1,"/variables.rdata"))
+    status<-read.table(paste0(w1,"/job_status.txt"),sep="\t",stringsAsFactors = F)[1,1]
+    waiting_files<-c(waiting_files,paste(uniqueID,email,status,sep=" - "))
+  }
+  plot(NULL,ylim=c(0,length(waiting_files)+1),xlim=c(0,1),frame=F,xaxt="n",yaxt="n",xlab="",ylab="")
+  for(w2 in 1:length(waiting_files)){
+    text(x=0.1,y=length(waiting_files)-w2,label=waiting_files[w2],adj=0,cex=0.6)
+  }
+  
+  
+  
   dev.off()
+  
+  
+  
+  
+  
   return(relative_webpath)
 }
 
