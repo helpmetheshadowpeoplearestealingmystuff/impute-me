@@ -20,7 +20,8 @@ shinyUI(bootstrapPage(
 	actionButton("goButton","Run analysis"),
 	endPanel(),
 	beginPanel('2/3'),
-	HTML("'Heuristic', means any approach to problem solving, learning, or discovery that employs a practical method not guaranteed to be optimal or perfect, but sufficient for the immediate goals. Health, that's the context of you. <br><br>
+	HTML("<b>Currently only works for select users</b> <br><br>
+'Heuristic', means any approach to problem solving, learning, or discovery that employs a practical method not guaranteed to be optimal or perfect, but sufficient for the immediate goals. Health, that's the context of you. <br><br>
 
 <b>Too much text? Watch a video instead:</b><br>
 <iframe width='560' height='315' src='https://www.youtube.com/embed/ecGL2r28UuA' frameborder='0' allowfullscreen></iframe><br><br>
@@ -28,7 +29,7 @@ shinyUI(bootstrapPage(
 <b>Details</b><br>
 So in other words: Except for the few strong-effect cases (the 'long tail' and the 'mendelian' genetics), much of what we can learn from our genomes suffer from being intepreted outside of the current health context: Knowledge of an increased genetic risk of a particular disease-subtype may aid you only if you anyway are being evaluated for a diffuse set of symptoms that include this disease. For example, an increased genetic risk of leukemia may mean very little in a general population, but for patients with systemic joint pain it could be the difference between a wrongful investigation for rheumatoid arthritis or correct investigation for leukemia.<br><br>
 
-This is the purpose of the Heurestic Health module. On providing a suspected disease name, snippet of journal text, or disease ICD-10 code, the goal of the algorithm is to provide you with relevant genetic information. Nothing more, nothing less. It may provide that no relevant genetic information was found; many diseases have little genetic basis. It may provide obvious information; disease risks that were already diagnosed. But it may also with new and useful knowledge, regarding differential diagnosis or drug response prediction.<br><br>
+This is the purpose of the Heurestic Health module. On providing a suspected disease name, snippet of journal text, or disease ICD-10 code, the goal of the algorithm is to provide you with relevant genetic information. Nothing more, nothing less. It may provide that no relevant genetic information was found; many diseases have little genetic basis. It may provide obvious information; disease risks that were already diagnosed. But it may also with new and useful knowledge, regarding differential diagnosis or drug response prediction. Work on this module is still very much in progress however, and no results can be provided in general<br><br>
 Example <i>Disease Context</i> texts: 'supected rheumatoid arthritis, systemic joint pain', 'M06.9'<br>
 Example <i>Unique ID</i>: id_613z86871<br>"),
 	
