@@ -14,9 +14,9 @@ shinyServer(function(input, output) {
 	
 	
 	
-	output$text1 <- renderText({ 
-		paste("Currently selected file is\n",input$largeFile[["name"]],"(size",round(input$largeFile[["size"]]/1000000),"MB)")
-	})
+	# output$text1 <- renderText({ 
+		# paste("Currently selected file is\n",input$largeFile[["name"]],"(size",round(input$largeFile[["size"]]/1000000),"MB)")
+	# })
 	
 	
 	output$text2 <- renderText({ 
@@ -25,7 +25,7 @@ shinyServer(function(input, output) {
 		if(input$goButton == 0){
 			return("")
 		}else if(input$goButton == 1) {
-			return("Ok")
+			return("")
 		}else{
 			stop("Please don't try to submit the job more than once.")	
 		}

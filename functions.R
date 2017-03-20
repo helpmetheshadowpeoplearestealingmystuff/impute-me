@@ -208,7 +208,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
   
   
-  return(paste("Genome files succesfully uploaded. During the next week you will receive an email to",email,"with download-instructions (look in your spam filter if not). You can close this browser window."))
+  return(paste("Genome files succesfully submitted. <b>The processing of your genome will take several days to run</b>. Typically between 1 and 5 days, depending on server-queue. When the processing is finished you will receive an email to",email,"with uniqueID and download-instructions. Look in your spam filter if not. You can close this browser window."))
   
   
 }
