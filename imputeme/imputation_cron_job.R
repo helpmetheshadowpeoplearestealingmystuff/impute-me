@@ -65,7 +65,7 @@ if(serverRole== "Hub"){
 if(serverRole== "Node"){
 	cmd1 <- paste("ssh ubuntu@",hubAddress," ls /home/ubuntu/imputations/",sep="")
 	remoteFoldersToCheck<-system(cmd1,intern=T)
-	for(remoteFolderToCheck in remoteFoldersToCheck){
+	for(remoteFolderToCheck in rev(remoteFoldersToCheck)){
 		cmd2 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
 		jobStatus<-system(cmd2,intern=T)
 		#Check if the job is ready
