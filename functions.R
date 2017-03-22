@@ -939,10 +939,10 @@ format_ancestry_com_as_23andme<-function(path){
   if(!file.exists(path))stop(paste("Did not find file at path:",path))
   
   #logging
-  m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"invoking format_ancestry_com_as_23andme",path)
-  m<-paste(m,collapse="\t")
-  write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-  
+  # m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"invoking format_ancestry_com_as_23andme",path)
+  # m<-paste(m,collapse="\t")
+  # write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+  # 
   
   testRead<-read.table(path,nrow=10,stringsAsFactors=F,header=T)
   if(ncol(testRead)!=5){stop("testRead of file didn't have 5 columns (as it should have when invoking ancestry.com conversion)")}
@@ -1009,10 +1009,10 @@ format_myheritage_as_23andme<-function(path){
   if(!file.exists(path))stop(paste("Did not find file at path:",path))
   
   #logging
-  m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"invoking format_myheritage_as_23andme",path)
-  m<-paste(m,collapse="\t")
-  write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-  
+  # m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"invoking format_myheritage_as_23andme",path)
+  # m<-paste(m,collapse="\t")
+  # write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+  # 
   testRead<-read.table(path,nrow=10,stringsAsFactors=F,header=T,sep=",")
   if(ncol(testRead)!=4){stop("testRead of file didn't have 5 columns (as it should have when invoking myheritage conversion)")}
   if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead seemed like myheritage data, but didn't have rs IDs in column 1")
