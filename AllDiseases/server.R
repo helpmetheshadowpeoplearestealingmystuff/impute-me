@@ -38,7 +38,6 @@ shinyServer(function(input, output) {
 		study_id<-input$trait
 		uniqueID<-gsub(" ","",input$uniqueID)
 		ethnicity_group<-input$ethnicity_group
-		if(ethnicity_group != "Global average")stop("Only global average frequencies are currently implemented")
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
 		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
 		if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
@@ -54,8 +53,15 @@ shinyServer(function(input, output) {
 		if(!trait%in%data[,"DISEASE.TRAIT"])stop(paste("trait",trait,"was not found"))
 		SNPs_to_analyze<-data[data[,"study_id"]%in%study_id ,]
 		
-		#rename beta to effect_size (should probably be removed later)
-		colnames(SNPs_to_analyze)[colnames(SNPs_to_analyze)%in%"Beta"]<-"effect_size"
+    #setting up back ground frequency guessing
+		if(ethnicity_group == "automatic"){
+		  stop("Automatic guess ethnicity not implemented yet")
+		}else if(ethnicity_group == "global"){
+		  #do nothing - this is the default
+		}else{
+		  #then replace the MAF with the correct superpopulation group
+		  SNPs_to_analyze[,"minor_allele_freq"] <- SNPs_to_analyze[,paste0(ethnicity_group,"_AF")]
+		}
 		
 		#gathering some background info for the study		
 		link<-unique(SNPs_to_analyze[,"LINK"])

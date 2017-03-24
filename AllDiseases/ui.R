@@ -9,8 +9,10 @@ load("/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_trait_overoverview.rdata
 #testing
 # load("AllDiseases/2017-02-21_trait_overoverview.rdata")
 
+#defining 1000 genomes populations
+ethnicities<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
+names(ethnicities)<-c("Automatic guess","Global average","African","Ad Mixed American","East Asian","European","South Asian")
 
-ethnicities<-c("Automatic Guess","Global average","EAS, CHB","EAS, JPT","EAS, CHS","EAS, CDX","EAS, KHV","EUR, CEU","EUR, TSI","EUR, FIN","EUR, GBR","EUR, IBS","AFR, YRI","AFR, LWK","AFR, GWD","AFR, MSL","AFR, ESN","AFR, ASW","AFR, ACB","AMR, MXL","AMR, PUR","AMR, CLM","AMR, PEL","SAS, GIH","SAS, PJL","SAS, BEB","SAS, STU","SAS, ITU")
 
 selections<-traits[,"study_id"]
 names(selections)<-traits[,"niceName"]

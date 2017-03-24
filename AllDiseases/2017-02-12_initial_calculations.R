@@ -231,7 +231,7 @@ data<-data[,c(putFirst,colnames(data)[!colnames(data)%in%putFirst])]
 colnames(data)[1]<-"SNP"
 colnames(data)[3]<-"effect_allele"
 colnames(data)[4]<-"non_effect_allele"
-colnames(data)[5]<-"Beta"
+colnames(data)[5]<-"effect_size"
 save(data, file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
 
 
@@ -274,3 +274,111 @@ rownames(traits)<-traits[,"study_id"]
 save(traits, file="AllDiseases/2017-02-21_trait_overoverview.rdata")
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#2017-03-23 getting other population frequencies
+
+# wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/
+
+rm(list=ls())
+load("2017-02-21_all_gwas_snps.rdata")
+load("2017-02-21_semi_curated_version_gwas_central.rdata")
+data[,"chr_name"]<-sub("[qp].+$","",data[,"REGION"])
+#checking that it doesn't matter which one I use
+for(chr in unique(gwas_snps[,"chr_name"])){
+  g1<-gwas_snps[gwas_snps[,"chr_name"]%in%chr,]
+  g2<-data[data[,"chr_name"]%in%chr,]
+  if(!all(g2[,"SNP"]%in%rownames(g1)) | !all(rownames(g1)%in%g2[,"SNP"]))stop("!")
+}
+
+
+#Ok fine, start over - now on compute node
+# qsub -I -W group_list=bav_gwas -l nodes=1:ppn=1,mem=32gb,walltime=36000
+
+rm(list=ls())
+load("2017-02-21_semi_curated_version_gwas_central.rdata")
+path_1kg<-"/home/people/lasfol/downloadBulk/annotation/1000_genomes_20130502/"
+data[,"chr_name"]<-sub("[qp].+$","",data[,"REGION"])
+
+
+output<-data.frame("CHROM"=vector(), "POS"=vector(),   "REF"=vector(),   "ALT"=vector(),   "AF"=vector(),    "EAS_AF"=vector(),"AMR_AF"=vector(),"AFR_AF"=vector(),"EUR_AF"=vector(),"SAS_AF"=vector(),stringsAsFactors = F)
+
+for(chr in sort(unique(data[,"chr_name"]))){
+  print(chr)
+  g1<-data[data[,"chr_name"]%in%chr,]
+  snps<-unique(g1[,"SNP"])
+  
+  write.table(snps,file="temp_list_of_snps.txt",sep="\t",col.names=F,row.names=F,quote=F)
+  
+  if(chr =="X"){
+    vcf_path<-paste0(path_1kg,"ALL.chrX.phase3_shapeit2_mvncall_integrated_v1b.20130502.genotypes.vcf.gz")
+  }else{
+    vcf_path<-paste0(path_1kg,"ALL.chr",chr,".phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz")
+  }
+  cmd1<-paste0("vcftools --indv HG00096 --snps temp_list_of_snps.txt --gzvcf ",vcf_path," --out chr",chr," --recode --recode-INFO-all")
+  system(cmd1)
+  
+  cmd2 <- paste0("cut -f 3 chr",chr,".recode.vcf")
+  snps<-grep("^[#I]",system(cmd2,inter=T),value=T,invert=T)
+  
+  cmd3 <- paste0("vcftools --vcf chr",chr,".recode.vcf --get-INFO AF --get-INFO EAS_AF --get-INFO AMR_AF --get-INFO AFR_AF --get-INFO EUR_AF --get-INFO SAS_AF --out chr",chr)
+  system(cmd3)
+  
+  result<-read.table(paste0("chr",chr,".INFO"),sep="\t",header=T,stringsAsFactors = F)
+  rownames(result)<-snps
+  output <- rbind(output, result)
+  
+}
+
+# cmd2<-paste0("cat ",paste(paste0("chr",c(1:22,"X"),".INFO"), collapse=" ")," > 2017-03-24_all_frequencies.txt")
+# system(cmd2)
+
+write.table(output,file="2017-03-24_all_frequencies.txt",sep="\t",col.names=NA)
+
+
+#merge in
+rm(list=ls())
+load("AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+all_freq<-read.table("AllDiseases/2017-03-24_all_frequencies.txt.gz",stringsAsFactors = F,header=T,row.names=1)
+
+#set 0 to minimum (e.g. 0.001 which is otherwise the lowest value)
+af_cols<-grep("AF$",colnames(all_freq),value=T)
+for(col in af_cols){
+    all_freq[all_freq[,col]%in%0,col]<-0.001
+}
+data<-cbind(data,all_freq[data[,"SNP"],])
+
+plot(data[,"AF"],data[,"minor_allele_freq"],main="before flip")
+flip_these <- which(data[,"REF"]==data[,"minor_allele"])
+for(col in af_cols){
+  print(col)
+  data[flip_these,col] <- 1 - data[flip_these,col]
+}
+length(flip_these)
+nrow(data)
+
+plot(data[,"AF"],data[,"minor_allele_freq"],main="after flip")
+
+#have to remove a single discrepant SNP (rs145929329 and glioblastome... odd, but inconsequential)
+data<-data[!1:nrow(data)%in%which(data[,"AF"]>0.5),]
+
+colnames(data)
+#remove columns not needed
+data[,"CHROM"]<-data[,"POS"]<-data[,"REF"]<-data[,"ALT"]<-data[,"AF"]<-NULL
+
+
+save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
