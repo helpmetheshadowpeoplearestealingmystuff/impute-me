@@ -14,11 +14,14 @@ ethnicities<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
 names(ethnicities)<-c("Automatic guess","Global average","African","Ad Mixed American","East Asian","European","South Asian")
 
 #Trait groups
-trait_groups<-c("disease","biometrics","biomarker","response","other")
-names(trait_groups)<-c("Disease","Biometrics","Biomarker","Response","Other")
+trait_groups<-c("all","disease","biometrics","biomarker","response","other")
+names(trait_groups)<-c("All","Disease","Biometrics","Biomarker","Response","Other")
+
 
 selections<-traits[,"study_id"]
 names(selections)<-traits[,"niceName"]
+
+
 
 shinyUI(bootstrapPage(
 	head(),
@@ -28,13 +31,17 @@ shinyUI(bootstrapPage(
 	beginPanel('1/3'),
 	HTML("Thousands of GWAS studies have been performed. This module allows the calculation of genetic risk score for any of them.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:<br>"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
-	selectInput("trait", "Traits:", choices = selections),
+	
+	conditionalPanel(
+	  condition = "input.trait_group == all",
+	selectInput("trait", "Traits:", choices = selections)
+	),
 	
 	checkboxInput("advanced", label ="Advanced options", value = FALSE),
 	
 	conditionalPanel(
 	  condition = "input.advanced",
-	  checkboxGroupInput("trait_group", "Trait categories:", trait_groups, selected = trait_groups),
+	  radioButtons("trait_group", "Trait categories:", trait_groups, selected = "all"),
 	  radioButtons("ethnicity_group", label="Reference population:", choices=ethnicities, selected = "Global average", inline = FALSE,width = NULL)
 	  
 	),
