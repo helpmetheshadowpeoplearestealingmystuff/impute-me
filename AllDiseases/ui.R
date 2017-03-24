@@ -33,12 +33,11 @@ shinyUI(bootstrapPage(
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	
 	conditionalPanel(
-	  condition = "input.trait_group == all",
-	selectInput("trait", "Traits:", choices = selections)
+	  condition = "input.trait_group == 'all'",
+	  selectInput("trait", "Traits:", choices = selections)
 	),
 	
 	checkboxInput("advanced", label ="Advanced options", value = FALSE),
-	
 	conditionalPanel(
 	  condition = "input.advanced",
 	  radioButtons("trait_group", "Trait categories:", trait_groups, selected = "all"),
