@@ -67,7 +67,7 @@ shinyUI(bootstrapPage(
 	),
 	conditionalPanel(
 	  condition = "input.trait_group == 'other'",
-	  selectInput("trait", "Traits:", choices = selections_other)
+	  selectInput("trait_other", "Traits:", choices = selections_other)
 	),
 	
 	checkboxInput("advanced", label ="Advanced options", value = FALSE),
