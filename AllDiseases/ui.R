@@ -18,10 +18,23 @@ trait_groups<-c("all","disease","biometrics","biomarker","response","other")
 names(trait_groups)<-c("All","Disease","Biometrics","Biomarker","Response","Other")
 
 
-selections<-traits[,"study_id"]
-names(selections)<-traits[,"niceName"]
+selections_all<-traits[,"study_id"]
+names(selections_all)<-traits[,"niceName"]
 
+selections_disease<-traits[traits[,"disease"],"study_id"]
+names(selections_disease)<-traits[traits[,"disease"],"niceName"]
 
+selections_biometrics<-traits[traits[,"biometrics"],"study_id"]
+names(selections_biometrics)<-traits[traits[,"biometrics"],"niceName"]
+
+selections_biomarker<-traits[traits[,"biomarker"],"study_id"]
+names(selections_biomarker)<-traits[traits[,"biomarker"],"niceName"]
+
+selections_response<-traits[traits[,"response"],"study_id"]
+names(selections_response)<-traits[traits[,"response"],"niceName"]
+
+selections_other<-traits[traits[,"other"],"study_id"]
+names(selections_other)<-traits[traits[,"other"],"niceName"]
 
 shinyUI(bootstrapPage(
 	head(),
@@ -34,7 +47,27 @@ shinyUI(bootstrapPage(
 	
 	conditionalPanel(
 	  condition = "input.trait_group == 'all'",
-	  selectInput("trait", "Traits:", choices = selections)
+	  selectInput("trait_all", "Traits:", choices = selections_all)
+	),
+	conditionalPanel(
+	  condition = "input.trait_group == 'disease'",
+	  selectInput("trait_disease", "Traits:", choices = selections_disease)
+	),
+	conditionalPanel(
+	  condition = "input.trait_group == 'biometrics'",
+	  selectInput("trait_biometrics", "Traits:", choices = selections_biometrics)
+	),
+	conditionalPanel(
+	  condition = "input.trait_group == 'biomarker'",
+	  selectInput("trait_biomarker", "Traits:", choices = selections_biomarker)
+	),
+	conditionalPanel(
+	  condition = "input.trait_group == 'response'",
+	  selectInput("trait_response", "Traits:", choices = selections_response)
+	),
+	conditionalPanel(
+	  condition = "input.trait_group == 'other'",
+	  selectInput("trait", "Traits:", choices = selections_other)
 	),
 	
 	checkboxInput("advanced", label ="Advanced options", value = FALSE),

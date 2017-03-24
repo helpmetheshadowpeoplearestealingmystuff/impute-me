@@ -35,7 +35,8 @@ shinyServer(function(input, output) {
 	get_data <- reactive({
 		
 		#initial UI data gathering and user-check
-		study_id<-input$trait
+		study_id<-input[[paste0("trait_",input$trait_group)]]
+		
 		uniqueID<-gsub(" ","",input$uniqueID)
 		ethnicity_group<-input$ethnicity_group
 		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
