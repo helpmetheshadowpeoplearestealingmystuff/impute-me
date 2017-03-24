@@ -31,7 +31,7 @@ shinyUI(bootstrapPage(
 	
 	conditionalPanel(
 	  condition = "input.advanced",
-	  radioButtons("ethnicity_group", label="Ethnicity group (1000 genomes):", choices=ethnicities, selected = "Global average", inline = FALSE,width = NULL)
+	  radioButtons("ethnicity_group", label="Reference population:", choices=ethnicities, selected = "Global average", inline = FALSE,width = NULL)
 	  
 	),
 	
