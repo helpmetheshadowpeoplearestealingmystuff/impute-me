@@ -53,7 +53,7 @@ shinyServer(function(input, output) {
 		if(!trait%in%data[,"DISEASE.TRAIT"])stop(paste("trait",trait,"was not found"))
 		SNPs_to_analyze<-data[data[,"study_id"]%in%study_id ,]
 		
-    #setting up back ground frequency guessing
+    #setting up back-ground frequency sources
 		if(ethnicity_group == "automatic"){
 		  stop("Automatic guess ethnicity not implemented yet")
 		}else if(ethnicity_group == "global"){
@@ -62,6 +62,7 @@ shinyServer(function(input, output) {
 		  #then replace the MAF with the correct superpopulation group
 		  SNPs_to_analyze[,"minor_allele_freq"] <- SNPs_to_analyze[,paste0(ethnicity_group,"_AF")]
 		}
+		
 		
 		#gathering some background info for the study		
 		link<-unique(SNPs_to_analyze[,"LINK"])
