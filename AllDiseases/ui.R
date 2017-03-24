@@ -13,6 +13,9 @@ load("/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_trait_overoverview.rdata
 ethnicities<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
 names(ethnicities)<-c("Automatic guess","Global average","African","Ad Mixed American","East Asian","European","South Asian")
 
+#Trait groups
+trait_groups<-c("disease","biometrics","biomarker","response","other")
+names(trait_groups)<-c("Disease","Biometrics","Biomarker","Response","Other")
 
 selections<-traits[,"study_id"]
 names(selections)<-traits[,"niceName"]
@@ -31,6 +34,7 @@ shinyUI(bootstrapPage(
 	
 	conditionalPanel(
 	  condition = "input.advanced",
+	  checkboxGroupInput("trait_group", "Trait categories:", trait_groups, selected = trait_groups),
 	  radioButtons("ethnicity_group", label="Reference population:", choices=ethnicities, selected = "Global average", inline = FALSE,width = NULL)
 	  
 	),
