@@ -21,7 +21,10 @@ install.packages("openxlsx")
 install.packages("nlme")
 install.packages("R.utils")
 install.packages("mailR")
-# install.packages("XML")
+install.packages("XML")
+install.packages("jsonlite")
+install.packages("plotly")
+
 # source("http://bioconductor.org/biocLite.R")
 # biocLite("biomaRt")
 q()
@@ -32,9 +35,12 @@ exit
 
 #Then install shiny server
 sudo apt-get install gdebi-core
-wget http://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.3.0.403-amd64.deb
-sudo gdebi shiny-server-1.3.0.403-amd64.deb
+# wget http://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.3.0.403-amd64.deb
+wget https://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.5.3.838-amd64.deb
+sudo gdebi shiny-server-1.5.3.838-amd64.deb
 y
+
+
 
 #then listen on port 80
 sudo vi /etc/shiny-server/shiny-server.conf
