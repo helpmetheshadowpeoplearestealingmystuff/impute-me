@@ -15,11 +15,11 @@ shinyServer(function(input, output) {
     
     #initial UI data gathering and user-check
     uniqueID<-gsub(" ","",input$uniqueID)
-    if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
-    if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
+    if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
+    if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
     if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
       Sys.sleep(3) #wait a little to prevent raw-force fishing	
-      stop(paste("Did not find a user with this id",uniqueID))
+      stop(safeError(paste("Did not find a user with this id",uniqueID)))
     }
     
     table_file <-"/home/ubuntu/srv/impute-me/statins/SNPs_to_analyze.txt"

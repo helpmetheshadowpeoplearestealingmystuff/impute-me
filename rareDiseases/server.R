@@ -11,11 +11,11 @@ shinyServer(function(input, output) {
 		# 					return(NULL)
 		# 				}
 	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
-		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
-		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
+		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
+		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
 		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
-			stop("Did not find a user with this id")
+			stop(safeError("Did not find a user with this id"))
 		}
 		table_file <-"/home/ubuntu/srv/impute-me/rareDiseases/SNPs_to_analyze.txt"
 		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")

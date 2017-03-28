@@ -31,11 +31,11 @@ shinyServer(function(input, output) {
 		real_age<-input$real_age
 		real_opinion<-input$real_opinion
 		
-		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
-		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
+		if(nchar(uniqueID)!=12)stop(safeError()"uniqueID must have 12 digits"))
+		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
 		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
-			stop(paste("Did not find a user with this id",uniqueID))
+			stop(safeError(paste("Did not find a user with this id",uniqueID)))
 		}
 		
 		real_age <- as.numeric(real_age)
