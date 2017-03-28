@@ -1,6 +1,7 @@
 
 source("../uifunctions.R")
 initialize('sti',TRUE)
+library(plotly)
 
 shinyUI(bootstrapPage(
 	head(),
