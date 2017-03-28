@@ -42,7 +42,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(class(email)!="character")stop(paste("email must be character, not",class(email)))
   if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
   if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
-    stop(paste("a real email adress is needed:",email))
+    stop(safeError(paste("a real email adress is needed:",email)))
   }
   
   acceptedMails<-read.table("/home/ubuntu/misc_files/accepted_emails.txt",stringsAsFactors=F)[,1]
@@ -50,7 +50,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,path)
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-    stop("At the current stage, the project is only open to backers. Please visit our kickstarter page at: http://kck.st/1VlrTlf - sorry for the inconvenience. Going forward the plan is to run on a more voluntary pricing basis, always as non-profit (see terms-of-use). No data was saved.")
+    stop(safeError("At the current stage, the project is only open to backers. Please visit our kickstarter page at: http://kck.st/1VlrTlf - sorry for the inconvenience. Going forward the plan is to run on a more voluntary pricing basis, always as non-profit (see terms-of-use). No data was saved."))
   }
   
   
@@ -63,7 +63,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
     
-    stop(paste("More than",maxImputationsInQueue,"imputations are already in progress. Cannot start a new one. Limited server capacity was the reason for our kickstarter campaign. Supporters were first in line: kck.st/1VlrTlf"))
+    stop(safeError(paste("More than",maxImputationsInQueue,"imputations are already in progress. Cannot start a new one. Limited server capacity was the reason for our kickstarter campaign. Supporters were first in line: kck.st/1VlrTlf")))
   }
   
   
@@ -93,7 +93,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-    stop("Problem with unique ID generation. Please re-load and try again.")
+    stop(safeError("Problem with unique ID generation. Please re-load and try again."))
   }
   
   homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
@@ -119,7 +119,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"gzip_file",email,uniqueID)
       m<-paste(m,collapse="\t")
       write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-      stop("Don't submit gz-files. Only uncompressed text or zip-files. If you already know what a gz file is, this should be easy for you. Please format as tab separated text files.")
+      stop(safeError("Don't submit gz-files. Only uncompressed text or zip-files. If you already know what a gz file is, this should be easy for you. Please format as tab separated text files."))
     }else{
       #otherwise just rename
       file.rename(newTempPath, newUnzippedPath)		
@@ -137,7 +137,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)	
     unlink(homeFolder,recursive=T)
-    stop("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported.")
+    stop(safeError("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
     
     
   }
@@ -150,7 +150,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
       m<-paste(m,collapse="\t")
       write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)	
       unlink(homeFolder,recursive=T)
-      stop("Your file seemed like ancestry.com data, but didn't have rs IDs in column 1")
+      stop(safeError("Your file seemed like ancestry.com data, but didn't have rs IDs in column 1"))
     }
     #ok, this is probably an ancestry.com file. Let's reformat.
     format_ancestry_com_as_23andme(path)
@@ -168,7 +168,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
     unlink(homeFolder,recursive=T)
-    stop("Your file didn't have 4 columns (or 5 for ancestry.com data). If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection.")
+    stop(safeError("Your file didn't have 4 columns (or 5 for ancestry.com data). If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection."))
   }
   if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs"){
     unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
@@ -177,7 +177,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
     unlink(homeFolder,recursive=T)
-    stop("Your file didn't have rs IDs in column 1. If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection.")
+    stop(safeError("Your file didn't have rs IDs in column 1. If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection."))
   }
   
   
@@ -197,7 +197,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
       m<-paste(m,collapse="\t")
       write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
       unlink(homeFolder,recursive=T)
-      stop("A person with this genome was already analyzed by the system. Write an email if you wish to clear this flag.")
+      stop(safeError("A person with this genome was already analyzed by the system. Write an email if you wish to clear this flag."))
     }
   }
   
@@ -592,7 +592,7 @@ get_genotypes<-function(
   
   #creating a temp folder to use
   idTempFolder<-paste("/home/ubuntu/data",uniqueID,"temp",sep="/")
-  if(file.exists(idTempFolder))stop(paste("Temp folder exists, this could indicate that",uniqueID,"is already worked on. Wait a little, or write administrators if you think this is a mistake"))
+  if(file.exists(idTempFolder))stop(safeError(paste("Temp folder exists, this could indicate that",uniqueID,"is already worked on. Wait a little, or write administrators if you think this is a mistake")))
   
   
   #checking other variables
@@ -625,7 +625,7 @@ get_genotypes<-function(
     
     #only here need to check that raw data is there
     if(!file.exists(genZipFile) | !file.exists(inputZipFile)){
-      stop(paste("Did not find and .input_data or a .gen file in idFolder. This probably means that raw data has been deleted and no furter SNP-data can be retrieved."))
+      stop(safeError(paste("Did not find and .input_data or a .gen file in idFolder. This probably means that raw data has been deleted and no furter SNP-data can be retrieved.")))
     }
     
     
@@ -946,7 +946,7 @@ format_ancestry_com_as_23andme<-function(path){
   
   testRead<-read.table(path,nrow=10,stringsAsFactors=F,header=T)
   if(ncol(testRead)!=5){stop("testRead of file didn't have 5 columns (as it should have when invoking ancestry.com conversion)")}
-  if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead seemed like ancestry.com data, but didn't have rs IDs in column 1")
+  if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop(safeError("testRead seemed like ancestry.com data, but didn't have rs IDs in column 1"))
   
   
   
@@ -1014,8 +1014,8 @@ format_myheritage_as_23andme<-function(path){
   # write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
   # 
   testRead<-read.table(path,nrow=10,stringsAsFactors=F,header=T,sep=",")
-  if(ncol(testRead)!=4){stop("testRead of file didn't have 5 columns (as it should have when invoking myheritage conversion)")}
-  if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop("testRead seemed like myheritage data, but didn't have rs IDs in column 1")
+  if(ncol(testRead)!=4){stop(safeError("testRead of file didn't have 5 columns (as it should have when invoking myheritage conversion)"))}
+  if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop(safeError("testRead seemed like myheritage data, but didn't have rs IDs in column 1"))
   
   #inserting # at first rsid palce
   cmd1<-paste("sed 's/^RSID/#RSID/' ",path," > tempOut0.txt",sep="")
