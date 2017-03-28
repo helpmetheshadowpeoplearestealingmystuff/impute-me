@@ -9,7 +9,7 @@ shinyUI(bootstrapPage(
 	titlePanel("Ethnicity and race"),
 	beginPage(),
 	beginPanel('1/3'),
-	HTML("This browser investigates the ethnicity profile"),
+	HTML("This browser investigates the ethnicity profile. You can use the ID id_613z86871 to test the function"),
 	
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	actionButton("goButton","Run analysis"),

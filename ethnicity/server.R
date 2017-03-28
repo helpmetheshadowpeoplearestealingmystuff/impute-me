@@ -20,7 +20,11 @@ shinyServer(function(input, output){
       stop(safeError("Did not find a user with this id"))
     }
     
-    plot_ly(df, x = rnorm(100,0,10), y = rnorm(100,0,10), z = rnorm(100,0,10), type = "scatter3d", mode = "markers", color=sample(c("red","blue"),100,replace=100))
+    x = rnorm(100,0,10)
+    y = rnorm(100,0,10)
+    z = rnorm(100,0,10)
+    df <- data.frame(x,y,z)
+    plot_ly(df, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=sample(c("red","blue"),100,replace=100))
   })
   
 })
