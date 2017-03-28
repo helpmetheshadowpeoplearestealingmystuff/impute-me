@@ -84,12 +84,12 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 		# Take a dependency on input$goButton
 		if(input$goButton > 0) {
 		  uniqueID<-isolate(gsub(" ","",input$uniqueID))
-			if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
-			if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
+			if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
+			if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
 			# pDataFile<-paste(dataFolder,uniqueID,"/pData.txt",sep="")
 			if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
 				Sys.sleep(3) #wait a little to prevent raw-force fishing	
-				stop("Did not find a user with this id")
+				stop(safeError("Did not find a user with this id"))
 			}
 			
 			genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)

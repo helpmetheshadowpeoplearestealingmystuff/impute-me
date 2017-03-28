@@ -39,11 +39,11 @@ shinyServer(function(input, output) {
 		
 		uniqueID<-gsub(" ","",input$uniqueID)
 		ethnicity_group<-input$ethnicity_group
-		if(nchar(uniqueID)!=12)stop("uniqueID must have 12 digits")
-		if(length(grep("^id_",uniqueID))==0)stop("uniqueID must start with 'id_'")
+		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
+		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
 		if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
-			stop(paste("Did not find a user with this id",uniqueID))
+			stop(paste(safeError("Did not find a user with this id",uniqueID)))
 		}
 		
 		
