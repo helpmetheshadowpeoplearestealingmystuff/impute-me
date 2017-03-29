@@ -56,7 +56,7 @@ shinyServer(function(input, output) {
 		
     #setting up back-ground frequency sources
 		if(ethnicity_group == "automatic"){
-		  stop("Automatic guess ethnicity not implemented yet")
+		  stop(safeError("Automatic guess ethnicity not implemented yet"))
 		}else if(ethnicity_group == "global"){
 		  #do nothing - this is the default
 		}else{
