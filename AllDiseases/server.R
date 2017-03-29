@@ -159,7 +159,7 @@ shinyServer(function(input, output) {
 		#write the score to the log file
 		log_function<-function(uniqueID,study_id,genotypes){
 			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
-			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"AllDisease",uniqueID,study_id,GRS)
+			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"AllDisease",uniqueID,study_id,GRS,ethnicity_group)
 			m<-paste(m,collapse="\t")
 			if(file.exists(user_log_file)){
 				write(m,file=user_log_file,append=TRUE)
