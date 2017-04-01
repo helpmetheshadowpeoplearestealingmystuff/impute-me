@@ -3,11 +3,11 @@ library("plotly")
 
 source("/home/ubuntu/srv/impute-me/functions.R")
 options(shiny.error = browser)
-options(show.error.messages = FALSE)
+options(show.error.messages = TRUE)
 #Replace 'template' with name of module throughout the script
 
 
-
+library(Biobase)
 load("/home/ubuntu/2017-04-01_sjogren_pca.rdata")
 
 # Define server logic for a template
@@ -34,6 +34,7 @@ shinyServer(function(input, output){
     library(made4)
     pca <- ord(m3, type = "pca")
     pc<-pca[["ord"]][["c1"]]
+    colours<-c("blue","red")
     pc[,"col"]<-colours[as.character(set[["Description"]])]
       
       
