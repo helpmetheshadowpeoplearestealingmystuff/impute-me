@@ -3,7 +3,7 @@ library("plotly")
 
 source("/home/ubuntu/srv/impute-me/functions.R")
 options(shiny.error = browser)
-
+options(show.error.messages = FALSE)
 #Replace 'template' with name of module throughout the script
 
 
