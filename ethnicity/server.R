@@ -6,6 +6,10 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 
 #Replace 'template' with name of module throughout the script
 
+
+
+load("/home/ubuntu/2017-04-01_sjogren_pca.rdata")
+
 # Define server logic for a template
 shinyServer(function(input, output){
   output$mainPlot <- renderPlotly({ 
@@ -24,7 +28,7 @@ shinyServer(function(input, output){
     y = rnorm(100,0,10)
     z = rnorm(100,0,10)
     df <- data.frame(x,y,z)
-    plot_ly(df, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=sample(c("red","blue"),100,replace=100))
+    plot_ly(pc, x = "CS1", y = "CS2", z = "CS3", type = "scatter3d", mode = "markers", color="col")
   })
   
 })
