@@ -11,7 +11,7 @@ shinyUI(bootstrapPage(
 	beginPanel('1/3'),
 	# HTML("This browser investigates the ethnicity profile. You can use the ID id_613z86871 to test the function"),
 	
-	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
+	textInput(inputId="uniqueID", label = "Unique ID", value = "id_613z86871"),
 	actionButton("goButton","Run analysis"),
 	
 	endPanel(),
