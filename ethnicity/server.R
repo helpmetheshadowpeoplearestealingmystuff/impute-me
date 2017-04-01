@@ -16,23 +16,25 @@ shinyServer(function(input, output){
     # if(input$goButton == 0){
     #   return(NULL)
     # }
-    uniqueID<-isolate(gsub(" ","",input$uniqueID))
-    if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
-    if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-    if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
-      Sys.sleep(3) #wait a little to prevent raw-force fishing	
-      stop(safeError("Did not find a user with this id"))
-    }
+    # uniqueID<-isolate(gsub(" ","",input$uniqueID))
+    # if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
+    # if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
+    # if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+    #   Sys.sleep(3) #wait a little to prevent raw-force fishing	
+    #   stop(safeError("Did not find a user with this id"))
+    # }
     
     x = pc[,"CS1"]
     y = pc[,"CS2"]
     z = pc[,"CS3"]
     col <- pc[,"col"]
     # df <- data.frame(x,y,z)
-    plot_ly(pc, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = c("red","blue"),scene = list(
+    plot_ly(pc, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = c("red","blue"),
+            scene = list(
       xaxis = list(title = "PC1"), 
       yaxis = list(title = "PC2"), 
-      zaxis = list(title = "PC3")))
+      zaxis = list(title = "PC3"))
+      )
   
     
     
