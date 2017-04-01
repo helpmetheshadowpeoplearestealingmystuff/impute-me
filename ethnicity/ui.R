@@ -4,7 +4,7 @@ initialize('sti',TRUE)
 library(plotly)
 
 options(shiny.error = browser)
-options(show.error.messages = FALSE)
+options(show.error.messages = TRUE)
 
 shinyUI(bootstrapPage(
 	head(),
