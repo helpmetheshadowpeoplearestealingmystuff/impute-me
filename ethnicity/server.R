@@ -13,9 +13,9 @@ load("/home/ubuntu/2017-04-01_sjogren_pca.rdata")
 # Define server logic for a template
 shinyServer(function(input, output){
   output$mainPlot <- renderPlotly({ 
-    if(input$goButton == 0){
-      return(NULL)
-    }
+    # if(input$goButton == 0){
+    #   return(NULL)
+    # }
     uniqueID<-isolate(gsub(" ","",input$uniqueID))
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
@@ -24,11 +24,12 @@ shinyServer(function(input, output){
       stop(safeError("Did not find a user with this id"))
     }
     
-    x = rnorm(100,0,10)
-    y = rnorm(100,0,10)
-    z = rnorm(100,0,10)
-    df <- data.frame(x,y,z)
-    plot_ly(pc, x = "CS1", y = "CS2", z = "CS3", type = "scatter3d", mode = "markers", color="col")
+    x = pc[,"CS1"]
+    y = pc[,"CS2"]
+    z = pc[,"CS3"]
+    col <- pc[,"col"]
+    # df <- data.frame(x,y,z)
+    plot_ly(pc, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col)
   })
   
 })
