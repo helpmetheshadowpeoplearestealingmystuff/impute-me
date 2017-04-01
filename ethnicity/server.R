@@ -2,7 +2,7 @@ library("shiny")
 library("plotly")
 
 source("/home/ubuntu/srv/impute-me/functions.R")
-
+options(shiny.error = browser)
 
 #Replace 'template' with name of module throughout the script
 
@@ -27,14 +27,14 @@ shinyServer(function(input, output){
     
     filtering <- input$filtering
         
-      m1 <- exprs(set)  
-      m2<- m1 - apply(m1,1,mean)
-      m3<- m2 / apply(m2,1,sd)
-      
-      library(made4)
-      pca <- ord(m3, type = "pca")
-      pc<-pca[["ord"]][["c1"]]
-      pc[,"col"]<-colours[as.character(set[["Description"]])]
+    m1 <- exprs(set)  
+    m2<- m1 - apply(m1,1,mean)
+    m3<- m2 / apply(m2,1,sd)
+    
+    library(made4)
+    pca <- ord(m3, type = "pca")
+    pc<-pca[["ord"]][["c1"]]
+    pc[,"col"]<-colours[as.character(set[["Description"]])]
       
       
     
