@@ -29,7 +29,7 @@ shinyServer(function(input, output){
     z = pc[,"CS3"]
     col <- pc[,"col"]
     # df <- data.frame(x,y,z)
-    plot_ly(pc, x = x, y = y, z = z, type = "scatter3d", mode = "markers", colors=col)
+    plot_ly(pc, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = c("red","blue"))
   })
   
 })
