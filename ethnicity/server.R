@@ -35,6 +35,8 @@ shinyServer(function(input, output){
     pca <- ord(m3, type = "pca")
     pc<-pca[["ord"]][["c1"]]
     colours<-c("blue","red")
+    names(colours)<-c("Description A","Description B")
+    
     pc[,"col"]<-colours[as.character(set[["Description"]])]
       
       
