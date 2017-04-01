@@ -13,9 +13,9 @@ load("/home/ubuntu/2017-04-01_sjogren_pca.rdata")
 # Define server logic for a template
 shinyServer(function(input, output){
   output$mainPlot <- renderPlotly({ 
-    # if(input$goButton == 0){
-    #   return(NULL)
-    # }
+    if(input$goButton == 0){
+      return(NULL)
+    }
     # uniqueID<-isolate(gsub(" ","",input$uniqueID))
     # if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     # if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
@@ -24,19 +24,27 @@ shinyServer(function(input, output){
     #   stop(safeError("Did not find a user with this id"))
     # }
     
+    
+    filtering <- input$filtering
+        
+      m1 <- exprs(set)  
+      m2<- m1 - apply(m1,1,mean)
+      m3<- m2 / apply(m2,1,sd)
+      
+      library(made4)
+      pca <- ord(m3, type = "pca")
+      pc<-pca[["ord"]][["c1"]]
+      pc[,"col"]<-colours[as.character(set[["Description"]])]
+      
+      
+    
+    
     x = pc[,"CS1"]
     y = pc[,"CS2"]
     z = pc[,"CS3"]
     col <- pc[,"col"]
-    # df <- data.frame(x,y,z)
     plot_ly(pc, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = c("red","blue"))
-    # ,
-    #         scene = list(
-    #   xaxis = list(title = "PC1"), 
-    #   yaxis = list(title = "PC2"), 
-    #   zaxis = list(title = "PC3"))
-    #   )
-    # 
+    
     
     
     })
