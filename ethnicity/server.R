@@ -26,7 +26,17 @@ shinyServer(function(input, output){
     
     
     filtering <- input$filtering
-        
+    if(filtering!="None"){
+      f <- as.numeric(filtering)
+      get_P <- function(x,label,f){
+        p<-t.test(split(x,label)[[1]],split(x,label)[[2]]) [["p.value"]]
+        return(p < f)
+      }
+      set<-set[apply(exprs(set),1,get_P,set[["Description"]],f),]
+    }
+    
+    
+    
     m1 <- exprs(set)  
     m2<- m1 - apply(m1,1,mean)
     m3<- m2 / apply(m2,1,sd)
