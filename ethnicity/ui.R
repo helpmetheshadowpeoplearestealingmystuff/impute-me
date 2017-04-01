@@ -23,7 +23,7 @@ shinyUI(bootstrapPage(
 	endPanel(),
 	beginPanel('2/3'),
 	
-	h2("Plotly 3D plot of genotype principal components"),
+	h2("Plotly 3D plot of principal components"),
 	
 	endPanel(),
 	
