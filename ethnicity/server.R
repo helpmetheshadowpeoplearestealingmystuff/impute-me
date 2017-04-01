@@ -24,13 +24,11 @@ shinyServer(function(input, output){
     #   stop(safeError("Did not find a user with this id"))
     # }
     
-    
     filtering <- input$filtering
     if(filtering!="None"){
       f <- as.numeric(filtering)
       get_P <- function(x,label){
-        p<-t.test(split(x,label)[[1]],split(x,label)[[2]]) [["p.value"]]
-        # return(p < f)
+        p<-wilcox.test(split(x,label)[[1]],split(x,label)[[2]]) [["p.value"]]
         return(p)
       }
       set<-set[apply(exprs(set),1,get_P,set[["Description"]])<f,]
