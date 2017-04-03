@@ -58,7 +58,7 @@ shinyServer(function(input, output){
     y = signif(pca[,"pos_PC2"],4)
     z = signif(pca[,"pos_PC3"],4)
     col <- pca[,"pop_long"]
-    # sizes<-pca[,"sizes"]<-c(rep(0.3, nrow(pca)-1),2)
+    sizes<-pca[,"sizes"]<-c(rep(0.3, nrow(pca)-1),2)
     
     
     
@@ -80,21 +80,21 @@ shinyServer(function(input, output){
     # )
     # opacity
     
-    a <- list(
-      x = pca[nrow(pca),"pos_PC1"],
-      y = pca[nrow(pca),"pos_PC2"],
-      z = pca[nrow(pca),"pos_PC3"],
-      text = "TJKIFJDASKFJD",
-      xref = "x",
-      yref = "y",
-      showarrow = TRUE,
-      arrowhead = 7,
-      ax = 1,
-      ay = -1
-    )
+    # a <- list(
+    #   x = pca[nrow(pca),"pos_PC1"],
+    #   y = pca[nrow(pca),"pos_PC2"],
+    #   z = pca[nrow(pca),"pos_PC3"],
+    #   text = "TJKIFJDASKFJD",
+    #   xref = "x",
+    #   yref = "y",
+    #   showarrow = TRUE,
+    #   arrowhead = 7,
+    #   ax = 1,
+    #   ay = -1
+    # )
     
-    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,hoverinfo = 'name') %>%
-      layout(title = 'Life Expectancy v. Per Capita GDP, 2007',
+    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F, hoverinfo = 'name', size = sizes, marker = list(symbol = 'circle', sizemode = 'diameter'),sizes = c(5, 150)) %>%
+      layout(title = 'Genotype-based ethnicity clustering',
              scene = list(xaxis = list(title = 'PC1',
                                        gridcolor = 'rgb(255, 255, 255)',
                                        # range = c(2.003297660701705, 5.191505530708712),
