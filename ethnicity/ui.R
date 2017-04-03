@@ -17,12 +17,12 @@ shinyUI(bootstrapPage(
 
 	
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
-	
-	checkboxInput("advanced", label ="Advanced options", value = FALSE),
-	conditionalPanel(
-	  condition = "input.advanced",
-	  checkboxInput("pc_selections", "Principal components:", paste0("PC",as.character(1:5)), selected = c("PC1","PC2","PC3"))
-	),
+	# 
+	# checkboxInput("advanced", label ="Advanced options", value = FALSE),
+	# conditionalPanel(
+	#   condition = "input.advanced",
+	#   checkboxInput("pc_selections", "Principal components:", paste0("PC",as.character(1:5)), selected = c("PC1","PC2","PC3"))
+	# ),
 	
 	actionButton("goButton","Run analysis"),
 	
