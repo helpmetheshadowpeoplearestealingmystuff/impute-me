@@ -4,8 +4,7 @@ initialize('sti',TRUE)
 library(plotly)
 
 
-cb_in<-as.character(1:5)
-names(cb_in)<-
+
 
 shinyUI(bootstrapPage(
 	head(),
