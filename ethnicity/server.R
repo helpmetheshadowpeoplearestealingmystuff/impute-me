@@ -32,7 +32,7 @@ shinyServer(function(input, output){
     y = pca_data[,"pos_PC2"]
     z = pca_data[,"pos_PC3"]
     col <- pca_data[,"pop"]
-    plot_ly(pc, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours)
+    plot_ly(pca_data, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours)
     
     
     
