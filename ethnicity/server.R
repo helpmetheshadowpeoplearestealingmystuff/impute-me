@@ -47,18 +47,22 @@ shinyServer(function(input, output){
     pca<-rbind(pca_data,you)
     
     
-    #pick some colours for each super population
-    colours<-ethnicity_desc[,"Col"]
+    #pick some colours for each super population (first dilute their alpha a little)
+    rgb_array<-t(col2rgb(ethnicity_desc[,"Col"]))
+    rgb_array<-cbind(rgb_array,200)
+    colours<-rgb(rgb_array,maxColorValue = 255)
     names(colours) <- ethnicity_desc[,"PopulationDescription"]
+    
+    #also get the long descriptor of each populations
     pca[,"pop_long"]<-ethnicity_desc[pca[,"pop"],"PopulationDescription"]
     
     
     #extract relevant data
-    x = signif(pca[,"pos_PC1"],4)
-    y = signif(pca[,"pos_PC2"],4)
-    z = signif(pca[,"pos_PC3"],4)
-    col <- pca[,"pop_long"]
-    sizes<-pca[,"sizes"]<-c(rep(0.5, nrow(pca)-1),2)
+    # x = signif(pca[,"pos_PC1"],4)
+    # y = signif(pca[,"pos_PC2"],4)
+    # z = signif(pca[,"pos_PC3"],4)
+    # col <- pca[,"pop_long"]
+    pca[,"sizes"]<-c(rep(0.5, nrow(pca)-1),2)
     
     
     
@@ -93,7 +97,9 @@ shinyServer(function(input, output){
     #   ay = -1
     # )
     
-    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F, hoverinfo = 'name', size = sizes, marker = list(symbol = 'circle', sizemode = 'diameter'),sizes = c(2, 20)) %>%
+    plot_ly(pca, x = ~pos_PC1, y = ~pos_PC2, z = ~pos_PC3, type = "scatter3d", mode = "markers", color= ~pop_long,
+            colors = colours, showlegend=F, hoverinfo = 'name', size = ~sizes, marker = list(symbol = 'circle', sizemode = 'diameter'),
+            sizes = c(4, 10)) %>%
       layout(title = 'Genotype-based ethnicity clustering',
              scene = list(xaxis = list(title = 'PC1',
                                        gridcolor = 'rgb(255, 255, 255)',
