@@ -25,3 +25,4 @@ PJL	Punjabi from Lahore, Pakistan	SAS	goldenrod1
 BEB	Bengali from Bangladesh	SAS	orange4
 STU	Sri Lankan Tamil from the UK	SAS	orangered2
 ITU	Indian Telugu from the UK	SAS	darkorange
+YOU	Your Ethnicity	YOU	black

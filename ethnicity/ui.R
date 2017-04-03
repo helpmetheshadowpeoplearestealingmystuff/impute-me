@@ -7,7 +7,7 @@ shinyUI(bootstrapPage(
 	head(),
 	navigation(),
 	# titlePanel("Ethnicity and race"),
-	titlePanel("Test"),
+	titlePanel("Ethnicity Profile"),
 	beginPage(),
 	beginPanel('1/3'),
 	HTML("This browser investigates the ethnicity profile. You can use the ID id_613z86871 to test the function"),

@@ -6,6 +6,8 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 
 load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_snps.rdata")
 load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_pca.rdata")
+ethnicity_desc<-read.table("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_descriptions.txt",sep="\t",header=T,stringsAsFactors = F,row.names=1)
+
 
 # Define server logic for a template
 shinyServer(function(input, output){
@@ -21,19 +23,55 @@ shinyServer(function(input, output){
       stop(safeError("Did not find a user with this id"))
     }
     
- 
-    #pick some random colours for each super population
-    set.seed(42)
-    paste(sample(colours(),length(unique(pca_data[,"pop"]))),collapse="','")
-    colours<-c('midnightblue','darksalmon','gray17','darkorange2','grey10','darkorchid4','green4','goldenrod4','darkgoldenrod3','grey81','gray94','antiquewhite3','lightyellow4','cornsilk1','gray77','chartreuse','gray31','yellow2','deeppink2','darkgoldenrod2','grey38','azure4','lightcyan1','rosybrown3','gray21','lightskyblue')
-    names(colours)<-unique(pca_data[,"pop"])
+    # uniqueID<-"id_7941701i8"
     
-    x = pca_data[,"pos_PC1"]
-    y = pca_data[,"pos_PC2"]
-    z = pca_data[,"pos_PC3"]
-    col <- pca_data[,"pop"]
-    plot_ly(pca_data, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours)
+    #get genotypes
+    genotypes<-get_genotypes(uniqueID=uniqueID,request=ethnicity_snps, namingLabel="cached.ethnicity")
+    ethnicity_snps[,"genotype"]<-genotypes[rownames(ethnicity_snps),"genotype"]
+    get_alt_count <- function(x){sum(strsplit(x["genotype"],"/")[[1]]%in%x["alt"])}
+    ethnicity_snps[,"alt_count"]<-apply(ethnicity_snps,1,get_alt_count)
     
+    
+    #flash-calculate the PCA metrics for this person
+    # s<-scale(testPerson1, pca$center, pca$scale) %*% pca$rotation
+    # s<-scale(ethnicity_snps[,"alt_count"], center=ethnicity_snps[,"center"], scale=ethnicity_snps[,"scale"]) * ethnicity_snps[,"rot_PC1"]
+    
+    pc1<-sum(((ethnicity_snps[,"alt_count"] - ethnicity_snps[,"center"])/ethnicity_snps[,"scale"]) * ethnicity_snps[,"rot_PC1"])
+    pc2<-sum(((ethnicity_snps[,"alt_count"] - ethnicity_snps[,"center"])/ethnicity_snps[,"scale"]) * ethnicity_snps[,"rot_PC2"])
+    pc3<-sum(((ethnicity_snps[,"alt_count"] - ethnicity_snps[,"center"])/ethnicity_snps[,"scale"]) * ethnicity_snps[,"rot_PC3"])
+    pc4<-sum(((ethnicity_snps[,"alt_count"] - ethnicity_snps[,"center"])/ethnicity_snps[,"scale"]) * ethnicity_snps[,"rot_PC4"])
+    pc5<-sum(((ethnicity_snps[,"alt_count"] - ethnicity_snps[,"center"])/ethnicity_snps[,"scale"]) * ethnicity_snps[,"rot_PC5"])
+    
+    
+    you<-data.frame(pop="YOU", super_pop="YOU", gender=NA,   pos_PC1=pc1,  pos_PC2=pc2,   pos_PC3=pc3,  pos_PC4=pc4 ,    pos_PC5=pc5,stringsAsFactors = F)
+    pca<-rbind(pca_data,you)
+    
+    
+    #pick some colours for each super population
+    colours<-ethnicity_desc[,"Col"]
+    names(colours) <- rownames(ethnicity_desc)
+    
+    
+    
+    
+    # plot(pca$x[,1],pca$x[,2])
+    # testPerson1<-t(d4[who,,drop=T])
+    # s<-scale(testPerson1, pca$center, pca$scale) %*% pca$rotation
+    # points(s[1],s[2],pch=19,col="red",cex=2)
+    
+    x = pca[,"pos_PC1"]
+    y = pca[,"pos_PC2"]
+    z = pca[,"pos_PC3"]
+    col <- pca[,"pop"]
+    
+    
+    
+    
+    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours)
+    
+    
+    
+   
     
     
     })
