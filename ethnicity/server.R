@@ -50,14 +50,14 @@ shinyServer(function(input, output){
     #pick some colours for each super population
     colours<-ethnicity_desc[,"Col"]
     names(colours) <- ethnicity_desc[,"PopulationDescription"]
-    
+    pca[,"pop_long"]<-ethnicity_desc[pca[,"pop"],"PopulationDescription"]
     
     
     #extract relevant data
     x = signif(pca[,"pos_PC1"],4)
     y = signif(pca[,"pos_PC2"],4)
     z = signif(pca[,"pos_PC3"],4)
-    col <- ethnicity_desc[,"PopulationDescription"]
+    col <- pca[,"pop_long"]
     
     
     
