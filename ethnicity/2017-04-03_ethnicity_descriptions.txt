@@ -1,0 +1,27 @@
+PopulationCode	PopulationDescription	SuperPopulationCode	Col
+CHB	Han Chinese in Bejing, China	EAS	indianred
+JPT	Japanese in Tokyo, Japan	EAS	palevioletred
+CHS	Southern Han Chinese	EAS	violetred1
+CDX	Chinese Dai in Xishuangbanna, China	EAS	orangered
+KHV	Kinh in Ho Chi Minh City, Vietnam	EAS	darkred
+CEU	Utah Residents (CEPH) with Northern and Western European Ancestry	EUR	mediumorchid1
+TSI	Toscani in Italia	EUR	mediumorchid4
+FIN	Finnish in Finland	EUR	mediumpurple2
+GBR	British in England and Scotland	EUR	mediumvioletred
+IBS	Iberian Population in Spain	EUR	mediumpurple4
+YRI	Yoruba in Ibadan, Nigeria	AFR	midnightblue
+LWK	Luhya in Webuye, Kenya	AFR	lightskyblue
+GWD	Gambian in Western Divisions in the Gambia	AFR	steelblue3
+MSL	Mende in Sierra Leone	AFR	cornflowerblue
+ESN	Esan in Nigeria	AFR	lightskyblue
+ASW	Americans of African Ancestry in SW USA	AFR	slateblue2
+ACB	African Caribbeans in Barbados	AFR	dodgerblue3
+MXL	Mexican Ancestry from Los Angeles USA	AMR	mediumspringgreen
+PUR	Puerto Ricans from Puerto Rico	AMR	seagreen4
+CLM	Colombians from Medellin, Colombia	AMR	palegreen4
+PEL	Peruvians from Lima, Peru	AMR	darkolivegreen
+GIH	Gujarati Indian from Houston, Texas	SAS	orange1
+PJL	Punjabi from Lahore, Pakistan	SAS	goldenrod1
+BEB	Bengali from Bangladesh	SAS	orange4
+STU	Sri Lankan Tamil from the UK	SAS	orangered2
+ITU	Indian Telugu from the UK	SAS	darkorange
