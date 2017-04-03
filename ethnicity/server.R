@@ -48,9 +48,7 @@ shinyServer(function(input, output){
     
     
     #pick some colours for each super population (first dilute their alpha a little)
-    rgb_array<-t(col2rgb(ethnicity_desc[,"Col"]))
-    rgb_array<-cbind(rgb_array,alpha=100)
-    colours<-rgb(rgb_array[,1:3],alpha=rgb_array[,"alpha"],maxColorValue = 255)
+    colours <- ethnicity_desc[,"Col"]
     names(colours) <- ethnicity_desc[,"PopulationDescription"]
     
     #also get the long descriptor of each populations
@@ -68,22 +66,12 @@ shinyServer(function(input, output){
       layout(title = 'Genotype-based ethnicity clustering',
              scene = list(xaxis = list(title = 'PC1',
                                        gridcolor = 'rgb(255, 255, 255)',
-                                       # range = c(2.003297660701705, 5.191505530708712),
-                                       # type = 'log',
-                                       # zerolinewidth = 1,
-                                       # ticklen = 5,
                                        gridwidth = 2),
                           yaxis = list(title = 'PC2',
                                        gridcolor = 'rgb(255, 255, 255)',
-                                       # range = c(36.12621671352166, 91.72921793264332),
-                                       # zerolinewidth = 1,
-                                       # ticklen = 5,
                                        gridwith = 2),
                           zaxis = list(title = 'PC3',
                                        gridcolor = 'rgb(255, 255, 255)',
-                                       # type = 'log',
-                                       # zerolinewidth = 1,
-                                       # ticklen = 5,
                                        gridwith = 2)),
              paper_bgcolor = 'rgb(243, 243, 243)',
              plot_bgcolor = 'rgb(243, 243, 243)')
@@ -91,11 +79,6 @@ shinyServer(function(input, output){
     
     
     
-    
-    
-    # text(s3d.coords$x, s3d.coords$y,             # x and y coordinates
-    #      labels=row.names(mtcars),               # text to plot
-    #      cex=.5, pos=4)
     
     
     })
