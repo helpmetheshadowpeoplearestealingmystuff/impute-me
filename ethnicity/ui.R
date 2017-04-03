@@ -3,6 +3,10 @@ source("../uifunctions.R")
 initialize('sti',TRUE)
 library(plotly)
 
+
+cb_in<-as.character(1:5)
+names(cb_in)<-
+
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
@@ -14,6 +18,12 @@ shinyUI(bootstrapPage(
 	
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_613z86871"),
 	# radioButtons("filtering", "filtering", c("None"="None","P<0.05"="0.05","P<0.01"="0.01","P<0.005"="0.005"), selected = "None"),
+	checkboxInput("advanced", label ="Advanced options", value = FALSE),
+	conditionalPanel(
+	  condition = "input.advanced",
+	  checkboxInput("pc_selections", "Principal components:", paste0("PC",as.character(1:5)), selected = c("PC1","PC2","PC3"))
+	  
+	),
 	
 	actionButton("goButton","Run analysis"),
 	

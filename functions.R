@@ -896,6 +896,15 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
       genotypes<-try(get_genotypes(uniqueID,gwas_snps,namingLabel="cached.all_gwas"))
     }
   }
+  
+  
+  #getting the ethnicity SNPs if possible
+  e<-try(load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_snps.rdata"))
+  if(class(e)!="try-error"){
+    for(uniqueID in uniqueIDs){
+      genotypes<-try(get_genotypes(uniqueID,ethnicity_snps,namingLabel="cached.ethnicity"))
+    }
+  }
 }
 
 

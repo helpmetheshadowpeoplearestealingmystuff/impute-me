@@ -16,6 +16,7 @@ shinyServer(function(input, output){
       return(NULL)
     }
     uniqueID<-isolate(gsub(" ","",input$uniqueID))
+    pc_selections<-isolate(input$pc_selections)
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
     if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
@@ -23,7 +24,9 @@ shinyServer(function(input, output){
       stop(safeError("Did not find a user with this id"))
     }
     
-    # uniqueID<-"id_7941701i8"
+    if(sum(pc_selections)!=3){
+      stop(safeError(pc_selections))
+    }
     
     #get genotypes
     genotypes<-get_genotypes(uniqueID=uniqueID,request=ethnicity_snps, namingLabel="cached.ethnicity")
@@ -32,10 +35,7 @@ shinyServer(function(input, output){
     ethnicity_snps[,"alt_count"]<-apply(ethnicity_snps,1,get_alt_count)
     
     
-    #flash-calculate the PCA metrics for this person
-    # s<-scale(testPerson1, pca$center, pca$scale) %*% pca$rotation
-    # s<-scale(ethnicity_snps[,"alt_count"], center=ethnicity_snps[,"center"], scale=ethnicity_snps[,"scale"]) * ethnicity_snps[,"rot_PC1"]
-    
+    #quick-calculate the PCA metrics for this person
     pc1<-sum(((ethnicity_snps[,"alt_count"] - ethnicity_snps[,"center"])/ethnicity_snps[,"scale"]) * ethnicity_snps[,"rot_PC1"])
     pc2<-sum(((ethnicity_snps[,"alt_count"] - ethnicity_snps[,"center"])/ethnicity_snps[,"scale"]) * ethnicity_snps[,"rot_PC2"])
     pc3<-sum(((ethnicity_snps[,"alt_count"] - ethnicity_snps[,"center"])/ethnicity_snps[,"scale"]) * ethnicity_snps[,"rot_PC3"])
@@ -49,24 +49,19 @@ shinyServer(function(input, output){
     
     #pick some colours for each super population
     colours<-ethnicity_desc[,"Col"]
-    names(colours) <- rownames(ethnicity_desc)
+    names(colours) <- ethnicity_desc[,"PopulationDescription"]
     
     
     
-    
-    # plot(pca$x[,1],pca$x[,2])
-    # testPerson1<-t(d4[who,,drop=T])
-    # s<-scale(testPerson1, pca$center, pca$scale) %*% pca$rotation
-    # points(s[1],s[2],pch=19,col="red",cex=2)
-    
-    x = pca[,"pos_PC1"]
-    y = pca[,"pos_PC2"]
-    z = pca[,"pos_PC3"]
-    col <- pca[,"pop"]
+    #extract relevant data
+    x = signif(pca[,"pos_PC1"],4)
+    y = signif(pca[,"pos_PC2"],4)
+    z = signif(pca[,"pos_PC3"],4)
+    col <- ethnicity_desc[,"PopulationDescription"]
     
     
     
-    
+    #plot
     plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours)
     
     
