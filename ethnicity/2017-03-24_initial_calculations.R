@@ -3,7 +3,7 @@
 
 # qsub -I -W group_list=allelic_imbalance  -l nodes=1:ppn=1,mem=110gb,walltime=36000
 rm(list=ls())
-library(made4)?
+# library(made4)
 basedir <-"/home/people/lasfol/downloadBulk/misc_downloads/2017-03-24_human_genome_diversity/"
 d1<-read.table(paste0(basedir,"HGDP_FinalReport_Forward.txt.gz"),sep="\t",header=T,row.names=1,stringsAsFactors=FALSE)
 
@@ -142,13 +142,13 @@ save(SNPlist,hgvp_components,file="2017-03-25_ethnicity.rdata")
 # 
 # 
 # 
-# rm(list=ls())
+rm(list=ls())
 # basedir <-"/home/people/lasfol/downloadBulk/misc_downloads/2017-03-24_human_genome_diversity/"
 # load("2017-03-26_raw_data_subset.rdata")
 # load("2017-03-25_ethnicity.rdata")
-# 
-# 
-# 
+
+
+
 # load("2017-03-25_pca_of_HGDB_snps_small.rdata")
 # 
 # 
@@ -176,11 +176,11 @@ save(SNPlist,hgvp_components,file="2017-03-25_ethnicity.rdata")
 # 
 # plot(pca$x[,1],pca$x[,2])
 # testPerson1<-t(d4[who,,drop=T])
-# s<-scale(testPerson1, pca$center, pca$scale) %*% pca$rotation 
+# s<-scale(testPerson1, pca$center, pca$scale) %*% pca$rotation
 # points(s[1],s[2],pch=19,col="red",cex=2)
 # 
 # dev.off()
-# 
+# # 
 
 
 
@@ -243,8 +243,59 @@ for(chr in rev(sub("chr","",sort(unique(SNPlist[,"chr_name"]))))){
 }
 
 
-save(genotype_info,SNPlist,file="2017-03-26_partway_save.rdata")
+genotypes<-t(do.call(cbind.data.frame, genotype_info))
+rownames(genotypes) <- sub("^[0-9]{1,2}\\.","",rownames(genotypes))
 
 
-# ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/integrated_call_samples_v3.20130502.ALL.panel
+save(genotypes,SNPlist,file="2017-03-26_1000_genomes_ethinicity_snp_data.rdata")
+
+
+
+
+
+
+
+
+
+
+#ok now, using these thousands most ethnicity informative SNPs in the 1000 genomes data, we can develop an easy PCA based ethnicity metric. I save it somewhere outside of github, because it's a little to large for that. But next step is to get the the components data and save them in repository.
+
+rm(list=ls())
+load("C:/Users/FOLK/Documents/Work/Analysis/2014-08-11 pedigree project/2017-03-26_1000_genomes_ethinicity_snp_data.rdata")
+SNPlist[,"chr_name"]<-as.numeric(sub("^chr","",SNPlist[,"chr_name"]))
+
+
+
+
+known_ethnicities<-read.table("ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/integrated_call_samples_v3.20130502.ALL.panel",header=T,stringsAsFactors = F,row.names=1)
+
+
+omit_because_non_measured<-c('rs1858549','rs10497241','rs13072188','rs12106966','rs1604553','rs6798302','rs6442887','rs4689258','rs4416546','rs2285789','rs13101654','rs10947439','rs847852','rs10267348','rs11769469','rs2060185','rs6973046','rs13241373','rs4075591','rs12702696','rs7777070','rs6945372','rs847918','rs1404938','rs6965637','rs11784674','rs12545104','rs652282','rs10503228','rs7817362','rs2700716','rs13274039','rs329994','rs10903323','rs978149','rs3802269','rs17118702','rs268428','rs351554','rs2904670','rs4646249','rs3802330','rs2029726','rs10811102','rs6476195','rs7864480','rs7850294','rs2026991','rs10976618','rs1360593','rs1885507','rs4285563','rs1413362','rs13284733','rs1328299','rs2210539','rs10738546','rs4842084','rs7304705','rs4334302','rs801996','rs4787006','rs1528341','rs2540165','rs9932893','rs17696760','rs7190226','rs11645155','rs878891','rs11149870','rs7186987','rs4243156','rs7192960','rs4398122','rs9929106','rs2318177','rs382145','rs7201597','rs12919297','rs11117217','rs11646115','rs4785613','rs8065316','rs7244148','rs6133794','rs763101','rs4823569','rs5767881','rs132220')
+
+snps1<-intersect(rownames(genotypes),rownames(SNPlist))
+snps2<-snps1[!snps1%in%omit_because_non_measured]
+
+
+genotypes<-genotypes[snps2,]
+SNPlist<-SNPlist[snps2,]
+if(all(rownames(SNPlist) != rownames(genotypes)))stop("very bad")
+
+pca_raw <- prcomp(t(genotypes),center = TRUE, scale. = TRUE)
+
+#saving the snp-specific paramters (scaling, rotation, alleles)
+rot<-pca_raw$rotation[,1:5]
+colnames(rot) <- paste0("rot_",colnames(rot))
+ethnicity_snps<-cbind(SNPlist,data.frame(center=pca_raw$center,scale=pca_raw$scale),rot)
+save(ethnicity_snps,file="ethnicity/2017-04-03_ethnicity_snps.rdata")
+
+
+#saving the 1kgenomes-sample specific parameters, PC's, ethnicity, etc
+pos<-pca_raw$x[,1:5]
+colnames(pos) <- paste0("pos_",colnames(pos))
+if(all(rownames(known_ethnicities)!=rownames(pos)))stop("very bad II")
+pca_data<-cbind(known_ethnicities,pos)
+save(pca_data,file="ethnicity/2017-04-03_ethnicity_pca.rdata")
+
+
+
 
