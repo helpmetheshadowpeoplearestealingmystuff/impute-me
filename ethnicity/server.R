@@ -62,10 +62,12 @@ shinyServer(function(input, output){
     
     
     #plot
-    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours,
-            layout(scene = list(xaxis = list(title = 'Weight'),
-                                yaxis = list(title = 'Gross horsepower'),
-                                zaxis = list(title = '1/4 mile time'))))
+    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,
+            scene = list(
+              xaxis = list(title = "PC1"), 
+              yaxis = list(title = "PC2"), 
+              zaxis = list(title = "PC3"))
+            )
     
     
     
