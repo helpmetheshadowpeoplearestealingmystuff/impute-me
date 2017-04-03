@@ -234,6 +234,7 @@ run_imputation<-function(
   if(class(runDir)!="character")stop(paste("runDir must be character, not",class(runDir)))
   if(length(runDir)!=1)stop(paste("runDir must be lengh 1, not",length(runDir)))
   if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
+  if(length(grep("/$",runDir))!=0)stop("Please don't use a trailing slash in the runDir")
   
   if(class(shapeit)!="character")stop(paste("shapeit must be character, not",class(shapeit)))
   if(length(shapeit)!=1)stop(paste("shapeit must be lengh 1, not",length(shapeit)))
@@ -258,29 +259,37 @@ run_imputation<-function(
   
   
   #check for MT presence and other non-sorted behaviour (note this is an exception. Best to submit sorted data)
+  #First trying to re-run, just to get the 'out of order' statement, and see that is in fact the case.
   if(out1 == 3){
-    print("First trying to just remove the mitochondrial SNPS (they are not needed)")
     cmd1_2<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
     out1_2<-system(cmd1_2,intern=T)
     if(length(grep("are out of order",out1_2))>0){
+      #then just remove the mitochondrial SNPS (they are not needed)
       cmd1_3<-paste("sed -i.bak '/\\tMT\\t/d'",rawdata)
       system(cmd1_3)
       out1<-system(cmd1)
       if(out1 == 3){
-        print("Still problems with sort. Try a bash-based sort.")
-        cmd1_4<-paste("sort -k2 -k3 -g -o",rawdata,rawdata)
+        #Still problems with sort. Try a bash-based sort.
+        #sorting by chr then pos
+        cmd1_4<-paste0("sort -k2 -k3 -g -o ",runDir,"/temp01.txt ",rawdata)
         system(cmd1_4)
-        cmd1_5<-paste("sed -i.bak '/\\tY\\t/d'",rawdata)
+        #removing Y chr
+        cmd1_5<-paste0("sed -i.bak '/\\tY\\t/d' ",runDir,"/temp01.txt")
         system(cmd1_5)
-        # cmd1_6<-paste("sed -i.bak '/\\tX\\t/d'",rawdata)
-        # system(cmd1_6)
+        #switching X chr and the rest (because X gets sorted first)
+        cmd1_6<-paste0("grep -v \tX\t ",runDir,"/temp01.txt > ",runDir,"/temp02.txt")
+        system(cmd1_6)
+        cmd1_7<-paste0("grep \tX\t ",runDir,"/temp01.txt >> ",runDir,"/temp02.txt")
+        system(cmd1_7)
+        cmd1_8<-paste0("sed 's/\\tX\\t/\\t23\t/' ",runDir,"/temp02.txt > ",rawdata)
+        system(cmd1_8)
         out1<-system(cmd1)
         if(out1 == 3){
           stop("Something odd with the MT presence reverter I")
         }
       }
     }else{
-      stop("Something odd with the MT presence reverter II")
+      stop("Something odd with the MT presence reverter II - this is the case when it is not 'out of order'")
     }
   }
   
