@@ -58,11 +58,12 @@ shinyServer(function(input, output){
     y = signif(pca[,"pos_PC2"],4)
     z = signif(pca[,"pos_PC3"],4)
     col <- pca[,"pop_long"]
+    opacity<-c(rep( 0.5, nrow(pca)-1),1)
     
     
     
     #plot
-    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F)
+    # plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F)
     # plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,
     #         scene = list(
     #           xaxis = list(title = "PC1"), 
@@ -70,9 +71,20 @@ shinyServer(function(input, output){
     #           zaxis = list(title = "PC3"))
     #         )
     
+    layout = Layout(
+      scene=Scene(
+        xaxis=XAxis(title='x axis title'),
+        yaxis=YAxis(title='y axis title'),
+        zaxis=ZAxis(title='z axis title')
+      )
+    )
+    
+    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,layout=layout)
     
     
-   
+    # text(s3d.coords$x, s3d.coords$y,             # x and y coordinates
+    #      labels=row.names(mtcars),               # text to plot
+    #      cex=.5, pos=4)
     
     
     })
