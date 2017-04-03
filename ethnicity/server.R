@@ -79,7 +79,7 @@ shinyServer(function(input, output){
     #   )
     # )
     # opacity
-    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,opacity=opacity)
+    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F)
     
     
     # text(s3d.coords$x, s3d.coords$y,             # x and y coordinates
