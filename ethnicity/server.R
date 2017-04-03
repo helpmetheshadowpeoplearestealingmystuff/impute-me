@@ -94,7 +94,28 @@ shinyServer(function(input, output){
     )
     
     plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,hoverinfo = 'name') %>%
-      layout(annotations = a)
+      layout(title = 'Life Expectancy v. Per Capita GDP, 2007',
+             scene = list(xaxis = list(title = 'GDP per capita (2000 dollars)',
+                                       gridcolor = 'rgb(255, 255, 255)',
+                                       range = c(2.003297660701705, 5.191505530708712),
+                                       type = 'log',
+                                       zerolinewidth = 1,
+                                       ticklen = 5,
+                                       gridwidth = 2),
+                          yaxis = list(title = 'Life Expectancy (years)',
+                                       gridcolor = 'rgb(255, 255, 255)',
+                                       range = c(36.12621671352166, 91.72921793264332),
+                                       zerolinewidth = 1,
+                                       ticklen = 5,
+                                       gridwith = 2),
+                          zaxis = list(title = 'Population',
+                                       gridcolor = 'rgb(255, 255, 255)',
+                                       type = 'log',
+                                       zerolinewidth = 1,
+                                       ticklen = 5,
+                                       gridwith = 2)),
+             paper_bgcolor = 'rgb(243, 243, 243)',
+             plot_bgcolor = 'rgb(243, 243, 243)')
               
     
     
