@@ -49,8 +49,8 @@ shinyServer(function(input, output){
     
     #pick some colours for each super population (first dilute their alpha a little)
     rgb_array<-t(col2rgb(ethnicity_desc[,"Col"]))
-    rgb_array<-cbind(rgb_array,200)
-    colours<-rgb(rgb_array,maxColorValue = 255)
+    rgb_array<-cbind(rgb_array,alpha=200)
+    colours<-rgb(rgb_array[,1:3],alpha=rgb_array[,"alpha"],maxColorValue = 255)
     names(colours) <- ethnicity_desc[,"PopulationDescription"]
     
     #also get the long descriptor of each populations
@@ -58,44 +58,9 @@ shinyServer(function(input, output){
     
     
     #extract relevant data
-    # x = signif(pca[,"pos_PC1"],4)
-    # y = signif(pca[,"pos_PC2"],4)
-    # z = signif(pca[,"pos_PC3"],4)
-    # col <- pca[,"pop_long"]
     pca[,"sizes"]<-c(rep(0.5, nrow(pca)-1),2)
     
     
-    
-    #plot
-    # plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F)
-    # plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,
-    #         scene = list(
-    #           xaxis = list(title = "PC1"), 
-    #           yaxis = list(title = "PC2"), 
-    #           zaxis = list(title = "PC3"))
-    #         )
-    
-    # layout = Layout(
-    #   scene=Scene(
-    #     xaxis=XAxis(title='x axis title'),
-    #     yaxis=YAxis(title='y axis title'),
-    #     zaxis=ZAxis(title='z axis title')
-    #   )
-    # )
-    # opacity
-    
-    # a <- list(
-    #   x = pca[nrow(pca),"pos_PC1"],
-    #   y = pca[nrow(pca),"pos_PC2"],
-    #   z = pca[nrow(pca),"pos_PC3"],
-    #   text = "TJKIFJDASKFJD",
-    #   xref = "x",
-    #   yref = "y",
-    #   showarrow = TRUE,
-    #   arrowhead = 7,
-    #   ax = 1,
-    #   ay = -1
-    # )
     
     plot_ly(pca, x = ~pos_PC1, y = ~pos_PC2, z = ~pos_PC3, type = "scatter3d", mode = "markers", color= ~pop_long,
             colors = colours, showlegend=F, hoverinfo = 'name', size = ~sizes, marker = list(symbol = 'circle', sizemode = 'diameter'),
