@@ -79,12 +79,23 @@ shinyServer(function(input, output){
     #   )
     # )
     # opacity
-    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,hoverinfo = 'name',%>%add_text(
-                       x = pca[nrow(pca),"pos_PC1"], 
-                       y = pca[nrow(pca),"pos_PC2"], 
-                       z = pca[nrow(pca),"pos_PC3"], 
-                       text = "Your genotype",data = NULL, inherit = TRUE)
-              )
+    
+    a <- list(
+      x = pca[nrow(pca),"pos_PC1"],
+      y = pca[nrow(pca),"pos_PC2"],
+      z = pca[nrow(pca),"pos_PC3"],
+      text = "test",
+      xref = "x",
+      yref = "y",
+      showarrow = TRUE,
+      arrowhead = 7,
+      ax = 20,
+      ay = -40
+    )
+    
+    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,hoverinfo = 'name') %>%
+      layout(annotations = a)
+              
     
     
     
