@@ -49,7 +49,7 @@ shinyServer(function(input, output){
     
     #pick some colours for each super population (first dilute their alpha a little)
     rgb_array<-t(col2rgb(ethnicity_desc[,"Col"]))
-    rgb_array<-cbind(rgb_array,alpha=200)
+    rgb_array<-cbind(rgb_array,alpha=100)
     colours<-rgb(rgb_array[,1:3],alpha=rgb_array[,"alpha"],maxColorValue = 255)
     names(colours) <- ethnicity_desc[,"PopulationDescription"]
     
