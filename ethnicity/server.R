@@ -71,15 +71,15 @@ shinyServer(function(input, output){
     #           zaxis = list(title = "PC3"))
     #         )
     
-    layout = Layout(
-      scene=Scene(
-        xaxis=XAxis(title='x axis title'),
-        yaxis=YAxis(title='y axis title'),
-        zaxis=ZAxis(title='z axis title')
-      )
-    )
-    
-    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,layout=layout)
+    # layout = Layout(
+    #   scene=Scene(
+    #     xaxis=XAxis(title='x axis title'),
+    #     yaxis=YAxis(title='y axis title'),
+    #     zaxis=ZAxis(title='z axis title')
+    #   )
+    # )
+    # opacity
+    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,opacity=opacity)
     
     
     # text(s3d.coords$x, s3d.coords$y,             # x and y coordinates
