@@ -2,13 +2,10 @@ library("shiny")
 library("plotly")
 
 source("/home/ubuntu/srv/impute-me/functions.R")
-options(shiny.error = browser)
-options(show.error.messages = TRUE)
-#Replace 'template' with name of module throughout the script
 
 
-library(Biobase)
-load("/home/ubuntu/2017-04-01_sjogren_pca.rdata")
+load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_snps.rdata")
+load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_pca.rdata")
 
 # Define server logic for a template
 shinyServer(function(input, output){
@@ -16,46 +13,26 @@ shinyServer(function(input, output){
     if(input$goButton == 0){
       return(NULL)
     }
-    # uniqueID<-isolate(gsub(" ","",input$uniqueID))
-    # if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
-    # if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-    # if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
-    #   Sys.sleep(3) #wait a little to prevent raw-force fishing	
-    #   stop(safeError("Did not find a user with this id"))
-    # }
-    
-    filtering <- input$filtering
-    if(filtering!="None"){
-      f <- as.numeric(filtering)
-      get_P <- function(x,label){
-        p<-wilcox.test(split(x,label)[[1]],split(x,label)[[2]]) [["p.value"]]
-        return(p)
-      }
-      set<-set[apply(exprs(set),1,get_P,set[["Description"]])<f,]
+    uniqueID<-isolate(gsub(" ","",input$uniqueID))
+    if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
+    if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
+    if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+      Sys.sleep(3) #wait a little to prevent raw-force fishing
+      stop(safeError("Did not find a user with this id"))
     }
     
+ 
+    #pick some random colours for each super population
+    set.seed(42)
+    paste(sample(colours(),length(unique(pca_data[,"pop"]))),collapse="','")
+    colours<-c('midnightblue','darksalmon','gray17','darkorange2','grey10','darkorchid4','green4','goldenrod4','darkgoldenrod3','grey81','gray94','antiquewhite3','lightyellow4','cornsilk1','gray77','chartreuse','gray31','yellow2','deeppink2','darkgoldenrod2','grey38','azure4','lightcyan1','rosybrown3','gray21','lightskyblue')
+    names(colours)<-unique(pca_data[,"pop"])
     
-    
-    m1 <- exprs(set)  
-    m2<- m1 - apply(m1,1,mean)
-    m3<- m2 / apply(m2,1,sd)
-    
-    library(made4)
-    pca <- ord(m3, type = "pca")
-    pc<-pca[["ord"]][["c1"]]
-    colours<-c("blue","red")
-    names(colours)<-c("Description A","Description B")
-    
-    pc[,"col"]<-colours[as.character(set[["Description"]])]
-      
-      
-    
-    
-    x = pc[,"CS1"]
-    y = pc[,"CS2"]
-    z = pc[,"CS3"]
-    col <- pc[,"col"]
-    plot_ly(pc, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = c("red","blue"))
+    x = pca_data[,"pos_PC1"]
+    y = pca_data[,"pos_PC2"]
+    z = pca_data[,"pos_PC3"]
+    col <- pca_data[,"pop"
+    plot_ly(pc, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours)
     
     
     

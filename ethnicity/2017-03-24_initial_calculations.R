@@ -299,3 +299,7 @@ save(pca_data,file="ethnicity/2017-04-03_ethnicity_pca.rdata")
 
 
 
+
+
+
+
