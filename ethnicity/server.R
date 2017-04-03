@@ -58,7 +58,7 @@ shinyServer(function(input, output){
     y = signif(pca[,"pos_PC2"],4)
     z = signif(pca[,"pos_PC3"],4)
     col <- pca[,"pop_long"]
-    opacity<-pca[,"opacity"]<-c(rep( 0.5, nrow(pca)-1),1)
+    # opacity<-pca[,"opacity"]<-c(rep( 0.5, nrow(pca)-1),1)
     
     
     
@@ -79,7 +79,7 @@ shinyServer(function(input, output){
     #   )
     # )
     # opacity
-    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,hoverinfo = 'text')
+    plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,hoverinfo = 'name')
     
     
     # text(s3d.coords$x, s3d.coords$y,             # x and y coordinates

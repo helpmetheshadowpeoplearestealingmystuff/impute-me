@@ -29,7 +29,7 @@ shinyUI(bootstrapPage(
 	endPanel(),
 	beginPanel('2/3'),
 	
-	h2("Plotly 3D plot of principal components"),
+	# h2("All "),
 	plotlyOutput("mainPlot"),
 	
 	endPanel(),
