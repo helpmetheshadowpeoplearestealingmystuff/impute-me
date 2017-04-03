@@ -58,7 +58,7 @@ shinyServer(function(input, output){
     y = signif(pca[,"pos_PC2"],4)
     z = signif(pca[,"pos_PC3"],4)
     col <- pca[,"pop_long"]
-    sizes<-pca[,"opacity"]<-c(rep( 1, nrow(pca)-1),10)
+    sizes<-pca[,"sizes"]<-c(rep(0.3, nrow(pca)-1),2)
     
     
     
