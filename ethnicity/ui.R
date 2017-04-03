@@ -30,11 +30,11 @@ shinyUI(bootstrapPage(
 	beginPanel('2/3'),
 	
 	h2("Plotly 3D plot of principal components"),
+	plotlyOutput("mainPlot"),
 	
 	endPanel(),
 	
-	# Optional alternative for when you want to show a plot
-	plotlyOutput("mainPlot"),
+	
 	
 	endPage(),
 	footer()

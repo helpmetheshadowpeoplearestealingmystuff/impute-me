@@ -16,7 +16,7 @@ shinyServer(function(input, output){
       return(NULL)
     }
     uniqueID<-isolate(gsub(" ","",input$uniqueID))
-    pc_selections<-isolate(input$pc_selections)
+    # pc_selections<-isolate(input$pc_selections)
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
     if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
@@ -24,9 +24,9 @@ shinyServer(function(input, output){
       stop(safeError("Did not find a user with this id"))
     }
     
-    if(sum(pc_selections)!=3){
-      stop(safeError(pc_selections))
-    }
+    # if(sum(pc_selections)!=3){
+    #   stop(safeError(pc_selections))
+    # }
     
     #get genotypes
     genotypes<-get_genotypes(uniqueID=uniqueID,request=ethnicity_snps, namingLabel="cached.ethnicity")
