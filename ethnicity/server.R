@@ -84,13 +84,13 @@ shinyServer(function(input, output){
       x = pca[nrow(pca),"pos_PC1"],
       y = pca[nrow(pca),"pos_PC2"],
       z = pca[nrow(pca),"pos_PC3"],
-      text = "test",
+      text = "TJKIFJDASKFJD",
       xref = "x",
       yref = "y",
       showarrow = TRUE,
       arrowhead = 7,
-      ax = 20,
-      ay = -40
+      ax = 1,
+      ay = -1
     )
     
     plot_ly(pca, x = x, y = y, z = z, type = "scatter3d", mode = "markers", color=col,colors = colours, showlegend=F,hoverinfo = 'name') %>%
