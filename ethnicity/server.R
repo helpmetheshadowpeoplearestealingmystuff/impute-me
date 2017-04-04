@@ -61,7 +61,6 @@ shinyServer(function(input, output){
     }
     pca<-rbind(pca_data,you)
     
-    # print(colnames(pca))
     
     #pick some colours for each super population (first dilute their alpha a little)
     colours <- ethnicity_desc[,"Col"]
@@ -73,15 +72,14 @@ shinyServer(function(input, output){
     
     #extract relevant data
     pca[,"sizes"]<-c(rep(0.5, nrow(pca)-1),2)
-    
-    
     pca[,"x"]<-pca[,paste0("pos_",pc_selections[1])]
     pca[,"y"]<-pca[,paste0("pos_",pc_selections[2])]
     pca[,"z"]<-pca[,paste0("pos_",pc_selections[3])]
-    # print(colnames(pca))
+    
+    colnames(pca)
     plot_ly(pca, x = ~x, y = ~y, z = ~z, type = "scatter3d", mode = "markers", color= ~pop_long,
-            colors = colours, showlegend=F, hoverinfo = 'name', size = ~sizes, marker = list(symbol = 'circle', sizemode = 'diameter'),
-            sizes = c(4, 10)) %>%
+            colors = colours, showlegend=F, size = ~sizes, marker = list(symbol = 'circle', sizemode = 'diameter'),
+            sizes = c(4, 10),hoverinfo = 'text',  text = paste("x:",pop_long)) %>%
       layout(title = 'Genotype-based ethnicity clustering',
              scene = list(xaxis = list(title = pc_selections[1],
                                        gridcolor = 'rgb(255, 255, 255)',
