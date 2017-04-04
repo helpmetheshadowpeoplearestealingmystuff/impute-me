@@ -1,8 +1,7 @@
 library("shiny")
 library("plotly")
-# options(shiny.error = browser)
 
-options(shiny.sanitize.errors=F)
+# options(shiny.sanitize.errors=F)
 
 #real
 source("/home/ubuntu/srv/impute-me/functions.R")
