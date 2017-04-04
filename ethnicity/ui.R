@@ -39,10 +39,7 @@ shinyUI(bootstrapPage(
 	
 	endPage(),
 	footer()
-))
-
-
-
+),display.mode="showcase")
 
 
 
