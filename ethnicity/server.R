@@ -35,24 +35,19 @@ shinyServer(function(input, output){
     pc_selections<-isolate(input$pc_selections)
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-    # if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
-    #   Sys.sleep(3) #wait a little to prevent raw-force fishing
-    #   stop(safeError("Did not find a user with this id"))
-    # }
+    if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+      Sys.sleep(3) #wait a little to prevent raw-force fishing
+      stop(safeError("Did not find a user with this id"))
+    }
     # 
     if(length(pc_selections)!=3){
       stop(safeError(paste("For a 3D plot you have to select exactly 3 principal components (PCs), not",length(pc_selections))))
     }
 
-    #select correct PC's for x y z
-    # for(d in 1:3){
-      # pca_data[,paste0("pos_",c("x","y","z")[d])]<-pca_data[,paste0("pos_PC",d)]
-    # }
-    
     
         
     #get genotypes
-    # genotypes<-get_genotypes(uniqueID=uniqueID,request=ethnicity_snps, namingLabel="cached.ethnicity")
+    genotypes<-get_genotypes(uniqueID=uniqueID,request=ethnicity_snps, namingLabel="cached.ethnicity")
     ethnicity_snps[,"genotype"]<-genotypes[rownames(ethnicity_snps),"genotype"]
     get_alt_count <- function(x){sum(strsplit(x["genotype"],"/")[[1]]%in%x["alt"])}
     ethnicity_snps[,"alt_count"]<-apply(ethnicity_snps,1,get_alt_count)
