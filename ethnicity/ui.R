@@ -6,7 +6,7 @@ library(plotly)
 options(shiny.error = browser)
 
 ethnicities<-c('AFR','AMR','EAS','EUR','SAS')
-names(ethnicities)<-c('African','Ad Mixed American','East Asian','European','South Asian'))
+names(ethnicities)<-c('African','Ad Mixed American','East Asian','European','South Asian')
 
 shinyUI(bootstrapPage(
 	head(),
