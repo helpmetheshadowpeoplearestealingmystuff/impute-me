@@ -5,6 +5,8 @@ library(plotly)
 
 options(shiny.error = browser)
 
+ethnicities<-c('AFR','AMR','EAS','EUR','SAS')
+names(ethnicities)<-c('African','Ad Mixed American','East Asian','European','South Asian'))
 
 shinyUI(bootstrapPage(
 	head(),
@@ -21,7 +23,8 @@ shinyUI(bootstrapPage(
 	checkboxInput("advanced", label ="Advanced options", value = FALSE),
 	conditionalPanel(
 	  condition = "input.advanced",
-	  checkboxGroupInput("pc_selections", "Principal components:", paste0("PC",as.character(1:5)), selected = c("PC1","PC2","PC3"))
+	  checkboxGroupInput("pc_selections", "Principal components:", paste0("PC",as.character(1:5)), selected = c("PC1","PC2","PC3")),
+	  checkboxGroupInput("ethnicities", "Populations to show:", ethnicities, selected = ethnicities)
 	  
 	),
 	
