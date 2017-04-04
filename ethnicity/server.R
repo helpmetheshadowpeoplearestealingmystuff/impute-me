@@ -1,6 +1,6 @@
 library("shiny")
 library("plotly")
-
+options(shiny.error = browser)
 
 
 

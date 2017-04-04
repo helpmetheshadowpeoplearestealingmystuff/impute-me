@@ -3,7 +3,7 @@ source("../uifunctions.R")
 initialize('sti',TRUE)
 library(plotly)
 
-
+options(shiny.error = browser)
 
 
 shinyUI(bootstrapPage(
@@ -39,7 +39,7 @@ shinyUI(bootstrapPage(
 	
 	endPage(),
 	footer()
-),display.mode="showcase")
+))
 
 
 
