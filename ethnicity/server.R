@@ -76,10 +76,10 @@ shinyServer(function(input, output){
     pca[,"y"]<-pca[,paste0("pos_",pc_selections[2])]
     pca[,"z"]<-pca[,paste0("pos_",pc_selections[3])]
     
-    colnames(pca)
+    
     plot_ly(pca, x = ~x, y = ~y, z = ~z, type = "scatter3d", mode = "markers", color= ~pop_long,
             colors = colours, showlegend=F, size = ~sizes, marker = list(symbol = 'circle', sizemode = 'diameter'),
-            sizes = c(4, 10),hoverinfo = 'text',  text = paste("x:", ~pop_long)) %>%
+            sizes = c(4, 10),hoverinfo = 'text',  text = paste("x:", pca[,"pop_long"])) %>%
       layout(title = 'Genotype-based ethnicity clustering',
              scene = list(xaxis = list(title = pc_selections[1],
                                        gridcolor = 'rgb(255, 255, 255)',
