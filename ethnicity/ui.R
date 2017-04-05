@@ -33,7 +33,8 @@ shinyUI(bootstrapPage(
 	endPanel(),
 	beginPanel('2/3'),
 	
-	# h2("All "),
+	htmlOutput("text_1"),
+	
 	plotlyOutput("mainPlot"),
 	
 	endPanel(),

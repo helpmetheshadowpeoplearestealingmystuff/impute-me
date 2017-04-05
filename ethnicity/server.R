@@ -26,6 +26,18 @@ ethnicity_desc<-read.table("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethn
 
 # Define server logic for a template
 shinyServer(function(input, output){
+  output$text_1 <- renderText({ 
+    if(input$goButton == 0){
+      m<-paste0("There are several ways to investigate genotype-based ethnicity, many center around assigning country-of-ancestry percentage ('IBD methods'). This ethnicity module takes a different, but more simple, approach. Starting from the large <u><a href='http://www.internationalgenome.org/'>1000 genomes project</a></u>, it identifies the ~1000 SNPs that are most ethnicity dependent. The module then performs a cluster analysis (<u><a href='https://en.wikipedia.org/wiki/Principal_component_analysis'>'PCA'</a></u>) of each of the 1000 genomes-project samples, as well as your sample. You can then investigate which known ethnicity your genome is most similar to. Your genome is indicated as a slightly larger black dot in the resulting plot, you may have to zoom in to see it.<br>"
+      )
+      
+    }else{
+      m<-""
+    }
+    return(m)
+  })
+  
+  
   output$mainPlot <- renderPlotly({ 
     if(input$goButton == 0){
       return(NULL)
