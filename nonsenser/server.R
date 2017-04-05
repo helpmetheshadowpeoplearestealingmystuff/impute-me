@@ -47,7 +47,7 @@ shinyServer(function(input, output) {
 		if(ethnicity_group == "automatic"){
 		  stop(safeError("Automatic guess ethnicity not implemented yet"))
 		}else if(ethnicity_group == "global"){
-		  coding_snps[,"Frequency"] <- coding_snps[,paste0("AF")]
+		  coding_snps[,"new_freq"] <- coding_snps[,paste0("AF")]
 		}else{
 		  #then replace the MAF with the correct superpopulation group
 		  coding_snps[,"new_freq"] <- coding_snps[,paste0(ethnicity_group,"_AF")]
