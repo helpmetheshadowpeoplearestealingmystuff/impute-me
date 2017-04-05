@@ -1,10 +1,10 @@
 library("shiny")
 
-
+options(shiny.sanitize.errors=F)
 source("/home/ubuntu/srv/impute-me/functions.R")
 
 
-# uniqueID<-"id_57n662948"
+# uniqueID<-"id_613z86871"
 
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
@@ -19,10 +19,10 @@ shinyServer(function(input, output) {
 		}
 		
 	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
+	  ethnicity_group <- isolate(input$ethnicity_group)
+	  
 		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
-		
 		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
 			stop(safeError("Did not find a user with this id"))
@@ -33,14 +33,34 @@ shinyServer(function(input, output) {
 		# gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
 		
 		load("/home/ubuntu/srv/impute-me/nonsenser/2015-12-16_all_coding_SNPs.rdata")
-		
 		coding_snps[,"SNP"]<-rownames(coding_snps)
 
 		#get genotypes and calculate gheight
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=coding_snps,namingLabel="cached.nonsenser")
-		
 		coding_snps[,"Your genotype"]<-genotypes[rownames(coding_snps),]
 
+		
+		#new 2017-04-05, get Frequency and 'Common allele' based on 1kg data and ethnicity
+		coding_snps[,"Common allele"]<-coding_snps[,"Frequency"] <- NULL #remove the old annovar derived frequency
+		if(ethnicity_group == "automatic"){
+		  stop(safeError("Automatic guess ethnicity not implemented yet"))
+		}else if(ethnicity_group == "global"){
+		  coding_snps[,"Frequency"] <- coding_snps[,paste0("AF")]
+		}else{
+		  #then replace the MAF with the correct superpopulation group
+		  coding_snps[,"new_freq"] <- coding_snps[,paste0(ethnicity_group,"_AF")]
+		}
+		flips<-which(coding_snps[,"new_freq"] > 0.5)
+		coding_snps[,"Common allele"]<-coding_snps[,"REF"]
+		coding_snps[,"Minor allele"]<-coding_snps[,"ALT"]
+		coding_snps[,"Frequency"]  <- 1 - coding_snps[,"new_freq"] 
+		coding_snps[flips,"Common allele"]<-coding_snps[flips,"ALT"]
+		coding_snps[flips,"Minor allele"]<-coding_snps[flips,"REF"]
+		coding_snps[flips,"Frequency"]  <- coding_snps[flips,"new_freq"] 
+		
+		
+		
+		
 		out<-coding_snps[,c("SNP","Your genotype","Common allele","Frequency","SIFT_pred","MutationTaster_pred","Polyphen2_HDIV_pred")]
 		colnames(out)[5]<-"SIFT"
 		colnames(out)[6]<-"MutationTaster"
