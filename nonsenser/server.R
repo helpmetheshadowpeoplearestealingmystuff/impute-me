@@ -32,7 +32,7 @@ shinyServer(function(input, output) {
 		#Get gender
 		# gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
 		
-		load("/home/ubuntu/srv/impute-me/nonsenser/2015-12-16_all_coding_SNPs.rdata")
+		load("/home/ubuntu/srv/impute-me/nonsenser/2017-04-05_all_coding_SNPs.rdata")
 		coding_snps[,"SNP"]<-rownames(coding_snps)
 
 		#get genotypes and calculate gheight
@@ -53,10 +53,10 @@ shinyServer(function(input, output) {
 		flips<-which(coding_snps[,"new_freq"] > 0.5)
 		coding_snps[,"Common allele"]<-coding_snps[,"REF"]
 		coding_snps[,"Minor allele"]<-coding_snps[,"ALT"]
-		coding_snps[,"Frequency"]  <- 1 - coding_snps[,"new_freq"] 
+		coding_snps[,"Frequency"]  <- coding_snps[,"new_freq"] 
 		coding_snps[flips,"Common allele"]<-coding_snps[flips,"ALT"]
 		coding_snps[flips,"Minor allele"]<-coding_snps[flips,"REF"]
-		coding_snps[flips,"Frequency"]  <- coding_snps[flips,"new_freq"] 
+		coding_snps[flips,"Frequency"]  <- 1- coding_snps[flips,"new_freq"] 
 		
 		
 		
