@@ -9,6 +9,8 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
 	
+  
+  
 	output$table1 <- renderDataTable({ 
 		# Take a dependency on input$goButton
 		
