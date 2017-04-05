@@ -100,7 +100,7 @@ shinyServer(function(input, output){
     #write the score to the log file
     log_function<-function(uniqueID){
       user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
-      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ethnicity",paste(c(pca[nrow(pca),"x"],pca[nrow(pca),"y"],pca[nrow(pca),"z"]),collapse="-"),uniqueID,paste(pc_selections,collapse="-"),paste(ethnicities,collapse="-"))
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ethnicity",paste(signif(c(pca[nrow(pca),"x"],pca[nrow(pca),"y"],pca[nrow(pca),"z"]),4),collapse="-"),uniqueID,paste(pc_selections,collapse="-"),paste(ethnicities,collapse="-"))
       m<-paste(m,collapse="\t")
       if(file.exists(user_log_file)){
         write(m,file=user_log_file,append=TRUE)
