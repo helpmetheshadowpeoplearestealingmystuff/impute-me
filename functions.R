@@ -208,6 +208,43 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
   
   
+  
+  #New 2017-04-11 send off a mail as a receipt of data (many people asked for this)
+  library("mailR")
+  library("rJava")
+  queue_length <- length(list.files("/home/ubuntu/imputations/"))
+  message_start <-"<HTML>We received your data at www.impute.me. It will now be processed, first through an imputation algorithm and then trough several types of genetic-risk score calculators. This takes approximately 10 hours per genome."
+  if(queue_length > 30){
+    queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect up to a week of waiting.")
+  }else if(queue_length > 5){
+    queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect several days of waiting.")
+  }else{
+    queue_message<-""
+  }
+  message_end <-paste0(" Once the process is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using your uniqueID, which will be <i>",uniqueID,"</i>. <br><br>The service is non-profit, but the computing price for an imputation is 2-5 USD per imputation. Therefore please make a contribution to keep the servers running (<u><a href='http://paypal.me/LFolkersen'>paypal</a></u> or <u><a href='https://www.coinbase.com/checkouts/25ff9f232d64626a2acb5e8af741ade3' target='_blank'>bitcoin</a></u>).<br></HTML> ")
+  message <- paste0(message_start,queue_message,message_end)
+  mailingResult<-try(send.mail(from = email_address,
+                               to = email,
+                               # bcc="lassefolkersen@gmail.com",
+                               subject = "Imputation is queued",
+                               body = message,
+                               html=T,
+                               smtp = list(
+                                 host.name = "smtp.gmail.com", 
+                                 port = 465, 
+                                 user.name = email_address, 
+                                 passwd = email_password, 
+                                 ssl = TRUE),
+                               authenticate = TRUE,
+                               send = TRUE))
+  if(class(mailingResult)=="try-error"){
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"mailing_error",email,uniqueID)
+    m<-paste(m,collapse="\t")
+    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    stop(safeError("Problem with unique ID generation. Please re-load and try again."))
+  }
+  
+  
   return(paste("Genome files succesfully submitted. <b>The processing of your genome will take several days to run</b>. Typically between 1 and 5 days, depending on server-queue. When the processing is finished you will receive an email to",email,"with uniqueID and download-instructions. Look in your spam filter if not. You can close this browser window."))
   
   
