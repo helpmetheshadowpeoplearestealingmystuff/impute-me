@@ -241,7 +241,6 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"mailing_error",email,uniqueID)
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-    stop(safeError("Problem with unique ID generation. Please re-load and try again."))
   }
   
   
