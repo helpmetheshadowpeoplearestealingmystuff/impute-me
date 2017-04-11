@@ -221,7 +221,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   }else{
     queue_message<-""
   }
-  message_end <-paste0(" Once the process is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using your uniqueID, which will be <i>",uniqueID,"</i>. The service is non-profit, but the computing price for an imputation is 2-5 USD per imputation. Therefore please make a contribution to keep the servers running (<u><a href='http://paypal.me/LFolkersen'>paypal</a></u> or <u><a href='https://www.coinbase.com/checkouts/25ff9f232d64626a2acb5e8af741ade3' target='_blank'>bitcoin</a></u>).<br></HTML> ")
+  message_end <-paste0(" The service is non-profit, but the computing price for an imputation is 2-5 USD per imputation. Therefore please make a contribution to keep the servers running (<u><a href='http://paypal.me/LFolkersen'>paypal</a></u> or <u><a href='https://www.coinbase.com/checkouts/25ff9f232d64626a2acb5e8af741ade3' target='_blank'>bitcoin</a></u>). Once the process is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using your uniqueID, which will be <i>",uniqueID,"</i>.<br></HTML> ")
   message <- paste0(message_start,queue_message,message_end)
   mailingResult<-try(send.mail(from = email_address,
                                to = email,
