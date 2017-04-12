@@ -3,7 +3,7 @@
 rm(list=ls())
 data<-read.table("AllDiseases/gwas_catalog_v1.0-associations_e87_r2017-02-06.tsv.gz",header=T,sep="\t",comment.char="",quote="",stringsAsFactors=F)
 
-
+nrow(data)
 # data<-data[grep("political",data[,"DISEASE.TRAIT"],ignore.case=T),]
 data<-data[data[,"PUBMEDID"] %in%"24569950",]
 
