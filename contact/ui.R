@@ -7,10 +7,10 @@ shinyUI(bootstrapPage(
 	titlePanel("Contact"),
 	beginPage(),
 	HTML(	"
-Genetics lead: <a href='http://www.cbs.dtu.dk/staff/show-staff.php?id=1202'>Lasse Folkersen</a>.<br>
+Genetics lead: <a href='http://www.dtu.dk/english/service/phonebook/person?id=101696&cpid=214011&tab=2&qt=dtupublicationquery'>Lasse Folkersen</a>.<br>
 				
 Design and interface lead: Stefan Delport.<br>
-Microbiome Genetics: <a href='http://www.cbs.dtu.dk/staff/show-staff.php?id=1064'>Lea Benedicte Skov Hansen</a>.<br>
+<br>
 <br><br>
 We welcome suggestions for other analysis types, particularly if you can program them yourself - the system is highly modular and can easily be extended even with just a limited knowledge of R-programming and genetics.<br>
 				"),
