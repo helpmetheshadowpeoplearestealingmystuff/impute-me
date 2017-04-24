@@ -138,10 +138,21 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)	
     unlink(homeFolder,recursive=T)
     stop(safeError("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
-    
-    
   }
   
+  
+  #checking if there is at least 10k lines (otherwise imputation wouldn't be possible anyway)
+  cmd1 <- paste0("wc -l ",path)
+  lines<- as.numeric(sub(" .+$","",system(cmd1,intern=T)))
+  if(lines < 10000){
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_few_lines_error",email,uniqueID)
+    m<-paste(m,collapse="\t")
+    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    unlink(homeFolder,recursive=T)
+    stop(safeError(paste0("Your file only had",lines,"lines. That doesn't look like a genome-wide microarray input file. Genome-wide microarray files have many formats and come from many places (23andme, myheritage, ancestry, geneplaza, etc), but they always have hundreds of thousands of measurements")))
+  }
+  
+  #running the alternative format converters
   if(ncol(testRead)==5){
     #This could be an ancestry.com file. Check that first
     testRead2<-read.table(path,nrow=10,stringsAsFactors=F,header=T)
@@ -153,15 +164,25 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
       stop(safeError("Your file seemed like ancestry.com data, but didn't have rs IDs in column 1"))
     }
     #ok, this is probably an ancestry.com file. Let's reformat.
-    format_ancestry_com_as_23andme(path)
+    reformat_outcome<-try(format_ancestry_com_as_23andme(path))
     
-  }
-  if(ncol(testRead)==1){
+  }else if(ncol(testRead)==1){
     #this could be myheritage. Let's try with that
-    format_myheritage_as_23andme(path)
+    reformat_outcome<-format_myheritage_as_23andme(path)
+  }else{
+    reformat_outcome<-"didn't try"
+  }
+  
+  if(class(reformat_outcome)=="try-error"){
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"reformat_error",email,uniqueID)
+    m<-paste(m,collapse="\t")
+    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    unlink(homeFolder,recursive=T)
+    stop(safeError("Your file didn't seem to match any of our import algorithms. If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection."))
   }
   
   
+  #after reformat attempts, perform one more test read and consider
   testRead2<-read.table(path,nrow=10,stringsAsFactors=F)
   if(ncol(testRead2)!=4){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"test_read_4_columns",email,uniqueID)
@@ -179,6 +200,9 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     unlink(homeFolder,recursive=T)
     stop(safeError("Your file didn't have rs IDs in column 1. If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection."))
   }
+  
+  
+  
   
   
   
@@ -992,12 +1016,6 @@ format_ancestry_com_as_23andme<-function(path){
   if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
   if(!file.exists(path))stop(paste("Did not find file at path:",path))
   
-  #logging
-  # m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"invoking format_ancestry_com_as_23andme",path)
-  # m<-paste(m,collapse="\t")
-  # write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-  # 
-  
   testRead<-read.table(path,nrow=10,stringsAsFactors=F,header=T)
   if(ncol(testRead)!=5){stop("testRead of file didn't have 5 columns (as it should have when invoking ancestry.com conversion)")}
   if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop(safeError("testRead seemed like ancestry.com data, but didn't have rs IDs in column 1"))
@@ -1068,7 +1086,7 @@ format_myheritage_as_23andme<-function(path){
   # write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
   # 
   testRead<-read.table(path,nrow=10,stringsAsFactors=F,header=T,sep=",")
-  if(ncol(testRead)!=4){stop(safeError("testRead of file didn't have 5 columns (as it should have when invoking myheritage conversion)"))}
+  if(ncol(testRead)!=4){stop("testRead of file didn't have 5 columns (as it should have when invoking myheritage conversion)")}
   if(unique(sub("[0-9]+$","",testRead[,1]))!="rs")stop(safeError("testRead seemed like myheritage data, but didn't have rs IDs in column 1"))
   
   #inserting # at first rsid palce
