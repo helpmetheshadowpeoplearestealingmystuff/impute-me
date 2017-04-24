@@ -168,7 +168,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     
   }else if(ncol(testRead)==1){
     #this could be myheritage. Let's try with that
-    reformat_outcome<-format_myheritage_as_23andme(path)
+    reformat_outcome<-try(format_myheritage_as_23andme(path))
   }else{
     reformat_outcome<-"didn't try"
   }
