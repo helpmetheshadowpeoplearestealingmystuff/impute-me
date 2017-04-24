@@ -149,7 +149,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
     unlink(homeFolder,recursive=T)
-    stop(safeError(paste0("Your file only had",lines,"lines. That doesn't look like a genome-wide microarray input file. Genome-wide microarray files have many formats and come from many places (23andme, myheritage, ancestry, geneplaza, etc), but they always have hundreds of thousands of measurements")))
+    stop(safeError(paste0("Your file only had ",lines," lines. That doesn't look like a genome-wide microarray input file. Genome-wide microarray files have many formats and come from many places (23andme, myheritage, ancestry, geneplaza, etc), but they always have hundreds of thousands of measurements")))
   }
   
   #running the alternative format converters
