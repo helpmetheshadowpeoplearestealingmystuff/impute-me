@@ -27,7 +27,7 @@ shinyServer(function(input, output) {
 		}else if(input$goButton == 1) {
 			return("")
 		}else{
-			stop("Please don't try to submit the job more than once.")	
+			stop(safeError("Please don't try to submit the job more than once. Re-load the page, re-upload and then only press 'start imputation' once."))
 		}
 		
 	})
