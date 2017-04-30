@@ -18,7 +18,7 @@ for(uniqueID in uniqueIDs){
 		start<-strptime(pData[1,"first_timeStamp"],"%Y-%m-%d-%H-%M")
 		timedif<-difftime(Sys.time(),start, units="days")
 		if(timedif > keeping_time){
-			print(paste("Deleting",uniqueID,"because it is",timedif,"days old"))	
+			print(paste("Deleting",uniqueID,"because it is",round(timedif),"days old"))	
 			
 			if("data" %in% routinely_delete_this){
 				f1<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip",sep="")
