@@ -31,4 +31,7 @@ if(percentage > 90){
   															 send = TRUE))
 
   
+}else{
+  print(paste0("No problem with space: ",percentage,"% filled."))
+  
 }
