@@ -163,10 +163,11 @@ shinyServer(function(input, output) {
 						
 			# plot all registered people
 			points(
-			  y=opinions_in_data[,"real_opinion"],
+			  y= -opinions_in_data[,"real_opinion"],
 			  x=opinions_in_data[,"g_opinion"],
 			  col=cols[as.character(10*round(opinions_in_data[,"real_age"]/10))],
-			  pch=pch[opinions_in_data[,"gender"]]
+			  pch=pch[opinions_in_data[,"gender"]],
+			  yaxt="n",xaxt="n"
 			)
 
 			#highlight main person
