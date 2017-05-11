@@ -44,6 +44,9 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
     stop(safeError(paste("a real email adress is needed:",email)))
   }
+  if(email =="johnq2@attglobal.net"){
+    print(safeError("Come on John - you've used the site so much you should at least pay a donation"))
+  }
   
   acceptedMails<-read.table("/home/ubuntu/misc_files/accepted_emails.txt",stringsAsFactors=F)[,1]
   if(!email%in%acceptedMails & FALSE){ #changed to always accept submission for now
