@@ -22,7 +22,7 @@ export_function<-function(uniqueID){
   
   
   #getting the current best predictor SNPs
-  giant_sup_path<-"/home/ubuntu/srv/talentsoftomorrow_geneticsr/adultHeight/SNPs_to_analyze.txt"
+  giant_sup_path<-"/home/ubuntu/srv/impute-me/adultHeight/SNPs_to_analyze.txt"
   giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
   
   
