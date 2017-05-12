@@ -56,7 +56,8 @@ export_function<-function(uniqueID){
   guessed_super_pop<-unique(pca[2:6,"super_pop"])
   if(length(guessed_super_pop)!=1)guessed_super_pop<-NA #if there's more than one superpop among closest 5 - then we don't want to guess
   output[["guessed_super_pop"]]<- guessed_super_pop
-  
+
+  return(output)  
 }
 
 
@@ -74,105 +75,6 @@ export_function<-function(uniqueID){
 
 
 
-
-
-
-
-
-
-
-
-
-# *****************
-source("/imputeme_scripts/snp-imputation-lasse/functions.R")
-
-
-source("/home/ubuntu/srv/impute-me/functions.R")
-load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_snps.rdata")
-load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_pca.rdata")
-ethnicity_desc<-read.table("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_descriptions.txt",sep="\t",header=T,stringsAsFactors = F,row.names=1)
-
-
-export_function<-function(uniqueID, mode="remote"){
-  #start check ups
-  if(!mode %in% c("remote","local"))stop("mode must be remote or local")
-  if(mode =="remote"){
-    pd<-path_data_remote
-  }else{
-    pd<-path_data
-  }
-  
-  if(!file.exists(paste(pd,uniqueID,sep=""))){
-    stop("Did not find a user with this id")
-  }
-  
-
-  
-  pc_selections<-isolate(input$pc_selections)
-  ethnicities<-isolate(input$ethnicities)
-  
-  if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
-  if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-  if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
-    Sys.sleep(3) #wait a little to prevent raw-force fishing
-    stop(safeError("Did not find a user with this id"))
-  }
-  # 
-  if(length(pc_selections)!=3){
-    stop(safeError(paste("For a 3D plot you have to select exactly 3 principal components (PCs), not",length(pc_selections))))
-  }
-  if(length(ethnicities)<1){
-    stop(safeError(paste("You need to choose at least one population to show")))
-  }
-  
-  
-  
-  #get genotypes
-  genotypes<-get_genotypes(uniqueID=uniqueID,request=ethnicity_snps, namingLabel="cached.ethnicity")
-  ethnicity_snps[,"genotype"]<-genotypes[rownames(ethnicity_snps),"genotype"]
-  get_alt_count <- function(x){sum(strsplit(x["genotype"],"/")[[1]]%in%x["alt"])}
-  ethnicity_snps[,"alt_count"]<-apply(ethnicity_snps,1,get_alt_count)
-  
-  
-  #quick-calculate the PCA metrics for this person
-  you<-data.frame(pop="YOU", super_pop="YOU", gender=NA,stringsAsFactors = F)
-  for(pc in 1:5){
-    val<-sum(((ethnicity_snps[,"alt_count"] - ethnicity_snps[,"center"])/ethnicity_snps[,"scale"]) * ethnicity_snps[,paste0("rot_PC",pc)])
-    you[,paste0("pos_PC",pc)]<-val
-  }
-  pca<-rbind(pca_data,you)
-  
-  
-  #pick some colours for each super population (first dilute their alpha a little)
-  colours <- ethnicity_desc[,"Col"]
-  names(colours) <- ethnicity_desc[,"PopulationDescription"]
-  
-  #also get the long descriptor of each populations
-  pca[,"pop_long"]<-ethnicity_desc[pca[,"pop"],"PopulationDescription"]
-  
-  
-  #extract relevant data
-  pca[,"sizes"]<-c(rep(0.5, nrow(pca)-1),2)
-  pca[,"x"]<-pca[,paste0("pos_",pc_selections[1])]
-  pca[,"y"]<-pca[,paste0("pos_",pc_selections[2])]
-  pca[,"z"]<-pca[,paste0("pos_",pc_selections[3])]
-  
-  #only show relevant populations
-  pca<-pca[pca[,"super_pop"]%in%c("YOU",ethnicities),]
-  
-  
-  
-  
-    
-    
-      
-  }
-  
-  
-  
-  return(output)
-  
-}
 
 
 
