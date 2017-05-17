@@ -171,7 +171,7 @@ try(crawl_for_snps_to_analyze(uniqueIDs=uniqueID))
 
 
 #Run the json extraction routine
-try(run_export_script(uniqueIDs=uniqueIDs))
+try(run_export_script(uniqueIDs=uniqueID))
 
 
 #If this is running as a node, we need to copy it back around here
