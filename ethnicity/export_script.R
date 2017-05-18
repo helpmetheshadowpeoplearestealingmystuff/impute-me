@@ -46,7 +46,7 @@ export_function<-function(uniqueID){
   
   
   
-  output[["pca"]]<- pca
+  # output[["pca"]]<- pca #no need to save this one
   
   
   #calculate closest superpopulation (just use geometric distance. A little low tech but should be ok for sure cases)

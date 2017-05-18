@@ -120,7 +120,7 @@ export_function<-function(uniqueID){
   # #664824
   #close enough
   
-  output[["hair_colour_all_colours"]] <- d
+  # output[["hair_colour_all_colours"]] <- d
   output[["hair_colour_your_colours"]] <- colour
   
   
