@@ -263,29 +263,39 @@ shinyServer(function(input, output) {
 			#get the gColour
 			GRS_file_name<-"/home/ubuntu/srv/impute-me/hairColour/SNPs_to_analyze.txt"
 			GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F)
-			for(component in c("brown","red")){
+			for(component in c("blonde","red")){
 				print(paste("Getting",component,"g-haircolour"))
-				GRS_file_here<-GRS_file[GRS_file[,"Category"]%in%component,]
-				rownames(GRS_file_here)<-GRS_file_here[,"SNP"]
+				s1<-GRS_file[GRS_file[,"Category"]%in%component,]
+				rownames(s1)<-s1[,"SNP"]
 				#get genotypes and calculate gHairColour
-				genotypes<-get_genotypes(uniqueID=uniqueID,request=GRS_file_here)
-				gHairColour<-get_GRS(genotypes=genotypes,betas=GRS_file_here)
-				assign(paste("gColour",component,sep="_"),gHairColour)
+				s1[,"genotype"]<-get_genotypes(uniqueID=uniqueID,request=s1)
+				
+				s1<-get_GRS_2(s1,mean_scale=T,unit_variance=T)
+				population_sum_sd<-sqrt(sum(s1[,"population_score_sd"]^2,na.rm=T))
+				GRS <-sum(s1[,"score_diff"],na.rm=T) / population_sum_sd  
+				assign(paste("gColour",component,sep="_"),GRS)
 			}
 			
-			#also store this in the pData
-			pData<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")
-			pData[,"g_red_hair"]<-gColour_red
-			pData[,"g_brown_hair"]<-gColour_brown
-			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
+			#also store this in the pData (removed - why store it?)
+			# pData<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")
+			# pData[,"g_red_hair"]<-gColour_red
+			# pData[,"g_brown_hair"]<-gColour_brown
+			# write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 			
 			
 			
-			#Calibrating and plotting
-			brown_calibrate<-function(x){max(c(0,min(c(1, ((x-8)/50)))))}
-			red_calibrate<-function(x){max(c(0.1,min(c(1,1-(x/6)))))}
+			#Calibrating and plotting (must be on a scale from 0 to 1, 1 being more up or more right)
+			#from distribution analysis we know that max blond is 5 and min blonde is -2, and e.g. chinese is -0.8 whereas
+			#my sister is 4.1. There's no known red-heads, so we just take the extremes of -3 to 4
 			
-			blondeness<-brown_calibrate(gColour_brown)
+			
+			blond_calibrate<-function(x){max(c(0,min(c(1, (x+1)/6))))}
+			red_calibrate<-function(x){max(c(0,min(c(1, (x+1)/5))))}
+			
+			
+			
+			
+			blondeness<-blond_calibrate(gColour_brown)
 			redheadness<-red_calibrate(gColour_red)
 			
 			
