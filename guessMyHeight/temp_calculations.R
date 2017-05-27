@@ -337,21 +337,37 @@ for(f in rownames(data_files)){
     population_sum_sd<-sqrt(sum(s1[,"population_score_sd"]^2,na.rm=T))
     GRS <-sum(s1[,"score_diff"],na.rm=T) / population_sum_sd  
     data_files[f,col]<-GRS
+    
+    pdata<-read.table(paste0(data_path,f,"/pData.txt"),header=T,stringsAsFactors = F,sep="\t")
+    if("red_hair"%in%colnames(pdata)){
+      data_files[f,"red_hair"]<-pdata[,"red_hair"]  
+    }
+    if("blonde_hair"%in%colnames(pdata)){
+      data_files[f,"blonde_hair"]<-pdata[,"blonde_hair"]  
+    }
+    
   }
 }
 
 
 pdf("2017-05-27_distributions.pdf")
-hist(data_files[,"brown"],xlab="brown GRS")
+hist(data_files[,"brown"],xlab="blonde GRS",main="blondeness distribution")
 caucasian<-data_files["id_828661c63","brown"]
 abline(v=caucasian,col="sandybrown",lwd=2,lty=2)
 chinese<-data_files["id_13896s006","brown"]
 abline(v=chinese,col="black",lwd=2,lty=2)
 
-hist(data_files[,"red"],xlab="red GRS")
+hist(data_files[,"red"],xlab="red GRS",main="redness distribution")
 caucasian<-data_files["id_828661c63","red"]
 abline(v=caucasian,col="sandybrown",lwd=2,lty=2)
 chinese<-data_files["id_13896s006","red"]
 abline(v=chinese,col="black",lwd=2,lty=2)
 
+
+plot(data_files[,"brown"],data_files[,"blonde_hair"],xlab="genetic blonde",ylab="self-reported blonde")
+plot(data_files[,"red"],data_files[,"red_hair"],xlab="genetic redhead",ylab="self-reported redhead")
+
 dev.off()
+
+
+
