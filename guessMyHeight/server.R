@@ -253,11 +253,7 @@ shinyServer(function(input, output) {
 				pData[,"red_hair"]<-real_red
 				pData[,"blonde_hair"]<-real_blonde
 				write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
-			}else{
-				real_brown<-NA	
-				real_red<-NA
 			}
-			
 			
 			
 			#get the gColour
