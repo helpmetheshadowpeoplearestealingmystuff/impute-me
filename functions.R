@@ -1133,8 +1133,6 @@ format_myheritage_as_23andme<-function(path){
 
 
 
-snps<-c("rs1050829","rs1050828","Rs28929474")
-
 
 remove_snps_from_cache<-function(snps,verbose=T){
   if(class(snps)!="character")stop("snps must be class character")
