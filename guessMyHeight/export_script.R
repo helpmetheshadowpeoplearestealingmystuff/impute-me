@@ -67,44 +67,29 @@ export_function<-function(uniqueID){
   #############
   
   
-  
-  
-  #image file for hair colour  
-  edge<-20
-  col<-y<-x<-vector()
-  for(red in seq(0,1,1/edge)){	
-    for(blonde in seq(0,1,1/edge)){
-      col<-c(col,hsv(h=0.1 - (red/10),s=min(c(1,1-blonde + (red/2))),v=blonde))
-      x<-c(x,blonde)
-      y<-c(y,red)
-    }
-  }
-  d<-data.frame(x=x,y=y,col=col,stringsAsFactors=F)
-  d[,"index"]<-d[,"x"]*edge + d[,"y"]*edge*(1+edge)
-  # z<-matrix(d[,"index"],ncol=edge+1,nrow=edge+1,byrow=F)
-  x<-y<-seq(0,1,1/edge)
-  
-  
-  
   #get the gColour
   GRS_file_name<-"/home/ubuntu/srv/impute-me/hairColour/SNPs_to_analyze.txt"
   GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F)
-  for(component in c("brown","red")){
+  for(component in c("blonde","red")){
     print(paste("Getting",component,"g-haircolour"))
-    GRS_file_here<-GRS_file[GRS_file[,"Category"]%in%component,]
-    rownames(GRS_file_here)<-GRS_file_here[,"SNP"]
+    s1<-GRS_file[GRS_file[,"Category"]%in%component,]
+    rownames(s1)<-s1[,"SNP"]
     #get genotypes and calculate gHairColour
-    genotypes<-get_genotypes(uniqueID=uniqueID,request=GRS_file_here)
-    gHairColour<-get_GRS(genotypes=genotypes,betas=GRS_file_here)
-    assign(paste("gColour",component,sep="_"),gHairColour)
+    s1[,"genotype"]<-get_genotypes(uniqueID=uniqueID,request=s1)
+    
+    s1<-get_GRS_2(s1,mean_scale=T,unit_variance=T)
+    population_sum_sd<-sqrt(sum(s1[,"population_score_sd"]^2,na.rm=T))
+    GRS <-sum(s1[,"score_diff"],na.rm=T) / population_sum_sd  
+    assign(paste("gColour",component,sep="_"),GRS)
   }
   
+  blond_calibrate<-function(x){max(c(0,min(c(1, (x+1)/6))))}
+  red_calibrate<-function(x){max(c(0,min(c(1, (x+1)/5))))}
   
-  #Calibrating and plotting
-  brown_calibrate<-function(x){max(c(0,min(c(1, ((x-8)/50)))))}
-  red_calibrate<-function(x){max(c(0.1,min(c(1,1-(x/6)))))}
   
-  blondeness<-brown_calibrate(gColour_brown)
+  
+  
+  blondeness<-blond_calibrate(gColour_blonde)
   redheadness<-red_calibrate(gColour_red)
   
   
