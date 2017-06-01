@@ -272,14 +272,7 @@ shinyServer(function(input, output) {
 				assign(paste("gColour",component,sep="_"),GRS)
 			}
 			
-			#also store this in the pData (removed - why store it?)
-			# pData<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")
-			# pData[,"g_red_hair"]<-gColour_red
-			# pData[,"g_brown_hair"]<-gColour_brown
-			# write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
-			
-			
-			
+
 			#Calibrating and plotting (must be on a scale from 0 to 1, 1 being more up or more right)
 			#from distribution analysis we know that max blond is 5 and min blonde is -2, and e.g. chinese is -0.8 whereas
 			#my sister is 4.1. There's no known red-heads, so we just take the extremes of -3 to 4
