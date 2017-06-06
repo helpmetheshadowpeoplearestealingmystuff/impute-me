@@ -43,7 +43,7 @@ shinyServer(function(input, output) {
 			if(height_provided){
 				m<-"<small><b>Details:</b> The largest dot shows your height on the Y-axis and your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <u><A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A></u>. Smaller dots shown represent other users.</small>"
 			}else{
-				m<-"<small><b>Details:</b> The vertical bar shows your genetic height on the X-axis. The genetic height is calculated as <u><A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A></u>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <u><A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A></u>. If smaller dots are show, they represent previous users.</small>"
+				m<-"<small><b>Details:</b> The vertical bar shows your genetic height on the X-axis. The genetic height is calculated as <u><A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A></u>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <u><A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A></u>. If smaller dots are shown, they represent previous users.</small>"
 			}
 		}
 		return(m)
