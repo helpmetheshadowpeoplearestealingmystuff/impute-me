@@ -8,6 +8,7 @@ shinyUI(bootstrapPage(
 	beginPage(),
 	plotOutput("load1"),
 	actionButton("goButton","Generate report"),
+	p(HTML("<A HREF=\"javascript:history.go(0)\">Reset this page</A>")),
 	textOutput("text1"),
 	endPage(),
 	footer()	
