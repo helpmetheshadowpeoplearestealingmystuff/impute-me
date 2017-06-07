@@ -98,11 +98,10 @@ sudo git clone https://github.com/lassefolkersen/gene-surfer
 
 
 #setup rsa
-# First run ssh-keygen on impute.me server (as user ubuntu). 
-# Then copy both files to user /home/shiny/.ssh
-# Then chance the id_rsa.pub to read shiny instead.
-# Then append id_rsa.pub to /home/people/lasfol/.ssh/authorized_keys
+# run ssh-keygen on impute.me server (as user ubuntu). 
 # Also append id_rsa.pub from all the nodes to the hub
+ssh-keygen -t rsa -b 4096 -C "impute_me_keys"
+
 
 
 #setup misc_files

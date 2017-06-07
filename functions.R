@@ -1585,7 +1585,8 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL){
         if(exists("export_function"))suppressWarnings(rm("export_function"))
         source(paste(paste0("/home/ubuntu/srv/impute-me/",module,"/export_script.R")))
         if(!exists("export_function"))stop(paste("In module",module,"there was an export_script.R without an export_function"))
-        exp <- export_function(uniqueID)
+        exp <- try(export_function(uniqueID))
+        if(class(exp)=="try-error"){next}
         outputList[[module]] <-exp
         
       }
