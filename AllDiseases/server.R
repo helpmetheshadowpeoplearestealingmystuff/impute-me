@@ -60,6 +60,7 @@ shinyServer(function(input, output) {
 		if(ethnicity_group == "automatic"){
 		  json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
 		  if(!file.exists(json_path))stop(safeError("Automatic guess of ethnicity not possible (json not found)"))
+		  library(jsonlite)
 		  d1<-fromJSON(json_path)
 		  e<-try(d1[["ethnicity"]][["guessed_super_pop"]],silent=F)
 		  if(is.null(e))stop(safeError("Automatic guess of ethnicity not possible (was NULL)"))
