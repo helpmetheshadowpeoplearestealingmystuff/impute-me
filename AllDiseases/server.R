@@ -58,7 +58,7 @@ shinyServer(function(input, output) {
 		
     #setting up back-ground frequency sources
 		if(ethnicity_group == "automatic"){
-		  json_path<-paste0(folder,"/",uniqueID,"_data.json")
+		  json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
 		  if(!file.exists(json_path))stop(safeError("Automatic guess of ethnicity not possible (json not found)"))
 		  d1<-fromJSON(json_path)
 		  e<-try(d1[["ethnicity"]][["guessed_super_pop"]],silent=F)
@@ -66,9 +66,7 @@ shinyServer(function(input, output) {
 		  if(is.na(e))stop(safeError("Automatic guess of ethnicity not possible (was NA)"))
 		  if(!e %in% c("AFR", "AMR", "EAS", "EUR", "SAS"))stop(safeError("Automatic guess of ethnicity not possible (was unknown)"))
 		  ethnicity_group <- e
-
 		}
-
 		if(ethnicity_group == "global"){
 		  #do nothing - this is the default. Note the density curve location.
 		  densityCurvePath<-"/home/ubuntu/srv/impute-me/AllDiseases/2017-07-01_densities_ALL.rdata"
