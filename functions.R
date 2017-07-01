@@ -23,7 +23,9 @@ if(!is.character(email_address))stop("email_address not character")
 if(length(email_address)!=1)stop("email_address not length 1")
 if(!exists("routinely_delete_this"))stop("Didn't find routinely_delete_this")
 if(!is.character(routinely_delete_this))stop("routinely_delete_this not character")
-
+if(!exists("paypal"))stop("Didn't find paypal")
+if(!is.character(paypal))stop("paypal not character")
+if(length(paypal)!=1)stop("paypal not length 1")
 
 
 prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
@@ -245,7 +247,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   }else{
     queue_message<-""
   }
-  message_end <-paste0(" The service is non-profit, but the computing price for one analysis is 5 USD per genome. Therefore please pay that as a contribution to keep the servers running (<u><a href='http://paypal.me/LFolkersen'>paypal</a></u> or <u><a href='https://www.coinbase.com/checkouts/25ff9f232d64626a2acb5e8af741ade3' target='_blank'>bitcoin</a></u>). Once the analysis is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using your uniqueID, which will be <i>",uniqueID,"</i>.<br></HTML> ")
+  message_end <-paste0(" The service is non-profit, but the computing price for one analysis is 5 USD per genome. Therefore please pay that as a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u> or <u><a href='https://www.coinbase.com/checkouts/25ff9f232d64626a2acb5e8af741ade3' target='_blank'>bitcoin</a></u>). Once the analysis is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using your uniqueID, which will be <i>",uniqueID,"</i>.<br></HTML> ")
   message <- paste0(message_start,queue_message,message_end)
   mailingResult<-try(send.mail(from = email_address,
                                to = email,

@@ -74,7 +74,8 @@ shinyUI(bootstrapPage(
 	conditionalPanel(
 	  condition = "input.advanced",
 	  radioButtons("trait_group", "Trait categories:", trait_groups, selected = "all"),
-	  radioButtons("ethnicity_group", label="Reference population:", choices=ethnicities, selected = "global", inline = FALSE,width = NULL)
+	  radioButtons("ethnicity_group", label="Reference population:", choices=ethnicities, selected = "global", inline = FALSE,width = NULL),
+	  checkboxInput("real_dist", label ="Plot real distribution (experimental)", value = FALSE)
 	  
 	),
 	

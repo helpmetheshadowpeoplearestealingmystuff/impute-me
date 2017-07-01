@@ -39,6 +39,8 @@ shinyServer(function(input, output) {
 		
 		uniqueID<-gsub(" ","",input$uniqueID)
 		ethnicity_group<-input$ethnicity_group
+		real_dist<-input$ethnicity_group
+		
 		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
 		if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
@@ -56,12 +58,25 @@ shinyServer(function(input, output) {
 		
     #setting up back-ground frequency sources
 		if(ethnicity_group == "automatic"){
-		  stop(safeError("Automatic guess ethnicity not implemented yet"))
-		}else if(ethnicity_group == "global"){
-		  #do nothing - this is the default
+		  json_path<-paste0(folder,"/",uniqueID,"_data.json")
+		  if(!file.exists(json_path))stop(safeError("Automatic guess of ethnicity not possible (json not found)"))
+		  d1<-fromJSON(json_path)
+		  e<-try(d1[["ethnicity"]][["guessed_super_pop"]],silent=F)
+		  if(is.null(e))stop(safeError("Automatic guess of ethnicity not possible (was NULL)"))
+		  if(is.na(e))stop(safeError("Automatic guess of ethnicity not possible (was NA)"))
+		  if(!e %in% c("AFR", "AMR", "EAS", "EUR", "SAS"))stop(safeError("Automatic guess of ethnicity not possible (was unknown)"))
+		  ethnicity_group <- e
+
+		}
+
+		if(ethnicity_group == "global"){
+		  #do nothing - this is the default. Note the density curve location.
+		  densityCurvePath<-"/home/ubuntu/srv/impute-me/AllDiseases/2017-07-01_densities_ALL.rdata"
 		}else{
 		  #then replace the MAF with the correct superpopulation group
 		  SNPs_to_analyze[,"minor_allele_freq"] <- SNPs_to_analyze[,paste0(ethnicity_group,"_AF")]
+		  #note the density curve location
+		  densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/AllDiseases/2017-07-01_densities_",ethnicity_group,".rdata")
 		}
 		
 		
@@ -156,6 +171,16 @@ shinyServer(function(input, output) {
 		SNPs_to_analyze<-rbind(SNPs_to_analyze,SNPs_to_analyze_duplicates)
 		
 		
+		#if asked for (experimental) then get the distribution
+		if(real_dist){
+		  load(densityCurvePath)
+		  distributionCurve<-list(x=densities[paste0(trait,"_x"),],y=densities[paste0(trait,"_y"),])
+		}else{
+		  distributionCurve<-NULL
+		}
+		
+		
+		
 		#write the score to the log file
 		log_function<-function(uniqueID,study_id,genotypes){
 			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
@@ -173,7 +198,8 @@ shinyServer(function(input, output) {
 		return(list(
 			SNPs_to_analyze=SNPs_to_analyze,
 			textToReturn=textToReturn,
-			GRS=GRS))
+			GRS=GRS,
+			distributionCurve=distributionCurve))
 	})
 	
 	
@@ -216,6 +242,13 @@ shinyServer(function(input, output) {
 			#draw the main line
 			abline(v=GRS_beta,lwd=3)
 			
+			
+			#optionally add real distribution curve
+			if(!is.null(distributionCurve)){
+			  lines(x=distributionCurve[["x"]],y=distributionCurve[["y"]])
+			  
+			}
+			
 			legend("topleft",legend=c("Population distribution","Your genetic risk score"),lty=c(1,1),lwd=c(2,3),col=c("blue","black"))
 			
 		}		
@@ -243,6 +276,7 @@ shinyServer(function(input, output) {
 			o<-get_data()
 			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
 			GRS<-o[["GRS"]]
+			distributionCurve <- o[["distributionCurve"]]
 			
 			#summarising allele info into single-columns
 			SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
