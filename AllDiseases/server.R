@@ -212,6 +212,7 @@ shinyServer(function(input, output) {
 			o<-get_data()
 			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
 			GRS_beta<-o[["GRS"]]
+			distributionCurve <- o[["distributionCurve"]]
 			
 			if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
 			
@@ -276,7 +277,7 @@ shinyServer(function(input, output) {
 			o<-get_data()
 			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
 			GRS<-o[["GRS"]]
-			distributionCurve <- o[["distributionCurve"]]
+			
 			
 			#summarising allele info into single-columns
 			SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
