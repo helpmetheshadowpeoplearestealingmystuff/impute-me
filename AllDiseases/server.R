@@ -39,7 +39,7 @@ shinyServer(function(input, output) {
 		
 		uniqueID<-gsub(" ","",input$uniqueID)
 		ethnicity_group<-input$ethnicity_group
-		real_dist<-input$ethnicity_group
+		real_dist<-input$real_dist
 		
 		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
