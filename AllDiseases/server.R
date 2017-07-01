@@ -173,6 +173,11 @@ shinyServer(function(input, output) {
 		#if asked for (experimental) then get the distribution
 		if(real_dist){
 		  load(densityCurvePath)
+		  print(paste0(trait,"_x"))
+		  print(paste0(trait,"_y"))
+		  
+		  if(!paste0(trait,"_y") %in% rownames(densities))stop(safeError(paste("This",trait,"trait was not found to have density-plotting available")))
+		  
 		  distributionCurve<-list(x=densities[paste0(trait,"_x"),],y=densities[paste0(trait,"_y"),])
 		}else{
 		  distributionCurve<-NULL
