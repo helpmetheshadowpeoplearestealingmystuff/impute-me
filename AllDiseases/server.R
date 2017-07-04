@@ -249,9 +249,8 @@ shinyServer(function(input, output) {
 			if(!is.null(distributionCurve)){
 			  real_x <- distributionCurve[["x"]]
 			  real_y <- distributionCurve[["y"]]
-			  real_y<-real_y/max(real_y)
-			  
-			  lines(x=real_x,y=real_y)
+			  adj_y<-real_y * (max(y_control) / max(real_y))
+			  lines(x=real_x,y=adj_y,lty=2)
 			  
 			}
 			
