@@ -247,7 +247,11 @@ shinyServer(function(input, output) {
 			
 			#optionally add real distribution curve
 			if(!is.null(distributionCurve)){
-			  lines(x=distributionCurve[["x"]],y=distributionCurve[["y"]])
+			  real_x <- distributionCurve[["x"]]
+			  real_y <- distributionCurve[["y"]]
+			  real_y<-real_y/max(real_y)
+			  
+			  lines(x=real_x,y=real_y)
 			  
 			}
 			
