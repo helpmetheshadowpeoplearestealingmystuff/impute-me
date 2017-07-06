@@ -361,7 +361,7 @@ run_imputation<-function(
     }
   }
   
-  #this is a catch for some really obscure errors we 
+  #this is a catch for some really obscure errors
   if(special_error_status != ""){
     cat(paste("\n\nArrived in the special-special error section with this tag:\n",special_error_status,"\n\n"))
     
