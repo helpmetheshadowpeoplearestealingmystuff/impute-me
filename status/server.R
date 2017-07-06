@@ -69,20 +69,39 @@ shinyServer(function(input, output) {
   output$text2 <- renderText({
     if(input$insertFastEmail > 0){
       fast_queue_path <- "/home/ubuntu/misc_files/fast_queue_emails.txt"
+      imputation_path <- "/home/ubuntu/imputations/"
+      
+      
       if(!file.exists(fast_queue_path)){
         system(paste0("touch ",fast_queue_path))
       }
-      
-      emails<-strsplit(input$email,",")[[1]]
+    
+      #split and check emails
+      emails<-tolower(strsplit(input$email,",")[[1]])
       emails <- gsub(" +$","",gsub("^ +","",emails))
-      for(email in emails){
-        if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
-          stop(safeError(paste("a real email adress is needed:",email)))
+      for(e in emails){
+        if( e == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(e)) != ""){
+          stop(safeError(paste("a real email adress is needed:",e)))
         }
-        write(email,file=fast_queue_path,append=TRUE)			
+        
       }        
+      
+      
+      #get folder ids corresponding to these emails
+      u <- vector()
+      for(folderToCheck in list.files(imputation_path,full.names = T)){
+        f<-paste0(folderToCheck,"/variables.rdata")
+        if(!file.exists(f))  next
+        load(f)
+        if(email %in% emails){
+          b<-basename(folderToCheck)
+          write(b,file=fast_queue_path,append=TRUE)			
+          names(b) <- email
+          u<-c(u,b)
+        }
+      }
       input$insertFastEmail<-0
-      return(paste("A total of",length(emails),"have been put in fast queue:",paste(emails,collapse=", ")))
+      return(paste("A total of",length(u),"emails/uniqueIDs have been put in fast queue:",paste(paste0(names(u)," (",sub("imputation_folder_","",u),")"),collapse=", ")))
     }
   })
   
