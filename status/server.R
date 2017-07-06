@@ -67,7 +67,10 @@ shinyServer(function(input, output) {
   
   
   output$text2 <- renderText({
-    if(input$insertFastEmail > 0){
+    if(input$insertFastEmail > 1){
+      return("only submit one job")
+    }
+    if(input$insertFastEmail == 1){
       fast_queue_path <- "/home/ubuntu/misc_files/fast_queue_emails.txt"
       imputation_path <- "/home/ubuntu/imputations/"
       
@@ -100,7 +103,7 @@ shinyServer(function(input, output) {
           u<-c(u,b)
         }
       }
-      input$insertFastEmail<-0
+      
       return(paste("A total of",length(u),"emails/uniqueIDs have been put in fast queue:",paste(paste0(names(u)," (",sub("imputation_folder_","",u),")"),collapse=", ")))
     }
   })
