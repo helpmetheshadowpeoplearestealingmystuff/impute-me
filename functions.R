@@ -396,9 +396,6 @@ run_imputation<-function(
     }
   }else{
     print("ok, somehow the special errors section actually cleared up this one")
-    m<-paste(uniqueID,"was saved from a special errors section")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-    
   }
   
   
