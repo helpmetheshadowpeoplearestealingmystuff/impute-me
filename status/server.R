@@ -104,7 +104,14 @@ shinyServer(function(input, output) {
         }
       }
       
-      return(paste("A total of",length(u),"emails/uniqueIDs have been put in fast queue:",paste(paste0(names(u)," (",sub("imputation_folder_","",u),")"),collapse=", ")))
+      
+      #then load the entire file and remove duplicates plus the ones that are not found in imputation_path anymore
+      y<-unique(read.table(fast_queue_path,stringsAsFactors = F)[,1])
+      y<-y[y%in%list.files(imputation_path)]
+      write.table(y, file=fast_queue_path,sep="\t",quote=F,row.names=F,col.names=F)
+      
+      #then return a status
+      return(paste("From",length(emails),"emails received,",length(u),"emails/uniqueIDs have been put in the fast queue:",paste(paste0(names(u)," (",sub("imputation_folder_","",u),")"),collapse=", ")))
     }
   })
   

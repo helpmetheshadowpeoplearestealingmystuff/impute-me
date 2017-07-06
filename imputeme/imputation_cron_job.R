@@ -63,9 +63,6 @@ if(serverRole== "Hub"){
 
 #If the computer is not too busy and the serverRole is node - we fetch ONE job
 if(serverRole== "Node"){
-	# cmd1 <- paste("ssh ubuntu@",hubAddress," ls /home/ubuntu/imputations/",sep="")
-	# remoteFoldersToCheck<-system(cmd1,intern=T)
-	
   #sort checking order by time entered
 	cmd1 <- paste("ssh ubuntu@",hubAddress," ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' /home/ubuntu/imputations/  | tail -n +2",sep="")
 	remotedata<-system(cmd1,intern=T)
@@ -74,6 +71,15 @@ if(serverRole== "Node"){
 	remotedata_df<-remotedata_df[order(remotedata_df[,6]),]
 	remoteFoldersToCheck<-remotedata_df[,7]
 	
+	
+	#check if there's any fast-queue jobs to put up-front
+	cmd0 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/misc_files/fast_queue_emails.txt
+",sep="")
+	f<-system(cmd0,intern=T)
+	remoteFoldersToCheck<-c(remoteFoldersToCheck[remoteFoldersToCheck%in%f],remoteFoldersToCheck[!remoteFoldersToCheck%in%f])
+	
+	
+	#then loop over all remote folders
 	for(remoteFolderToCheck in remoteFoldersToCheck){
 		cmd2 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
 		jobStatus<-system(cmd2,intern=T)
