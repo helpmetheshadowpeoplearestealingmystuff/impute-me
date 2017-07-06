@@ -13,6 +13,7 @@ shinyUI(bootstrapPage(
 	textInput(inputId="email", label = "Fast forward email", value = ""),
 	actionButton("insertFastEmail","Insert"),
 	textOutput("text2"),
+	HTML("<br><br><br>"),
 	endPage(),
 	footer()	
 	

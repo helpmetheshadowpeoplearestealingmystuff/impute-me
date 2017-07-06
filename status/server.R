@@ -81,6 +81,7 @@ shinyServer(function(input, output) {
         }
         write(email,file=fast_queue_path,append=TRUE)			
       }        
+      input$insertFastEmail<-0
       return(paste("A total of",length(emails),"have been put in fast queue:",paste(emails,collapse=", ")))
     }
   })
