@@ -322,6 +322,7 @@ run_imputation<-function(
   
   #check for MT presence and other non-sorted behaviour (note this is an exception. Best to submit sorted data)
   #First trying to re-run, just to get the 'out of order' statement, and see that is in fact the case.
+  special_error_status<-""
   if(out1 == 3){
     cmd1_2<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
     out1_2<-system(cmd1_2,intern=T)
@@ -335,25 +336,71 @@ run_imputation<-function(
         #sorting by chr then pos
         cmd1_4<-paste0("sort -k2 -k3 -g -o ",runDir,"/temp01.txt ",rawdata)
         system(cmd1_4)
-        #removing Y chr
-        cmd1_5<-paste0("sed -i.bak '/\\tY\\t/d' ",runDir,"/temp01.txt")
+        #removing Y, xY, 23 chr
+        cmd1_5<-paste0("sed -i.bak -e '/\\tY\\t/d' -e '/\\t23\\t/d' -e '/\\tYX\\t/d' -e '/\\tXY\\t/d' ",runDir,"/temp01.txt")
         system(cmd1_5)
         #switching X chr and the rest (because X gets sorted first)
         cmd1_6<-paste0("grep -v \tX\t ",runDir,"/temp01.txt > ",runDir,"/temp02.txt")
         system(cmd1_6)
         cmd1_7<-paste0("grep \tX\t ",runDir,"/temp01.txt >> ",runDir,"/temp02.txt")
         system(cmd1_7)
-        cmd1_8<-paste0("sed 's/\\tX\\t/\\t23\t/' ",runDir,"/temp02.txt > ",rawdata)
+        cmd1_8<-paste0("sed 's/\\tX\\t/\\t23\t/' ",runDir,"/temp02.txt > ",runDir,"/temp03.txt")
         system(cmd1_8)
+        
+        #converting --- to -- (we've seen that a few times)
+        cmd1_9<-paste0("sed 's/\\t---/\\t--/' ",runDir,"/temp03.txt > ",rawdata)
+        system(cmd1_9)
         out1<-system(cmd1)
         if(out1 == 3){
-          stop("Something odd with the MT presence reverter I")
+          special_error_status<-"Something odd with the MT presence reverter I"
+          
         }
       }
     }else{
-      stop("Something odd with the MT presence reverter II - this is the case when it is not 'out of order'")
+      special_error_status<-"Something odd with the MT presence reverter II - this is the case when it is not 'out of order'"
     }
   }
+  
+  #this is a catch for some really obscure errors we 
+  if(special_error_status != ""){
+    cat(paste("\n\nArrived in the special-special error section with this tag:\n",special_error_status,"\n\n"))
+    
+    #Removing all front quotes, all back quotes and all quote-comma-quotes
+    cmd1_10<-paste0("sed -i.ba3 -e 's/^\"//g' -e 's/\"$//g' -e 's/\",\"/\\t/g' -e 's/\"\\t\"/\\t/g' ",rawdata)
+    system(cmd1_10)
+    #also when there is weird carriage returns    
+    cmd1_10<-paste0("sed -i.ba4 's/\"\r//g' ",rawdata)
+    system(cmd1_10)
+    
+    #then re-check and decide future action
+    out1<-system(cmd1)
+    if(out1 == 3){
+      #if still failing
+      library("mailR")
+      error1<-system(cmd1,intern=T)
+      message <- paste0(uniqueID," failed all attempts at starting imputation. It came with special error status:", special_error_status,". The last error message was this: ",paste(error1,collapse="\n"))
+      send.mail(from = email_address,
+                                   to = "lassefolkersen@gmail.com",
+                                   subject = "Imputation has problem",
+                                   body = message,
+                                   html=T,
+                                   smtp = list(
+                                     host.name = "smtp.gmail.com", 
+                                     port = 465, 
+                                     user.name = email_address, 
+                                     passwd = email_password, 
+                                     ssl = TRUE),
+                                   authenticate = TRUE,
+                                   send = TRUE)
+      stop("Sending error mail and giving up")
+    }
+  }else{
+    print("ok, somehow the special errors section actually cleared up this one")
+    m<-paste(uniqueID,"was saved from a special errors section")
+    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    
+  }
+  
   
   
   #Rscript to omit duplicates
