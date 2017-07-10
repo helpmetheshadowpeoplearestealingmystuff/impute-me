@@ -80,23 +80,24 @@ shinyServer(function(input, output) {
       }
     
       #split and check emails
-      emails<-tolower(strsplit(input$email,",")[[1]])
-      emails <- gsub(" +$","",gsub("^ +","",emails))
-      for(e in emails){
-        if( e == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(e)) != ""){
-          stop(safeError(paste("a real email adress is needed:",e)))
+      inputs<-tolower(strsplit(input$email,",")[[1]])
+      inputs <- gsub(" +$","",gsub("^ +","",inputs))
+      for(e in inputs){
+        not_email <- e == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(e)) != ""
+        not_unique_id <- nchar(e)!=12 | length(grep("^id_",e))==0
+        if(not_email &  not_unique_id){
+          stop(safeError(paste("a real email adress or uniqueID is needed:",e)))
         }
-        
       }        
       
       
-      #get folder ids corresponding to these emails
+      #get folder ids corresponding to these inputs
       u <- vector()
       for(folderToCheck in list.files(imputation_path,full.names = T)){
         f<-paste0(folderToCheck,"/variables.rdata")
         if(!file.exists(f))  next
         load(f)
-        if(email %in% emails){
+        if(email %in% inputs | uniqueID %in% inputs){
           b<-basename(folderToCheck)
           write(b,file=fast_queue_path,append=TRUE)			
           names(b) <- email
@@ -116,7 +117,7 @@ shinyServer(function(input, output) {
       write.table(y, file=fast_queue_path,sep="\t",quote=F,row.names=F,col.names=F)
       
       #then return a status
-      return(paste("From",length(emails),"emails received,",length(u),"emails/uniqueIDs have been put in the fast queue:",paste(paste0(names(u)," (",sub("imputation_folder_","",u),")"),collapse=", ")))
+      return(paste("From",length(inputs),"emails or unique-IDs received,",length(u),"emails/uniqueIDs have been put in the fast queue:",paste(paste0(names(u)," (",sub("imputation_folder_","",u),")"),collapse=", ")))
     }
   })
   
