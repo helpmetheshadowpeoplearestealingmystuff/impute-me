@@ -106,7 +106,12 @@ shinyServer(function(input, output) {
       
       
       #then load the entire file and remove duplicates plus the ones that are not found in imputation_path anymore
-      y<-unique(read.table(fast_queue_path,stringsAsFactors = F)[,1])
+      y<-try(read.table(fast_queue_path,stringsAsFactors = F)[,1])
+      if(class(y)=="try-error"){
+        y<-vector()
+      }else{
+        y<-unique(y)  
+      }
       y<-y[y%in%list.files(imputation_path)]
       write.table(y, file=fast_queue_path,sep="\t",quote=F,row.names=F,col.names=F)
       
