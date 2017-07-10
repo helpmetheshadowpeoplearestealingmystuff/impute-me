@@ -241,7 +241,13 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   queue_length <- length(list.files("/home/ubuntu/imputations/"))
   message_start <-"<HTML>We received your data at www.impute.me. It will now be processed, first through an imputation algorithm and then trough several types of genetic-risk score calculators. This takes approximately 10 hours per genome."
   if(queue_length > 30){
-    queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect up to a week of waiting.")
+
+    run_time <- 19 #hours
+    servers_running <- 7  #default for summer 2017 (don't want to tinker too much with it)
+    genomes_per_day <- servers_running * (run_time / 24)
+    days_left <- round(queue_length / genomes_per_day)
+    
+    queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect approximately",days_left,"days of waiting.")
   }else if(queue_length > 5){
     queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect several days of waiting.")
   }else{
