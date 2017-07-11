@@ -80,13 +80,18 @@ shinyServer(function(input, output) {
       }
     
       #split and check emails
-      inputs<-tolower(strsplit(input$email,",")[[1]])
+      inputs<-input$email
+      inputs<-strsplit(inputs,",")[[1]]
       inputs <- gsub(" +$","",gsub("^ +","",inputs))
-      for(e in inputs){
+      for(i in 1:length(inputs)){
+        e <- inputs[i]
         not_email <- e == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(e)) != ""
         not_unique_id <- nchar(e)!=12 | length(grep("^id_",e))==0
         if(not_email &  not_unique_id){
           stop(safeError(paste("a real email adress or uniqueID is needed:",e)))
+        }
+        if(not_unique_id){
+          inputs[i] <- tolower(e)
         }
       }        
       

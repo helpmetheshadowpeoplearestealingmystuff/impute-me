@@ -4,8 +4,6 @@ library("shiny")
 source("/home/ubuntu/srv/impute-me/functions.R")
 
 
-# uniqueID<-"id_860342AX5"
-
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
 	
