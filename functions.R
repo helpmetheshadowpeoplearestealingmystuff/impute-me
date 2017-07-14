@@ -243,7 +243,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(queue_length > 30){
 
     run_time <- 19 #hours
-    servers_running <- 7  #default for summer 2017 (don't want to tinker too much with it)
+    servers_running <- 10  #default for summer 2017 (don't want to tinker too much with it)
     genomes_per_day <- servers_running * (run_time / 24)
     days_left <- round(queue_length / genomes_per_day)
     
@@ -374,9 +374,10 @@ run_imputation<-function(
     #Removing all front quotes, all back quotes and all quote-comma-quotes
     cmd1_10<-paste0("sed -i.ba3 -e 's/^\"//g' -e 's/\"$//g' -e 's/\",\"/\\t/g' -e 's/\"\\t\"/\\t/g' ",rawdata)
     system(cmd1_10)
+    
     #also when there is weird carriage returns    
-    cmd1_10<-paste0("sed -i.ba4 's/\"\r//g' ",rawdata)
-    system(cmd1_10)
+    cmd1_11<-paste0("sed -i.ba4 's/\"\r//g' ",rawdata)
+    system(cmd1_11)
     
     #then re-check and decide future action
     out1<-system(cmd1)
