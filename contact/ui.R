@@ -7,7 +7,7 @@ shinyUI(bootstrapPage(
 	titlePanel("Contact"),
 	beginPage(),
 	HTML(	"
-Genetics lead: <a href='http://www.dtu.dk/english/service/phonebook/person?id=101696&cpid=214011&tab=2&qt=dtupublicationquery'>Lasse Folkersen</a>.<br>
+Genetics lead: <u><a href='http://www.dtu.dk/service/telefonbog/person?id=101696&tab=2&qt=dtupublicationquery'>Lasse Folkersen</a></u>.<br>
 				
 Design and interface lead: Stefan Delport.<br>
 <br>
