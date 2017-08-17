@@ -31,7 +31,7 @@ export_function<-function(uniqueID){
     snp_data<-SNPs_requested
     snp_data[,"genotype"] <- genotypes[rownames(snp_data),"genotype"]
     snp_data <-get_GRS_2(snp_data,mean_scale=T, unit_variance=T, verbose=T)
-    population_sum_sd<-sqrt(sum(snp_data[,"population_score_sd"]^2))
+    population_sum_sd<-sqrt(sum(snp_data[,"population_score_sd"]^2,na.rm=T))
     GRS_beta <-sum(snp_data[,"score_diff"],na.rm=T) / population_sum_sd
     
     
