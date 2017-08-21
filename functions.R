@@ -693,7 +693,8 @@ get_genotypes<-function(
   uniqueID,
   request,
   gtools="/home/ubuntu/impute_dir/gtool",
-  namingLabel="cached" #should default to cached, but it's a way of separately saving larger cached sets in a different file
+  namingLabel="cached", #should default to cached, but it's a way of separately saving larger cached sets in a different file
+  call_threshold = 0.7 #threshold for calling SNP. Ok with 0.7 for multi-SNP signatures, but should definetly be increased in special high-importance SNPs. Default from gtool is suggested at 0.9.
 ){
   
   
@@ -815,7 +816,7 @@ get_genotypes<-function(
             print(paste("Did not find any of the SNPs on chr",chr))	
             next
           }
-          cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold 0.7",sep="")
+          cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold ",call_threshold,sep="")
           system(cmd2)
           
           
