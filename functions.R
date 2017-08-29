@@ -239,7 +239,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   library("mailR")
   library("rJava")
   queue_length <- length(list.files("/home/ubuntu/imputations/"))
-  message_start <-"<HTML>We received your data at www.impute.me. It will now be processed, first through an imputation algorithm and then trough several types of genetic-risk score calculators. This takes approximately 10 hours per genome."
+  message_start <-paste0("<HTML>We received your data from file <i>", filename,"</i> at www.impute.me. It will now be processed, first through an imputation algorithm and then trough several types of genetic-risk score calculators. This takes approximately 19 hours per genome.")
   if(queue_length > 30){
 
     run_time <- 19 #hours
