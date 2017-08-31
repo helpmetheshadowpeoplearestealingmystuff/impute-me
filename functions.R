@@ -236,7 +236,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(queue_length > 30){
 
     run_time <- 19 #hours
-    servers_running <- 10  #default for summer 2017 (don't want to tinker too much with it)
+    servers_running <- 8  #default for summer 2017 (don't want to tinker too much with it)
     genomes_per_day <- servers_running * (run_time / 24)
     days_left <- round(queue_length / genomes_per_day)
     
