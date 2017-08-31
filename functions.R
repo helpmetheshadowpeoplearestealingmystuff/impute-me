@@ -206,45 +206,20 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   
   
   
-  
-  
-  #checking if this job has not actually been run before
+  ##checking if this job has not actually been run before
   print("checking if this job has not actually been run before")
   this_person_md5sum <- md5sum(path)
-  otherPersons<-list.files("/home/ubuntu/data",full.names=T)
-  for(otherPerson in otherPersons){
-    if(!file.info(otherPerson)[["isdir"]])next
-    if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-    other_person_md5sum<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")[1,"md5sum"],silent=T)
-    if(class(other_person_md5sum)=="try-error")next
-    if(is.null(other_person_md5sum))next
-    if(this_person_md5sum == other_person_md5sum){
-      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
-      m<-paste(m,collapse="\t")
-      write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-      unlink(homeFolder,recursive=T)
-      stop(safeError("A person with this genome was already analyzed by the system. Write an email if you wish to clear this flag."))
-    }
+  all_md5sums<-read.table("/home/ubuntu/misc_files/md5sums.txt",sep="\t",stringsAsFactors = F)[,1]
+  if(this_person_md5sum %in% all_md5sums){
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
+    m<-paste(m,collapse="\t")
+    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    unlink(homeFolder,recursive=T)
+    stop(safeError("A person with this genome was already analyzed by the system. Write an email if you wish to clear this flag."))
   }
+  write(this_person_md5sum,file="/home/ubuntu/misc_files/md5sums.txt",append=TRUE)			
   
-  # 
-  # #checking if this job is not already in queue
-  # for(otherPerson in paste0(list.files("/home/ubuntu/imputations",full.names=T),"/")){
-  #   if(otherPerson == homeFolder)next
-  #   if(!file.info(otherPerson)[["isdir"]])next
-  #   if(!file.exists(paste(otherPerson,"variables.rdata",sep="/")))next
-  #   suppressWarnings(try(rm("md5"),silent=T))
-  #   load(paste(otherPerson,"variables.rdata",sep="/"))
-  #   if(!exists("md5"))next
-  #   if(md5 == this_person_md5sum){
-  #     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_queue_match",email,this_person_md5sum)
-  #     m<-paste(m,collapse="\t")
-  #     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-  #     unlink(homeFolder,recursive=T)
-  #     stop(safeError("A person with this genome was already queued for analysis. Please don't submit twice."))
-  #   }
-  # }
-  # 
+  
   
   print("Finalize")
   save(uniqueID,email,filename,protect_from_deletion,file=paste(homeFolder,"variables.rdata",sep=""))
@@ -1682,3 +1657,42 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL){
 }
 
 
+
+
+
+
+
+
+
+
+
+
+re_check_md5sums<-function(){
+  library(tools)
+  all_md5sums<-read.table("/home/ubuntu/misc_files/md5sums.txt",sep="\t",stringsAsFactors = F)[,1]
+  
+  
+  otherPersons<-list.files("/home/ubuntu/data",full.names=T)
+  for(otherPerson in otherPersons){
+    if(!file.info(otherPerson)[["isdir"]])next
+    if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+    other_person_md5sum<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")[1,"md5sum"],silent=T)
+    if(class(other_person_md5sum)=="try-error")next
+    if(is.null(other_person_md5sum))next
+    
+    all_md5sums<-c(all_md5sums,other_person_md5sum)
+  }
+  #checking if this job is not already in queue
+  for(otherPerson in paste0(list.files("/home/ubuntu/imputations",full.names=T),"/")){
+    if(!file.info(otherPerson)[["isdir"]])next
+    
+    raw_data_file<-grep("raw_data\\.txt",list.files(otherPerson,full.names=T),value=T)
+    if(length(raw_data_file)!=1)stop("odd")
+    other_person_md5sum<-md5sum(raw_data_file)
+    all_md5sums<-c(all_md5sums,other_person_md5sum)
+    
+  }
+  print(paste(sum(duplicated(all_md5sums)),"of",length(all_md5sums),"were duplicated"))
+  all_md5sums <- unique(all_md5sums)
+  writeLines(all_md5sums,"/home/ubuntu/misc_files/md5sums.txt")
+}
