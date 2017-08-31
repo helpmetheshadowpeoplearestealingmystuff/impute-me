@@ -227,28 +227,27 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     }
   }
   
-  
-  #checking if this job is not already in queue
-  for(otherPerson in paste0(list.files("/home/ubuntu/imputations",full.names=T),"/")){
-    if(otherPerson == homeFolder)next
-    if(!file.info(otherPerson)[["isdir"]])next
-    if(!file.exists(paste(otherPerson,"variables.rdata",sep="/")))next
-    suppressWarnings(try(rm("md5"),silent=T))
-    load(paste(otherPerson,"variables.rdata",sep="/"))
-    if(!exists("md5"))next
-    if(md5 == this_person_md5sum){
-      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_queue_match",email,this_person_md5sum)
-      m<-paste(m,collapse="\t")
-      write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-      unlink(homeFolder,recursive=T)
-      stop(safeError("A person with this genome was already queued for analysis. Please don't submit twice."))
-    }
-  }
-  
+  # 
+  # #checking if this job is not already in queue
+  # for(otherPerson in paste0(list.files("/home/ubuntu/imputations",full.names=T),"/")){
+  #   if(otherPerson == homeFolder)next
+  #   if(!file.info(otherPerson)[["isdir"]])next
+  #   if(!file.exists(paste(otherPerson,"variables.rdata",sep="/")))next
+  #   suppressWarnings(try(rm("md5"),silent=T))
+  #   load(paste(otherPerson,"variables.rdata",sep="/"))
+  #   if(!exists("md5"))next
+  #   if(md5 == this_person_md5sum){
+  #     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_queue_match",email,this_person_md5sum)
+  #     m<-paste(m,collapse="\t")
+  #     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+  #     unlink(homeFolder,recursive=T)
+  #     stop(safeError("A person with this genome was already queued for analysis. Please don't submit twice."))
+  #   }
+  # }
+  # 
   
   print("Finalize")
-  md5<-this_person_md5sum
-  save(uniqueID,email,filename,protect_from_deletion,md5,file=paste(homeFolder,"variables.rdata",sep=""))
+  save(uniqueID,email,filename,protect_from_deletion,file=paste(homeFolder,"variables.rdata",sep=""))
   unlink("job_status.txt")
   write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
   
