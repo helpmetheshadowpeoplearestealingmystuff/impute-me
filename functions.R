@@ -352,12 +352,14 @@ run_imputation<-function(
 
     
     #Common problem 3: Presence of indels that can't be handled by the plink -23file function
-    cmd_special_3<-paste0("awk -i inplace '{ if ((length($4) <= 3 )) print $1 \"\t\" $2 \"\t\"$3\"\t\" $4}' ",rawdata)
+    cmd_special_3<-paste0("awk -i inplace '{ if (length($4) <= 3   && length($4) > 2 )  print $1 \"\t\" $2 \"\t\"$3\"\t\" $4}' ",rawdata)
     system(cmd_special_3)
     line_count_3<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
     if(line_count_3-line_count_1<0)special_error_status <- c(special_error_status, paste0("INDEL removals (",line_count_3-line_count_1,")"))
     
-        
+
+    
+            
     #Common problem 4: lack of sorting (first re-check if this is a problem after MT removal)
     cmd_special_3<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
     sorting_check<-system(cmd_special_3,intern=T)
