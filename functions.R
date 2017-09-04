@@ -352,9 +352,26 @@ run_imputation<-function(
 
     
     #Common problem 3: Presence of indels that can't be handled by the plink -23file function
-    cmd_special_3<-paste0("awk -i inplace '!length($4) != 2' ",rawdata)
-    system(cmd_special_3)
+    #this needs to be handled in a very weird way, because clearly awk can distinguish all line endings systematically
+    cmd_special_3a<-paste0("awk '!(length($4) != 3)' ",rawdata, " > ",runDir,"/temp_indel_01.txt")
+    system(cmd_special_3a)
+    line_count_3a<-as.integer(sub(" .+$","",system(paste0("wc -l ",runDir,"/temp_indel_01.txt"),intern=T)))
+    
+    cmd_special_3b<-paste0("awk '!(length($4) != 2)' ",rawdata, " > ",runDir,"/temp_indel_02.txt")
+    system(cmd_special_3b)
+    line_count_3b<-as.integer(sub(" .+$","",system(paste0("wc -l ",runDir,"/temp_indel_02.txt"),intern=T)))
+    
+    if(line_count_3a > line_count_3b){
+      special_awk_length <- 3
+    }else{
+      special_awk_length <- 2
+    }
+    
+    cmd_special_3c<-paste0("awk -i inplace '!length($4) != ",special_awk_length,"' ",rawdata)
+    system(cmd_special_3c)
     line_count_3<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
+    
+    
     if(line_count_3-line_count_1<0)special_error_status <- c(special_error_status, paste0("INDEL removals (",line_count_3-line_count_1,")"))
     
 
