@@ -139,3 +139,20 @@ sample_ref="/home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_100
 
 #So because of the quotes.
 #Fixed with quote remover
+
+
+
+
+
+
+
+
+#2017-09-04 checking broken runs 
+# Living DNA customer genotype data download file version: 1.0.1
+"/home/ubuntu/to_fix_later/imputation_folder_id_24W9524h9/id_24W9524h9_raw_data.txt"
+
+#so maybe that subsetter algorithm should be up-front?
+# rs61752992      X       153296077       CTGGTGGGGTCCTCGGAGCTCTCGGGCTCAGGTGGAGGTGGGGGC
+
+
+#ok - put in new checks

@@ -295,7 +295,7 @@ run_imputation<-function(
   impute2="/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static/impute2",
   sample_ref="/home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3.sample"
 ){
-  
+  library(tools)
   
   
   if(class(rawdata)!="character")stop(paste("rawdata must be character, not",class(rawdata)))
@@ -329,85 +329,107 @@ run_imputation<-function(
   out1<-system(cmd1)
   
   
-  #check for MT presence and other non-sorted behaviour (note this is an exception. Best to submit sorted data)
-  #First trying to re-run, just to get the 'out of order' statement, and see that is in fact the case.
-  special_error_status<-""
-  if(out1 == 3){
-    cmd1_2<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
-    out1_2<-system(cmd1_2,intern=T)
-    if(length(grep("are out of order",out1_2))>0){
-      #then just remove the mitochondrial SNPS (they are not needed)
-      cmd1_3<-paste("sed -i.bak '/\\tMT\\t/d'",rawdata)
-      system(cmd1_3)
-      out1<-system(cmd1)
-      if(out1 == 3){
-        #Still problems with sort. Try a bash-based sort.
-        #sorting by chr then pos
-        cmd1_4<-paste0("sort -k2 -k3 -g -o ",runDir,"/temp01.txt ",rawdata)
-        system(cmd1_4)
-        #removing Y, xY, 23 chr
-        cmd1_5<-paste0("sed -i.bak -e '/\\tY\\t/d' -e '/\\t23\\t/d' -e '/\\tYX\\t/d' -e '/\\tXY\\t/d' ",runDir,"/temp01.txt")
-        system(cmd1_5)
-        #switching X chr and the rest (because X gets sorted first)
-        cmd1_6<-paste0("grep -v \tX\t ",runDir,"/temp01.txt > ",runDir,"/temp02.txt")
-        system(cmd1_6)
-        cmd1_7<-paste0("grep \tX\t ",runDir,"/temp01.txt >> ",runDir,"/temp02.txt")
-        system(cmd1_7)
-        cmd1_8<-paste0("sed 's/\\tX\\t/\\t23\t/' ",runDir,"/temp02.txt > ",runDir,"/temp03.txt")
-        system(cmd1_8)
-        
-        #converting --- to -- (we've seen that a few times)
-        cmd1_9<-paste0("sed 's/\\t---/\\t--/' ",runDir,"/temp03.txt > ",rawdata)
-        system(cmd1_9)
-        out1<-system(cmd1)
-        if(out1 == 3){
-          special_error_status<-"Something odd with the MT presence reverter I"
-          
-        }
-      }
-    }else{
-      special_error_status<-"Something odd with the MT presence reverter II - this is the case when it is not 'out of order'"
-    }
-  }
+  #check for MT presence, other non-sorted behaviour and just plain weird thing. Note this is an exception, and it will raise a log entry no matter what. Best to submit sorted clean data data. 
   
-  #this is a catch for some really obscure errors
-  if(special_error_status != ""){
-    cat(paste("\n\nArrived in the special-special error section with this tag:\n",special_error_status,"\n\n"))
+  special_error_status<-vector()
+  if(out1 == 3){
+    line_count_cmd<-paste0("wc -l ",rawdata)
+    line_count_0<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
     
-    #Removing all front quotes, all back quotes and all quote-comma-quotes
-    cmd1_10<-paste0("sed -i.ba3 -e 's/^\"//g' -e 's/\"$//g' -e 's/\",\"/\\t/g' -e 's/\"\\t\"/\\t/g' ",rawdata)
-    system(cmd1_10)
     
-    #also when there is weird carriage returns    
-    cmd1_11<-paste0("sed -i.ba4 's/\"\r//g' ",rawdata)
-    system(cmd1_11)
+    #Common problem 1: mitochondrial SNPs (not used in any analysis anyway)
+    cmd_special_1<-paste("sed -i.bak1 '/\\tMT\\t/d'",rawdata)
+    system(cmd_special_1)
+    line_count_1<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
+    if(line_count_1-line_count_0<0)special_error_status <- c(special_error_status, paste0("MT removals (",line_count_1-line_count_0,")"))
     
+        
+    #Common problem 2: Presence of triple dashes, that should just be double dashes
+    md5_before <- md5sum(rawdata)
+    cmd_special_2<-paste0("sed -i.bak2 's/\\t---/\\t--/' ",rawdata)
+    system(cmd_special_2)
+    if(md5_before != md5sum(rawdata))c(special_error_status, "--- to --")
+
+    
+    #Common problem 3: Presence of indels that can't be handled by the plink -23file function
+    cmd_special_3<-paste0("awk -i inplace '{ if ((length($4) <= 3 )) print $1 \"\t\" $2 \"\t\"$3\"\t\" $4}' ",rawdata)
+    system(cmd_special_3)
+    line_count_3<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
+    if(line_count_3-line_count_1<0)special_error_status <- c(special_error_status, paste0("INDEL removals (",line_count_3-line_count_1,")"))
+    
+        
+    #Common problem 4: lack of sorting (first re-check if this is a problem after MT removal)
+    cmd_special_3<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
+    sorting_check<-system(cmd_special_3,intern=T)
+    if(length(grep("are out of order",sorting_check))>0){
+      
+      #sorting by chr then pos
+      cmd_sort_1<-paste0("sort -k2 -k3 -g -o ",runDir,"/temp01.txt ",rawdata)
+      system(cmd_sort_1)
+      
+      #removing Y, xY, 23 chr (too risky to keep in after a sort)
+      cmd_sort_2<-paste0("sed -e '/\\tY\\t/d' -e '/\\t23\\t/d' -e '/\\tYX\\t/d' -e '/\\tXY\\t/d' ",runDir,"/temp01.txt > ",runDir,"/temp02.txt")
+      system(cmd_sort_2)
+      
+      #switching X chr and the rest (because X gets sorted first)
+      cmd_sort_3<-paste0("grep -v \tX\t ",runDir,"/temp02.txt > ",runDir,"/temp03.txt")
+      system(cmd_sort_3)
+      cmd_sort_4<-paste0("grep \tX\t ",runDir,"/temp02.txt >> ",runDir,"/temp03.txt")
+      system(cmd_sort_4)
+      
+      #replace X with 23
+      cmd_sort_5<-paste0("sed 's/\\tX\\t/\\t23\t/' ",runDir,"/temp03.txt > ",rawdata)
+      system(cmd_sort_5)
+      
+      line_count_4<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
+      special_error_status<- c(special_error_status,paste0("sorting required (",line_count_3-line_count_4," lines removed)"))
+    }
+    
+  
+
+    #common problem 5: Removing all front quotes, all back quotes and all quote-comma-quotes
+    md5_before <- md5sum(rawdata)
+    cmd_special_5<-paste0("sed -i.bak3 -e 's/^\"//g' -e 's/\"$//g' -e 's/\",\"/\\t/g' -e 's/\"\\t\"/\\t/g' ",rawdata)
+    system(cmd_special_5)
+    if(md5_before != md5sum(rawdata))c(special_error_status, "removing weird quotes")
+    
+    
+    
+    #common problem 6: also when there is weird carriage returns    
+    md5_before <- md5sum(rawdata)
+    cmd_special_6<-paste0("sed -i.bak4 's/\"\r//g' ",rawdata)
+    system(cmd_special_6)
+    if(md5_before != md5sum(rawdata))c(special_error_status, "removing weird carriage returns")
+    
+  
+    
+        
     #then re-check and decide future action
     out1<-system(cmd1)
-    if(out1 == 3){
-      #if still failing
+    if(out1 == 0){
+      print(paste0("ok, somehow the special errors section actually cleared up this one. These were the error messages: ",paste(special_error_status,collapse=", ")))
+      #and move on
+    }else{
+      #however if still failing, we have to send a mail
       library("mailR")
       error1<-system(cmd1,intern=T)
-      message <- paste0(uniqueID," failed all attempts at starting imputation. It came with special error status:", special_error_status,". The last error message was this: ",paste(error1,collapse="\n"))
+      message <- paste0(uniqueID," failed all attempts at starting imputation. It came with special error status: ", paste(special_error_status,collapse=", "),". The last error message was this: ",paste(error1,collapse="\n"))
       send.mail(from = email_address,
-                                   to = "lassefolkersen@gmail.com",
-                                   subject = "Imputation has problem",
-                                   body = message,
-                                   html=T,
-                                   smtp = list(
-                                     host.name = "smtp.gmail.com", 
-                                     port = 465, 
-                                     user.name = email_address, 
-                                     passwd = email_password, 
-                                     ssl = TRUE),
-                                   authenticate = TRUE,
-                                   send = TRUE)
+                to = "lassefolkersen@gmail.com",
+                subject = "Imputation has problem",
+                body = message,
+                html=T,
+                smtp = list(
+                  host.name = "smtp.gmail.com", 
+                  port = 465, 
+                  user.name = email_address, 
+                  passwd = email_password, 
+                  ssl = TRUE),
+                authenticate = TRUE,
+                send = TRUE)
       stop("Sending error mail and giving up")
     }
-  }else{
-    print("ok, somehow the special errors section actually cleared up this one")
-  }
-  
+  }  
   
   
   #Rscript to omit duplicates
