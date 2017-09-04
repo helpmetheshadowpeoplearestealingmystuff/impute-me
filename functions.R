@@ -352,7 +352,11 @@ run_imputation<-function(
 
     
     #Common problem 3: Presence of indels that can't be handled by the plink -23file function
-    cmd_special_3<-paste0("awk -i inplace '{ if (length($4) <= 3   && length($4) > 2 )  print $1 \"\t\" $2 \"\t\"$3\"\t\" $4}' ",rawdata)
+    # cmd_special_carriage<-paste0("sed -i.bakX 's/\"\r//g' ",rawdata)
+    # system(cmd_special_carriage)
+    # cmd_special_3<-paste0("awk -i inplace '{ if (length($4) != 2) print $1 \"\t\" $2 \"\t\"$3\"\t\" $4}' ",rawdata)
+    cmd_special_3<-paste0("awk -i inplace '!length($4) != 2' ",rawdata)
+    
     system(cmd_special_3)
     line_count_3<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
     if(line_count_3-line_count_1<0)special_error_status <- c(special_error_status, paste0("INDEL removals (",line_count_3-line_count_1,")"))
@@ -415,7 +419,7 @@ run_imputation<-function(
       #however if still failing, we have to send a mail
       library("mailR")
       error1<-system(cmd1,intern=T)
-      message <- paste0(uniqueID," failed all attempts at starting imputation. It came with special error status: ", paste(special_error_status,collapse=", "),". The last error message was this: ",paste(error1,collapse="\n"))
+      message <- paste0(uniqueID," failed all attempts at starting imputation. It came with special error status:<b> ", paste(special_error_status,collapse=", "),". </b>The last error message was this: ",paste(error1,collapse="\n"))
       send.mail(from = email_address,
                 to = "lassefolkersen@gmail.com",
                 subject = "Imputation has problem",
