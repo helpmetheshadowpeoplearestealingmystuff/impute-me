@@ -362,13 +362,10 @@ run_imputation<-function(
     line_count_3b<-as.integer(sub(" .+$","",system(paste0("wc -l ",runDir,"/temp_indel_02.txt"),intern=T)))
     
     if(line_count_3a > line_count_3b){
-      special_awk_length <- 3
+      file.rename(paste0(runDir,"/temp_indel_01.txt"),rawdata)
     }else{
-      special_awk_length <- 2
+      file.rename(paste0(runDir,"/temp_indel_02.txt"),rawdata)
     }
-    
-    cmd_special_3c<-paste0("awk -i inplace '!length($4) != ",special_awk_length,"' ",rawdata)
-    system(cmd_special_3c)
     line_count_3<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
     
     
