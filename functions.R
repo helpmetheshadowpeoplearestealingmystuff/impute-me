@@ -136,16 +136,16 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   testRead<-try(read.table(path,nrow=10,stringsAsFactors=F))
   if(class(testRead)=="try-error"){
     #Getting a slightly more informative error message for the submission log
-    testRead2<-try(readLines(path,n=5))
-    if(class(testRead2)=="try-error"){
-      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"general_data_file_problem",email,uniqueID)
-    }else{
-      first_five_lines<-paste(testRead2,collapse=" // ")
-      if(nchar(first_five_lines)> 200){
-        first_five_lines <- substr(first_five_lines,1,199)
-      }
-      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"general_data_file_problem",email,uniqueID,first_five_lines)
-    }
+    # testRead2<-try(readLines(path,n=5))
+    # if(class(testRead2)=="try-error"){
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"general_data_file_problem",email,uniqueID)
+    # }else{
+    # first_five_lines<-paste(testRead2,collapse=" // ")
+    # if(nchar(first_five_lines)> 200){
+    # first_five_lines <- substr(first_five_lines,1,199)
+    # }
+    # m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"general_data_file_problem",email,uniqueID,first_five_lines)
+    # }
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)	
     unlink(homeFolder,recursive=T)
