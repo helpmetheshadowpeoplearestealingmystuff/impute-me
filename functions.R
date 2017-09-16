@@ -456,6 +456,52 @@ run_imputation<-function(
   
   
   
+  #Check up of build version --- this could cause problems. We haven't seen them yet, but it is possible. So we make a hard stop if it comes
+  canaries<-rbind(
+    c("rs3762954","662955"),
+    c("rs390560","2601689"),
+    c("rs10043332","3128346"),
+    c("rs10070917","4955950"),
+    c("rs11740668","404623"),
+    c("rs999292","93218958"),
+    c("rs13147822","107960572"),
+    c("rs62574625","101218552"),
+    c("rs11023374","14903636")
+  )
+  canaries<-data.frame(canaries,stringsAsFactors = F)
+  colnames(canaries)<-c("snp","1kg_pos")
+  canaries[,"1kg_pos"] <- as.numeric(canaries[,"1kg_pos"])
+  rownames(map) <- map[,2]
+  canaries<-canaries[canaries[,"snp"]%in%rownames(map),]
+  if(nrow(canaries)==0){
+    print("Skipping wrong-build check, because none of the tests SNPs were found in input data")
+  }else{
+    canaries[,"input_pos"]<-map[canaries[,"snp"],4]
+    if(all(canaries[,"1kg_pos"] == canaries[,"input_pos"])){
+      print(paste("Passed the wrong-build check.",nrow(canaries),"snps tested had the correct position."))
+    }else{
+      #Stop the process and send a warning email
+      library("mailR")
+      message <- paste0(uniqueID," failed a wrong-build check. Of ",nrow(canaries)," tested SNPs, ",sum(canaries[,"1kg_pos"] != canaries[,"input_pos"])," did not match 1kg position.")
+      send.mail(from = email_address,
+                to = "lassefolkersen@gmail.com",
+                subject = "Imputation has problem",
+                body = message,
+                html=T,
+                smtp = list(
+                  host.name = "smtp.gmail.com", 
+                  port = 465, 
+                  user.name = email_address, 
+                  passwd = email_password, 
+                  ssl = TRUE),
+                authenticate = TRUE,
+                send = TRUE)
+      stop("Sending error mail and giving up because of wrong-build check")
+    }
+  }
+  
+  
+  
   #loop over chromosomes
   for(chr in c("X",as.character(1:22))){
     
