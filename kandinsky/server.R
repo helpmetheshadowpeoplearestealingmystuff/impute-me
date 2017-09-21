@@ -46,7 +46,7 @@ shinyServer(function(input, output) {
       genotypes<-read.table(gwas_snps_path,sep="\t",stringsAsFactors = F,header=T)
       if(nrow(genotypes)==0)stop(safeError("Found an empty gwas cached file for this user"))
       
-      pdf(file)
+      pdf(file,width=9,height=7)
       kandinsky(genotypes)
       dev.off()
       
