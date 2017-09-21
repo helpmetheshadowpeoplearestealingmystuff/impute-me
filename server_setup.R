@@ -24,6 +24,10 @@ install.packages("mailR")
 install.packages("XML")
 install.packages("jsonlite")
 install.packages("plotly")
+install.packages("devtools")
+
+library("devtools")
+devtools::install_github("gsimchoni/kandinsky")
 
 # source("http://bioconductor.org/biocLite.R")
 # biocLite("biomaRt")
