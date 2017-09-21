@@ -1821,14 +1821,14 @@ re_check_md5sums<-function(){
 
 
 
-runDir<-"/home/ubuntu/test_rundir"
-set.seed(42)
-rawdata_files<-sample(list.files("~/imputations",full.names=T),10)
-rawdata_files<-paste0(rawdata_files,"/",sub("^.+folder_","",rawdata_files),"_raw_data.txt")
-shapeit="/home/ubuntu/impute_dir/bin/shapeit"
-plink="/home/ubuntu/impute_dir/plink"
-impute2="/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static/impute2"
-sample_ref="/home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3.sample"
+# runDir<-"/home/ubuntu/bulk_imputations/2017-09-21-15-59-21_bulk"
+# set.seed(42)
+# rawdata_files<-sample(list.files("~/imputations",full.names=T),10)
+# rawdata_files<-paste0(rawdata_files,"/",sub("^.+folder_","",rawdata_files),"_raw_data.txt")
+# shapeit="/home/ubuntu/impute_dir/bin/shapeit"
+# plink="/home/ubuntu/impute_dir/plink"
+# impute2="/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static/impute2"
+# sample_ref="/home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3.sample"
 
 
 
@@ -2061,7 +2061,7 @@ run_bulk_imputation<-function(
       
       #First in loop - extract only one specific chromosome
       cmd2<-paste(plink," --file step_1_",uniqueID," --chr ",chr," --recode --out step_2_",uniqueID,"_chr",chr," --exclude step_2_",uniqueID,"_exclusions",sep="")
-      out2<-system(cmd2)
+      system(cmd2)
       
     }  
   }
@@ -2196,6 +2196,46 @@ run_bulk_imputation<-function(
       }
     }
   }
+  
+  
+  #then copy out each of the step_7 files into separate imputation folders
+  sample_file<-grep("step_5",grep("\\.sample$",list.files(),value=T),value=T)[1] #just pick the first one - they should be identical
+  samples<-read.table(sample_file,stringsAsFactors=F)
+  allFiles1<-list.files(runDir)
+  for(rawdata in rawdata_files){
+    uniqueID<-sub("^.+/","",sub("_raw_data.txt$","",rawdata))
+    outfolder <- paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/")
+    w<-which(samples[,1]%in%uniqueID) -2
+    print(paste("Retrieving",uniqueID,"which is",w,"of",nrow(samples)-2))
+    
+    for(chr in chromosomes){
+      #cut and transfer sample file
+      write.table(samples[c(1:2,w+2),],file=paste0(outfolder,"step_4_chr",chr,".sample"),quote=F,row.names=F,col.names = F)
+      
+      #cut and transfer gen files
+      step7Files<-grep(paste0("^step_7_chr",chr),allFiles1,value=T)
+      step7ResultsFiles<-grep("[0-9]$",step7Files,value=T)
+      left_limit <- 5 + (w-1) * 3 + 1
+      right_limit <- 5 + (w-1) * 3 + 3
+      for(step7ResultsFile in step7ResultsFiles){
+        cmd8<-paste0("cut --delimiter=' ' -f 1-5,",left_limit,"-",right_limit," ",step7ResultsFile," > ",outfolder,step7ResultsFile)
+        system(cmd8)
+      }
+    }
+  }
 }
 
 
+
+
+# 
+# 
+# # summarize_imputation<-function(
+#   runDir="/home/ubuntu/imputations/imputation_folder_id_69Z5287y4"
+# 
+# uniqueID="id_69Z5287y4"
+# destinationDir="/home/ubuntu/data"
+#   gtools="/home/ubuntu/impute_dir/gtool"
+#   plink="/home/ubuntu/impute_dir/plink-1.07-x86_64/plink" #note, as of 2015-08-31 this must be plink 1.07, otherwise we get a bug
+# 
+# #   
