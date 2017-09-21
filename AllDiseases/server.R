@@ -8,9 +8,8 @@ trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_trait_overovervie
 
 #testing
 
-# snps_file<-"AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata"
-# trait_file<-"AllDiseases/2017-02-21_trait_overoverview.rdata"
-
+ethnicities_labels<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
+names(ethnicities_labels)<-c("Automatic guess","global","African","Ad Mixed American","East Asian","European","South Asian")
 
 #preload
 load(snps_file)
@@ -57,19 +56,25 @@ shinyServer(function(input, output) {
 		SNPs_to_analyze<-data[data[,"study_id"]%in%study_id ,]
 		
     #setting up back-ground frequency sources
+		#The default behavior is to try to guess ethnicity. If this fails it should revert to 'global' distribution but prepare to make a note of it in the methods.
+		ethnicity_explanation_text <- "All scaling was done using the minor-allele frequency (MAF) for each SNP, as taken from the 1000 genomes project v3, using a _CHOICE_ frequency distribution."
+		
 		if(ethnicity_group == "automatic"){
 		  json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
 		  if(!file.exists(json_path))stop(safeError("Automatic guess of ethnicity not possible (json not found)"))
 		  library(jsonlite)
 		  d1<-fromJSON(json_path)
 		  e<-try(d1[["ethnicity"]][["guessed_super_pop"]],silent=F)
-		  if(is.null(e))stop(safeError("Automatic guess of ethnicity not possible (was NULL)"))
-		  if(is.na(e))stop(safeError("Automatic guess of ethnicity not possible (was NA)"))
-		  if(!e %in% c("AFR", "AMR", "EAS", "EUR", "SAS"))stop(safeError("Automatic guess of ethnicity not possible (was unknown)"))
-		  ethnicity_group <- e
+		  if(is.null(e) || is.na(e) ||  !e %in% c("AFR", "AMR", "EAS", "EUR", "SAS")){
+		    ethnicity_explanation_text<-paste0(ethnicity_explanation_text," This was done because we could not automatically guess your ethnicity, but you can use the advanced tab to set it yourself.")
+		    ethnicity_group<-"global"
+		  }else{
+		    ethnicity_explanation_text<-paste0(ethnicity_explanation_text," This was done based on automated guess.")
+		    ethnicity_group <- e
+		  }
 		}
 		if(ethnicity_group == "global"){
-		  #do nothing - this is the default. Note the density curve location.
+		  #do nothing. Note the density curve location.
 		  densityCurvePath<-"/home/ubuntu/srv/impute-me/AllDiseases/2017-07-01_densities_ALL.rdata"
 		}else{
 		  #then replace the MAF with the correct superpopulation group
@@ -77,6 +82,9 @@ shinyServer(function(input, output) {
 		  #note the density curve location
 		  densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/AllDiseases/2017-07-01_densities_",ethnicity_group,".rdata")
 		}
+		#then explain which choice was made
+		ethnicity_explanation_text <- sub("_CHOICE_",ethnicities_labels[ethnicity_group],ethnicity_explanation_text)
+		
 		
 		
 		#gathering some background info for the study		
@@ -166,6 +174,16 @@ shinyServer(function(input, output) {
 		textToReturn <- paste0(textToReturn," This means that your genetic risk score for this trait will be <b>higher than ",percentage,"% of the general population</b>.",summary)
 		
 		
+		
+		#write the methods text
+		methodsToReturn<-paste0("<small><br><b>Methods</b><br>GWAS data was downloaded from <u><a href='http://www.gwascentral.org/'>GWAS central</a></u>, curated as further described in the paper by <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/?term=24301061'>Beck et al</a></u>. Then a per-SNP score was calculated by counting the risk-alleles multiplied by the effect size (OR or beta as reported in original paper). This was centered so that the average score in the general population would be zero ('population normalized'). This means, that if a person is homozygote for a very rare risk variant this will result in a very high Z-score, conversely if the SNP is common, the Z-score will be less extreme. The sum of these normalized SNP-scores are calculated to get a trait-wide genetic risk score (GRS). This GRS was additionally scaled so that standard-deviation in the general population is 1 (unit-variance), effectively making the scores <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-scores</a></u>. ", ethnicity_explanation_text, " Further details of the calculation can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/56813bf071d7fa4c0a658c90d2ebee196a781e8a/functions.R#L1166-L1326'>source code</a></u>. 
+			          
+		          <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections. In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
+		          
+		          <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also check out the <u><a href='http://www.impute.me/HeuristicHealth'>HeuresticHealth-module</a></u> under development - based on this info, but without having to scroll through all entries</small>")
+		
+		
+		
 		#add in the (damn) duplicates
 		SNPs_to_analyze<-rbind(SNPs_to_analyze,SNPs_to_analyze_duplicates)
 		
@@ -199,6 +217,7 @@ shinyServer(function(input, output) {
 		return(list(
 			SNPs_to_analyze=SNPs_to_analyze,
 			textToReturn=textToReturn,
+			methodsToReturn=methodsToReturn,
 			GRS=GRS,
 			distributionCurve=distributionCurve))
 	})
@@ -324,18 +343,14 @@ shinyServer(function(input, output) {
 	output$text_3 <- renderText({ 
 		
 		if(input$goButton == 0){
-			m<-""
+		  methodsToReturn<-""
 			
 			
 		}else{
-			m<-paste0("<small><br><b>Methods</b><br>GWAS data was downloaded from <u><a href='http://www.gwascentral.org/'>GWAS central</a></u>, curated as further described in the paper by <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/?term=24301061'>Beck et al</a></u>. Then a per-SNP score was calculated by counting the risk-alleles multiplied by the effect size (OR or beta as reported in original paper). This was centered so that the average score in the general population would be zero ('population normalized'). This means, that if a person is homozygote for a very rare risk variant this will result in a very high Z-score, conversely if the SNP is common, the Z-score will be less extreme. The sum of these normalized SNP-scores are calculated to get a trait-wide genetic risk score (GRS). This GRS was additionally scaled so that standard-deviation in the general population is 1 (unit-variance), effectively making the scores <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-scores</a></u>. All scaling was done using the minor-allele frequency (MAF) for each SNP, as taken from the 1000 genomes project v3. Further details of the calculation can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/56813bf071d7fa4c0a658c90d2ebee196a781e8a/functions.R#L1166-L1326'>source code</a></u>. 
-			          
-			          <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections. In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
-			          
-			          <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also check out the <u><a href='http://www.impute.me/HeuristicHealth'>HeuresticHealth-module</a></u> under development - based on this info, but without having to scroll through all entries</small>")
-								
+		  o<-get_data()
+		  methodsToReturn<-o[["methodsToReturn"]]
 		}
-		return(m)
+		return(methodsToReturn)
 	})
 	
 		
