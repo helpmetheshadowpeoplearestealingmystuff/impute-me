@@ -3,14 +3,12 @@ library("kandinsky")
 
 source("/home/ubuntu/srv/impute-me/functions.R")
 
+dataFolder<-"/home/ubuntu/data/"
 
-uniqueID<-"id_613z86871"
+
 
 shinyServer(function(input, output) {
-	
-  
-  
-  
+
   output$plot_1 <- renderPlot({ 
     if(input$goButton == 0){
       return(NULL)
