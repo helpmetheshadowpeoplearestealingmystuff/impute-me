@@ -22,7 +22,7 @@ shinyServer(function(input, output) {
       stop(safeError(paste("Did not find a user with this id",uniqueID)))
     }
     
-    table_file <-"/home/ubuntu/srv/impute-me/statins/SNPs_to_analyze.txt"
+    table_file <-"/home/ubuntu/srv/impute-me/precisionMedicine/SNPs_to_analyze.txt"
     SNPs_to_analyze<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
     rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
     genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)

@@ -70,7 +70,7 @@ shinyServer(function(input, output) {
 		    ethnicity_explanation_text<-paste0(ethnicity_explanation_text," This was done because we could not automatically guess your ethnicity, but you can use the advanced tab to set it yourself.")
 		    ethnicity_group<-"global"
 		  }else{
-		    ethnicity_explanation_text<-paste0(ethnicity_explanation_text," This was done based on automated guess.")
+		    ethnicity_explanation_text<-paste0(ethnicity_explanation_text," This was done based on an automated guess.")
 		    ethnicity_group <- e
 		  }
 		}
