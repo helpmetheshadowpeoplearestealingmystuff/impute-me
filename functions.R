@@ -1790,3 +1790,412 @@ re_check_md5sums<-function(){
   all_md5sums <- unique(all_md5sums)
   writeLines(all_md5sums,"/home/ubuntu/misc_files/md5sums.txt")
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+runDir<-"/home/ubuntu/test_rundir"
+set.seed(42)
+rawdata_files<-sample(list.files("~/imputations",full.names=T),10)
+rawdata_files<-paste0(rawdata_files,"/",sub("^.+folder_","",rawdata_files),"_raw_data.txt")
+shapeit="/home/ubuntu/impute_dir/bin/shapeit"
+plink="/home/ubuntu/impute_dir/plink"
+impute2="/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static/impute2"
+sample_ref="/home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3.sample"
+
+
+
+run_bulk_imputation<-function(
+  rawdata_files, 
+  runDir, 
+  shapeit="/home/ubuntu/impute_dir/bin/shapeit",
+  plink="/home/ubuntu/impute_dir/plink",
+  impute2="/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static/impute2",
+  sample_ref="/home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3.sample"
+){
+  library(tools)
+  
+  
+  if(class(rawdata_files)!="character")stop(paste("rawdata must be character, not",class(rawdata_files)))
+  if(length(rawdata_files)!=10)stop(paste("rawdata must be lengh 10, not",length(rawdata_files)))
+  if(!all(file.exists(rawdata_files))){
+    missing<-rawdata_files[!file.exists(rawdata_files)]
+    stop(paste("Did not find these rawdata files:",paste(missing,collapse=", ")))
+  }
+  
+  if(class(runDir)!="character")stop(paste("runDir must be character, not",class(runDir)))
+  if(length(runDir)!=1)stop(paste("runDir must be lengh 1, not",length(runDir)))
+  if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
+  if(length(grep("/$",runDir))!=0)stop("Please don't use a trailing slash in the runDir")
+  
+  if(class(shapeit)!="character")stop(paste("shapeit must be character, not",class(shapeit)))
+  if(length(shapeit)!=1)stop(paste("shapeit must be lengh 1, not",length(shapeit)))
+  if(!file.exists(shapeit))stop(paste("Did not find shapeit at path:",shapeit))
+  
+  if(class(plink)!="character")stop(paste("plink must be character, not",class(plink)))
+  if(length(plink)!=1)stop(paste("plink must be lengh 1, not",length(plink)))
+  if(!file.exists(plink))stop(paste("Did not find plink at path:",plink))
+  
+  if(class(impute2)!="character")stop(paste("impute2 must be character, not",class(impute2)))
+  if(length(impute2)!=1)stop(paste("impute2 must be lengh 1, not",length(impute2)))
+  if(!file.exists(impute2))stop(paste("Did not find impute2 at path:",impute2))
+  
+  if(class(sample_ref)!="character")stop(paste("sample_ref must be character, not",class(sample_ref)))
+  if(length(sample_ref)!=1)stop(paste("sample_ref must be lengh 1, not",length(sample_ref)))
+  if(!file.exists(sample_ref))stop(paste("Did not find sample_ref at path:",sample_ref))
+  
+  
+  setwd(runDir)
+  
+  for(rawdata in rawdata_files){
+    uniqueID<-sub("^.+/","",sub("_raw_data.txt$","",rawdata))
+    
+    
+    
+    #Load data using plink 1.9
+    cmd1<-paste0(plink," --noweb --23file ",rawdata," ",uniqueID," ",uniqueID," --recode --out step_1_",uniqueID)
+    out1<-system(cmd1)
+    
+    
+    #check for MT presence, other non-sorted behaviour and just plain weird thing. Note this is an exception, and it will raise a log entry no matter what. Best to submit sorted clean data data. 
+    
+    special_error_status<-vector()
+    if(out1 == 3){
+      line_count_cmd<-paste0("wc -l ",rawdata)
+      line_count_0<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
+      
+      
+      #Common problem 1: mitochondrial SNPs (not used in any analysis anyway)
+      cmd_special_1<-paste("sed -i.bak1 '/\\tMT\\t/d'",rawdata)
+      system(cmd_special_1)
+      line_count_1<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
+      if(line_count_1-line_count_0<0)special_error_status <- c(special_error_status, paste0("MT removals (",line_count_1-line_count_0,")"))
+      
+      
+      #Common problem 2: Presence of triple dashes, that should just be double dashes
+      md5_before <- md5sum(rawdata)
+      cmd_special_2<-paste0("sed -i.bak2 's/\\t---/\\t--/' ",rawdata)
+      system(cmd_special_2)
+      if(md5_before != md5sum(rawdata))c(special_error_status, "--- to --")
+      
+      
+      #Common problem 3: Presence of indels that can't be handled by the plink -23file function
+      #this needs to be handled in a very weird way, because clearly awk can distinguish all line endings systematically
+      cmd_special_3a<-paste0("awk '!(length($4) != 3)' ",rawdata, " > ",runDir,"/temp_indel_01.txt")
+      system(cmd_special_3a)
+      line_count_3a<-as.integer(sub(" .+$","",system(paste0("wc -l ",runDir,"/temp_indel_01.txt"),intern=T)))
+      
+      cmd_special_3b<-paste0("awk '!(length($4) != 2)' ",rawdata, " > ",runDir,"/temp_indel_02.txt")
+      system(cmd_special_3b)
+      line_count_3b<-as.integer(sub(" .+$","",system(paste0("wc -l ",runDir,"/temp_indel_02.txt"),intern=T)))
+      
+      if(line_count_3a > line_count_3b){
+        file.rename(paste0(runDir,"/temp_indel_01.txt"),rawdata)
+      }else{
+        file.rename(paste0(runDir,"/temp_indel_02.txt"),rawdata)
+      }
+      line_count_3<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
+      
+      
+      if(line_count_3-line_count_1<0)special_error_status <- c(special_error_status, paste0("INDEL removals (",line_count_3-line_count_1,")"))
+      
+      
+      
+      
+      #Common problem 4: lack of sorting (first re-check if this is a problem after MT removal)
+      cmd_special_3<-paste(plink,"--noweb --23file ",rawdata," ",uniqueID," ",uniqueID," --recode --out step_1")
+      sorting_check<-system(cmd_special_3,intern=T)
+      if(length(grep("are out of order",sorting_check))>0){
+        
+        #sorting by chr then pos
+        cmd_sort_1<-paste0("sort -k2 -k3 -g -o ",runDir,"/temp01.txt ",rawdata)
+        system(cmd_sort_1)
+        
+        #removing Y, xY, 23 chr (too risky to keep in after a sort)
+        cmd_sort_2<-paste0("sed -e '/\\tY\\t/d' -e '/\\t23\\t/d' -e '/\\tYX\\t/d' -e '/\\tXY\\t/d' ",runDir,"/temp01.txt > ",runDir,"/temp02.txt")
+        system(cmd_sort_2)
+        
+        #switching X chr and the rest (because X gets sorted first)
+        cmd_sort_3<-paste0("grep -v \tX\t ",runDir,"/temp02.txt > ",runDir,"/temp03.txt")
+        system(cmd_sort_3)
+        cmd_sort_4<-paste0("grep \tX\t ",runDir,"/temp02.txt >> ",runDir,"/temp03.txt")
+        system(cmd_sort_4)
+        
+        #replace X with 23
+        cmd_sort_5<-paste0("sed 's/\\tX\\t/\\t23\t/' ",runDir,"/temp03.txt > ",rawdata)
+        system(cmd_sort_5)
+        
+        line_count_4<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
+        special_error_status<- c(special_error_status,paste0("sorting required (",line_count_3-line_count_4," lines removed)"))
+      }
+      
+      
+      
+      #common problem 5: Removing all front quotes, all back quotes and all quote-comma-quotes
+      md5_before <- md5sum(rawdata)
+      cmd_special_5<-paste0("sed -i.bak3 -e 's/^\"//g' -e 's/\"$//g' -e 's/\",\"/\\t/g' -e 's/\"\\t\"/\\t/g' ",rawdata)
+      system(cmd_special_5)
+      if(md5_before != md5sum(rawdata))c(special_error_status, "removing weird quotes")
+      
+      
+      
+      #common problem 6: also when there is weird carriage returns    
+      md5_before <- md5sum(rawdata)
+      cmd_special_6<-paste0("sed -i.bak4 's/\"\r//g' ",rawdata)
+      system(cmd_special_6)
+      if(md5_before != md5sum(rawdata))c(special_error_status, "removing weird carriage returns")
+      
+      
+      
+      
+      #then re-check and decide future action
+      out1<-system(cmd1)
+      if(out1 == 0){
+        print(paste0("ok, somehow the special errors section actually cleared up this one. These were the error messages: ",paste(special_error_status,collapse=", ")))
+        #and move on
+      }else{
+        #however if still failing, we have to send a mail
+        library("mailR")
+        error1<-system(cmd1,intern=T)
+        message <- paste0(uniqueID," failed all attempts at starting imputation. It came with special error status:<b> ", paste(special_error_status,collapse=", "),". </b>The last error message was this: ",paste(error1,collapse="\n"))
+        send.mail(from = email_address,
+                  to = "lassefolkersen@gmail.com",
+                  subject = "Imputation has problem",
+                  body = message,
+                  html=T,
+                  smtp = list(
+                    host.name = "smtp.gmail.com", 
+                    port = 465, 
+                    user.name = email_address, 
+                    passwd = email_password, 
+                    ssl = TRUE),
+                  authenticate = TRUE,
+                  send = TRUE)
+        stop("Sending error mail and giving up")
+      }
+    }  
+    
+    
+    #Rscript to omit duplicates
+    map<-read.table(paste0("step_1_",uniqueID,".map"),sep='\t',stringsAsFactors=F)
+    exclude<-map[duplicated(map[,4]),2]
+    print(paste('Removed',length(exclude),'SNPs that were duplicated'))
+    write.table(exclude,file=paste0('step_2_',uniqueID,'_exclusions'),sep='\t',row.names=FALSE,col.names=F,quote=F)
+    
+    
+    
+    #Check up of build version --- this could cause problems. We haven't seen them yet, but it is possible. So we make a hard stop if it comes
+    canaries<-rbind(
+      c("rs3762954","662955"),
+      c("rs390560","2601689"),
+      c("rs10043332","3128346"),
+      c("rs10070917","4955950"),
+      c("rs11740668","404623"),
+      c("rs999292","93218958"),
+      c("rs13147822","107960572"),
+      c("rs62574625","101218552"),
+      c("rs11023374","14903636")
+    )
+    canaries<-data.frame(canaries,stringsAsFactors = F)
+    colnames(canaries)<-c("snp","1kg_pos")
+    canaries[,"1kg_pos"] <- as.numeric(canaries[,"1kg_pos"])
+    rownames(map) <- map[,2]
+    canaries<-canaries[canaries[,"snp"]%in%rownames(map),]
+    if(nrow(canaries)==0){
+      print("Skipping wrong-build check, because none of the tests SNPs were found in input data")
+    }else{
+      canaries[,"input_pos"]<-map[canaries[,"snp"],4]
+      if(all(canaries[,"1kg_pos"] == canaries[,"input_pos"])){
+        print(paste("Passed the wrong-build check.",nrow(canaries),"snps tested had the correct position."))
+      }else{
+        #Stop the process and send a warning email
+        library("mailR")
+        message <- paste0(uniqueID," failed a wrong-build check. Of ",nrow(canaries)," tested SNPs, ",sum(canaries[,"1kg_pos"] != canaries[,"input_pos"])," did not match 1kg position.")
+        send.mail(from = email_address,
+                  to = "lassefolkersen@gmail.com",
+                  subject = "Imputation has problem",
+                  body = message,
+                  html=T,
+                  smtp = list(
+                    host.name = "smtp.gmail.com", 
+                    port = 465, 
+                    user.name = email_address, 
+                    passwd = email_password, 
+                    ssl = TRUE),
+                  authenticate = TRUE,
+                  send = TRUE)
+        stop("Sending error mail and giving up because of wrong-build check")
+      }
+    }
+  
+    
+    #loop over chromosomes
+    for(chr in c("X",as.character(1:22))){
+      
+      #First in loop - extract only one specific chromosome
+      cmd2<-paste(plink," --file step_1_",uniqueID," --chr ",chr," --recode --out step_2_",uniqueID,"_chr",chr," --exclude step_2_",uniqueID,"_exclusions",sep="")
+      out2<-system(cmd2)
+      
+    }  
+  }
+  
+
+  
+  #loop over chromosomes
+  for(chr in c("X",as.character(1:22))){
+    
+    merge_files<-paste0("step_2_",sub("_raw_data.txt","",basename(rawdata_files)),"_chr",chr)
+    merge_df<-data.frame(bed=paste0(merge_files,".ped"),map=paste0(merge_files,".map"))
+    merge_df<-merge_df[2:nrow(merge_df),]
+    write.table(merge_df,file="step_2_merge_list.txt",sep="\t",quote=F,row.names=F,col.names=F)
+    
+    
+    
+    #use plink to merge
+    cmd1_a <- paste0(plink," --file ",merge_files[1]," --merge-list step_2_merge_list.txt --recode --out step_2m_chr",chr)
+    system(cmd1_a)
+
+    
+    #check for duplicates
+    map<-read.table("step_2_chr22.map",stringsAsFactors = F)
+    if(sum(duplicated(map[,4]))>10000)stop("Found way too many duplicate positions")
+    exclude<-unique(map[duplicated(map[,4]),2])
+    write.table(exclude,file=paste0('step_2_overall_exclusions_chr',chr),sep='\t',row.names=FALSE,col.names=F,quote=F)
+    
+    
+    cmd1_b<-paste(plink," --file step_2m_chr",chr," --exclude step_2_overall_exclusions_chr",chr," --recode --out step_2_chr",chr,sep="")
+    system(cmd1_b)
+    
+
+    
+    #Then check for strand flips etc. 
+    cmd3<-paste(shapeit," -check --input-ped step_2_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_2_chr",chr,"_shapeit_log",sep="")
+    system(cmd3)
+    
+    
+    #Many homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
+    logFile<-read.table(paste("step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1)
+    omitMissing<-logFile[logFile[,1] %in% 'Missing',3]
+    logStrand<-logFile[logFile[,1] %in% 'Strand',]
+    omitNonIdentical<-logStrand[logStrand[,5] != logStrand[,6],3]
+    omitBlank<-logStrand[logStrand[,5]%in%'',3]
+    
+    #These are super-annoying. We have to create another (fake) person with the alternative allele just for their sake. This next command takes all the homozygotes, minus the indels (which are too complicated to lift out from 23andme)
+    forceHomozygoteTable<-logStrand[
+      logStrand[,5] == logStrand[,6] & 
+        nchar(logStrand[,9])==1 & 
+        nchar(logStrand[,10])==1 &
+        !logStrand[,5] %in% c("D","I") &
+        !logStrand[,6] %in% c("D","I") 
+      ,]
+    
+    #This removes any cases where there are more than two alleles involved
+    forceHomozygoteTable<-forceHomozygoteTable[sapply(apply(forceHomozygoteTable[,c(5,6,9,10)],1,unique),length)==2,]
+    
+    #This removes any duplicates there might be
+    forceHomozygoteTable<-forceHomozygoteTable[!duplicated(forceHomozygoteTable[,4]),]
+    map<-read.table(paste("step_2_chr",chr,".map",sep=""),sep="\t",stringsAsFactors=F)
+    #This loads the ped file, and doubles it
+    p_all<-strsplit(readLines(paste("step_2_chr",chr,".ped",sep=""))," ")
+    ped2<-ped1<-p_all[[1]]
+    ped2[1]<-"Temporary"
+    ped2[2]<-"Non_person"
+    if((length(ped1)-6) / 2 !=nrow(map))stop("mismatch between map and ped")
+    replacementPos<-which(map[,2]%in%forceHomozygoteTable[,4])
+    A1_pos<-7+2*(replacementPos-1)
+    A2_pos<-8+2*(replacementPos-1)
+    ped2[A1_pos]<-forceHomozygoteTable[,9]
+    ped2[A2_pos]<-forceHomozygoteTable[,10]
+    ped<-rbind(do.call(rbind,p_all),ped2)
+    write.table(ped,paste("step_3_chr",chr,".ped",sep=""),sep=" ",col.names=F,row.names=F,quote=F)
+    omitRemaining<-logStrand[!logStrand[,4]%in%forceHomozygoteTable[,4],3]
+    print(paste('Omitting',length(omitMissing),'because of missing',length(omitBlank),'because they are blank, and',length(omitNonIdentical),'true strand flips'))
+    write.table(c(omitNonIdentical,omitBlank,omitMissing,omitRemaining),file=paste("step_3_chr",chr,"_exclusions",sep=""),sep='\t',row.names=F,col.names=F,quote=F)
+    
+    
+    #running the shapeit command (with eleven people, the ten right ones and a placeholder heterozygote
+    cmd4<-paste(shapeit," --input-ped step_3_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_4_chr",chr,"_shapeit_log --exclude-snp step_3_chr",chr,"_exclusions -O step_4_chr",chr,sep="")
+    system(cmd4)
+    
+    
+    #checking for errors and stopping if there are any. No point to continue otherwise
+    log<-readLines(paste("step_4_chr",chr,"_shapeit_log.log",sep=""))
+    if(substr(log[length(log)],1,5)=="ERROR"){
+      m<-paste("At chr",chr," the shapeit failed. Check this file for explanation: step_4_chr",chr,"_shapeit.log",sep="")
+      write.table(m,file="master_imputation_log.txt",col.names=F,row.names=F,quote=F)
+      stop(m)
+    }
+    
+    #removing the placeholder person again
+    left_limit <- 5 + length(merge_files) * 2
+    cmd5_1<-paste0("cut --delimiter=' ' -f 1-",left_limit," step_4_chr",chr,".haps > step_5_chr",chr,".haps")
+    system(cmd5_1)
+    top_limit <- 2 + length(merge_files) 
+    cmd5_2<-paste0("head -n ",top_limit," step_4_chr",chr,".sample > step_5_chr",chr,".sample")
+    system(cmd5_2)
+    
+    
+    
+    #detect max length of each chromosome
+    cmd6<-paste("zcat /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz | tail -n 1 | cut --delimiter=\\  -f 2",sep="")
+    maxPos<-as.numeric(system(cmd6,intern=T))
+    
+    
+    #iterate over 5e6 chunks
+    starts<-seq(0,maxPos,5e6)
+    for(i in 1:length(starts)){
+      start <- starts[i]
+      end <- start+5e6
+      
+      
+      cmd7<-paste(impute2," -m /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start," ",end," -Ne 20000 -o step_7_chr",chr,"_",i,sep="")
+      step_7_log<-system(cmd7)
+      
+      
+      #test for memory-lack bug (step_7_log will be 137 if killed, otherwise 0)
+      if(step_7_log == 137){
+        #we divide the job in smaller bits 
+        divisions<-3
+        for(j in 1:divisions){
+          start_2 <- floor(starts[i] + (j-1)*(5e6/ divisions))
+          end_2 <- floor(starts[i]+ (j)*(5e6/ divisions))
+          print(paste("restart imputation with new subset to avoid memory-lack bug:",start_2,"to",end_2)   )
+          
+          cmd7<-paste(impute2," -m /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start_2," ",end_2," -Ne 20000 -o step_7_chr",chr,"_",i,"-",j,sep="")
+          step_7_log_2<-system(cmd7)
+          if(step_7_log_2 == 137){print("the memory problem was still active after second round")
+          }
+        }
+      }
+    }
+  }
+}
+
+
