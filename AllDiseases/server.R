@@ -8,8 +8,9 @@ trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_trait_overovervie
 
 #testing
 
-ethnicities_labels<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
-names(ethnicities_labels)<-c("Automatic guess","global","African","Ad Mixed American","East Asian","European","South Asian")
+
+ethnicities_labels<-c("Automatic guess","global","African","Ad Mixed American","East Asian","European","South Asian")
+names(ethnicities_labels)<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
 
 #preload
 load(snps_file)
