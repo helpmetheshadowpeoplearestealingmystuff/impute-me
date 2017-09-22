@@ -224,9 +224,9 @@ for(rawdata_file in rawdata_files){
   while(class(mailingResult) == "try-error"){
     print(paste("Trying to mail to",email))
     mailingResult<-try(send.mail(from = email_address,
-                                 to = email,
+                                 to = "lassefolkersen@gmail.com",
                                  bcc="lassefolkersen@gmail.com",
-                                 subject = "Imputation is ready",
+                                 subject = "BULK-Imputation is ready",
                                  body = message,
                                  html=T,
                                  smtp = list(
