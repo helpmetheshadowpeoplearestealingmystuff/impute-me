@@ -182,19 +182,11 @@ for(rawdata_file in rawdata_files){
   if(serverRole== "Node"){
     cmd5 <- paste("scp -r /home/ubuntu/data/",uniqueID," ubuntu@",hubAddress,":/home/ubuntu/data",sep="")
     system(cmd5)
-    
-    
   }
   
   
   
-  
-  
-  
-  
-  
-  
-  
+
   #making a link out to where the data can be retrieved	(different on hub and node)
   if(serverRole== "Node"){
     cmd6 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip /home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip'",sep="")
@@ -216,11 +208,8 @@ for(rawdata_file in rawdata_files){
   }else{stop("very odd")}
   
   
-  
-  
-  
+
   print("Getting IP and sending mail")
-  # ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
   ip<-"www.impute.me"
   location_23andme <- paste(ip,"/www/",uniqueID,".23andme.zip",sep="")
   location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
@@ -252,7 +241,9 @@ for(rawdata_file in rawdata_files){
     
   }
   
-  unlink(runDir,recursive=TRUE)
+  
+  #delete the imputaitons/imputation_folder_idXXXXX position afterwards
+  unlink(dirname(rawdata_file),recursive=TRUE)
   
   
   
@@ -270,4 +261,5 @@ for(rawdata_file in rawdata_files){
 }
 
 
-
+#delete the bulk_imputations/folder
+unlink(runDir,recursive=TRUE)
