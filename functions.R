@@ -2102,7 +2102,7 @@ run_bulk_imputation<-function(
 
     
     #check for position duplicates
-    map<-read.table("step_2m_chr22.map",stringsAsFactors = F)
+    map<-read.table(paste0("step_2m_chr",chr,".map"),stringsAsFactors = F)
     if(sum(duplicated(map[,4]))>10000)stop("Found way too many duplicate positions")
     exclude<-unique(map[duplicated(map[,4]),2])
     write.table(exclude,file=paste0('step_2_overall_exclusions_chr',chr),sep='\t',row.names=FALSE,col.names=F,quote=F)
