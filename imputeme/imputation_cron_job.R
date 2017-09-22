@@ -13,6 +13,9 @@ library("tools")
 source("/home/ubuntu/srv/impute-me/functions.R")
 
 
+#bulk running parameter
+length_requested <- 10
+
 
 #First checking if node is already at max load (maxImputations)
 foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
@@ -35,30 +38,6 @@ if(runningJobCount>(maxImputations-1)){
 }
 
 
-#money saving implementation. If this is hub and there's a job, just send an email an turn on a node server. That way server can run on a small computer
-if(serverRole== "Hub"){
-  if(length(foldersToCheck) - runningJobCount - remoteRunningJobCount >0){
-    # mailingResult<-try(stop(),silent=TRUE)
-    # while(class(mailingResult) == "try-error"){
-    # 	mailingResult<-try(send.mail(from = email_address,
-    # 															 to = "lassefolkersen@gmail.com",
-    # 															 subject = "Imputation is waiting",
-    # 															 body = "There is an imputation waiting. Switch on node",
-    # 															 html=T,
-    # 															 smtp = list(
-    # 															 	host.name = "smtp.gmail.com", 
-    # 															 	port = 465, 
-    # 															 	user.name = email_address, 
-    # 															 	passwd = email_password, 
-    # 															 	ssl = TRUE),
-    # 															 authenticate = TRUE,
-    # 															 send = TRUE))
-    # 	Sys.sleep(10)
-    # 	
-    # }
-    stop("Stopping because the node need to be switched on")
-  }
-}
 
 
 #If the computer is not too busy and the serverRole is node - we fetch 10 jobs
@@ -79,43 +58,42 @@ if(serverRole== "Node"){
   remoteFoldersToCheck<-c(remoteFoldersToCheck[remoteFoldersToCheck%in%f],remoteFoldersToCheck[!remoteFoldersToCheck%in%f])
   
   
-  #then loop over all remote folders
+  #then loop over all remote folders - first checking if there is 'length_requested'  ready jobs
   remoteFoldersToRun <- vector()
   for(remoteFolderToCheck in remoteFoldersToCheck){
-    if(length(remoteFoldersToRun)>=10)break
+    if(length(remoteFoldersToRun)>=length_requested)break
     cmd2 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
     jobStatus<-system(cmd2,intern=T)
     #Check if the job is ready
     if(jobStatus=="Job is ready"){
       print(paste("Found job-status file and job is ready",remoteFolderToCheck))
-      
-      #First write to job-status that now the job is off to a remote server
-      cmd3 <- paste("ssh ubuntu@",hubAddress," 'echo Job is remote-running > /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt'",sep="")
-      system(cmd3)
-      
       remoteFoldersToRun <- c(remoteFoldersToRun,remoteFolderToCheck)
     }
   }
   
-  
-  for(remoteFolderToRun in remoteFoldersToRun){
+  #if exactly 'length_requested' - then we copy the files from hub to node
+  if(length(remoteFoldersToRun)==length_requested){
+    #Then write to job-status that now the job is off to a remote server
+    for(remoteFolderToRun in remoteFoldersToRun){
+      cmd3 <- paste("ssh ubuntu@",hubAddress," 'echo Job is remote-running > /home/ubuntu/imputations/",remoteFolderToRun,"/job_status.txt'",sep="")
+      system(cmd3)
+    }
     
     #then copy all the files to here
-    cmd4 <- paste("scp -r ubuntu@",hubAddress,":/home/ubuntu/imputations/",remoteFolderToRun," /home/ubuntu/imputations/",remoteFolderToRun,sep="")
-    system(cmd4)
+    for(remoteFolderToRun in remoteFoldersToRun){
+      cmd4 <- paste("scp -r ubuntu@",hubAddress,":/home/ubuntu/imputations/",remoteFolderToRun," /home/ubuntu/imputations/",remoteFolderToRun,sep="")
+      system(cmd4)
+      
+      #And write locally that job is ready
+      job_status_file<-paste("/home/ubuntu/imputations/",remoteFolderToRun,"/job_status.txt",sep="")
+      unlink(job_status_file)
+      write.table("Job is ready",file=job_status_file,col.names=F,row.names=F,quote=F)
+    }
     
-    #Then write locally that job is ready
-    job_status_file<-paste("/home/ubuntu/imputations/",remoteFolderToRun,"/job_status.txt",sep="")
-    unlink(job_status_file)
-    write.table("Job is ready",file=job_status_file,col.names=F,row.names=F,quote=F)
-    break
+    #Update the local foldersToCheck to reflect new arrivals
+    foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
   }
-  #Update the local foldersToCheck to reflect new arrivals
-  foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
-  
 }
-
-
 
 
 
@@ -146,16 +124,20 @@ for(folderToCheck in foldersToCheck){
     
   }
 }
+
+
 #Stop if none are found
-if(length(imputeThisFolder)!=10){
-  stop("Not 10 folders were found to be ready for imputation")
+if(length(imputeThisFolder)!= length_requested){
+  stop(paste0("Not ",length_requested," folders were found to be ready for imputation"))
+}else{
+  print(paste("Found",length_requested,"ready sets to impute"))
 }
 
 
-uniqueIDs<-sub("^.+folder_","",imputeThisFolder)
 
 
 #If script is still running, it means there was a job ready for imputation - 
+uniqueIDs<-sub("^.+folder_","",imputeThisFolder)
 runDir<-paste("/home/ubuntu/bulk_imputations/",format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"_bulk",sep="")
 dir.create(runDir)
 setwd(runDir)
@@ -173,7 +155,6 @@ for(rawdata_file in rawdata_files){
   
   #summarizing files
   uniqueID <- sub("_raw_data.txt","",basename(rawdata_file))
-  dir.create(paste("/home/ubuntu/data/",uniqueID,sep=""))  
   summarize_imputation(runDir=dirname(rawdata_file),uniqueID=uniqueID,destinationDir="/home/ubuntu/data")  
   
   
@@ -183,7 +164,7 @@ for(rawdata_file in rawdata_files){
   load(paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/variables.rdata"))
   timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
   md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
-  gender<-system(paste("cut --delimiter=' ' -f 5 ",runDir,"/step_1.ped",sep=""),intern=T)
+  gender<-system(paste("cut --delimiter=' ' -f 6 ",runDir,"/step_4_chr22.sample",sep=""),intern=T)[3]
   f<-file(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),"w")
   writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion"),collapse="\t"),f)
   writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,protect_from_deletion),collapse="\t"),f)
@@ -284,7 +265,7 @@ for(rawdata_file in rawdata_files){
     unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=TRUE)
     
   }
-
+  
   
 }
 

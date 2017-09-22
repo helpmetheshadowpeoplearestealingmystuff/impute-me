@@ -471,6 +471,7 @@ run_imputation<-function(
   canaries<-data.frame(canaries,stringsAsFactors = F)
   colnames(canaries)<-c("snp","1kg_pos")
   canaries[,"1kg_pos"] <- as.numeric(canaries[,"1kg_pos"])
+  map<-map[!duplicated(map[,2]),]
   rownames(map) <- map[,2]
   canaries<-canaries[canaries[,"snp"]%in%rownames(map),]
   if(nrow(canaries)==0){
@@ -567,9 +568,7 @@ run_imputation<-function(
     #checking for errors and stopping if there are any. No point to continue otherwise
     log<-readLines(paste("step_4_chr",chr,"_shapeit_log.log",sep=""))
     if(substr(log[length(log)],1,5)=="ERROR"){
-      m<-paste("At chr",chr," the shapeit failed. Check this file for explanation: step_4_chr",chr,"_shapeit.log",sep="")
-      write.table(m,file="master_imputation_log.txt",col.names=F,row.names=F,quote=F)
-      stop(m)
+      stop(paste("At chr",chr," the shapeit failed. Check this file for explanation: step_4_chr",chr,"_shapeit.log",sep=""))
     }
     
     #removing the placeholder person again
@@ -646,7 +645,13 @@ summarize_imputation<-function(
   if(length(plink)!=1)stop(paste("plink must be lengh 1, not",length(plink)))
   if(!file.exists(plink))stop(paste("Did not find plink at path:",plink))
   
-  if(file.exists(paste(destinationDir,"/",uniqueID)))stop("The destinationDir already exists. This is a major unforeseen error")
+  if(file.exists(paste0(destinationDir,"/",uniqueID))){
+    if(length(list.files(paste0(destinationDir,"/",uniqueID)))>0){
+      stop(paste0("The destinationDir '",paste0(destinationDir,"/",uniqueID),"' already exists and has files in it. This is a major unforeseen error")  )
+    }
+    
+  }
+    
   
   allFiles1<-list.files(runDir)
   step7Files<-grep("^step_7_chr",allFiles1,value=T)
@@ -1875,7 +1880,7 @@ run_bulk_imputation<-function(
   setwd(runDir)
   
   for(rawdata in rawdata_files){
-    uniqueID<-sub("^.+/","",sub("_raw_data.txt$","",rawdata))
+     uniqueID<-sub("^.+/","",sub("_raw_data.txt$","",rawdata))
     
     
     
@@ -2026,6 +2031,7 @@ run_bulk_imputation<-function(
     canaries<-data.frame(canaries,stringsAsFactors = F)
     colnames(canaries)<-c("snp","1kg_pos")
     canaries[,"1kg_pos"] <- as.numeric(canaries[,"1kg_pos"])
+    map<-map[!duplicated(map[,2]),]
     rownames(map) <- map[,2]
     canaries<-canaries[canaries[,"snp"]%in%rownames(map),]
     if(nrow(canaries)==0){
@@ -2083,8 +2089,8 @@ run_bulk_imputation<-function(
     system(cmd1_a)
 
     
-    #check for duplicates
-    map<-read.table("step_2_chr22.map",stringsAsFactors = F)
+    #check for position duplicates
+    map<-read.table("step_2m_chr22.map",stringsAsFactors = F)
     if(sum(duplicated(map[,4]))>10000)stop("Found way too many duplicate positions")
     exclude<-unique(map[duplicated(map[,4]),2])
     write.table(exclude,file=paste0('step_2_overall_exclusions_chr',chr),sep='\t',row.names=FALSE,col.names=F,quote=F)
@@ -2148,9 +2154,7 @@ run_bulk_imputation<-function(
     #checking for errors and stopping if there are any. No point to continue otherwise
     log<-readLines(paste("step_4_chr",chr,"_shapeit_log.log",sep=""))
     if(substr(log[length(log)],1,5)=="ERROR"){
-      m<-paste("At chr",chr," the shapeit failed. Check this file for explanation: step_4_chr",chr,"_shapeit.log",sep="")
-      write.table(m,file="master_imputation_log.txt",col.names=F,row.names=F,quote=F)
-      stop(m)
+      stop(paste("At chr",chr," the shapeit failed. Check this file for explanation: step_4_chr",chr,"_shapeit.log",sep=""))
     }
     
     #removing the placeholder person again
@@ -2215,10 +2219,11 @@ run_bulk_imputation<-function(
       #cut and transfer gen files
       step7Files<-grep(paste0("^step_7_chr",chr),allFiles1,value=T)
       step7ResultsFiles<-grep("[0-9]$",step7Files,value=T)
-      left_limit <- 5 + (w-1) * 3 + 1
-      right_limit <- 5 + (w-1) * 3 + 3
+      left <- 5 + (w-1) * 3 + 1
+      middle <- 5 + (w-1) * 3 + 2
+      right <- 5 + (w-1) * 3 + 3
       for(step7ResultsFile in step7ResultsFiles){
-        cmd8<-paste0("cut --delimiter=' ' -f 1-5,",left_limit,"-",right_limit," ",step7ResultsFile," > ",outfolder,step7ResultsFile)
+        cmd8<-paste0("cut --delimiter=' ' -f 1,2,3,4,5,",left,",",middle,",",right," ",step7ResultsFile," > ",outfolder,step7ResultsFile)
         system(cmd8)
       }
     }
