@@ -2066,7 +2066,7 @@ run_bulk_imputation<-function(
     for(chr in c("X",as.character(1:22))){
       
       #First in loop - extract only one specific chromosome
-      cmd2<-paste(plink," --file step_1_",uniqueID," --chr ",chr," --recode --out step_2_",uniqueID,"_chr",chr," --exclude step_2_",uniqueID,"_exclusions",sep="")
+      cmd2<-paste(plink," --file step_1_",uniqueID," --chr ",chr," --make-bed --out step_2_",uniqueID,"_chr",chr," --exclude step_2_",uniqueID,"_exclusions",sep="")
       system(cmd2)
       
     }  
@@ -2078,15 +2078,27 @@ run_bulk_imputation<-function(
   for(chr in c("X",as.character(1:22))){
     
     merge_files<-paste0("step_2_",sub("_raw_data.txt","",basename(rawdata_files)),"_chr",chr)
-    merge_df<-data.frame(bed=paste0(merge_files,".ped"),map=paste0(merge_files,".map"))
+    merge_df<-data.frame(bed=paste0(merge_files,".bed"),bim=paste0(merge_files,".bim"),fam=paste0(merge_files,".fam"))
     merge_df<-merge_df[2:nrow(merge_df),]
     write.table(merge_df,file="step_2_merge_list.txt",sep="\t",quote=F,row.names=F,col.names=F)
     
     
     
     #use plink to merge
-    cmd1_a <- paste0(plink," --file ",merge_files[1]," --merge-list step_2_merge_list.txt --recode --out step_2m_chr",chr)
-    system(cmd1_a)
+    cmd1_a <- paste0(plink," --bfile ",merge_files[1]," --merge-list step_2_merge_list.txt --recode --out step_2m_chr",chr)
+    out1_a<-system(cmd1_a)
+    
+    
+    #handling nonbiallelic (just excluding them)
+    if(out1_a==3){
+      missnp<-read.table(paste0("step_2m_chr",chr,".missnp"),stringsAsFactors = F)[,1]
+      if(length(missnp) > 500) stop("Too many non-biallelic SNPs. This must be investigated")
+      for(uniqueID in uniqueIDs){
+        #First in loop - extract only one specific chromosome
+        cmd1_b<-paste0(plink," --bfile step_2_",uniqueID,"_chr",chr," --make-bed --out step_2_",uniqueID,"_chr",chr," --exclude step_2m_chr",chr,".missnp")
+        system(cmd1_b)
+      }
+    }
 
     
     #check for position duplicates
