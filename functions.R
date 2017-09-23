@@ -2094,10 +2094,13 @@ run_bulk_imputation<-function(
       missnp<-read.table(paste0("step_2m_chr",chr,".missnp"),stringsAsFactors = F)[,1]
       if(length(missnp) > 500) stop("Too many non-biallelic SNPs. This must be investigated")
       for(uniqueID in uniqueIDs){
-        #First in loop - extract only one specific chromosome
+        #Go back to the previous files from previous step and take them, now excluding triallelics.
         cmd1_b<-paste0(plink," --bfile step_2_",uniqueID,"_chr",chr," --make-bed --out step_2_",uniqueID,"_chr",chr," --exclude step_2m_chr",chr,".missnp")
         system(cmd1_b)
       }
+      #then retry merge
+      cmd1_a <- paste0(plink," --bfile ",merge_files[1]," --merge-list step_2_merge_list.txt --recode --out step_2m_chr",chr)
+      out1_a<-system(cmd1_a)
     }
 
     
