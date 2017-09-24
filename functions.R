@@ -665,6 +665,8 @@ summarize_imputation<-function(
     print(paste("For chr",chr,"these were the files to merge:",paste(s,collapse=", ")))
     cmd1<-paste("cat ",paste(s,collapse=" ")," > ",uniqueID,"_chr",chr,".gen",sep="")
     system(cmd1)
+    unlink(s)
+    
   }	
   
   
@@ -2247,7 +2249,7 @@ run_bulk_imputation<-function(
 
 
 
-
+<
 # 
 # 
 # # summarize_imputation<-function(

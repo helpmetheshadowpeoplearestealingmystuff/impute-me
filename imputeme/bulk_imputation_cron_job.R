@@ -141,7 +141,6 @@ uniqueIDs<-sub("^.+folder_","",imputeThisFolder)
 runDir<-paste("/home/ubuntu/bulk_imputations/",format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"_bulk",sep="")
 dir.create(runDir)
 setwd(runDir)
-
 rawdata_files<-paste("/home/ubuntu/imputations/",imputeThisFolder,"/",uniqueIDs,"_raw_data.txt",sep="")
 
 
@@ -149,6 +148,9 @@ rawdata_files<-paste("/home/ubuntu/imputations/",imputeThisFolder,"/",uniqueIDs,
 run_bulk_imputation(rawdata_files, runDir)
 
 
+
+#delete the bulk_imputations/folder - this will save a lot of space, maybe we can keep one run under 30 GB even
+unlink(runDir,recursive=TRUE)
 
 
 for(rawdata_file in rawdata_files){
@@ -260,6 +262,3 @@ for(rawdata_file in rawdata_files){
   
 }
 
-
-#delete the bulk_imputations/folder
-unlink(runDir,recursive=TRUE)
