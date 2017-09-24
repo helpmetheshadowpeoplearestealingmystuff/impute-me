@@ -2227,7 +2227,7 @@ run_bulk_imputation<-function(
     w<-which(samples[,1]%in%uniqueID) -2
     print(paste("Retrieving",uniqueID,"which is",w,"of",nrow(samples)-2))
     
-    for(chr in chromosomes){
+    for(chr in c("X",as.character(1:22))){
       #cut and transfer sample file
       write.table(samples[c(1:2,w+2),],file=paste0(outfolder,"step_4_chr",chr,".sample"),quote=F,row.names=F,col.names = F)
       
