@@ -3,8 +3,11 @@
 
 rm(list=ls())
 library(openxlsx)
-phenosummary<-read.xlsx("ukbiobank/phenosummary_final_11898_18597.xlsx" )
-manifest<-read.xlsx("ukbiobank/UKBB GWAS Manifest 20170915.xlsx" )
+phenosummary_path<-"/home/people/lasfol/gitStuff/2015-08-17_imputeme/ukbiobank/phenosummary_final_11898_18597.xlsx"
+phenosummary<-read.xlsx(phenosummary_path)
+manifest_path <- "/home/people/lasfol/gitStuff/2015-08-17_imputeme/ukbiobank/UKBB GWAS Manifest 20170915.xlsx" 
+manifest<-read.xlsx(manifest_path)
+
 outdir <- "/home/people/lasfol/temp_ukbiobank/"
 
 if(!file.exists(outdir))dir.create(outdir)
@@ -32,24 +35,37 @@ for(i in 1:nrow(phenosummary)){
   if(length(w1)>1){stop("!")}
   if(length(w1)==0){
     w2<-which(manifest[,"Phenotype.code"]%in%sub("^.+_","",code))
-    if(length(w2)>1){stop("!!")
-      if(length(w2)==0){
-        stop("!!!") 
-      }else{
-        w<-w2
-      }
+    if(length(w2)>1){
+      stop("!!")
+    }else if(length(w2)==0){
+      stop("!!!") 
+    }else{
+      w<-w2
+      # print(paste(manifest[w2,"Phenotype.code"],"and",code))
+      description1 <- manifest[w2,"Description"]
+      description2 <- phenosummary[i,"Field"]
+      if(description1 != description2)stop("!!!")
+      #ok - if the descriptions are identical, I think it's safe to also use this mode of manifest file-linking
+      
     }
+    
   }else{
     w<-w1
   }
   
   
-  
+  #getting command and file name  
   cmd1<-manifest[w,"wget.command"]
-  system(cmd1)
+  filename <- paste0(outdir,sub("^.+-O ","",cmd1))
+  phenosummary[i,"filename"] <- basename(filename)
+
+  #checking if file already exists (for re-running iterations to prevent download fail)
+  if(file.exists(filename))next
   
-  file.rename(sub("^.+-O ","",cmd1),paste0(outdir,sub("^.+-O ","",cmd1)))
-  Sys.sleep(10)
+  #executing
+  system(cmd1)
+  file.rename(sub("^.+-O ","",cmd1),filename)
+  # Sys.sleep(10)
 }
 
 
@@ -66,3 +82,66 @@ for(i in 1:nrow(phenosummary)){
 # 5:43889057:C:T  rs13189727      337030  1.25486e+04     1.48704e+04     8.74687e-03     4.91879e-03     1.77826e+00     7.53629e-02
 # 5:43889207:A:G  rs4516856       337030  6.70229e+05     7.88042e+05     1.23049e-03     8.76737e-03     1.40349e-01     8.88385e-01
 # 5:43889333:G:T  rs114787943     337030  3.03187e+03     3.58296e+03     1.15600e-03     9.88024e-03     1.17002e-01     9.06859e-01
+
+
+
+
+
+#checking when there is more than one file
+if(unique(table(phenosummary[,"filename"]))!=1)stop("Serious problem with file name matching. Must audit")
+
+#e.g. like this
+phenosummary[phenosummary[,"filename"]%in%"20003_1140879760.assoc.tsv.gz",1:5]
+manifest[manifest[,"File"]%in%"20003_1140879760.assoc.tsv.gz",]
+
+
+#double check is file was successfully downloaded
+for(i in 1:nrow(phenosummary)){
+  if(!is.na(phenosummary[i,"filename"]  )){
+    if(!file.exists(paste0(outdir,phenosummary[i,"filename"] ))){
+     stop("re-run download loop, file missing")
+    }
+  }
+}
+
+
+
+#2017-09-25 trying to iterate through the data and see if we can create good SNP-signatures
+
+rm(list=ls())
+library(openxlsx)
+phenosummary<-read.xlsx("/home/people/lasfol/gitStuff/2015-08-17_imputeme/ukbiobank/phenosummary_final_11898_18597.xlsx" )
+manifest<-read.xlsx("/home/people/lasfol/gitStuff/2015-08-17_imputeme/ukbiobank/UKBB GWAS Manifest 20170915.xlsx" )
+outdir <- "/home/people/lasfol/temp_ukbiobank/"
+
+
+for(i in 1:nrow(phenosummary)){
+  
+  code<-phenosummary[i,"Field.code"]
+  field<-phenosummary[i,"Field"]
+  
+  cases<- suppressWarnings(as.numeric(phenosummary[i,"N.cases"]))
+  controls<- suppressWarnings(as.numeric(phenosummary[i,"N.controls"]  ))
+ 
+  #get the code match (some weird field-mismatch - but this should fix it)
+  w1<-which(manifest[,"Phenotype.code"]%in%code)
+  if(length(w1)>1){stop("!")}
+  if(length(w1)==0){
+    w2<-which(manifest[,"Phenotype.code"]%in%sub("^.+_","",code))
+    if(length(w2)>1){stop("!!")
+      if(length(w2)==0){
+        stop("!!!") 
+      }else{
+        w<-w2
+      }
+    }
+  }else{
+    w<-w1
+  }
+  
+  
+  
+  phenosummary
+  
+  
+}
