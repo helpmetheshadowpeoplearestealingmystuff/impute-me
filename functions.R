@@ -2219,6 +2219,13 @@ run_bulk_imputation<-function(
   }
   
   
+  #clean up pre-step-5 files to save space
+  unlink(list.files(pattern="^step_1.+"))
+  unlink(list.files(pattern="^step_2.+"))
+  unlink(list.files(pattern="^step_3.+"))
+  
+  
+  
   #then copy out each of the step_7 files into separate imputation folders
   sample_file<-grep("step_5",grep("\\.sample$",list.files(),value=T),value=T)[1] #just pick the first one - they should be identical
   samples<-read.table(sample_file,stringsAsFactors=F)
@@ -2242,7 +2249,12 @@ run_bulk_imputation<-function(
       for(step7ResultsFile in step7ResultsFiles){
         cmd8<-paste0("cut --delimiter=' ' -f 1,2,3,4,5,",left,",",middle,",",right," ",step7ResultsFile," > ",outfolder,step7ResultsFile)
         system(cmd8)
+        unlink(step7ResultsFile) #clean up files afterwards (or else we break the 30GB limit)
       }
+      
+      
+      
+      
     }
   }
 }
