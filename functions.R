@@ -1840,7 +1840,7 @@ re_check_md5sums<-function(){
 
 
 run_bulk_imputation<-function(
-  rawdata_files, 
+  uniqueIDs, 
   runDir, 
   shapeit="/home/ubuntu/impute_dir/bin/shapeit",
   plink="/home/ubuntu/impute_dir/plink",
@@ -1849,14 +1849,9 @@ run_bulk_imputation<-function(
 ){
   library(tools)
   
-  
-  if(class(rawdata_files)!="character")stop(paste("rawdata must be character, not",class(rawdata_files)))
-  if(length(rawdata_files)!=10)stop(paste("rawdata must be lengh 10, not",length(rawdata_files)))
-  if(!all(file.exists(rawdata_files))){
-    missing<-rawdata_files[!file.exists(rawdata_files)]
-    stop(paste("Did not find these rawdata files:",paste(missing,collapse=", ")))
-  }
-  
+  if(class(uniqueIDs)!="character")stop(paste("uniqueIDs must be character, not",class(uniqueIDs)))
+  if(length(uniqueIDs)!=10)stop(paste("rawdata must be lengh 10, not",length(uniqueIDs)))
+
   if(class(runDir)!="character")stop(paste("runDir must be character, not",class(runDir)))
   if(length(runDir)!=1)stop(paste("runDir must be lengh 1, not",length(runDir)))
   if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
@@ -1879,15 +1874,24 @@ run_bulk_imputation<-function(
   if(!file.exists(sample_ref))stop(paste("Did not find sample_ref at path:",sample_ref))
   
   
+  rawdata_files<-paste("/home/ubuntu/imputations/imputation_folder_",uniqueIDs,"/",uniqueIDs,"_raw_data.txt",sep="")
+  names(rawdata_files)<-uniqueIDs
+  if(!all(file.exists(rawdata_files))){
+    missing<-rawdata_files[!file.exists(rawdata_files)]
+    stop(paste("Did not find these rawdata files:",paste(missing,collapse=", ")))
+  }
+  
+  
+  
+  cat(paste0("Starting imputation running on these files:\nc('",paste(uniqueIDs,collapse="','"),"')\nGood luck!\n"))
   setwd(runDir)
   
-  for(rawdata in rawdata_files){
-     uniqueID<-sub("^.+/","",sub("_raw_data.txt$","",rawdata))
-    
-    
+  for(uniqueID in uniqueIDs){
+    rawdata_file<-rawdata_files[uniqueID]
+
     
     #Load data using plink 1.9
-    cmd1<-paste0(plink," --noweb --23file ",rawdata," ",uniqueID," ",uniqueID," --recode --out step_1_",uniqueID)
+    cmd1<-paste0(plink," --noweb --23file ",rawdata_file," ",uniqueID," ",uniqueID," --recode --out step_1_",uniqueID)
     out1<-system(cmd1)
     
     
@@ -1895,38 +1899,38 @@ run_bulk_imputation<-function(
     
     special_error_status<-vector()
     if(out1 == 3){
-      line_count_cmd<-paste0("wc -l ",rawdata)
+      line_count_cmd<-paste0("wc -l ",rawdata_file)
       line_count_0<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
       
       
       #Common problem 1: mitochondrial SNPs (not used in any analysis anyway)
-      cmd_special_1<-paste("sed -i.bak1 '/\\tMT\\t/d'",rawdata)
+      cmd_special_1<-paste("sed -i.bak1 '/\\tMT\\t/d'",rawdata_file)
       system(cmd_special_1)
       line_count_1<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
       if(line_count_1-line_count_0<0)special_error_status <- c(special_error_status, paste0("MT removals (",line_count_1-line_count_0,")"))
       
       
       #Common problem 2: Presence of triple dashes, that should just be double dashes
-      md5_before <- md5sum(rawdata)
-      cmd_special_2<-paste0("sed -i.bak2 's/\\t---/\\t--/' ",rawdata)
+      md5_before <- md5sum(rawdata_file)
+      cmd_special_2<-paste0("sed -i.bak2 's/\\t---/\\t--/' ",rawdata_file)
       system(cmd_special_2)
-      if(md5_before != md5sum(rawdata))c(special_error_status, "--- to --")
+      if(md5_before != md5sum(rawdata_file))c(special_error_status, "--- to --")
       
       
       #Common problem 3: Presence of indels that can't be handled by the plink -23file function
       #this needs to be handled in a very weird way, because clearly awk can distinguish all line endings systematically
-      cmd_special_3a<-paste0("awk '!(length($4) != 3)' ",rawdata, " > ",runDir,"/temp_indel_01.txt")
+      cmd_special_3a<-paste0("awk '!(length($4) != 3)' ",rawdata_file, " > ",runDir,"/temp_indel_01.txt")
       system(cmd_special_3a)
       line_count_3a<-as.integer(sub(" .+$","",system(paste0("wc -l ",runDir,"/temp_indel_01.txt"),intern=T)))
       
-      cmd_special_3b<-paste0("awk '!(length($4) != 2)' ",rawdata, " > ",runDir,"/temp_indel_02.txt")
+      cmd_special_3b<-paste0("awk '!(length($4) != 2)' ",rawdata_file, " > ",runDir,"/temp_indel_02.txt")
       system(cmd_special_3b)
       line_count_3b<-as.integer(sub(" .+$","",system(paste0("wc -l ",runDir,"/temp_indel_02.txt"),intern=T)))
       
       if(line_count_3a > line_count_3b){
-        file.rename(paste0(runDir,"/temp_indel_01.txt"),rawdata)
+        file.rename(paste0(runDir,"/temp_indel_01.txt"),rawdata_file)
       }else{
-        file.rename(paste0(runDir,"/temp_indel_02.txt"),rawdata)
+        file.rename(paste0(runDir,"/temp_indel_02.txt"),rawdata_file)
       }
       line_count_3<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
       
@@ -1937,12 +1941,12 @@ run_bulk_imputation<-function(
       
       
       #Common problem 4: lack of sorting (first re-check if this is a problem after MT removal)
-      cmd_special_3<-paste(plink,"--noweb --23file ",rawdata," ",uniqueID," ",uniqueID," --recode --out step_1")
+      cmd_special_3<-paste(plink,"--noweb --23file ",rawdata_file," ",uniqueID," ",uniqueID," --recode --out step_1")
       sorting_check<-system(cmd_special_3,intern=T)
       if(length(grep("are out of order",sorting_check))>0){
         
         #sorting by chr then pos
-        cmd_sort_1<-paste0("sort -k2 -k3 -g -o ",runDir,"/temp01.txt ",rawdata)
+        cmd_sort_1<-paste0("sort -k2 -k3 -g -o ",runDir,"/temp01.txt ",rawdata_file)
         system(cmd_sort_1)
         
         #removing Y, xY, 23 chr (too risky to keep in after a sort)
@@ -1956,7 +1960,7 @@ run_bulk_imputation<-function(
         system(cmd_sort_4)
         
         #replace X with 23
-        cmd_sort_5<-paste0("sed 's/\\tX\\t/\\t23\t/' ",runDir,"/temp03.txt > ",rawdata)
+        cmd_sort_5<-paste0("sed 's/\\tX\\t/\\t23\t/' ",runDir,"/temp03.txt > ",rawdata_file)
         system(cmd_sort_5)
         
         line_count_4<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
@@ -1966,18 +1970,18 @@ run_bulk_imputation<-function(
       
       
       #common problem 5: Removing all front quotes, all back quotes and all quote-comma-quotes
-      md5_before <- md5sum(rawdata)
-      cmd_special_5<-paste0("sed -i.bak3 -e 's/^\"//g' -e 's/\"$//g' -e 's/\",\"/\\t/g' -e 's/\"\\t\"/\\t/g' ",rawdata)
+      md5_before <- md5sum(rawdata_file)
+      cmd_special_5<-paste0("sed -i.bak3 -e 's/^\"//g' -e 's/\"$//g' -e 's/\",\"/\\t/g' -e 's/\"\\t\"/\\t/g' ",rawdata_file)
       system(cmd_special_5)
-      if(md5_before != md5sum(rawdata))c(special_error_status, "removing weird quotes")
+      if(md5_before != md5sum(rawdata_file))c(special_error_status, "removing weird quotes")
       
       
       
       #common problem 6: also when there is weird carriage returns    
-      md5_before <- md5sum(rawdata)
-      cmd_special_6<-paste0("sed -i.bak4 's/\"\r//g' ",rawdata)
+      md5_before <- md5sum(rawdata_file)
+      cmd_special_6<-paste0("sed -i.bak4 's/\"\r//g' ",rawdata_file)
       system(cmd_special_6)
-      if(md5_before != md5sum(rawdata))c(special_error_status, "removing weird carriage returns")
+      if(md5_before != md5sum(rawdata_file))c(special_error_status, "removing weird carriage returns")
       
       
       
@@ -1991,7 +1995,7 @@ run_bulk_imputation<-function(
         #however if still failing, we have to send a mail
         library("mailR")
         error1<-system(cmd1,intern=T)
-        message <- paste0(uniqueID," failed all attempts at starting imputation. It came with special error status:<b> ", paste(special_error_status,collapse=", "),". </b>The last error message was this: ",paste(error1,collapse="\n"))
+        message <- paste0(uniqueID," failed all attempts at starting imputation. It came with special error status:<b> ", paste(special_error_status,collapse=", "),". </b>The last error message was this: ",paste(error1,collapse="\n"),"\n\nThe files under analysis were these:\nc('",paste(uniqueIDs,collapse="','"),"')")
         send.mail(from = email_address,
                   to = "lassefolkersen@gmail.com",
                   subject = "Imputation has problem",
@@ -2045,7 +2049,7 @@ run_bulk_imputation<-function(
       }else{
         #Stop the process and send a warning email
         library("mailR")
-        message <- paste0(uniqueID," failed a wrong-build check. Of ",nrow(canaries)," tested SNPs, ",sum(canaries[,"1kg_pos"] != canaries[,"input_pos"])," did not match 1kg position.")
+        message <- paste0(uniqueID," failed a wrong-build check. Of ",nrow(canaries)," tested SNPs, ",sum(canaries[,"1kg_pos"] != canaries[,"input_pos"])," did not match 1kg position.\n\nThe files under analysis were these:\nc('",paste(uniqueIDs,collapse="','"),"')")
         send.mail(from = email_address,
                   to = "lassefolkersen@gmail.com",
                   subject = "Imputation has problem",
@@ -2231,7 +2235,7 @@ run_bulk_imputation<-function(
   samples<-read.table(sample_file,stringsAsFactors=F)
   allFiles1<-list.files(runDir)
   for(rawdata in rawdata_files){
-    uniqueID<-sub("^.+/","",sub("_raw_data.txt$","",rawdata))
+    uniqueID<-sub("^.+/","",sub("_raw_data.txt$","",rawdata_file))
     outfolder <- paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/")
     w<-which(samples[,1]%in%uniqueID) -2
     print(paste("Retrieving",uniqueID,"which is",w,"of",nrow(samples)-2))

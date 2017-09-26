@@ -141,11 +141,10 @@ uniqueIDs<-sub("^.+folder_","",imputeThisFolder)
 runDir<-paste("/home/ubuntu/bulk_imputations/",format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"_bulk",sep="")
 dir.create(runDir)
 setwd(runDir)
-rawdata_files<-paste("/home/ubuntu/imputations/",imputeThisFolder,"/",uniqueIDs,"_raw_data.txt",sep="")
 
 
 #run the imputation
-run_bulk_imputation(rawdata_files, runDir)
+run_bulk_imputation(uniqueIDs, runDir)
 
 
 
@@ -153,11 +152,11 @@ run_bulk_imputation(rawdata_files, runDir)
 unlink(runDir,recursive=TRUE)
 
 
-for(rawdata_file in rawdata_files){
+for(uniqueID in uniqueIDs){
   
   #summarizing files
-  uniqueID <- sub("_raw_data.txt","",basename(rawdata_file))
-  summarize_imputation(runDir=dirname(rawdata_file),uniqueID=uniqueID,destinationDir="/home/ubuntu/data")  
+  summary_folder<-paste0("/home/ubuntu/imputations/imputation_folder_",uniqueIDs)
+  summarize_imputation(runDir=summary_folder,uniqueID=uniqueID,destinationDir="/home/ubuntu/data")  
   
   
   
@@ -245,7 +244,7 @@ for(rawdata_file in rawdata_files){
   
   
   #delete the imputaitons/imputation_folder_idXXXXX position afterwards
-  unlink(dirname(rawdata_file),recursive=TRUE)
+  unlink(summary_folder,recursive=TRUE)
   
   
   
