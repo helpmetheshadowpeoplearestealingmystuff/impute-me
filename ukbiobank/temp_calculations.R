@@ -70,6 +70,9 @@ for(i in 1:nrow(phenosummary)){
 
 
 
+write.xlsx(phenosummary,phenosummary_path)
+
+
 # This is how the output looks like. Not completely clear with directionality effects, but I guess one could assume that the variant ID is encoded as chr:pos:ea:nea - and so deduce, e.g. that beta for the first one is 8.56735e-03 _for the C allele_.
 
 # variant rsid    nCompleteSamples        AC      ytx     beta    se      tstat   pval
@@ -106,42 +109,116 @@ for(i in 1:nrow(phenosummary)){
 
 
 
-#2017-09-25 trying to iterate through the data and see if we can create good SNP-signatures
 
+
+
+
+
+
+
+
+
+
+#2017-09-25 trying to iterate through the data and see if we can create good SNP-signatures
+#step 1 - just throw away anything that is worse than p>1e-07
 rm(list=ls())
 library(openxlsx)
-phenosummary<-read.xlsx("/home/people/lasfol/gitStuff/2015-08-17_imputeme/ukbiobank/phenosummary_final_11898_18597.xlsx" )
-manifest<-read.xlsx("/home/people/lasfol/gitStuff/2015-08-17_imputeme/ukbiobank/UKBB GWAS Manifest 20170915.xlsx" )
+phenosummary_path<-"/home/people/lasfol/gitStuff/2015-08-17_imputeme/ukbiobank/phenosummary_final_11898_18597.xlsx"
+phenosummary<-read.xlsx(phenosummary_path)
+outdir <- "/home/people/lasfol/temp_ukbiobank/"
+for(i in 1:nrow(phenosummary)){
+  print(paste(i,"of",nrow(phenosummary)))
+  if(is.na(phenosummary[i,"filename"]))next
+  filename_in <- paste0(outdir,phenosummary[i,"filename"])
+  filename_out <- sub(".gz$","",paste0(outdir,sub("assoc","assoc.filter",phenosummary[i,"filename"])))
+  cmd1<-paste0("zcat ",filename_in," | awk -F $'\t' '($9 < 1e-07)' - > ",filename_out)
+  system(cmd1)
+}
+
+
+
+#step 2 - prune to 1 MB size (i.e take strongest SNP, then remove everything within 1 MB. Rinse repeat.)
+rm(list=ls())
+library(openxlsx)
+phenosummary_path<-"/home/people/lasfol/gitStuff/2015-08-17_imputeme/ukbiobank/phenosummary_final_11898_18597.xlsx"
+phenosummary<-read.xlsx(phenosummary_path)
 outdir <- "/home/people/lasfol/temp_ukbiobank/"
 
+f<-c('chr','pos','a1','a2','variant','rsid','nCompleteSamples','AC','ytx','beta','se','tstat','pval','code','field')
+results<-data.frame(matrix(nrow=0,ncol=length(f),dimnames=list(NULL,f)),stringsAsFactors = F)
 
 for(i in 1:nrow(phenosummary)){
+  if(is.na(phenosummary[i,"filename"]))next
+  print(paste(i,"of",nrow(phenosummary)))
   
-  code<-phenosummary[i,"Field.code"]
-  field<-phenosummary[i,"Field"]
   
-  cases<- suppressWarnings(as.numeric(phenosummary[i,"N.cases"]))
-  controls<- suppressWarnings(as.numeric(phenosummary[i,"N.controls"]  ))
- 
-  #get the code match (some weird field-mismatch - but this should fix it)
-  w1<-which(manifest[,"Phenotype.code"]%in%code)
-  if(length(w1)>1){stop("!")}
-  if(length(w1)==0){
-    w2<-which(manifest[,"Phenotype.code"]%in%sub("^.+_","",code))
-    if(length(w2)>1){stop("!!")
-      if(length(w2)==0){
-        stop("!!!") 
-      }else{
-        w<-w2
-      }
-    }
-  }else{
-    w<-w1
+  filename_original <-paste0(outdir,phenosummary[i,"filename"])
+  filename_in <- sub(".gz$","",paste0(outdir,sub("assoc","assoc.filter",phenosummary[i,"filename"])))
+  filename_out <- sub(".gz$","",paste0(outdir,sub("assoc","assoc.filter.prune",phenosummary[i,"filename"])))
+  
+  
+  #check existance and read in
+  if(!file.exists(filename_in)){
+    print(paste("Skipping",i,filename_in,"because it doesn't exists"))
+  }
+  header <- read.table(filename_original,nrows=1,header=T)
+  d<-try(read.table(filename_in,stringsAsFactors = F,header=F),silent=T)
+  if(class(d)=="try-error")next
+  colnames(d)<-colnames(header)
+  
+  #apply a formal cutoff 5×10−8 (optional though - seems like all the major papers these day show that more heritability is explained if we add in the almost-significants. So maybe just keep out and use the 1e-7 set earlier?)
+  # d<-d[d[,"pval"] < 5e-8,]
+  
+  
+  
+  #splitting up the var data
+  var_data<-data.frame(do.call(rbind,strsplit(d[,"variant"],":")),stringsAsFactors = F)
+  colnames(var_data)<-c("chr","pos","a1","a2")
+  var_data[,"pos"] <- as.numeric(var_data[,"pos"])
+  
+  d<-cbind(var_data,d)
+  
+  
+  #sort by P-value
+  d<-d[order(d[,"pval"]),]
+  
+  
+  #iterate down the list and mark stuff within 1 MB for removal
+  dist <- 1000000
+  at_end_of_list <- FALSE
+  j<-1
+  while(!at_end_of_list){
+    remove <- which(
+      d[j,"chr"] %in% d[,"chr"] &
+      abs(d[j,"pos"] - d[,"pos"]) <dist
+    )
+    d<-d[!1:nrow(d)%in%remove[!remove%in%j],]
+    j<-j+1
+    if(j > nrow(d)) at_end_of_list <- TRUE
   }
   
   
+  d[,"code"]<-phenosummary[i,"Field.code"]
+  d[,"field"]<-phenosummary[i,"Field"]
   
-  phenosummary
+  d[,"case_count"] <- suppressWarnings(as.numeric(phenosummary[i,"N.cases"]))
+  d[,"control_count"] <- suppressWarnings(as.numeric(phenosummary[i,"N.controls"]  ))
   
+  results <- rbind(results,d)
   
 }
+
+
+#only keep codes with 5 or more SNPs in the GRS
+codes_to_keep<-names(table(results[,"code"]))[table(results[,"code"]) >= 5]
+results <- results[results[,"code"]%in%codes_to_keep,]
+
+
+dim(results)
+# 4965   17
+# 
+
+length(unique(results[,"code"]))
+# 298
+
+#so 4965 new SNPs giving us 298 new traits
