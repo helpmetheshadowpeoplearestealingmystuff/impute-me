@@ -1647,6 +1647,7 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
   #generate list of waiting genomes
   waiting_files<-vector()
   for(w1 in list.files("/home/ubuntu/imputations",full.names=T)){
+    if(!file.exists(paste0(w1,"/variables.rdata")))next
     load(paste0(w1,"/variables.rdata"))
     status<-sub("Job is ","",read.table(paste0(w1,"/job_status.txt"),sep="\t",stringsAsFactors = F)[1,1])
     waiting_files<-c(waiting_files,paste(uniqueID,email,status,sep=" - "))
