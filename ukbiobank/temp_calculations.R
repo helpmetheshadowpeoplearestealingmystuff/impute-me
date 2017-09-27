@@ -14,6 +14,8 @@ if(!file.exists(outdir))dir.create(outdir)
 
 
 
+
+
 for(i in 1:nrow(phenosummary)){
   
   code<-phenosummary[i,"Field.code"]
@@ -23,12 +25,9 @@ for(i in 1:nrow(phenosummary)){
   controls<- suppressWarnings(as.numeric(phenosummary[i,"N.controls"]  ))
   
   if(is.na(cases) || is.na(controls) || cases < 1000 ||  controls < 1000){
-    # print(paste(code,"was skipped because it only had",cases,"cases and",controls,"controls"))
+    # print(paste(i,"-",code,"was skipped because it only had",cases,"cases and",controls,"controls"))
     next
-  }else{
-    # print(field)
   }
-  
   
   #get the code match (some weird field-mismatch - but this should fix it)
   w1<-which(manifest[,"Phenotype.code"]%in%code)
@@ -46,9 +45,7 @@ for(i in 1:nrow(phenosummary)){
       description2 <- phenosummary[i,"Field"]
       if(description1 != description2)stop("!!!")
       #ok - if the descriptions are identical, I think it's safe to also use this mode of manifest file-linking
-      
     }
-    
   }else{
     w<-w1
   }
@@ -60,7 +57,10 @@ for(i in 1:nrow(phenosummary)){
   phenosummary[i,"filename"] <- basename(filename)
 
   #checking if file already exists (for re-running iterations to prevent download fail)
-  if(file.exists(filename))next
+  if(file.exists(filename)){
+    print(paste(i,"-",code,"filename already existed - skipping"))
+    next
+  }
   
   #executing
   system(cmd1)
@@ -209,16 +209,26 @@ for(i in 1:nrow(phenosummary)){
 }
 
 
+save(results,file="2017-09-27_ukbiobank_snps.rdata")
+
 #only keep codes with 5 or more SNPs in the GRS
-codes_to_keep<-names(table(results[,"code"]))[table(results[,"code"]) >= 5]
-results <- results[results[,"code"]%in%codes_to_keep,]
+# codes_to_keep<-names(table(results[,"code"]))[table(results[,"code"]) >= 5]
+# results <- results[results[,"code"]%in%codes_to_keep,]
+#actually just keep all - we'll sort them out at later point
 
 
 dim(results)
-# 4965   17
+# 8568   17
+
 # 
 
 length(unique(results[,"code"]))
-# 298
+# 634
 
-#so 4965 new SNPs giving us 298 new traits
+#so 8456 new SNPs giving us 634 new traits
+
+
+length(names(table(results[,"code"]))[table(results[,"code"]) >= 5])
+# 456
+
+#so 456 of these have 5 or more SNPs driving them at p<1e-7 -- sounds good. Design choice will be default to minimum 5 and p<5e-8 (the 'universally agreed'), but then slider based tuning under advanced settings
