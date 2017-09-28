@@ -52,8 +52,10 @@ shinyServer(function(input, output) {
 		
 		BRCA_table[,"Your genotype"]<-genotypes[rownames(BRCA_table),]
 
-		BRCA_table<-BRCA_table[,c("SNP","gene","Your genotype","normal","polyphen_prediction","sift_prediction","consequence_type_tv")]
-
+		BRCA_table<-BRCA_table[,c("SNP","gene","Your genotype","normal","clinvar","polyphen_prediction","sift_prediction","consequence_type_tv")]
+  colnames(BRCA_table) <- c("SNP","gene","Your genotype","normal","ClinVar","Polyphen","Sift","Type")
+		
+		
 		
 		#write the score to the log file
 		log_function<-function(uniqueID){
