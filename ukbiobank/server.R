@@ -87,8 +87,8 @@ shinyServer(function(input, output) {
     
     
     #gathering some background info for the study		
-    link<-unique(SNPs_to_analyze[,"LINK"])
-    if(length(link)!=1)stop("Problem with link length")
+    # link<-unique(SNPs_to_analyze[,"LINK"])
+    # if(length(link)!=1)stop("Problem with link length")
     # author<-unique(SNPs_to_analyze[,"FIRST.AUTHOR"])
     # if(length(author)!=1)stop("Problem with author length")
     sampleSize_case<-unique(SNPs_to_analyze[,"case_count"])
