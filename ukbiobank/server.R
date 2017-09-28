@@ -320,9 +320,9 @@ shinyServer(function(input, output) {
       # SNPs_to_analyze[duplicated(SNPs_to_analyze[,"SNP"]),"GRS"]<-""
       
       #shortening the reported gene count
-      SNPs_to_analyze[,"Reported Gene"]<-sapply(strsplit(SNPs_to_analyze[,"REPORTED.GENE.S."],", "),function(x){
-        paste(x[1:min(c(2,length(x)))],collapse=", ")
-      })
+      # SNPs_to_analyze[,"Reported Gene"]<-sapply(strsplit(SNPs_to_analyze[,"REPORTED.GENE.S."],", "),function(x){
+        # paste(x[1:min(c(2,length(x)))],collapse=", ")
+      # })
       
       
       #marking duplicates
@@ -334,7 +334,7 @@ shinyServer(function(input, output) {
       keep<-c("SNP","REGION","genotype","Risk/non-risk Allele","personal_score","score_diff"
               ,"effect_size","P.VALUE","Major/minor Allele","minor_allele_freq","Reported Gene")
       SNPs_to_analyze<-SNPs_to_analyze[,keep]
-      colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
+      colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency")
       
       return(SNPs_to_analyze)
     }
