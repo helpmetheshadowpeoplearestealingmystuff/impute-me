@@ -4,7 +4,7 @@ initialize('gmh',TRUE)
 
 
 
-load("ukbiobank/2017-09-28_trait_overoverview.rdata")
+load("/home/ubuntu/srv/impute-me/ukbiobank/2017-09-28_trait_overoverview.rdata")
 
 
 #traits to omit ad-hoc (because they don't work)
