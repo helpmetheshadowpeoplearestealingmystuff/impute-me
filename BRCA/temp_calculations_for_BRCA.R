@@ -353,7 +353,7 @@ rm(list=ls())
 source("/home/ubuntu/srv/impute-me/functions.R")
 
 BRCA_table_file <-"SNPs_to_analyze.txt"
-BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F,row.names=T)
+BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F,row.names=1)
 
 rownames(BRCA_table)<-BRCA_table[,"SNP"]
 BRCA_table[BRCA_table[,"chr_name"]%in%13,"gene"]<-"BRCA2"
@@ -394,7 +394,7 @@ differences<-sort(sapply(overview,length))
 
 
 #too high frequency to include these
-# omitThese<-names(differences)[differences>=2]
+omitThese<-names(differences)[differences>=2]
 BRCA_table[omitThese,]
 BRCA_table<-BRCA_table[!rownames(BRCA_table)%in%omitThese,]
 
@@ -422,7 +422,8 @@ BRCA_table<-BRCA_table[order(is.na(BRCA_table[,"normal"]),BRCA_table[,"clinvar"]
 
 
 
-
+BRCA_table<-cbind(rownames(BRCA_table),BRCA_table)
+colnames(BRCA_table)[1]<-"SNP"
 BRCA_table_file <-"/home/ubuntu/SNPs_to_analyze.txt"
 BRCA_table<-write.table(BRCA_table,file="SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
 

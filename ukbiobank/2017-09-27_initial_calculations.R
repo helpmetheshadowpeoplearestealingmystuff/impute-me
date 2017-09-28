@@ -232,3 +232,365 @@ length(names(table(results[,"code"]))[table(results[,"code"]) >= 5])
 # 456
 
 #so 456 of these have 5 or more SNPs driving them at p<1e-7 -- sounds good. Design choice will be default to minimum 5 and p<5e-8 (the 'universally agreed'), but then slider based tuning under advanced settings
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#2017-09-27 inserting into the GWAS central pipeline. Should run more smoothly here actually since a lot of the info is more systematic. But we'll see.
+# 
+# rm(list=ls())
+# load("ukbiobank/2017-09-27_ukbiobank_snps.rdata")
+# data<-results
+# 
+# #rename to fit rest of script
+# colnames(data)[colnames(data) %in% "rsid"] <- "SNPS"
+# colnames(data)[colnames(data) %in% "field"] <- "DISEASE.TRAIT"
+# colnames(data)[colnames(data) %in% "chr"] <- "CHR_ID"
+# 
+# 
+# #ignore - already done on ukbiobank download (see above)
+# #remove sets that are too small
+# # d<-gsub(",","",gsub("[A-Za-z]","",data[,"INITIAL.SAMPLE.SIZE"]))
+# # data[,"sampleSize"]<-sapply(strsplit(d," +"),function(x){sum(as.numeric(x),na.rm=T)})
+# # data<-data[order(data[,"sampleSize"]),]
+# # hist(data[,"sampleSize"],breaks=1000,xlim=c(0,10000),xlab="sample size",main="Sample sizes")
+# #decision - remove all studies with sample size < 2000 (because, they may or may not be good)
+# # data<-data[data[,"sampleSize"]> 2000,]
+# 
+# 
+# #ignore - already consistently integrated in the Neale Lab work
+# #check that the strongest SNP entry is consistent with the SNPs entry (remove otherwise)
+# # data[data[,"STRONGEST.SNP.RISK.ALLELE"]%in%"rs12449664A","STRONGEST.SNP.RISK.ALLELE"]<-"rs12449664-A" #clear typo
+# # s1<-gsub(" ","",sub("\\?","",sub("NR$","",sub("-.+$","",data[,"STRONGEST.SNP.RISK.ALLELE"]))))
+# # sum(s1 != data[,"SNPS"]) #154
+# # s2<-data[s1 != data[,"SNPS"],c("STRONGEST.SNP.RISK.ALLELE","SNPS")] 
+# # #ok could probably save some of these, but on later testing it is found that all but 6 are removed by other filters anyway... so just get rid of them
+# # data<-data[s1 == data[,"SNPS"],]
+# 
+# 
+# #remove SNPs that don't have OR/beta or risk-allele indication
+# # data[,"risk_allele"]<-sub("^.+-","",data[,"STRONGEST.SNP.RISK.ALLELE"])
+# # sum(data[,"risk_allele"]=="?") #3242 - definetly must remove these
+# # data<-data[data[,"risk_allele"]!="?",]
+# 
+# 
+# 
+# 
+# #investigating number of studies per trait
+# traits<-data.frame(row.names=unique(data[,"DISEASE.TRAIT"]))
+# for(trait in rownames(traits)){
+#   d2<-data[data[,"DISEASE.TRAIT"]%in%trait,]
+#   traits[trait,"SNP"]<-nrow(d2)
+#   traits[trait,"studies"]<-"ukbioank"
+# }
+# #conclusion - obviously only one study per trait
+# 
+# 
+# #remove some traits because they are better handled in other modules and/or too weird/difficult to explain easily and/or conflict with module title (or perhaps just ideas for new modules?)
+# # omit<-unique(c(
+#   # grep("height",rownames(traits),ignore.case=T,value=T),
+#   # grep("hair",rownames(traits),ignore.case=T,value=T),
+#   # grep("economic",rownames(traits),ignore.case=T,value=T),
+#   # grep("political",rownames(traits),ignore.case=T,value=T),
+#   # grep("word reading",rownames(traits),ignore.case=T,value=T),
+#   # grep("eyes",rownames(traits),ignore.case=T,value=T)
+#   # social_communication_problems
+#   # wine_liking
+# # ))
+# # data<-data[!data[,"DISEASE.TRAIT"]%in%omit,]
+# 
+# 
+# #remove some columns that are not needed
+# # col_to_remove<-c("MAPPED_GENE","UPSTREAM_GENE_ID","DOWNSTREAM_GENE_ID","SNP_GENE_IDS","UPSTREAM_GENE_DISTANCE","DOWNSTREAM_GENE_DISTANCE","PLATFORM..SNPS.PASSING.QC.","CNV","P.VALUE..TEXT.","PVALUE_MLOG","RISK.ALLELE.FREQUENCY","CONTEXT","INTERGENIC","SNP_ID_CURRENT","MERGED","STUDY","JOURNAL","DATE.ADDED.TO.CATALOG","INITIAL.SAMPLE.SIZE","REPLICATION.SAMPLE.SIZE","CHR_POS")
+# # for(col in col_to_remove){data[,col]<-NULL}
+# 
+# 
+# 
+# #retrieve chr-ID (for double-check), minor allele frequency and assign effect and non-effect allele
+# library(biomaRt)
+# snp_mart <- useMart("ENSEMBL_MART_SNP", dataset = "hsapiens_snp",host="www.ensembl.org")
+# attributes<-c("refsnp_id","chr_name","chrom_start","allele","minor_allele_freq","minor_allele")
+# query<-getBM(attributes, filters = c("snp_filter"), values = unique(data[,"SNPS"]), mart = snp_mart)
+# query<-query[nchar(query[,"chr_name"])%in%1:2,]
+# rownames(query)<-query[,"refsnp_id"]
+# 
+# data[,"ensembl_alleles"]<-query[data[,"SNPS"],"allele"]
+# data[,"chr_name"]<-query[data[,"SNPS"],"chr_name"]
+# data[,"minor_allele_freq"]<-query[data[,"SNPS"],"minor_allele_freq"]
+# data[,"minor_allele"]<-query[data[,"SNPS"],"minor_allele"]
+# 
+# 
+# #ignore - this is actually all of them almost 8338 of 8568. But we'll anyway get MAF from 1kgenomes so no worry
+# #remove the ones with no known MAF
+# # sum(is.na(data[,"minor_allele_freq"]))
+# # nrow(data)
+# #610
+# # data<-data[!is.na(data[,"minor_allele_freq"]),]
+# 
+# #check the two chr-names are the same
+# sum(data[,"CHR_ID" ] != data[,"chr_name"],na.rm=T)
+# #0
+# sum(data[,"CHR_ID" ] != data[,"chr_name"],na.rm=F)
+# NA
+# nrow(data[is.na(data[,"chr_name"]),])
+# #so 37 are not available through biomart lookup. Let's proceed script a little and see if this becomes a problem. If it does we can remove them,
+# 
+# 
+# #perhaps remove the tri-allelics
+# sum(sapply(strsplit(data[,"ensembl_alleles"],"/"),length) != 2)
+# #  714 of 8568 -- these were removed in the GWAS central parsing - probably the safer option - but on the other hand this data is more stringent with clear A1 and A2 indications. I'm going to go with 'keep'
+# # data<-data[sapply(strsplit(data[,"ensembl_alleles"],"/"),length) == 2,]
+# 
+# 
+# #assign major allele from the ensembl alleles
+# a1<-sapply(strsplit(data[,"ensembl_alleles"],"/"),function(x){x[1]})
+# a2<-sapply(strsplit(data[,"ensembl_alleles"],"/"),function(x){x[2]})
+# data[,"major_allele"] <- NA
+# # data[data[,"minor_allele"]==a1,"major_allele"]<-a2[data[,"minor_allele"]==a1]
+# # data[data[,"minor_allele"]==a2,"major_allele"]<-a1[data[,"minor_allele"]==a2]
+#this fails - probably due to the 37 biomart missing. Ok - abort that line, and go for 1kgenomes frequency retrieval.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#2017-09-27
+#This is a restart where we aim for 1000 genome frequency insertation right from the beginning
+rm(list=ls())
+load("ukbiobank/2017-09-27_ukbiobank_snps.rdata")
+path_1kg<-"/home/people/lasfol/downloadBulk/annotation/1000_genomes_20130502/"
+
+#rename to fit rest of script
+data<-results
+colnames(data)[colnames(data) %in% "rsid"] <- "SNP"
+# colnames(data)[colnames(data) %in% "field"] <- "DISEASE.TRAIT"
+colnames(data)[colnames(data) %in% "chr"] <- "chr_name"
+
+
+output<-data.frame("CHROM"=vector(), "POS"=vector(),   "REF"=vector(),   "ALT"=vector(),   "AF"=vector(),    "EAS_AF"=vector(),"AMR_AF"=vector(),"AFR_AF"=vector(),"EUR_AF"=vector(),"SAS_AF"=vector(),stringsAsFactors = F)
+
+for(chr in sort(unique(data[,"chr_name"]))){
+  print(chr)
+  g1<-data[data[,"chr_name"]%in%chr,]
+  snps<-unique(g1[,"SNP"])
+  
+  write.table(snps,file="temp_list_of_snps.txt",sep="\t",col.names=F,row.names=F,quote=F)
+  
+  if(chr =="X"){
+    vcf_path<-paste0(path_1kg,"ALL.chrX.phase3_shapeit2_mvncall_integrated_v1b.20130502.genotypes.vcf.gz")
+  }else{
+    vcf_path<-paste0(path_1kg,"ALL.chr",chr,".phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz")
+  }
+  cmd1<-paste0("vcftools --indv HG00096 --snps temp_list_of_snps.txt --gzvcf ",vcf_path," --out chr",chr," --recode --recode-INFO-all")
+  system(cmd1)
+  
+  cmd2 <- paste0("cut -f 3 chr",chr,".recode.vcf")
+  snps<-grep("^[#I]",system(cmd2,inter=T),value=T,invert=T)
+  
+  cmd3 <- paste0("vcftools --vcf chr",chr,".recode.vcf --get-INFO AF --get-INFO EAS_AF --get-INFO AMR_AF --get-INFO AFR_AF --get-INFO EUR_AF --get-INFO SAS_AF --out chr",chr)
+  system(cmd3)
+  
+  result<-read.table(paste0("chr",chr,".INFO"),sep="\t",header=T,stringsAsFactors = F)
+  rownames(result)<-snps
+  output <- rbind(output, result)
+  
+}
+write.table(output,file="2017-09-27_all_frequencies.txt",sep="\t",col.names=NA)
+
+
+
+#merge in
+rm(list=ls())
+all_freq<-read.table("ukbiobank/2017-09-27_all_frequencies.txt.gz",stringsAsFactors = F,header=T,row.names=1)
+load("ukbiobank/2017-09-27_ukbiobank_snps.rdata")
+data<-results
+
+#set 0 to minimum (e.g. 0.001 which is otherwise the lowest value)
+af_cols<-grep("AF$",colnames(all_freq),value=T)
+for(col in af_cols){
+  all_freq[,col]<-suppressWarnings(as.numeric(all_freq[,col]))
+  all_freq[all_freq[,col]%in%0,col]<-0.001
+}
+data<-cbind(data,all_freq[data[,"rsid"],])
+
+
+sum(is.na(data[,"AF"]))
+1013
+nrow(data)
+8568
+#ok - pity - but we need the frequency so we have to remove those 968 SNPs
+
+
+#The objective now is to 
+#1) make the file as similar as ('2017-02-21_semi_curated_version_gwas_central.rdata')
+#2) do checkups of allele similarity etc
+
+# #rename to fit rest of script
+colnames(data)[colnames(data) %in% "rsid"] <- "SNP"
+colnames(data)[colnames(data) %in% "field"] <- "DISEASE.TRAIT"
+colnames(data)[colnames(data) %in% "chr"] <- "chr_name"
+colnames(data)[colnames(data) %in% "a1"] <- "effect_allele"
+colnames(data)[colnames(data) %in% "a2"] <- "non_effect_allele"
+colnames(data)[colnames(data) %in% "beta"] <- "effect_size"
+colnames(data)[colnames(data) %in% "pval"] <- "P.VALUE"
+colnames(data)[colnames(data) %in% "code"] <- "study_id"
+colnames(data)[colnames(data) %in% "AF"] <- "minor_allele_freq"
+
+
+
+hist(data[,"minor_allele_freq"])
+#so most are indicated as minor - I guess for consistency we should flip the ones >0.5
+af_cols<-c("minor_allele_freq",grep("AF$",colnames(data),value=T))
+for(i in 1:nrow(data)){
+  if(is.na(data[i,"minor_allele_freq"])){
+    data[i,"major_allele"]<-"?"
+    data[i,"minor_allele"]<-"?"
+  }else{
+    if(data[i,"minor_allele_freq"]>0.5){ #then flip all
+      data[i,"major_allele"]<-data[i,"ALT"]
+      data[i,"minor_allele"]<-data[i,"REF"]
+      for(af_col in af_cols){
+        data[i,af_col]<-1-data[i,af_col]
+      }
+      print("flip")
+    }else{
+      data[i,"minor_allele"]<-data[i,"ALT"]
+      data[i,"major_allele"]<-data[i,"REF"]
+      
+    }
+  }
+}
+
+
+
+
+
+
+#check cases were risk allele is not found in minor or major allele
+sum(!(data[,"effect_allele"] %in% data[,"minor_allele"] | data[,"effect_allele"] %in% data[,"major_allele"] ))
+#0
+#Nice! Much cleaner data than gwas central
+
+
+
+
+#check how often minor allele is risk
+sum(data[,"minor_allele"]==data[,"effect_allele"]) / nrow(data)
+#0.10 - but this should be expcted, because:
+sum(data[,"effect_size"]>0) / nrow(data)
+#0.79
+
+
+
+#add a 'safe_name' trait id or such - no-special characters identifier to each
+data[,"study_id"] <- paste(data[,"study_id"],"ukbiobank",sep="_")
+  
+
+
+#ensure only standard values A G C T ? are present
+table(data[,"major_allele"])
+table(data[,"minor_allele"])
+table(data[,"effect_allele"])
+table(data[,"non_effect_allele"])
+ok_values <- c("A","C","T","G","?")
+for(col in c("major_allele","minor_allele","effect_allele","non_effect_allele")){
+  data[!data[,col]%in%ok_values,col]<-"?"
+}
+
+#ensure match between risk/non-risk and major/minor
+g1<-apply(t(apply(data[,c("major_allele","minor_allele")],1,sort,decreasing=F)),1,paste,collapse="")
+g2<-apply(t(apply(data[,c("effect_allele","non_effect_allele")],1,sort,decreasing=F)),1,paste,collapse="")
+have_unknown <- apply(data[,c("major_allele","minor_allele","effect_allele","non_effect_allele")]=="?",1,sum)>0
+# have_unknown
+sum(g1!=g2 & !have_unknown)
+# 29!? - this is a quite serious error. It means that the input data had non-existing alleles, e.g. rs36143444 indicated as C as effect and A as non-effect, but 1kgenomes gives that it has C and T alleles
+# These must be omitted
+data<-data[!(g1!=g2 & !have_unknown),]
+
+
+
+#re-order colnames so that the essential are first
+putFirst<-c("SNP", "chr_name","effect_allele","non_effect_allele","effect_size",  "minor_allele_freq","minor_allele","major_allele")
+putFirst%in%colnames(data)
+data<-data[,c(putFirst,colnames(data)[!colnames(data)%in%putFirst])]
+save(data, file="ukbiobank/2017-07-28_semi_curated_version_ukbiobank.rdata")
+
+
+
+
+#then save a SNPs_to_analyze.txt (which just contains snp, chr, effect_allele and non_effect_allele and NO duplicate SNPs)
+gwas_snps <- data[,c("SNP","chr_name","effect_allele","non_effect_allele")]
+gwas_snps <- gwas_snps[!duplicated(gwas_snps[,"SNP"]),]
+rownames(gwas_snps) <- gwas_snps[,"SNP"]
+save(gwas_snps,file="ukbiobank/2017-09-28_all_ukbiobank_snps.rdata")
+
+
+
+
+
+
+#then create an overview trait list
+traits<-data.frame(row.names=unique(data[,"study_id"]), trait=unique(data[,"DISEASE.TRAIT"]),PMID="25826379",Author="UK biobank",stringsAsFactors=F)
+
+
+traits<-traits[order(traits[,"trait"]),]
+
+for(trait in rownames(traits)){
+  traitName<-traits[trait,"trait"]	
+  PMID<-traits[trait,"PMID"]	
+  Author<-traits[trait,"Author"]	
+  if(sum(traits[,"trait"]%in%traitName)>1){
+    traits[trait ,"niceName"] <- paste0(traitName," [PMID ",PMID,"]")
+  }else{
+    traits[trait ,"niceName"] <- traitName
+  }
+}
+
+save(traits, file="ukbiobank/2017-09-28_trait_overoverview.rdata")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
