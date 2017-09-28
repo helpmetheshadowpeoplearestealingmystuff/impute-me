@@ -2254,12 +2254,10 @@ run_bulk_imputation<-function(
       for(step7ResultsFile in step7ResultsFiles){
         cmd8<-paste0("cut --delimiter=' ' -f 1,2,3,4,5,",left,",",middle,",",right," ",step7ResultsFile," > ",outfolder,step7ResultsFile)
         system(cmd8)
-        unlink(step7ResultsFile) #clean up files afterwards (or else we break the 30GB limit)
       }
-      
-      
-      
-      
+      Sys.sleep(5) #have to pause or else unlink may precede cut command
+      unlink(step7ResultsFiles) #clean up files afterwards (or else we break the 30GB limit)
+
     }
   }
 }
