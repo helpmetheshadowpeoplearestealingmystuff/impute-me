@@ -99,7 +99,7 @@ shinyServer(function(input, output) {
     # }
     # DATE<-unique(SNPs_to_analyze[,"DATE"])
     # if(length(DATE)!=1)stop("Problem with DATE length")
-    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from the UK biobank, which were reported to be associated with ",trait,".")
+    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from the UK biobank, which were reported to be associated with the trait <i>'",trait,"'</i>.")
     textToReturn <- paste0(textToReturn," The summary statistics were calculated by <u><a href='http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank'>Neale lab</a></u> and reports a total sample size of ",sampleSize_case," cases and ", sampleSize_control," controls as downloaded on 2017-09-15.")
     
     
@@ -173,6 +173,10 @@ shinyServer(function(input, output) {
     }
     textToReturn <- paste0(textToReturn," This means that your genetic risk score for this trait will be <b>higher than ",percentage,"% of the general population</b>.",summary)
     
+
+    #get some misc trait information
+    ukbiobank_notes<-traits[study_id,"Notes"]
+    phesant_notes<-traits[study_id,"PHESANT.notes" ]
     
     
     #write the methods text
@@ -180,7 +184,7 @@ shinyServer(function(input, output) {
                             
                             <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections (Only implemented for GWAS calculator, not UK-biobank. yet). In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
                             
-                      <br><br>Using UK-biobank compared to the GWAS calculator data this has the advantage of being a highly systematic and well-powered approach. The trade-off is that less per-trait curation has been applied at the GWAS calculation step.
+                      <br><br>Using UK-biobank compared to the GWAS calculator data has the advantage of being a highly systematic and well-powered approach. The trade-off is that less per-trait curation has been applied at the GWAS calculation step and that results are <i>not</i> peer-reviewed. The UK-biobank trait-note for this trait was: <i>",ukbiobank_notes,"</i>. The GWAS automated analysis note for this trait was: <i>",phesant_notes,"</i> (which admittely is only for expert interpretation, but it's provided here for completeness).
                             <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also check out the <u><a href='http://www.impute.me/HeuristicHealth'>HeuresticHealth-module</a></u> under development - based on this info, but without having to scroll through all entries</small>")
     
     
@@ -304,7 +308,7 @@ shinyServer(function(input, output) {
       
       
       #summarising allele info into single-columns
-      SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
+      SNPs_to_analyze[,"Effect/non-effect Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
       SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
       
       # col_to_remove<-c("DATE","sampleSize","ensembl_alleles","LINK","FIRST.AUTHOR","PUBMEDID","chr_name","CHR_POS","effect_allele","non_effect_allele","major_allele","minor_allele","DISEASE.TRAIT")
@@ -331,10 +335,10 @@ shinyServer(function(input, output) {
       }
       
       
-      keep<-c("SNP","genotype","Risk/non-risk Allele","personal_score","score_diff"
+      keep<-c("SNP","genotype","Effect/non-effect Allele","personal_score","score_diff"
               ,"effect_size","P.VALUE","Major/minor Allele","minor_allele_freq") 
       SNPs_to_analyze<-SNPs_to_analyze[,keep]
-      colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency")
+      colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Effect/ non-effect Allele","SNP-score","SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency")
       
       return(SNPs_to_analyze)
     }
