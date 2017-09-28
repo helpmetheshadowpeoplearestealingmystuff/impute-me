@@ -49,8 +49,8 @@ shinyServer(function(input, output) {
     
     #getting the relevant trait name, pmid and SNPs to analyze
     trait<-traits[study_id,"trait"]
-    pmid<-traits[study_id,"PMID"]
-    if(!pmid%in%data[,"PUBMEDID"])stop(paste("PMID",pmid,"was not found in system"))
+    # pmid<-traits[study_id,"PMID"]
+    # if(!pmid%in%data[,"PUBMEDID"])stop(paste("PMID",pmid,"was not found in system"))
     if(!trait%in%data[,"DISEASE.TRAIT"])stop(paste("trait",trait,"was not found"))
     SNPs_to_analyze<-data[data[,"study_id"]%in%study_id ,]
     
@@ -89,17 +89,18 @@ shinyServer(function(input, output) {
     #gathering some background info for the study		
     link<-unique(SNPs_to_analyze[,"LINK"])
     if(length(link)!=1)stop("Problem with link length")
-    author<-unique(SNPs_to_analyze[,"FIRST.AUTHOR"])
-    if(length(author)!=1)stop("Problem with author length")
-    sampleSize<-unique(SNPs_to_analyze[,"sampleSize"])
-    if(length(sampleSize)!=1){
-      print("Problem with sampleSize length - but just took mean")
-      sampleSize <- round(mean(sampleSize,na.rm=T))
-    }
-    DATE<-unique(SNPs_to_analyze[,"DATE"])
-    if(length(DATE)!=1)stop("Problem with DATE length")
-    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a href='http://",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",trait,".")
-    textToReturn <- paste0(textToReturn," This study reports a total sample size of ",sampleSize,", as entered on date ",DATE,".")
+    # author<-unique(SNPs_to_analyze[,"FIRST.AUTHOR"])
+    # if(length(author)!=1)stop("Problem with author length")
+    sampleSize_case<-unique(SNPs_to_analyze[,"case_count"])
+    sampleSize_control<-unique(SNPs_to_analyze[,"control_count"])
+    # if(length(sampleSize)!=1){
+      # print("Problem with sampleSize length - but just took mean")
+      # sampleSize <- round(mean(sampleSize,na.rm=T))
+    # }
+    # DATE<-unique(SNPs_to_analyze[,"DATE"])
+    # if(length(DATE)!=1)stop("Problem with DATE length")
+    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from the UK biobank, which were reported to be associated with ",trait,".")
+    textToReturn <- paste0(textToReturn," The summary statistics were calculated by <u><a href='http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank'>Neale lab</a></u> and reports a total sample size of ",sampleSize_case," cases and ", sampleSize_control," controls as downloaded on 2017-09-15.")
     
     
     
@@ -175,10 +176,11 @@ shinyServer(function(input, output) {
     
     
     #write the methods text
-    methodsToReturn<-paste0("<small><br><b>Methods</b><br>GWAS data was downloaded from <u><a href='http://www.gwascentral.org/'>GWAS central</a></u>, curated as further described in the paper by <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/?term=24301061'>Beck et al</a></u>. Then a per-SNP score was calculated by counting the risk-alleles multiplied by the effect size (OR or beta as reported in original paper). This was centered so that the average score in the general population would be zero ('population normalized'). This means, that if a person is homozygote for a very rare risk variant this will result in a very high Z-score, conversely if the SNP is common, the Z-score will be less extreme. The sum of these normalized SNP-scores are calculated to get a trait-wide genetic risk score (GRS). This GRS was additionally scaled so that standard-deviation in the general population is 1 (unit-variance), effectively making the scores <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-scores</a></u>. ", ethnicity_explanation_text, " Further details of the calculation can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/56813bf071d7fa4c0a658c90d2ebee196a781e8a/functions.R#L1166-L1326'>source code</a></u>. 
+    methodsToReturn<-paste0("<small><br><b>Methods</b><br>GWAS data was obtained from the <u><a href='http://www.ukbiobank.ac.uk/'>UK biobank</a></u> (with summary stats calculated by <u><a href='http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank'>Neale lab</a></u>). Then a per-SNP score was calculated by counting the risk-alleles multiplied by the effect size (OR or beta as reported in original paper). This was centered so that the average score in the general population would be zero ('population normalized'). This means, that if a person is homozygote for a very rare risk variant this will result in a very high Z-score, conversely if the SNP is common, the Z-score will be less extreme. The sum of these normalized SNP-scores are calculated to get a trait-wide genetic risk score (GRS). This GRS was additionally scaled so that standard-deviation in the general population is 1 (unit-variance), effectively making the scores <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-scores</a></u>. ", ethnicity_explanation_text, " Further details of the calculation can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/56813bf071d7fa4c0a658c90d2ebee196a781e8a/functions.R#L1166-L1326'>source code</a></u>. 
                             
                             <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections. In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
                             
+                      <br><br>Using UK-biobank compared to the GWAS calculator data this has the advantage of being a highly systematic and well-powered approach. The trade-off is that less per-trait curation has been applied at the GWAS calculation step.
                             <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also check out the <u><a href='http://www.impute.me/HeuristicHealth'>HeuresticHealth-module</a></u> under development - based on this info, but without having to scroll through all entries</small>")
     
     
