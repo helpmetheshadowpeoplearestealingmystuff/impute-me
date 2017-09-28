@@ -331,10 +331,10 @@ shinyServer(function(input, output) {
       }
       
       
-      keep<-c("SNP","REGION","genotype","Risk/non-risk Allele","personal_score","score_diff"
-              ,"effect_size","P.VALUE","Major/minor Allele","minor_allele_freq")
+      keep<-c("SNP","genotype","Risk/non-risk Allele","personal_score","score_diff"
+              ,"effect_size","P.VALUE","Major/minor Allele","minor_allele_freq") 
       SNPs_to_analyze<-SNPs_to_analyze[,keep]
-      colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency")
+      colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency")
       
       return(SNPs_to_analyze)
     }
