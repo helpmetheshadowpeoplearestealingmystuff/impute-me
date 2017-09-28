@@ -540,6 +540,10 @@ sum(g1!=g2 & !have_unknown)
 data<-data[!(g1!=g2 & !have_unknown),]
 
 
+#remove non rsids
+data<-data[grep("^rs",data[,"SNP"],invert=F),]
+
+
 
 #re-order colnames so that the essential are first
 putFirst<-c("SNP", "chr_name","effect_allele","non_effect_allele","effect_size",  "minor_allele_freq","minor_allele","major_allele")

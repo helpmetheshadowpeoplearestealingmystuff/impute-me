@@ -151,7 +151,18 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     unlink(homeFolder,recursive=T)
     stop(safeError("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
   }
+
   
+  #Checking if it as a Genes for Good file (have to reject those, since it's different genome built)
+  if(length(grep("genes for good",tolower(readLines(path,n=2))))>0){
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"genes_for_good_error",email,uniqueID)
+    m<-paste(m,collapse="\t")
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
+    unlink(homeFolder,recursive=T)
+    stop(safeError(paste0("Your file seemed to be from Genes for Good. At the moment we can't accept data from Genes for Good because it is made in a different genomic version than other direct-to-consumer data. If you know how to translate to GRCH37-built yourself, you may remove the 'Genes for Good' line in the header and try to resubmit. Otherwise - we are working on a solution.")))
+    
+  }
+    
   
   #checking if there is at least 10k lines (otherwise imputation wouldn't be possible anyway)
   cmd1 <- paste0("wc -l ",path)
