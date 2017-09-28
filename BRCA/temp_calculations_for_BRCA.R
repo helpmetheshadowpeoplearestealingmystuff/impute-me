@@ -356,19 +356,24 @@ BRCA_table_file <-"SNPs_to_analyze.txt"
 BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F,row.names=T)
 
 rownames(BRCA_table)<-BRCA_table[,"SNP"]
-# BRCA_table[BRCA_table[,"chr_name"]%in%13,"gene"]<-"BRCA2"
-# BRCA_table[BRCA_table[,"chr_name"]%in%17,"gene"]<-"BRCA1"
-# 
-# BRCA_table["i4000377","gene"]<-"BRCA1"
-# BRCA_table["i4000378","gene"]<-"BRCA1"
-# BRCA_table["i4000379","gene"]<-"BRCA2"
-# 
-# BRCA_table["i4000377","consequence_type_tv"]<-"Direct from 23andme"
-# BRCA_table["i4000378","consequence_type_tv"]<-"Direct from 23andme"
-# BRCA_table["i4000379","consequence_type_tv"]<-"Direct from 23andme"
+BRCA_table[BRCA_table[,"chr_name"]%in%13,"gene"]<-"BRCA2"
+BRCA_table[BRCA_table[,"chr_name"]%in%17,"gene"]<-"BRCA1"
+
+BRCA_table["i4000377","gene"]<-"BRCA1"
+BRCA_table["i4000378","gene"]<-"BRCA1"
+BRCA_table["i4000379","gene"]<-"BRCA2"
+
+BRCA_table["i4000377","consequence_type_tv"]<-"Direct from 23andme"
+BRCA_table["i4000378","consequence_type_tv"]<-"Direct from 23andme"
+BRCA_table["i4000379","consequence_type_tv"]<-"Direct from 23andme"
 
 
-uniqueIDs<-list.files("/home/ubuntu/data")
+# uniqueIDs<-sample(list.files("/home/ubuntu/data"),20)
+cmd1<-paste0("du -s /home/ubuntu/data/*")
+sizes<-system(cmd1,intern=T)
+sizes<-sizes[as.numeric(sapply(strsplit(sizes,"\t"),function(x){x[1]}))>10000]
+uniqueIDs<-sample(sub("^.+id_","id_",sizes),20)
+
 for(uniqueID in uniqueIDs){
   #get genotypes and calculate gheight
   genotypes<-try(get_genotypes(uniqueID=uniqueID,request=BRCA_table))
@@ -389,20 +394,40 @@ differences<-sort(sapply(overview,length))
 
 
 #too high frequency to include these
-omitThese<-names(differences)[differences>=2]
+# omitThese<-names(differences)[differences>=2]
 BRCA_table[omitThese,]
-
-
 BRCA_table<-BRCA_table[!rownames(BRCA_table)%in%omitThese,]
 
 
 normals<-apply(BRCA_table[,people],1,unique)
-BRCA_table[,"normal"]<-unlist(lapply(normals,function(x){x[!is.na(x)]}))
+BRCA_table[,"normal"]<-unlist(lapply(normals,function(x){
+  x2<-x[!is.na(x)]
+  if(length(x2)==0){
+    return(NA)
+  }else if(length(x2)>1){
+    print(x)
+  }else{
+    return(x2)  
+  }
+  
+}))
 
 BRCA_table<-BRCA_table[,grep("^id",colnames(BRCA_table),invert=T)]
 
-BRCA_table_file <-"/home/ubuntu/srv/impute-me/BRCA/SNPs_to_analyze.txt"
+
+order2<-c('Pathogenic','Likely pathogenic','Conflicting interpretations of pathogenicity','Uncertain significance','not provided','Likely benign','Benign')
+BRCA_table[,"clinvar"]<-factor(BRCA_table[,"clinvar"],levels=order2)
+
+BRCA_table<-BRCA_table[order(is.na(BRCA_table[,"normal"]),BRCA_table[,"clinvar"]),]
+
+
+
+
+BRCA_table_file <-"/home/ubuntu/SNPs_to_analyze.txt"
 BRCA_table<-write.table(BRCA_table,file="SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
 
 
 
+
+
+#In conclusion -- we added the clinvar - that was probably a good thing. But other than that not much was accomplished. Most of the new ones were'nt imputable, not with this version of 1kgenomes. 

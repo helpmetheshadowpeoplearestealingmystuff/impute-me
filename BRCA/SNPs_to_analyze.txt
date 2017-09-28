@@ -1,257 +1,250 @@
-SNP	chrom_start	chr_name	clinvar	polyphen_prediction	sift_prediction	consequence_type_tv
-i4000377	NA	input	Pathogenic	NA	NA	NA
-i4000378	NA	input	Pathogenic	NA	NA	NA
-i4000379	NA	input	Pathogenic	NA	NA	NA
-rs11571833	32398489	13	Conflicting interpretations of pathogenicity			stop_gained
-rs28897687	43091823	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs80356888	43104173	17	NA			synonymous_variant
-rs11571747	32371035	13	Conflicting interpretations of pathogenicity	probably damaging	tolerated - low confidence	missense_variant
-rs11571769	32379413	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs145605603	32337575	13	NA	probably damaging	deleterious	missense_variant
-rs148618542	32340324	13	NA	possibly damaging	deleterious	missense_variant
-rs1799950	43094464	17	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs185012573	32356464	13	NA	probably damaging	deleterious	missense_variant
-rs186224762	32363306	13	NA	probably damaging	deleterious	missense_variant
-rs186810431	32344639	13	NA	probably damaging	deleterious	missense_variant
-rs191744583	32337435	13	NA	probably damaging	deleterious	missense_variant
-rs192655097	43093075	17	NA	probably damaging	deleterious	missense_variant
-rs28897728	32338940	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs28897745	32363196	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs28897754	32379412	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs4987047	32379392	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant
-rs55689095	32357836	13	Uncertain significance	probably damaging	deleterious	missense_variant
-rs55914168	43093180	17	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs56121817	32398388	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs56128296	43094394	17	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs56158747	43071232	17	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs56309455	32398634	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant
-rs80357272	43092083	17	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs80358600	32337870	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs80359065	32363389	13	Pathogenic	probably damaging	deleterious	missense_variant
-rs80359105	32370993	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs11571640	32332442	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant
-rs183119644	43092021	17	NA	possibly damaging	deleterious	missense_variant
-rs184374817	43092887	17	NA	possibly damaging	deleterious	missense_variant
-rs28897689	43091492	17	Conflicting interpretations of pathogenicity	possibly damaging	tolerated	missense_variant
-rs28897706	32332456	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs55953736	32340702	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant
-rs56214134	43091931	17	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant
-rs59004709	32379467	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs80356892	43092965	17	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant
-rs80358408	32332601	13	Likely benign	benign	tolerated	missense_variant
-rs80358486	32336452	13	NA	benign	tolerated	missense_variant
-rs80358531	32319289	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs80358762	32316513	13	Likely benign	possibly damaging	deleterious	missense_variant
-rs11571746	32370971	13	Conflicting interpretations of pathogenicity	probably damaging	tolerated	missense_variant
-rs145631871	32396088	13	NA	probably damaging		missense_variant
-rs150600452	32375396	13	NA	benign		missense_variant
-rs182550445	32375359	13	NA	benign	tolerated - low confidence	missense_variant
-rs11571653	32336705	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs11571657	32339995	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant
-rs11571659	32340767	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant
-rs11571707	32356461	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs11571831	32398243	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs117187202	32338731	13	Uncertain significance	benign	tolerated	missense_variant
-rs143667871	32338607	13	NA	benign	tolerated	missense_variant
-rs144853230	43092551	17	NA	benign	tolerated	missense_variant
-rs146351301	32340038	13	Uncertain significance	benign	tolerated	missense_variant
-rs149474191	32340063	13	NA	benign	tolerated	missense_variant
-rs149753706	32337193	13	NA	benign	tolerated	missense_variant
-rs169547	32355250	13	Uncertain significance	possibly damaging	deleterious	missense_variant
-rs1799954	32340455	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant
-rs1799967	43070958	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs1800704	43092507	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs1800709	43093010	17	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant
-rs1801426	32398747	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs183331660	43079334	17	NA	benign	tolerated	missense_variant
-rs183478654	32339696	13	Uncertain significance	probably damaging	tolerated	missense_variant
-rs183920365	32337834	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs184442109	32346854	13	NA	benign	tolerated	missense_variant
-rs2219594	32339036	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs2227943	32337141	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant
-rs2227944	32337315	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant
-rs2227945	43092113	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs28897708	32332992	13	Conflicting interpretations of pathogenicity	probably damaging	tolerated	missense_variant
-rs28897710	32333270	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs28897716	32337158	13	Uncertain significance	probably damaging	tolerated	missense_variant
-rs28897727	32338613	13	Conflicting interpretations of pathogenicity	probably damaging	tolerated	missense_variant
-rs28897747	32363351	13	Conflicting interpretations of pathogenicity	possibly damaging	tolerated	missense_variant
-rs28897749	32363384	13	Uncertain significance	benign	tolerated	missense_variant
-rs34309943	32340575	13	Conflicting interpretations of pathogenicity	probably damaging	tolerated	missense_variant
-rs35029074	32340678	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs41293485	32338224	13	Conflicting interpretations of pathogenicity	possibly damaging	tolerated	missense_variant
-rs45574331	32354870	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs4986845	43093364	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs4986847	43092758	17	Likely benign	benign	tolerated	missense_variant
-rs4986852	43092412	17	Conflicting interpretations of pathogenicity	possibly damaging	tolerated	missense_variant
-rs4986854	43071031	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs4986860	32355172	13	NA	possibly damaging	tolerated	missense_variant
-rs4987046	32319134	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs4987048	32340059	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs4987117	32340099	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs55638633	32337410	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs55639415	32339553	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant
-rs55720177	43094104	17	Conflicting interpretations of pathogenicity	possibly damaging	tolerated	missense_variant
-rs55794205	32340677	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs55800493	32332518	13	NA	possibly damaging	deleterious	missense_variant
-rs55815649	43074406	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs55816687	32336493	13	NA	probably damaging	tolerated	missense_variant
-rs55933907	32380124	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant
-rs55969723	32338542	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant
-rs55977008	32355003	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs56082113	43093073	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs56191579	32340486	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs56248502	32338445	13	Uncertain significance	benign	tolerated	missense_variant
-rs56336919	43091990	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs68071147	32326142	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant
-rs70953664	32338596	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs74047012	32356593	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs75419644	32333276	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs79483201	32332421	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs80356895	43093525	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs80357036	43091696	17	NA	possibly damaging	deleterious	missense_variant
-rs80357090	43097266	17	Benign	benign	tolerated	missense_variant
-rs80357280	43091708	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs80357459	43092448	17	Uncertain significance	benign	tolerated	missense_variant
-rs80358487	32336474	13	Uncertain significance	possibly damaging	deleterious	missense_variant
-rs80358698	32339025	13	NA	possibly damaging	tolerated	missense_variant
-rs80358732	32339451	13	Uncertain significance	benign	tolerated	missense_variant
-rs80358899	32341103	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant
-rs80358965	32356430	13	Uncertain significance	probably damaging	tolerated	missense_variant
-rs80359052	32363294	13	Uncertain significance	benign	tolerated	missense_variant
-rs80357629	43045712	17	NA			stop_gained
-rs80358145	43047642	17	Pathogenic			splice_donor_variant
-rs80357477	43047657	17	Likely pathogenic	benign	deleterious	missense_variant
-rs80357558	43047693	17	Pathogenic			frameshift_variant
-rs80357055	43049140	17	Pathogenic			stop_gained
-rs80357069	43049164	17	Pathogenic	probably damaging	deleterious	missense_variant
-rs80357284	43049181	17	Pathogenic			stop_gained
-rs80357590	43049192	17	Pathogenic			splice_region_variant
-rs41293463	43051071	17	Pathogenic	probably damaging	deleterious	missense_variant
-rs80357823	43051076	17	NA			frameshift_variant
-rs80357463	43051098	17	NA	probably damaging	deleterious	missense_variant
-rs80358150	43057051	17	Pathogenic			splice_donor_variant
-rs80357906	43057066	17	NA			frameshift_variant
-rs80357925	43057070	17	Pathogenic			frameshift_variant
-rs45553935	43057122	17	Uncertain significance	probably damaging	deleterious	missense_variant
-rs80357975	43063346	17	NA			frameshift_variant
-rs80357347	43063347	17	Pathogenic			stop_gained
-rs80358089	43067606	17	Conflicting interpretations of pathogenicity			splice_donor_variant
-rs80358053	43067607	17	NA			splice_donor_variant
-rs80187739	43067608	17	Pathogenic	probably damaging	deleterious	missense_variant
-rs80357061	43067616	17	Pathogenic	probably damaging	deleterious	missense_variant
-rs80357623	43067643	17	Pathogenic			frameshift_variant
-rs80357862	43067649	17	NA			frameshift_variant
-rs80358086	43070922	17	Pathogenic			splice_region_variant
-rs80358087	43070924	17	Likely pathogenic			splice_region_variant
-rs80359876	43070932	17	Pathogenic			frameshift_variant
-rs80356862	43071046	17	Pathogenic	possibly damaging	tolerated	missense_variant
-rs80357641	43071164	17	Pathogenic			frameshift_variant
-rs80357433	43071225	17	Pathogenic			stop_gained
-rs80356988	43074331	17	Pathogenic	possibly damaging	tolerated	missense_variant
-rs80358063	43076487	17	Pathogenic			splice_donor_variant
-rs80357389	43076488	17	Pathogenic	probably damaging	deleterious	missense_variant
-rs80357854	43076489	17	Pathogenic			splice_region_variant
-rs273900730	43076579	17	NA			frameshift_variant
-rs80357916	43076581	17	Pathogenic			frameshift_variant
-rs80358027	43082403	17	Pathogenic			splice_donor_variant
-rs80357977	43082509	17	Pathogenic			frameshift_variant
-rs80357981	43082518	17	Pathogenic			frameshift_variant
-rs80357071	43090981	17	Pathogenic			stop_gained
-rs80357787	43091008	17	Pathogenic			frameshift_variant
-rs80357259	43091012	17	Pathogenic			stop_gained
-rs80357804	43091012	17	Pathogenic			stop_gained
-rs80358070	43091033	17	Pathogenic			splice_acceptor_variant
-rs80358178	43091434	17	Pathogenic	probably damaging	deleterious	missense_variant
-rs80357508	43091463	17	Pathogenic			frameshift_variant
-rs80357711	43091496	17	Pathogenic			frameshift_variant
-rs80357021	43091516	17	Pathogenic	benign	tolerated	missense_variant
-rs80357318	43091594	17	Pathogenic			stop_gained
-rs80357254	43091663	17	Pathogenic	benign	tolerated	missense_variant
-rs80357889	43091670	17	NA			frameshift_variant
-rs80357993	43091760	17	NA			frameshift_variant
-rs80357848	43091767	17	NA			frameshift_variant
-rs80357520	43091771	17	Pathogenic			frameshift_variant
-rs80357868	43091772	17	Pathogenic			frameshift_variant
-rs80357609	43091827	17	Pathogenic			frameshift_variant
-rs80357162	43091842	17	Pathogenic			stop_gained
-rs80357902	43091883	17	NA			frameshift_variant
-rs80357729	43091904	17	NA			frameshift_variant
-rs80357980	43091919	17	Pathogenic			frameshift_variant
-rs62625308	43091924	17	Uncertain significance	benign	deleterious	missense_variant
-rs80357877	43092040	17	Pathogenic			frameshift_variant
-rs80357509	43092046	17	Pathogenic			frameshift_variant
-rs80357808	43092089	17	Pathogenic			frameshift_variant
-rs80357018	43092131	17	Pathogenic			stop_gained
-rs80357405	43092142	17	Pathogenic			stop_gained
-rs80357945	43092172	17	Pathogenic			frameshift_variant
-rs80357903	43092197	17	NA			frameshift_variant
-rs80357624	43092276	17	NA			frameshift_variant
-rs80357635	43092302	17	Pathogenic			frameshift_variant
-rs80357511	43092338	17	NA			frameshift_variant
-rs80357161	43092419	17	Pathogenic			stop_gained
-rs80357846	43092526	17	NA			frameshift_variant
-rs80357601	43092529	17	Pathogenic			frameshift_variant
-rs80357829	43092541	17	NA			frameshift_variant
-rs80357115	43092597	17	Pathogenic			stop_gained
-rs80357832	43092722	17	Pathogenic			frameshift_variant
-rs80357035	43092821	17	Uncertain significance	possibly damaging	tolerated	missense_variant
-rs80357717	43092824	17	NA			frameshift_variant
-rs80357971	43092849	17	Pathogenic			frameshift_variant
-rs80357596	43092849	17	Pathogenic			frameshift_variant
-rs80357251	43092896	17	Pathogenic	probably damaging	deleterious	missense_variant
-rs80356925	43092928	17	Pathogenic			stop_gained
-rs80357131	43092968	17	Pathogenic			stop_gained
-rs80357607	43093016	17	Pathogenic			frameshift_variant
-rs80357970	43093056	17	Pathogenic			frameshift_variant
-rs80357669	43093074	17	Pathogenic			frameshift_variant
-rs80357524	43093098	17	Pathogenic			frameshift_variant
-rs80357664	43093119	17	Pathogenic			frameshift_variant
-rs80357786	43093232	17	Pathogenic			frameshift_variant
-rs80357583	43093262	17	Pathogenic			frameshift_variant
-rs80357654	43093320	17	Pathogenic			frameshift_variant
-rs80356875	43093373	17	Uncertain significance	probably damaging	tolerated	missense_variant
-rs80357233	43093393	17	Pathogenic			stop_gained
-rs80357880	43093426	17	NA			frameshift_variant
-rs80357688	43093460	17	Pathogenic			frameshift_variant
-rs80357853	43093570	17	NA			frameshift_variant
-rs80357522	43093570	17	Pathogenic			frameshift_variant
-rs80357355	43093571	17	Pathogenic	benign	tolerated	missense_variant
-rs80357526	43093575	17	Pathogenic			frameshift_variant
-rs80356898	43093844	17	Pathogenic			stop_gained
-rs80357600	43093857	17	Pathogenic			frameshift_variant
-rs80357662	43093975	17	Pathogenic			frameshift_variant
-rs80357908	43094021	17	Pathogenic			frameshift_variant
-rs80357888	43094023	17	Pathogenic			frameshift_variant
-rs80357010	43094051	17	Pathogenic			stop_gained
-rs80357801	43094084	17	Pathogenic			frameshift_variant
-rs273897659	43094141	17	NA			frameshift_variant
-rs80357714	43094151	17	NA			frameshift_variant
-rs80357969	43094170	17	Pathogenic			frameshift_variant
-rs80357597	43094191	17	NA			frameshift_variant
-rs80359874	43094317	17	Pathogenic			frameshift_variant
-rs80357612	43094410	17	Pathogenic			frameshift_variant
-rs80357774	43094513	17	Pathogenic			frameshift_variant
-rs80357569	43094515	17	NA			frameshift_variant
-rs80357618	43094515	17	Pathogenic			frameshift_variant
-rs80359872	43094516	17	Pathogenic			frameshift_variant
-rs80357292	43094569	17	Pathogenic			stop_gained
-rs80357844	43094602	17	Pathogenic			frameshift_variant
-rs80357724	43094732	17	Pathogenic			frameshift_variant
-rs80357321	43094748	17	Pathogenic			stop_gained
-rs80357747	43094833	17	Pathogenic			frameshift_variant
-rs80357941	43094855	17	Pathogenic			frameshift_variant
-rs80358047	43099773	17	Pathogenic			splice_donor_variant
-rs80357887	43099851	17	Pathogenic			frameshift_variant
-rs80356991	43104136	17	NA	possibly damaging	deleterious	missense_variant
-rs80357604	43104234	17	NA			frameshift_variant
-rs80358011	43104263	17	Pathogenic			splice_acceptor_variant
-rs80358061	43104967	17	Pathogenic			intron_variant
-rs80358163	43104968	17	Pathogenic			intron_variant
-rs80358042	43106455	17	Pathogenic			splice_donor_variant
-rs80357382	43106457	17	Pathogenic	probably damaging	deleterious	missense_variant
-rs80357637	43106525	17	Pathogenic			frameshift_variant
-rs80358158	43106534	17	NA			splice_acceptor_variant
-rs80357498	43115744	17	Pathogenic	probably damaging	deleterious	missense_variant
-rs80357443	43115775	17	Pathogenic			stop_gained
-rs80357783	43124031	17	NA			upstream_gene_variant
+chrom_start	chr_name	clinvar	polyphen_prediction	sift_prediction	consequence_type_tv	gene	normal
+NA	input	Pathogenic	NA	NA	Direct from 23andme	BRCA1	I/I
+NA	input	Pathogenic	NA	NA	Direct from 23andme	BRCA1	D/D
+NA	input	Pathogenic	NA	NA	Direct from 23andme	BRCA2	I/I
+32363389	13	Pathogenic	probably damaging	deleterious	missense_variant	BRCA2	G/G
+32398489	13	Conflicting interpretations of pathogenicity			stop_gained	BRCA2	A/A
+43091823	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA1	A/A
+32371035	13	Conflicting interpretations of pathogenicity	probably damaging	tolerated - low confidence	missense_variant	BRCA2	A/A
+32379413	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA2	G/G
+32338940	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA2	G/G
+32363196	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA2	A/A
+32379412	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA2	G/G
+32379392	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant	BRCA2	A/A
+43093180	17	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA1	G/G
+32398388	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA2	C/C
+43094394	17	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA1	A/A
+43071232	17	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA1	G/G
+32398634	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant	BRCA2	C/C
+43092083	17	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA1	G/G
+32337870	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA2	C/C
+32370993	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA2	G/G
+32332442	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant	BRCA2	A/A
+32332456	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	C/C
+32340702	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant	BRCA2	A/A
+43091931	17	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant	BRCA1	C/C
+32379467	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	G/G
+43092965	17	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant	BRCA1	A/A
+32319289	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA2	C/C
+32370971	13	Conflicting interpretations of pathogenicity	probably damaging	tolerated	missense_variant	BRCA2	T/T
+32336705	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	A/A
+32339995	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant	BRCA2	T/T
+32340767	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant	BRCA2	G/G
+32356461	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	T/T
+32398243	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	G/G
+32340455	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant	BRCA2	C/C
+43070958	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA1	C/C
+43092507	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA1	C/C
+43093010	17	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant	BRCA1	G/G
+32337834	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	G/G
+32339036	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	C/C
+32337141	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant	BRCA2	T/T
+32337315	13	Conflicting interpretations of pathogenicity	possibly damaging	deleterious	missense_variant	BRCA2	A/A
+43092113	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA1	T/T
+32332992	13	Conflicting interpretations of pathogenicity	probably damaging	tolerated	missense_variant	BRCA2	T/T
+32333270	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	A/A
+32338613	13	Conflicting interpretations of pathogenicity	probably damaging	tolerated	missense_variant	BRCA2	G/G
+32363351	13	Conflicting interpretations of pathogenicity	possibly damaging	tolerated	missense_variant	BRCA2	G/G
+32340575	13	Conflicting interpretations of pathogenicity	probably damaging	tolerated	missense_variant	BRCA2	C/C
+32340678	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	G/G
+32338224	13	Conflicting interpretations of pathogenicity	possibly damaging	tolerated	missense_variant	BRCA2	G/G
+32354870	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	G/G
+43093364	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA1	T/T
+43092412	17	Conflicting interpretations of pathogenicity	possibly damaging	tolerated	missense_variant	BRCA1	C/C
+43071031	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA1	A/A
+32319134	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	A/A
+32340059	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA2	G/G
+32337410	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	C/C
+32339553	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant	BRCA2	C/C
+43094104	17	Conflicting interpretations of pathogenicity	possibly damaging	tolerated	missense_variant	BRCA1	T/T
+32340677	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	C/C
+43074406	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA1	C/C
+32380124	13	Conflicting interpretations of pathogenicity	probably damaging	deleterious	missense_variant	BRCA2	G/G
+32338542	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant	BRCA2	A/A
+32355003	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	C/C
+43093073	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA1	T/T
+32340486	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	G/G
+43091990	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA1	C/C
+32326142	13	Conflicting interpretations of pathogenicity	benign	deleterious	missense_variant	BRCA2	A/A
+32338596	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	C/C
+32356593	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	C/C
+32333276	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	T/T
+32332421	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	T/T
+43093525	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA1	A/A
+43091708	17	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA1	T/T
+32341103	13	Conflicting interpretations of pathogenicity	benign	tolerated	missense_variant	BRCA2	A/A
+32357836	13	Uncertain significance	probably damaging	deleterious	missense_variant	BRCA2	A/A
+32338731	13	Uncertain significance	benign	tolerated	missense_variant	BRCA2	A/A
+32340038	13	Uncertain significance	benign	tolerated	missense_variant	BRCA2	G/G
+32339696	13	Uncertain significance	probably damaging	tolerated	missense_variant	BRCA2	G/G
+32337158	13	Uncertain significance	probably damaging	tolerated	missense_variant	BRCA2	G/G
+32363384	13	Uncertain significance	benign	tolerated	missense_variant	BRCA2	G/G
+32338445	13	Uncertain significance	benign	tolerated	missense_variant	BRCA2	A/A
+43092448	17	Uncertain significance	benign	tolerated	missense_variant	BRCA1	C/C
+32336474	13	Uncertain significance	possibly damaging	deleterious	missense_variant	BRCA2	G/G
+32339451	13	Uncertain significance	benign	tolerated	missense_variant	BRCA2	A/A
+32356430	13	Uncertain significance	probably damaging	tolerated	missense_variant	BRCA2	T/T
+32363294	13	Uncertain significance	benign	tolerated	missense_variant	BRCA2	G/G
+32332601	13	Likely benign	benign	tolerated	missense_variant	BRCA2	C/C
+32316513	13	Likely benign	possibly damaging	deleterious	missense_variant	BRCA2	G/G
+43097266	17	Benign	benign	tolerated	missense_variant	BRCA1	C/C
+43104173	17	NA			synonymous_variant	BRCA1	G/G
+32337575	13	NA	probably damaging	deleterious	missense_variant	BRCA2	A/A
+32340324	13	NA	possibly damaging	deleterious	missense_variant	BRCA2	A/A
+32356464	13	NA	probably damaging	deleterious	missense_variant	BRCA2	A/A
+32363306	13	NA	probably damaging	deleterious	missense_variant	BRCA2	G/G
+32344639	13	NA	probably damaging	deleterious	missense_variant	BRCA2	A/A
+32337435	13	NA	probably damaging	deleterious	missense_variant	BRCA2	G/G
+43093075	17	NA	probably damaging	deleterious	missense_variant	BRCA1	G/G
+43092021	17	NA	possibly damaging	deleterious	missense_variant	BRCA1	A/A
+43092887	17	NA	possibly damaging	deleterious	missense_variant	BRCA1	A/A
+32336452	13	NA	benign	tolerated	missense_variant	BRCA2	G/G
+32396088	13	NA	probably damaging		missense_variant	BRCA2	C/C
+32338607	13	NA	benign	tolerated	missense_variant	BRCA2	A/A
+43092551	17	NA	benign	tolerated	missense_variant	BRCA1	A/A
+32340063	13	NA	benign	tolerated	missense_variant	BRCA2	T/T
+32337193	13	NA	benign	tolerated	missense_variant	BRCA2	T/T
+43079334	17	NA	benign	tolerated	missense_variant	BRCA1	C/C
+32346854	13	NA	benign	tolerated	missense_variant	BRCA2	T/T
+32355172	13	NA	possibly damaging	tolerated	missense_variant	BRCA2	A/A
+32332518	13	NA	possibly damaging	deleterious	missense_variant	BRCA2	A/A
+32336493	13	NA	probably damaging	tolerated	missense_variant	BRCA2	A/A
+43091696	17	NA	possibly damaging	deleterious	missense_variant	BRCA1	C/C
+32339025	13	NA	possibly damaging	tolerated	missense_variant	BRCA2	C/C
+43047642	17	Pathogenic			splice_donor_variant	BRCA1	NA
+43047693	17	Pathogenic			frameshift_variant	BRCA1	NA
+43049140	17	Pathogenic			stop_gained	BRCA1	NA
+43049164	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
+43049181	17	Pathogenic			stop_gained	BRCA1	NA
+43049192	17	Pathogenic			splice_region_variant	BRCA1	NA
+43051071	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
+43057051	17	Pathogenic			splice_donor_variant	BRCA1	NA
+43057070	17	Pathogenic			frameshift_variant	BRCA1	NA
+43063347	17	Pathogenic			stop_gained	BRCA1	NA
+43067608	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
+43067616	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
+43067643	17	Pathogenic			frameshift_variant	BRCA1	NA
+43070922	17	Pathogenic			splice_region_variant	BRCA1	NA
+43070932	17	Pathogenic			frameshift_variant	BRCA1	NA
+43071046	17	Pathogenic	possibly damaging	tolerated	missense_variant	BRCA1	NA
+43071164	17	Pathogenic			frameshift_variant	BRCA1	NA
+43071225	17	Pathogenic			stop_gained	BRCA1	NA
+43074331	17	Pathogenic	possibly damaging	tolerated	missense_variant	BRCA1	NA
+43076487	17	Pathogenic			splice_donor_variant	BRCA1	NA
+43076488	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
+43076489	17	Pathogenic			splice_region_variant	BRCA1	NA
+43076581	17	Pathogenic			frameshift_variant	BRCA1	NA
+43082403	17	Pathogenic			splice_donor_variant	BRCA1	NA
+43082509	17	Pathogenic			frameshift_variant	BRCA1	NA
+43082518	17	Pathogenic			frameshift_variant	BRCA1	NA
+43090981	17	Pathogenic			stop_gained	BRCA1	NA
+43091008	17	Pathogenic			frameshift_variant	BRCA1	NA
+43091012	17	Pathogenic			stop_gained	BRCA1	NA
+43091012	17	Pathogenic			stop_gained	BRCA1	NA
+43091033	17	Pathogenic			splice_acceptor_variant	BRCA1	NA
+43091434	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
+43091463	17	Pathogenic			frameshift_variant	BRCA1	NA
+43091496	17	Pathogenic			frameshift_variant	BRCA1	NA
+43091516	17	Pathogenic	benign	tolerated	missense_variant	BRCA1	NA
+43091594	17	Pathogenic			stop_gained	BRCA1	NA
+43091663	17	Pathogenic	benign	tolerated	missense_variant	BRCA1	NA
+43091771	17	Pathogenic			frameshift_variant	BRCA1	NA
+43091772	17	Pathogenic			frameshift_variant	BRCA1	NA
+43091827	17	Pathogenic			frameshift_variant	BRCA1	NA
+43091842	17	Pathogenic			stop_gained	BRCA1	NA
+43091919	17	Pathogenic			frameshift_variant	BRCA1	NA
+43092040	17	Pathogenic			frameshift_variant	BRCA1	NA
+43092046	17	Pathogenic			frameshift_variant	BRCA1	NA
+43092089	17	Pathogenic			frameshift_variant	BRCA1	NA
+43092131	17	Pathogenic			stop_gained	BRCA1	NA
+43092142	17	Pathogenic			stop_gained	BRCA1	NA
+43092172	17	Pathogenic			frameshift_variant	BRCA1	NA
+43092302	17	Pathogenic			frameshift_variant	BRCA1	NA
+43092419	17	Pathogenic			stop_gained	BRCA1	NA
+43092529	17	Pathogenic			frameshift_variant	BRCA1	NA
+43092597	17	Pathogenic			stop_gained	BRCA1	NA
+43092722	17	Pathogenic			frameshift_variant	BRCA1	NA
+43092849	17	Pathogenic			frameshift_variant	BRCA1	NA
+43092849	17	Pathogenic			frameshift_variant	BRCA1	NA
+43092896	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
+43092928	17	Pathogenic			stop_gained	BRCA1	NA
+43092968	17	Pathogenic			stop_gained	BRCA1	NA
+43093016	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093056	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093074	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093098	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093119	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093232	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093262	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093320	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093393	17	Pathogenic			stop_gained	BRCA1	NA
+43093460	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093570	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093571	17	Pathogenic	benign	tolerated	missense_variant	BRCA1	NA
+43093575	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093844	17	Pathogenic			stop_gained	BRCA1	NA
+43093857	17	Pathogenic			frameshift_variant	BRCA1	NA
+43093975	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094021	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094023	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094051	17	Pathogenic			stop_gained	BRCA1	NA
+43094084	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094170	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094317	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094410	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094513	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094515	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094516	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094569	17	Pathogenic			stop_gained	BRCA1	NA
+43094602	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094732	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094748	17	Pathogenic			stop_gained	BRCA1	NA
+43094833	17	Pathogenic			frameshift_variant	BRCA1	NA
+43094855	17	Pathogenic			frameshift_variant	BRCA1	NA
+43099773	17	Pathogenic			splice_donor_variant	BRCA1	NA
+43099851	17	Pathogenic			frameshift_variant	BRCA1	NA
+43104263	17	Pathogenic			splice_acceptor_variant	BRCA1	NA
+43104967	17	Pathogenic			intron_variant	BRCA1	NA
+43104968	17	Pathogenic			intron_variant	BRCA1	NA
+43106455	17	Pathogenic			splice_donor_variant	BRCA1	NA
+43106457	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
+43106525	17	Pathogenic			frameshift_variant	BRCA1	NA
+43115744	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
+43115775	17	Pathogenic			stop_gained	BRCA1	NA
+43047657	17	Likely pathogenic	benign	deleterious	missense_variant	BRCA1	NA
+43070924	17	Likely pathogenic			splice_region_variant	BRCA1	NA
+43067606	17	Conflicting interpretations of pathogenicity			splice_donor_variant	BRCA1	NA
+43057122	17	Uncertain significance	probably damaging	deleterious	missense_variant	BRCA1	NA
+43091924	17	Uncertain significance	benign	deleterious	missense_variant	BRCA1	NA
+43092821	17	Uncertain significance	possibly damaging	tolerated	missense_variant	BRCA1	NA
+43093373	17	Uncertain significance	probably damaging	tolerated	missense_variant	BRCA1	NA
+43092758	17	Likely benign	benign	tolerated	missense_variant	BRCA1	NA
+43045712	17	NA			stop_gained	BRCA1	NA
+43051076	17	NA			frameshift_variant	BRCA1	NA
+43051098	17	NA	probably damaging	deleterious	missense_variant	BRCA1	NA
+43057066	17	NA			frameshift_variant	BRCA1	NA
+43063346	17	NA			frameshift_variant	BRCA1	NA
+43067607	17	NA			splice_donor_variant	BRCA1	NA
+43067649	17	NA			frameshift_variant	BRCA1	NA
+43076579	17	NA			frameshift_variant	BRCA1	NA
+43091670	17	NA			frameshift_variant	BRCA1	NA
+43091760	17	NA			frameshift_variant	BRCA1	NA
+43091767	17	NA			frameshift_variant	BRCA1	NA
+43091883	17	NA			frameshift_variant	BRCA1	NA
+43091904	17	NA			frameshift_variant	BRCA1	NA
+43092197	17	NA			frameshift_variant	BRCA1	NA
+43092276	17	NA			frameshift_variant	BRCA1	NA
+43092338	17	NA			frameshift_variant	BRCA1	NA
+43092526	17	NA			frameshift_variant	BRCA1	NA
+43092541	17	NA			frameshift_variant	BRCA1	NA
+43092824	17	NA			frameshift_variant	BRCA1	NA
+43093426	17	NA			frameshift_variant	BRCA1	NA
+43093570	17	NA			frameshift_variant	BRCA1	NA
+43094141	17	NA			frameshift_variant	BRCA1	NA
+43094151	17	NA			frameshift_variant	BRCA1	NA
+43094191	17	NA			frameshift_variant	BRCA1	NA
+43094515	17	NA			frameshift_variant	BRCA1	NA
+43104136	17	NA	possibly damaging	deleterious	missense_variant	BRCA1	NA
+43104234	17	NA			frameshift_variant	BRCA1	NA
+43106534	17	NA			splice_acceptor_variant	BRCA1	NA
+43124031	17	NA			upstream_gene_variant	BRCA1	NA
