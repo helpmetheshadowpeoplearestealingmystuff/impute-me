@@ -38,6 +38,7 @@ shinyServer(function(input, output) {
     uniqueID<-gsub(" ","",input$uniqueID)
     ethnicity_group<-input$ethnicity_group
     # real_dist<-input$real_dist
+    snp_p_value <- input$snp_p_value
     
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
@@ -53,6 +54,10 @@ shinyServer(function(input, output) {
     # if(!pmid%in%data[,"PUBMEDID"])stop(paste("PMID",pmid,"was not found in system"))
     if(!trait%in%data[,"DISEASE.TRAIT"])stop(paste("trait",trait,"was not found"))
     SNPs_to_analyze<-data[data[,"study_id"]%in%study_id ,]
+    
+    #setting P-value treshold
+    SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"P.VALUE"] < snp_p_value,]
+    
     
     #setting up back-ground frequency sources
     #The default behavior is to try to guess ethnicity. If this fails it should revert to 'global' distribution but prepare to make a note of it in the methods.
@@ -99,7 +104,7 @@ shinyServer(function(input, output) {
     # }
     # DATE<-unique(SNPs_to_analyze[,"DATE"])
     # if(length(DATE)!=1)stop("Problem with DATE length")
-    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from the UK biobank, which were reported to be associated with the trait <i>'",trait,"'</i>.")
+    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from the <u><a href='http://www.ukbiobank.ac.uk/'>UK biobank</a></u>, which were reported to be associated with the trait <i>'",trait,"'</i>.")
     textToReturn <- paste0(textToReturn," The summary statistics were calculated by <u><a href='http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank'>Neale lab</a></u> and reports a total sample size of ",sampleSize_case," cases and ", sampleSize_control," controls as downloaded on 2017-09-15.")
     
     
@@ -185,7 +190,7 @@ shinyServer(function(input, output) {
                             <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections (Only implemented for GWAS calculator, not UK-biobank. yet). In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
                             
                       <br><br>Using UK-biobank compared to the GWAS calculator data has the advantage of being a highly systematic and well-powered approach. The trade-off is that less per-trait curation has been applied at the GWAS calculation step and that results are <i>not</i> peer-reviewed. The UK-biobank trait-note for this trait was: <i>",ukbiobank_notes,"</i>.
-                            <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. It is possible that the automated GWAS analysis note for this trait can be of help: <i>",phesant_notes,"</i> (but you'd probably have to refer to the documentation for the PHESANT tool, which may get complex.).
+                            <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. It is possible that the automated GWAS analysis note for this trait can be of help: <i>",phesant_notes,"</i> (but you'd probably have to refer to the documentation for the PHESANT tool, which may get complex).
                             
                             </small>")
     

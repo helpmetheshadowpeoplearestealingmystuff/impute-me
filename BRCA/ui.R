@@ -8,7 +8,7 @@ shinyUI(bootstrapPage(
 	titlePanel("Expanded BRCA info"),
 	beginPage(),	
 	beginPanel('1/3'),
-	HTML("To run analysis input your user-id, or use the test-value of id_613z86871:<br>"),
+	HTML("To run BRCA-analysis input your user-id, or use the test-value of id_613z86871:<br>"),
 	
 	textInput(inputId="uniqueID", label = "", value = "id_XXXXXXXXX"),
 	actionButton("goButton","Run analysis"),
