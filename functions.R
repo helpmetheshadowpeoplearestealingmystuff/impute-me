@@ -51,7 +51,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(!email%in%acceptedMails & FALSE){ #changed to always accept submission for now
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,path)
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     stop(safeError("At the current stage, the project is only open to backers. Please visit our kickstarter page at: http://kck.st/1VlrTlf - sorry for the inconvenience. Going forward the plan is to run on a more voluntary pricing basis, always as non-profit (see terms-of-use). No data was saved."))
   }
   
@@ -63,7 +63,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(length(grep("^imputation_folder",s)) >= maxImputationsInQueue){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     
     stop(safeError(paste("More than",maxImputationsInQueue,"imputations are already in progress. Cannot start a new one. Limited server capacity was the reason for our kickstarter campaign. Supporters were first in line: kck.st/1VlrTlf")))
   }
@@ -94,7 +94,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(uniqueID%in%list.files("/home/ubuntu/data/")){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     stop(safeError("Problem with unique ID generation. Please re-load and try again."))
   }
   
@@ -120,7 +120,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
       unlink(homeFolder,recursive=T)
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"gzip_file",email,uniqueID)
       m<-paste(m,collapse="\t")
-      write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+      write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
       stop(safeError("Don't submit gz-files. Only uncompressed text or zip-files. If you already know what a gz file is, this should be easy for you. Please format as tab separated text files."))
     }else{
       #otherwise just rename
@@ -147,7 +147,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     # m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"general_data_file_problem",email,uniqueID,first_five_lines)
     # }
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)	
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)	
     unlink(homeFolder,recursive=T)
     stop(safeError("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
   }
@@ -159,7 +159,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(lines < 10000){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_few_lines_error",email,uniqueID)
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     unlink(homeFolder,recursive=T)
     stop(safeError(paste0("Your file only had ",lines," lines. That doesn't look like a genome-wide microarray input file. Genome-wide microarray files have many formats and come from many places (23andme, myheritage, ancestry, geneplaza, etc), but they always have hundreds of thousands of measurements")))
   }
@@ -171,7 +171,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs"){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ancestry_problem",email,uniqueID)
       m<-paste(m,collapse="\t")
-      write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)	
+      write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)	
       unlink(homeFolder,recursive=T)
       stop(safeError("Your file seemed like ancestry.com data, but didn't have rs IDs in column 1"))
     }
@@ -188,7 +188,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(class(reformat_outcome)=="try-error"){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"reformat_error",email,uniqueID)
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     unlink(homeFolder,recursive=T)
     stop(safeError("Your file didn't seem to match any of our import algorithms. If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection."))
   }
@@ -199,7 +199,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(ncol(testRead2)!=4){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"test_read_4_columns",email,uniqueID)
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     unlink(homeFolder,recursive=T)
     stop(safeError("Your file didn't have 4 columns (or 5 for ancestry.com data). If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection."))
   }
@@ -208,7 +208,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     unlink(homeFolder,recursive=T)
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"test_read_no_rs_id",email,uniqueID)
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     unlink(homeFolder,recursive=T)
     stop(safeError("Your file didn't have rs IDs in column 1. If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection."))
   }
@@ -223,7 +223,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(this_person_md5sum %in% all_md5sums){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     unlink(homeFolder,recursive=T)
     stop(safeError("A person with this genome was already analyzed by the system. Write an email if you wish to clear this flag."))
   }
@@ -275,7 +275,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(class(mailingResult)=="try-error"){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"mailing_error",email,uniqueID)
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
   }
   
   
@@ -1234,7 +1234,7 @@ format_myheritage_as_23andme<-function(path){
   #logging
   # m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"invoking format_myheritage_as_23andme",path)
   # m<-paste(m,collapse="\t")
-  # write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+  # write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
   # 
   testRead<-read.table(path,nrow=10,stringsAsFactors=F,header=T,sep=",")
   if(ncol(testRead)!=4){stop("testRead of file didn't have 5 columns (as it should have when invoking myheritage conversion)")}
