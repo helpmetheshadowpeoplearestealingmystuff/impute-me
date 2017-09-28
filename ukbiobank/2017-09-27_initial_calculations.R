@@ -545,7 +545,7 @@ data<-data[!(g1!=g2 & !have_unknown),]
 putFirst<-c("SNP", "chr_name","effect_allele","non_effect_allele","effect_size",  "minor_allele_freq","minor_allele","major_allele")
 putFirst%in%colnames(data)
 data<-data[,c(putFirst,colnames(data)[!colnames(data)%in%putFirst])]
-save(data, file="ukbiobank/2017-07-28_semi_curated_version_ukbiobank.rdata")
+save(data, file="ukbiobank/2017-09-28_semi_curated_version_ukbiobank.rdata")
 
 
 
