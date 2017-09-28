@@ -184,8 +184,10 @@ shinyServer(function(input, output) {
                             
                             <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections (Only implemented for GWAS calculator, not UK-biobank. yet). In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
                             
-                      <br><br>Using UK-biobank compared to the GWAS calculator data has the advantage of being a highly systematic and well-powered approach. The trade-off is that less per-trait curation has been applied at the GWAS calculation step and that results are <i>not</i> peer-reviewed. The UK-biobank trait-note for this trait was: <i>",ukbiobank_notes,"</i>. The GWAS automated analysis note for this trait was: <i>",phesant_notes,"</i> (which admittely is only for expert interpretation, but it's provided here for completeness).
-                            <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also check out the <u><a href='http://www.impute.me/HeuristicHealth'>HeuresticHealth-module</a></u> under development - based on this info, but without having to scroll through all entries</small>")
+                      <br><br>Using UK-biobank compared to the GWAS calculator data has the advantage of being a highly systematic and well-powered approach. The trade-off is that less per-trait curation has been applied at the GWAS calculation step and that results are <i>not</i> peer-reviewed. The UK-biobank trait-note for this trait was: <i>",ukbiobank_notes,"</i>.
+                            <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. It is possible that the automated GWAS analysis note for this trait can be of help: <i>",phesant_notes,"</i> (but you'd probably have to refer to the documentation for the PHESANT tool, which may get complex.).
+                            
+                            </small>")
     
     
     
@@ -334,6 +336,10 @@ shinyServer(function(input, output) {
         SNPs_to_analyze[is.na(SNPs_to_analyze[,col]),col] <- ""
       }
       
+      
+      #round P.VALUE and effect size
+      SNPs_to_analyze[,"effect_size"] <- signif(SNPs_to_analyze[,"effect_size"],2)
+      SNPs_to_analyze[,"P.VALUE"] <- signif(SNPs_to_analyze[,"P.VALUE"],2)
       
       keep<-c("SNP","genotype","Effect/non-effect Allele","personal_score","score_diff"
               ,"effect_size","P.VALUE","Major/minor Allele","minor_allele_freq") 
