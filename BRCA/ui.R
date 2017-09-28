@@ -15,7 +15,7 @@ shinyUI(bootstrapPage(
 	checkboxInput("advanced", label ="Advanced options", value = FALSE),
 	conditionalPanel(
 	  condition = "input.advanced",
-	  checkboxInput("show_non_measured", label ="Show non-measured SNPs", value = FALSE)
+	  checkboxInput("show_non_measured", label ="Show non-imputed SNPs", value = FALSE)
 	),
 	
 	endPanel(),
