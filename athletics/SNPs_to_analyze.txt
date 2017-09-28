@@ -35,7 +35,6 @@ rs12107036	3	effect allele increase risk	1.05	G	A	Osteoarthritis	From arcOGEN 20
 rs8044769	16	effect allele increase risk	1.07	C	T	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.386981	1.07 (1.04–1.10)	3.56E-06	T/C	C	T
 rs10948172	6	effect allele increase risk	1.08	G	A	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.20028	1.08 (1.05–1.12)	6.14E-07	A/G	A	G
 rs236918	11	0.0377		C	G	Iron Biomarker	From Oexle 2011. Reports association to soluble transferrin receptor (sTfR) in serum.	0.26258		NA	G/C	G	C
-rs1800562	6	NA		NA	NA	Iron Biomarker	From Kullo 2010. GWAS, so reasonable strength of study. But a little unclear how strong connecetion to iron is. Recommend not to use.	0.01258		NA	G/A	G	A
 rs964184	11	0.04		G	C	Vitamin E	From Major 2011. GWAS, so reasonable strength. Focus also ok. G-allele (minor) causes higher vitamin E levels)	0.222244		NA	G/C	C	G
 rs2108622	19	0.04		T	C	Vitamin E	From Major 2011. GWAS, so reasonable strength. Focus also ok. T-allele (minor) causes higher vitamin E levels)	0.236821		NA	C/T	C	T
 rs11057830	12	0.04		A	G	Vitamin E	From Major 2011. GWAS, so reasonable strength. Focus also ok. A-allele (minor) causes higher vitamin E levels)	0.139177		NA	G/A	G	A
