@@ -432,3 +432,50 @@ BRCA_table<-write.table(BRCA_table,file="SNPs_to_analyze.txt",col.names=T,row.na
 
 
 #In conclusion -- we added the clinvar - that was probably a good thing. But other than that not much was accomplished. Most of the new ones were'nt imputable, not with this version of 1kgenomes. 
+
+
+
+
+
+
+
+#2017-09-28 get 'normal' genotype one more time
+rm(list=ls())
+BRCA_table_file <-"BRCA/SNPs_to_analyze.txt"
+BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F)
+
+colnames(BRCA_table)
+library(biomaRt)
+snp_mart <- useMart("ENSEMBL_MART_SNP", dataset = "hsapiens_snp",host="www.ensembl.org")
+attributes<-c("refsnp_id","chr_name","chrom_start","allele","minor_allele_freq","minor_allele")
+query<-getBM(attributes, filters = c("snp_filter"), values = unique(BRCA_table[,"SNP"]), mart = snp_mart)
+query<-query[nchar(query[,"chr_name"])%in%1:2,]
+rownames(query)<-query[,"refsnp_id"]
+
+
+BRCA_table[,"allele"]<-query[BRCA_table[,"SNP"],"allele"]
+
+BRCA_table[,"first_allele"]<-sapply(strsplit(BRCA_table[,"allele"],"/"),function(x){x[1]})
+
+
+BRCA_table[BRCA_table[,"first_allele"]%in%"-","first_allele"]<-"D"
+
+w1<-which(nchar(BRCA_table[,"first_allele"])>1)
+# BRCA_table[w1,"allele"] #ok to put I
+BRCA_table[w1,"first_allele"] <- "I"
+
+BRCA_table[,"normal2"]<-paste(BRCA_table[,"first_allele"],BRCA_table[,"first_allele"],sep="/")
+
+BRCA_table[,"normal"] == BRCA_table[,"normal2"]
+
+w2<-which(is.na(BRCA_table[,"normal"]))
+
+BRCA_table[w2,"normal"] <- BRCA_table[w2,"normal2"]
+
+BRCA_table[,"normal"]
+
+
+BRCA_table[,"first_allele"] <- BRCA_table[,"allele"] <- BRCA_table[,"normal2"] <- NULL
+
+
+write.table(BRCA_table,file="BRCA/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")

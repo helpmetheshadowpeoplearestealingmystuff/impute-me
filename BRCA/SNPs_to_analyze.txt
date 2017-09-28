@@ -113,140 +113,140 @@ rs55800493	32332518	13	NA	possibly damaging	deleterious	missense_variant	BRCA2	A
 rs55816687	32336493	13	NA	probably damaging	tolerated	missense_variant	BRCA2	A/A
 rs80357036	43091696	17	NA	possibly damaging	deleterious	missense_variant	BRCA1	C/C
 rs80358698	32339025	13	NA	possibly damaging	tolerated	missense_variant	BRCA2	C/C
-rs80358145	43047642	17	Pathogenic			splice_donor_variant	BRCA1	NA
-rs80357558	43047693	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357055	43049140	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357069	43049164	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
-rs80357284	43049181	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357590	43049192	17	Pathogenic			splice_region_variant	BRCA1	NA
-rs41293463	43051071	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
-rs80358150	43057051	17	Pathogenic			splice_donor_variant	BRCA1	NA
-rs80357925	43057070	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357347	43063347	17	Pathogenic			stop_gained	BRCA1	NA
-rs80187739	43067608	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
-rs80357061	43067616	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
-rs80357623	43067643	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80358086	43070922	17	Pathogenic			splice_region_variant	BRCA1	NA
-rs80359876	43070932	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80356862	43071046	17	Pathogenic	possibly damaging	tolerated	missense_variant	BRCA1	NA
-rs80357641	43071164	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357433	43071225	17	Pathogenic			stop_gained	BRCA1	NA
-rs80356988	43074331	17	Pathogenic	possibly damaging	tolerated	missense_variant	BRCA1	NA
-rs80358063	43076487	17	Pathogenic			splice_donor_variant	BRCA1	NA
-rs80357389	43076488	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
-rs80357854	43076489	17	Pathogenic			splice_region_variant	BRCA1	NA
-rs80357916	43076581	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80358027	43082403	17	Pathogenic			splice_donor_variant	BRCA1	NA
-rs80357977	43082509	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357981	43082518	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357071	43090981	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357787	43091008	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357259	43091012	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357804	43091012	17	Pathogenic			stop_gained	BRCA1	NA
-rs80358070	43091033	17	Pathogenic			splice_acceptor_variant	BRCA1	NA
-rs80358178	43091434	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
-rs80357508	43091463	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357711	43091496	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357021	43091516	17	Pathogenic	benign	tolerated	missense_variant	BRCA1	NA
-rs80357318	43091594	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357254	43091663	17	Pathogenic	benign	tolerated	missense_variant	BRCA1	NA
-rs80357520	43091771	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357868	43091772	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357609	43091827	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357162	43091842	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357980	43091919	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357877	43092040	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357509	43092046	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357808	43092089	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357018	43092131	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357405	43092142	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357945	43092172	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357635	43092302	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357161	43092419	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357601	43092529	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357115	43092597	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357832	43092722	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357971	43092849	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357596	43092849	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357251	43092896	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
-rs80356925	43092928	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357131	43092968	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357607	43093016	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357970	43093056	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357669	43093074	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357524	43093098	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357664	43093119	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357786	43093232	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357583	43093262	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357654	43093320	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357233	43093393	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357688	43093460	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357522	43093570	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357355	43093571	17	Pathogenic	benign	tolerated	missense_variant	BRCA1	NA
-rs80357526	43093575	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80356898	43093844	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357600	43093857	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357662	43093975	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357908	43094021	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357888	43094023	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357010	43094051	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357801	43094084	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357969	43094170	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80359874	43094317	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357612	43094410	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357774	43094513	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357618	43094515	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80359872	43094516	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357292	43094569	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357844	43094602	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357724	43094732	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357321	43094748	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357747	43094833	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357941	43094855	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80358047	43099773	17	Pathogenic			splice_donor_variant	BRCA1	NA
-rs80357887	43099851	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80358011	43104263	17	Pathogenic			splice_acceptor_variant	BRCA1	NA
-rs80358061	43104967	17	Pathogenic			intron_variant	BRCA1	NA
-rs80358163	43104968	17	Pathogenic			intron_variant	BRCA1	NA
-rs80358042	43106455	17	Pathogenic			splice_donor_variant	BRCA1	NA
-rs80357382	43106457	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
-rs80357637	43106525	17	Pathogenic			frameshift_variant	BRCA1	NA
-rs80357498	43115744	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	NA
-rs80357443	43115775	17	Pathogenic			stop_gained	BRCA1	NA
-rs80357477	43047657	17	Likely pathogenic	benign	deleterious	missense_variant	BRCA1	NA
-rs80358087	43070924	17	Likely pathogenic			splice_region_variant	BRCA1	NA
-rs80358089	43067606	17	Conflicting interpretations of pathogenicity			splice_donor_variant	BRCA1	NA
-rs45553935	43057122	17	Uncertain significance	probably damaging	deleterious	missense_variant	BRCA1	NA
-rs62625308	43091924	17	Uncertain significance	benign	deleterious	missense_variant	BRCA1	NA
-rs80357035	43092821	17	Uncertain significance	possibly damaging	tolerated	missense_variant	BRCA1	NA
-rs80356875	43093373	17	Uncertain significance	probably damaging	tolerated	missense_variant	BRCA1	NA
-rs4986847	43092758	17	Likely benign	benign	tolerated	missense_variant	BRCA1	NA
-rs80357629	43045712	17	NA			stop_gained	BRCA1	NA
-rs80357823	43051076	17	NA			frameshift_variant	BRCA1	NA
-rs80357463	43051098	17	NA	probably damaging	deleterious	missense_variant	BRCA1	NA
-rs80357906	43057066	17	NA			frameshift_variant	BRCA1	NA
-rs80357975	43063346	17	NA			frameshift_variant	BRCA1	NA
-rs80358053	43067607	17	NA			splice_donor_variant	BRCA1	NA
-rs80357862	43067649	17	NA			frameshift_variant	BRCA1	NA
-rs273900730	43076579	17	NA			frameshift_variant	BRCA1	NA
-rs80357889	43091670	17	NA			frameshift_variant	BRCA1	NA
-rs80357993	43091760	17	NA			frameshift_variant	BRCA1	NA
-rs80357848	43091767	17	NA			frameshift_variant	BRCA1	NA
-rs80357902	43091883	17	NA			frameshift_variant	BRCA1	NA
-rs80357729	43091904	17	NA			frameshift_variant	BRCA1	NA
-rs80357903	43092197	17	NA			frameshift_variant	BRCA1	NA
-rs80357624	43092276	17	NA			frameshift_variant	BRCA1	NA
-rs80357511	43092338	17	NA			frameshift_variant	BRCA1	NA
-rs80357846	43092526	17	NA			frameshift_variant	BRCA1	NA
-rs80357829	43092541	17	NA			frameshift_variant	BRCA1	NA
-rs80357717	43092824	17	NA			frameshift_variant	BRCA1	NA
-rs80357880	43093426	17	NA			frameshift_variant	BRCA1	NA
-rs80357853	43093570	17	NA			frameshift_variant	BRCA1	NA
-rs273897659	43094141	17	NA			frameshift_variant	BRCA1	NA
-rs80357714	43094151	17	NA			frameshift_variant	BRCA1	NA
-rs80357597	43094191	17	NA			frameshift_variant	BRCA1	NA
-rs80357569	43094515	17	NA			frameshift_variant	BRCA1	NA
-rs80356991	43104136	17	NA	possibly damaging	deleterious	missense_variant	BRCA1	NA
-rs80357604	43104234	17	NA			frameshift_variant	BRCA1	NA
-rs80358158	43106534	17	NA			splice_acceptor_variant	BRCA1	NA
-rs80357783	43124031	17	NA			upstream_gene_variant	BRCA1	NA
+rs80358145	43047642	17	Pathogenic			splice_donor_variant	BRCA1	C/C
+rs80357558	43047693	17	Pathogenic			frameshift_variant	BRCA1	G/G
+rs80357055	43049140	17	Pathogenic			stop_gained	BRCA1	G/G
+rs80357069	43049164	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	C/C
+rs80357284	43049181	17	Pathogenic			stop_gained	BRCA1	C/C
+rs80357590	43049192	17	Pathogenic			splice_region_variant	BRCA1	G/G
+rs41293463	43051071	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	A/A
+rs80358150	43057051	17	Pathogenic			splice_donor_variant	BRCA1	C/C
+rs80357925	43057070	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80357347	43063347	17	Pathogenic			stop_gained	BRCA1	T/T
+rs80187739	43067608	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	C/C
+rs80357061	43067616	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	A/A
+rs80357623	43067643	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80358086	43070922	17	Pathogenic			splice_region_variant	BRCA1	A/A
+rs80359876	43070932	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80356862	43071046	17	Pathogenic	possibly damaging	tolerated	missense_variant	BRCA1	G/G
+rs80357641	43071164	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357433	43071225	17	Pathogenic			stop_gained	BRCA1	G/G
+rs80356988	43074331	17	Pathogenic	possibly damaging	tolerated	missense_variant	BRCA1	C/C
+rs80358063	43076487	17	Pathogenic			splice_donor_variant	BRCA1	C/C
+rs80357389	43076488	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	C/C
+rs80357854	43076489	17	Pathogenic			splice_region_variant	BRCA1	I/I
+rs80357916	43076581	17	Pathogenic			frameshift_variant	BRCA1	G/G
+rs80358027	43082403	17	Pathogenic			splice_donor_variant	BRCA1	C/C
+rs80357977	43082509	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357981	43082518	17	Pathogenic			frameshift_variant	BRCA1	C/C
+rs80357071	43090981	17	Pathogenic			stop_gained	BRCA1	G/G
+rs80357787	43091008	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357259	43091012	17	Pathogenic			stop_gained	BRCA1	C/C
+rs80357804	43091012	17	Pathogenic			stop_gained	BRCA1	I/I
+rs80358070	43091033	17	Pathogenic			splice_acceptor_variant	BRCA1	C/C
+rs80358178	43091434	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	C/C
+rs80357508	43091463	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357711	43091496	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80357021	43091516	17	Pathogenic	benign	tolerated	missense_variant	BRCA1	C/C
+rs80357318	43091594	17	Pathogenic			stop_gained	BRCA1	G/G
+rs80357254	43091663	17	Pathogenic	benign	tolerated	missense_variant	BRCA1	T/T
+rs80357520	43091771	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357868	43091772	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357609	43091827	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357162	43091842	17	Pathogenic			stop_gained	BRCA1	A/A
+rs80357980	43091919	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80357877	43092040	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357509	43092046	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80357808	43092089	17	Pathogenic			frameshift_variant	BRCA1	C/C
+rs80357018	43092131	17	Pathogenic			stop_gained	BRCA1	C/C
+rs80357405	43092142	17	Pathogenic			stop_gained	BRCA1	G/G
+rs80357945	43092172	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357635	43092302	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357161	43092419	17	Pathogenic			stop_gained	BRCA1	C/C
+rs80357601	43092529	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80357115	43092597	17	Pathogenic			stop_gained	BRCA1	A/A
+rs80357832	43092722	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357971	43092849	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357596	43092849	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357251	43092896	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	C/C
+rs80356925	43092928	17	Pathogenic			stop_gained	BRCA1	G/G
+rs80357131	43092968	17	Pathogenic			stop_gained	BRCA1	G/G
+rs80357607	43093016	17	Pathogenic			frameshift_variant	BRCA1	G/G
+rs80357970	43093056	17	Pathogenic			frameshift_variant	BRCA1	G/G
+rs80357669	43093074	17	Pathogenic			frameshift_variant	BRCA1	G/G
+rs80357524	43093098	17	Pathogenic			frameshift_variant	BRCA1	G/G
+rs80357664	43093119	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357786	43093232	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80357583	43093262	17	Pathogenic			frameshift_variant	BRCA1	C/C
+rs80357654	43093320	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357233	43093393	17	Pathogenic			stop_gained	BRCA1	G/G
+rs80357688	43093460	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80357522	43093570	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80357355	43093571	17	Pathogenic	benign	tolerated	missense_variant	BRCA1	T/T
+rs80357526	43093575	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80356898	43093844	17	Pathogenic			stop_gained	BRCA1	G/G
+rs80357600	43093857	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80357662	43093975	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80357908	43094021	17	Pathogenic			frameshift_variant	BRCA1	G/G
+rs80357888	43094023	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357010	43094051	17	Pathogenic			stop_gained	BRCA1	G/G
+rs80357801	43094084	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357969	43094170	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80359874	43094317	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357612	43094410	17	Pathogenic			frameshift_variant	BRCA1	G/G
+rs80357774	43094513	17	Pathogenic			frameshift_variant	BRCA1	C/C
+rs80357618	43094515	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80359872	43094516	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357292	43094569	17	Pathogenic			stop_gained	BRCA1	C/C
+rs80357844	43094602	17	Pathogenic			frameshift_variant	BRCA1	T/T
+rs80357724	43094732	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357321	43094748	17	Pathogenic			stop_gained	BRCA1	A/A
+rs80357747	43094833	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80357941	43094855	17	Pathogenic			frameshift_variant	BRCA1	A/A
+rs80358047	43099773	17	Pathogenic			splice_donor_variant	BRCA1	A/A
+rs80357887	43099851	17	Pathogenic			frameshift_variant	BRCA1	I/I
+rs80358011	43104263	17	Pathogenic			splice_acceptor_variant	BRCA1	T/T
+rs80358061	43104967	17	Pathogenic			intron_variant	BRCA1	A/A
+rs80358163	43104968	17	Pathogenic			intron_variant	BRCA1	T/T
+rs80358042	43106455	17	Pathogenic			splice_donor_variant	BRCA1	C/C
+rs80357382	43106457	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	T/T
+rs80357637	43106525	17	Pathogenic			frameshift_variant	BRCA1	A/A
+rs80357498	43115744	17	Pathogenic	probably damaging	deleterious	missense_variant	BRCA1	C/C
+rs80357443	43115775	17	Pathogenic			stop_gained	BRCA1	C/C
+rs80357477	43047657	17	Likely pathogenic	benign	deleterious	missense_variant	BRCA1	T/T
+rs80358087	43070924	17	Likely pathogenic			splice_region_variant	BRCA1	T/T
+rs80358089	43067606	17	Conflicting interpretations of pathogenicity			splice_donor_variant	BRCA1	A/A
+rs45553935	43057122	17	Uncertain significance	probably damaging	deleterious	missense_variant	BRCA1	A/A
+rs62625308	43091924	17	Uncertain significance	benign	deleterious	missense_variant	BRCA1	G/G
+rs80357035	43092821	17	Uncertain significance	possibly damaging	tolerated	missense_variant	BRCA1	C/C
+rs80356875	43093373	17	Uncertain significance	probably damaging	tolerated	missense_variant	BRCA1	C/C
+rs4986847	43092758	17	Likely benign	benign	tolerated	missense_variant	BRCA1	T/T
+rs80357629	43045712	17	NA			stop_gained	BRCA1	D/D
+rs80357823	43051076	17	NA			frameshift_variant	BRCA1	D/D
+rs80357463	43051098	17	NA	probably damaging	deleterious	missense_variant	BRCA1	A/A
+rs80357906	43057066	17	NA			frameshift_variant	BRCA1	D/D
+rs80357975	43063346	17	NA			frameshift_variant	BRCA1	I/I
+rs80358053	43067607	17	NA			splice_donor_variant	BRCA1	C/C
+rs80357862	43067649	17	NA			frameshift_variant	BRCA1	I/I
+rs273900730	43076579	17	NA			frameshift_variant	BRCA1	I/I
+rs80357889	43091670	17	NA			frameshift_variant	BRCA1	I/I
+rs80357993	43091760	17	NA			frameshift_variant	BRCA1	I/I
+rs80357848	43091767	17	NA			frameshift_variant	BRCA1	D/D
+rs80357902	43091883	17	NA			frameshift_variant	BRCA1	D/D
+rs80357729	43091904	17	NA			frameshift_variant	BRCA1	D/D
+rs80357903	43092197	17	NA			frameshift_variant	BRCA1	I/I
+rs80357624	43092276	17	NA			frameshift_variant	BRCA1	D/D
+rs80357511	43092338	17	NA			frameshift_variant	BRCA1	D/D
+rs80357846	43092526	17	NA			frameshift_variant	BRCA1	T/T
+rs80357829	43092541	17	NA			frameshift_variant	BRCA1	D/D
+rs80357717	43092824	17	NA			frameshift_variant	BRCA1	D/D
+rs80357880	43093426	17	NA			frameshift_variant	BRCA1	D/D
+rs80357853	43093570	17	NA			frameshift_variant	BRCA1	D/D
+rs273897659	43094141	17	NA			frameshift_variant	BRCA1	I/I
+rs80357714	43094151	17	NA			frameshift_variant	BRCA1	D/D
+rs80357597	43094191	17	NA			frameshift_variant	BRCA1	D/D
+rs80357569	43094515	17	NA			frameshift_variant	BRCA1	D/D
+rs80356991	43104136	17	NA	possibly damaging	deleterious	missense_variant	BRCA1	C/C
+rs80357604	43104234	17	NA			frameshift_variant	BRCA1	D/D
+rs80358158	43106534	17	NA			splice_acceptor_variant	BRCA1	C/C
+rs80357783	43124031	17	NA			upstream_gene_variant	BRCA1	D/D

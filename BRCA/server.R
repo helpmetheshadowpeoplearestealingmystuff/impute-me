@@ -28,7 +28,7 @@ shinyServer(function(input, output) {
 		
 		
 		#Get gender
-		gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
+		# gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
 		
 		
 		BRCA_table_file <-"/home/ubuntu/srv/impute-me/BRCA/SNPs_to_analyze.txt"
@@ -49,9 +49,15 @@ shinyServer(function(input, output) {
 		
 		#get genotypes 
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=BRCA_table)
-		
 		BRCA_table[,"Your genotype"]<-genotypes[rownames(BRCA_table),]
 
+		
+		#order so pathogenic is always on top
+		order<-c('Pathogenic','Likely pathogenic','Conflicting interpretations of pathogenicity','Uncertain significance','not provided','Likely benign','Benign')
+		BRCA_table[,"clinvar"]<-factor(BRCA_table[,"clinvar"],levels=order)
+		BRCA_table<-BRCA_table[BRCA_table[,"clinvar"],]
+		
+		
 		BRCA_table<-BRCA_table[,c("SNP","gene","Your genotype","normal","clinvar","polyphen_prediction","sift_prediction","consequence_type_tv")]
   colnames(BRCA_table) <- c("SNP","gene","Your genotype","normal","ClinVar","Polyphen","Sift","Type")
 		
