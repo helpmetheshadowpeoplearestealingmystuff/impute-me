@@ -1,0 +1,257 @@
+chrom_start	chr_name	polyphen_prediction	sift_prediction	consequence_type_tv	clinvar
+NA	input	NA	NA	NA	Pathogenic
+NA	input	NA	NA	NA	Pathogenic
+NA	input	NA	NA	NA	Pathogenic
+32398489	13			stop_gained	Conflicting interpretations of pathogenicity
+43091823	17	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43104173	17			synonymous_variant	NA
+32371035	13	probably damaging	tolerated - low confidence	missense_variant	Conflicting interpretations of pathogenicity
+32379413	13	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32337575	13	probably damaging	deleterious	missense_variant	NA
+32340324	13	possibly damaging	deleterious	missense_variant	NA
+43094464	17	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32356464	13	probably damaging	deleterious	missense_variant	NA
+32363306	13	probably damaging	deleterious	missense_variant	NA
+32344639	13	probably damaging	deleterious	missense_variant	NA
+32337435	13	probably damaging	deleterious	missense_variant	NA
+43093075	17	probably damaging	deleterious	missense_variant	NA
+32338940	13	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32363196	13	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32379412	13	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32379392	13	possibly damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32357836	13	probably damaging	deleterious	missense_variant	Uncertain significance
+43093180	17	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32398388	13	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+43094394	17	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+43071232	17	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32398634	13	possibly damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+43092083	17	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32337870	13	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32363389	13	probably damaging	deleterious	missense_variant	Pathogenic
+32370993	13	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32332442	13	possibly damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+43092021	17	possibly damaging	deleterious	missense_variant	NA
+43092887	17	possibly damaging	deleterious	missense_variant	NA
+43091492	17	possibly damaging	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32332456	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32340702	13	possibly damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+43091931	17	possibly damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32379467	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43092965	17	possibly damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32332601	13	benign	tolerated	missense_variant	Likely benign
+32336452	13	benign	tolerated	missense_variant	NA
+32319289	13	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32316513	13	possibly damaging	deleterious	missense_variant	Likely benign
+32370971	13	probably damaging	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32396088	13	probably damaging		missense_variant	NA
+32375396	13	benign		missense_variant	NA
+32375359	13	benign	tolerated - low confidence	missense_variant	NA
+32336705	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32339995	13	benign	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32340767	13	benign	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32356461	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32398243	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32338731	13	benign	tolerated	missense_variant	Uncertain significance
+32338607	13	benign	tolerated	missense_variant	NA
+43092551	17	benign	tolerated	missense_variant	NA
+32340038	13	benign	tolerated	missense_variant	Uncertain significance
+32340063	13	benign	tolerated	missense_variant	NA
+32337193	13	benign	tolerated	missense_variant	NA
+32355250	13	possibly damaging	deleterious	missense_variant	Uncertain significance
+32340455	13	possibly damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+43070958	17	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43092507	17	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43093010	17	possibly damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32398747	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43079334	17	benign	tolerated	missense_variant	NA
+32339696	13	probably damaging	tolerated	missense_variant	Uncertain significance
+32337834	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32346854	13	benign	tolerated	missense_variant	NA
+32339036	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32337141	13	benign	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32337315	13	possibly damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+43092113	17	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32332992	13	probably damaging	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32333270	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32337158	13	probably damaging	tolerated	missense_variant	Uncertain significance
+32338613	13	probably damaging	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32363351	13	possibly damaging	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32363384	13	benign	tolerated	missense_variant	Uncertain significance
+32340575	13	probably damaging	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32340678	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32338224	13	possibly damaging	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32354870	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43093364	17	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43092758	17	benign	tolerated	missense_variant	Likely benign
+43092412	17	possibly damaging	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43071031	17	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32355172	13	possibly damaging	tolerated	missense_variant	NA
+32319134	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32340059	13	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32340099	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32337410	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32339553	13	benign	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+43094104	17	possibly damaging	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32340677	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32332518	13	possibly damaging	deleterious	missense_variant	NA
+43074406	17	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32336493	13	probably damaging	tolerated	missense_variant	NA
+32380124	13	probably damaging	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32338542	13	benign	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32355003	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43093073	17	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32340486	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32338445	13	benign	tolerated	missense_variant	Uncertain significance
+43091990	17	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32326142	13	benign	deleterious	missense_variant	Conflicting interpretations of pathogenicity
+32338596	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32356593	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32333276	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32332421	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43093525	17	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43091696	17	possibly damaging	deleterious	missense_variant	NA
+43097266	17	benign	tolerated	missense_variant	Benign
+43091708	17	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+43092448	17	benign	tolerated	missense_variant	Uncertain significance
+32336474	13	possibly damaging	deleterious	missense_variant	Uncertain significance
+32339025	13	possibly damaging	tolerated	missense_variant	NA
+32339451	13	benign	tolerated	missense_variant	Uncertain significance
+32341103	13	benign	tolerated	missense_variant	Conflicting interpretations of pathogenicity
+32356430	13	probably damaging	tolerated	missense_variant	Uncertain significance
+32363294	13	benign	tolerated	missense_variant	Uncertain significance
+43045712	17			stop_gained	NA
+43047642	17			splice_donor_variant	Pathogenic
+43047657	17	benign	deleterious	missense_variant	Likely pathogenic
+43047693	17			frameshift_variant	Pathogenic
+43049140	17			stop_gained	Pathogenic
+43049164	17	probably damaging	deleterious	missense_variant	Pathogenic
+43049181	17			stop_gained	Pathogenic
+43049192	17			splice_region_variant	Pathogenic
+43051071	17	probably damaging	deleterious	missense_variant	Pathogenic
+43051076	17			frameshift_variant	NA
+43051098	17	probably damaging	deleterious	missense_variant	NA
+43057051	17			splice_donor_variant	Pathogenic
+43057066	17			frameshift_variant	NA
+43057070	17			frameshift_variant	Pathogenic
+43057122	17	probably damaging	deleterious	missense_variant	Uncertain significance
+43063346	17			frameshift_variant	NA
+43063347	17			stop_gained	Pathogenic
+43067606	17			splice_donor_variant	Conflicting interpretations of pathogenicity
+43067607	17			splice_donor_variant	NA
+43067608	17	probably damaging	deleterious	missense_variant	Pathogenic
+43067616	17	probably damaging	deleterious	missense_variant	Pathogenic
+43067643	17			frameshift_variant	Pathogenic
+43067649	17			frameshift_variant	NA
+43070922	17			splice_region_variant	Pathogenic
+43070924	17			splice_region_variant	Likely pathogenic
+43070932	17			frameshift_variant	Pathogenic
+43071046	17	possibly damaging	tolerated	missense_variant	Pathogenic
+43071164	17			frameshift_variant	Pathogenic
+43071225	17			stop_gained	Pathogenic
+43074331	17	possibly damaging	tolerated	missense_variant	Pathogenic
+43076487	17			splice_donor_variant	Pathogenic
+43076488	17	probably damaging	deleterious	missense_variant	Pathogenic
+43076489	17			splice_region_variant	Pathogenic
+43076579	17			frameshift_variant	NA
+43076581	17			frameshift_variant	Pathogenic
+43082403	17			splice_donor_variant	Pathogenic
+43082509	17			frameshift_variant	Pathogenic
+43082518	17			frameshift_variant	Pathogenic
+43090981	17			stop_gained	Pathogenic
+43091008	17			frameshift_variant	Pathogenic
+43091012	17			stop_gained	Pathogenic
+43091012	17			stop_gained	Pathogenic
+43091033	17			splice_acceptor_variant	Pathogenic
+43091434	17	probably damaging	deleterious	missense_variant	Pathogenic
+43091463	17			frameshift_variant	Pathogenic
+43091496	17			frameshift_variant	Pathogenic
+43091516	17	benign	tolerated	missense_variant	Pathogenic
+43091594	17			stop_gained	Pathogenic
+43091663	17	benign	tolerated	missense_variant	Pathogenic
+43091670	17			frameshift_variant	NA
+43091760	17			frameshift_variant	NA
+43091767	17			frameshift_variant	NA
+43091771	17			frameshift_variant	Pathogenic
+43091772	17			frameshift_variant	Pathogenic
+43091827	17			frameshift_variant	Pathogenic
+43091842	17			stop_gained	Pathogenic
+43091883	17			frameshift_variant	NA
+43091904	17			frameshift_variant	NA
+43091919	17			frameshift_variant	Pathogenic
+43091924	17	benign	deleterious	missense_variant	Uncertain significance
+43092040	17			frameshift_variant	Pathogenic
+43092046	17			frameshift_variant	Pathogenic
+43092089	17			frameshift_variant	Pathogenic
+43092131	17			stop_gained	Pathogenic
+43092142	17			stop_gained	Pathogenic
+43092172	17			frameshift_variant	Pathogenic
+43092197	17			frameshift_variant	NA
+43092276	17			frameshift_variant	NA
+43092302	17			frameshift_variant	Pathogenic
+43092338	17			frameshift_variant	NA
+43092419	17			stop_gained	Pathogenic
+43092526	17			frameshift_variant	NA
+43092529	17			frameshift_variant	Pathogenic
+43092541	17			frameshift_variant	NA
+43092597	17			stop_gained	Pathogenic
+43092722	17			frameshift_variant	Pathogenic
+43092821	17	possibly damaging	tolerated	missense_variant	Uncertain significance
+43092824	17			frameshift_variant	NA
+43092849	17			frameshift_variant	Pathogenic
+43092849	17			frameshift_variant	Pathogenic
+43092896	17	probably damaging	deleterious	missense_variant	Pathogenic
+43092928	17			stop_gained	Pathogenic
+43092968	17			stop_gained	Pathogenic
+43093016	17			frameshift_variant	Pathogenic
+43093056	17			frameshift_variant	Pathogenic
+43093074	17			frameshift_variant	Pathogenic
+43093098	17			frameshift_variant	Pathogenic
+43093119	17			frameshift_variant	Pathogenic
+43093232	17			frameshift_variant	Pathogenic
+43093262	17			frameshift_variant	Pathogenic
+43093320	17			frameshift_variant	Pathogenic
+43093373	17	probably damaging	tolerated	missense_variant	Uncertain significance
+43093393	17			stop_gained	Pathogenic
+43093426	17			frameshift_variant	NA
+43093460	17			frameshift_variant	Pathogenic
+43093570	17			frameshift_variant	NA
+43093570	17			frameshift_variant	Pathogenic
+43093571	17	benign	tolerated	missense_variant	Pathogenic
+43093575	17			frameshift_variant	Pathogenic
+43093844	17			stop_gained	Pathogenic
+43093857	17			frameshift_variant	Pathogenic
+43093975	17			frameshift_variant	Pathogenic
+43094021	17			frameshift_variant	Pathogenic
+43094023	17			frameshift_variant	Pathogenic
+43094051	17			stop_gained	Pathogenic
+43094084	17			frameshift_variant	Pathogenic
+43094141	17			frameshift_variant	NA
+43094151	17			frameshift_variant	NA
+43094170	17			frameshift_variant	Pathogenic
+43094191	17			frameshift_variant	NA
+43094317	17			frameshift_variant	Pathogenic
+43094410	17			frameshift_variant	Pathogenic
+43094513	17			frameshift_variant	Pathogenic
+43094515	17			frameshift_variant	NA
+43094515	17			frameshift_variant	Pathogenic
+43094516	17			frameshift_variant	Pathogenic
+43094569	17			stop_gained	Pathogenic
+43094602	17			frameshift_variant	Pathogenic
+43094732	17			frameshift_variant	Pathogenic
+43094748	17			stop_gained	Pathogenic
+43094833	17			frameshift_variant	Pathogenic
+43094855	17			frameshift_variant	Pathogenic
+43099773	17			splice_donor_variant	Pathogenic
+43099851	17			frameshift_variant	Pathogenic
+43104136	17	possibly damaging	deleterious	missense_variant	NA
+43104234	17			frameshift_variant	NA
+43104263	17			splice_acceptor_variant	Pathogenic
+43104967	17			intron_variant	Pathogenic
+43104968	17			intron_variant	Pathogenic
+43106455	17			splice_donor_variant	Pathogenic
+43106457	17	probably damaging	deleterious	missense_variant	Pathogenic
+43106525	17			frameshift_variant	Pathogenic
+43106534	17			splice_acceptor_variant	NA
+43115744	17	probably damaging	deleterious	missense_variant	Pathogenic
+43115775	17			stop_gained	Pathogenic
+43124031	17			upstream_gene_variant	NA
