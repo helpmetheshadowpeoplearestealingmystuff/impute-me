@@ -562,28 +562,35 @@ save(gwas_snps,file="ukbiobank/2017-09-28_all_ukbiobank_snps.rdata")
 
 
 #then create an overview trait list
-traits<-data.frame(row.names=unique(data[,"study_id"]), trait=unique(data[,"DISEASE.TRAIT"]),PMID="25826379",Author="UK biobank",stringsAsFactors=F)
+library(openxlsx)
+phenosummary_path<-"ukbiobank/phenosummary_final_11898_18597.xlsx"
+phenosummary<-read.xlsx(phenosummary_path)
+rownames(phenosummary) <- phenosummary[,"Field.code"]
 
 
-traits<-traits[order(traits[,"trait"]),]
 
-for(trait in rownames(traits)){
-  traitName<-traits[trait,"trait"]	
-  PMID<-traits[trait,"PMID"]	
-  Author<-traits[trait,"Author"]	
-  if(sum(traits[,"trait"]%in%traitName)>1){
-    traits[trait ,"niceName"] <- paste0(traitName," [PMID ",PMID,"]")
-  }else{
-    traits[trait ,"niceName"] <- traitName
-  }
-}
+traits<-data.frame(row.names=unique(data[,"study_id"]), study_id=unique(data[,"study_id"]), trait=unique(data[,"DISEASE.TRAIT"]),niceName=unique(data[,"DISEASE.TRAIT"]),PMID="25826379",Author="UK biobank",stringsAsFactors=F)
 
+all(sub("_ukbiobank","",rownames(traits))%in%rownames(phenosummary))
+
+traits<-cbind(traits,phenosummary[sub("_ukbiobank","",rownames(traits)),c(1,3:11)])
+
+
+traits<-traits[order(factor(traits[,"Field.code"],levels=phenosummary[,"Field.code"])),]
+
+
+#Ad-hoc define them for now
+traits[,"diagnosis"] <- traits[,"treatment"] <- traits[,"self_rep"] <- FALSE
+traits[grep("Diagnoses",traits[,"trait"]),"diagnosis"]<-TRUE
+traits[grep("Treatment/medication",traits[,"trait"]),"treatment"] <- TRUE
+traits[grep("Non-cancer illness code, self-reported",traits[,"trait"]),"self_rep"] <- TRUE
+traits[,"other"] <- apply(traits[,c("diagnosis","treatment","self_rep")],1,sum)==0
+# traits[,c("diagnosis","treatment","self_rep","other")]
 save(traits, file="ukbiobank/2017-09-28_trait_overoverview.rdata")
 
 
-
-
-
+#For category sorting (later)
+# write.xlsx(traits,file="ukbiobank/temp.xlsx")
 
 
 
