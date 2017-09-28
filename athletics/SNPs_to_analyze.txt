@@ -1,159 +1,157 @@
-SNP	chr_name	Beta	OR	effect_allele	non_effect_allele	Domain	Comment	minor_allele_freq	Combined.all.OR	Combined.all.P	ensembl_alleles	major_allele	minor_allele	table_to_include
-rs1815739	11	NA		T	C		This C variant of this SNP breaks the ACTN3. The T variant have been found to be associated with better sprint performance (PMID 12879365). The evidence supporting this is solid, with numerous meta-analysis performed - all with the same result. However, while it is a true finding (significance) it is also recommended to understand the limited magnitude of the SNP (effect size). The odds ratio for each T is 1.3, which is the added probability of being an elite athlete. This means that even in the olympic sprint it is likely that C/C individuals are participating (although to my knowledge, no one has ever made this study).				C/T			1
-rs4646994	17	NA		NA	NA		ACE - this variant is found in one study to potentially distinguish between capability in power-sports vs endurance-sports (PMID 25943990). However it is also mentioned in several studies of other traits such as hypertension and alzheimers. The evidence behind it's effect remain unclear. Insertations (I) are the ones supposed to be associated with endurance, and deletions (D) with power-sports. Note that the imputation often fails for this SNP, meaning that many users will see a 'blank' result.				I/D			1
-rs699	1	NA		C	T		AGT - the C allele of this SNP has been found to associate with ability in power-sports (PMID 20029521). The support for this SNP is slightly lower than the ACTN3 SNP, but it nonetheless seems to be a correct finding. The same comments on limited odds-ratios still apply.				C/T			1
-rs1800012	17	NA		NA	NA		COL1A1 - the T allele was found to be associated with protection against injuries (acute soft tissue ruptures.). PMID 19193665.				G/T			NA
-rs9939609	16	NA		A	T		FTO - the A allele for this SNP is associated with obesity. Note that the evidence for this is stronger than remaining findings, and the finding has been replicated many times. The effect size however remains small.				A/T			NA
-rs7221412	17	NA		G	A		TRNAS6 - the G allele was found to be associated with later timing in a study of circadian rythm (PMID 23034908)				A/G			NA
-														
-														
-														
-														
-SNP	chr_name	Beta	OR	effect_allele	non_effect_allele	Domain	Comment	minor_allele_freq	Combined.all.OR	Combined.all.P	ensembl_alleles	major_allele	minor_allele	
-rs1800012	17	effect allele increase risk	15	A	C	ACL rupture	"COL1A1 - the T allele was found to be associated with injuries. A is associated with higher risk. (acute soft tissue ruptures.). PMID 19193665. COL1A1 - the T allele was found to be associated with injuries. A is associated with higher risk. (acute soft tissue ruptures.). PMID 19193665. Note that OR is probably due to a winner's curse effect in the reporting paper; few SNPs have such strong effect."	0.091054	NA	NA	C/A	C	A	
-rs13946	9	effect allele increase risk	6.6	C	T	ACL rupture	COL5A1 gene SNPs. From Posthumus 2009 PMID 19654427. Very weak evidence behind this one, but used in Goodlin 2015. For example it is only significant in female participants in the study. The C is the risk-allele in this case	0.248602	NA	NA	C/T	T	C	
-rs12722	9	NA	NA	NA	NA	ACL rupture	COL5A1 gene SNPs. From Posthumus 2009 PMID 19654427. Very weak evidence behind this one, but used in Goodlin 2015. This SNP does not seem to have any effect, so should not be used for any analysis.	0.349441	NA	NA	C/T	NA	NA	
-rs240736	6	NA	NA	NA	NA	ACL rupture	COL12A1 gene SNPs. From PMID 19443461 (posthumus 2010a). They call it BsrI. Sligthly weak evidence behind this one, but used in Goodlin 2015. This SNP does not seem to have any effect, so should not be used for any analysis.	0.264976	NA	NA	A/G	A	G	
-rs970547	6	effect allele increase risk	2.4	T	C	ACL rupture	COL12A1 gene SNPs. From PMID 19443461 (posthumus 2010a). They call it AluI. Sligthly weak evidence behind this one and only in women, but used in Goodlin 2015. The find that the A-allele (major) is the risk genotype, corresponding to TT in modern notation.	0.288139	NA	NA	C/T	T	C	
-rs2276109	11	effect allele increase risk	Not reported	T	C	ACL rupture	MMP12 gene SNP. From Posthumus 2011. Same level evidence as the COL12A1 and COL5A1. They find that AA genotype (major) is over-represented in NON, corresponding to T being risk. Used in Goodlin 2015.	0.055511	2.56	NA	T/C	T	C	
-rs679620	11	effect allele increase risk	2.5	C	T	Achilles tendon	MMP3 gene SNPs. From Raleigh 2009. Same level evidence as above but for Achilles Tendon.	0.347843	2.5	NA	T/C	T	C	
-rs591058	11	effect allele increase risk	2.3	C	T	Achilles tendon	MMP3 gene SNPs. From Raleigh 2009. Same level evidence as above but for Achilles Tendon.	0.355232	2.3	NA	T/C	T	C	
-rs650108	11	effect allele increase risk	4.9	A	G	Achilles tendon	MMP3 gene SNPs. From Raleigh 2009. Same level evidence as above but for Achilles Tendon.	0.442692	NA	NA	G/A	G	A	
-rs3196378	9	effect allele increase risk	2.38	A	C	Achilles tendon	COL5A1 SNP. From September 2009 (sic). Note that they also report the rs12722 as Achilles tendon effect. LD is 0.722 R^2 between the two. Goodlin et al also use PMID 16430677 as support, but not downloaded.	0.32528	NA	NA	C/A	A	C	
-rs143383	20	NA		NA	NA	Achilles tendon	GDF5 SNP. From Posthumus 2010b, PMID 20360039. The usual weak level of evidence from candidate genes. Note paper has TT as risk but different in modern notation. Also poorly proxy SNP tagged. Should not use this in analysis.	0.453474	NA	NA	G/A	A	G	
-rs3834129	2	NA		NA	NA	Achilles tendon	CASP8 SNPs. From Nell 2012. The usual weak level of evidence from candidate gene studies. Not imputable, shouldnt be analyzed.	0.388978		NA	I/D	NA	NA	
-rs1045485	2	effect allele increase risk	1.69	G	C	Achilles tendon	CASP8 SNPs. From Nell 2012. The usual weak level of evidence from candidate gene studies. G is risk allele.	0.052716		NA	G/C	G	C	
-rs3018362	11	effect allele increase risk	1.49	A	G	Stress fracture	RANK gene, from PMID 25464125.	0.38				G	A	
-rs1021188	13	effect allele increase risk	1.25	C	T	Stress fracture	RANKL gene, from PMID 25464125.	0.22				T	C	
-rs3751143	12	effect allele increase risk	Not reported	C	A	Stress fracture	P2X7R gene, from PMID 26825304. Glu496Ala-loss of function) was associated with stress fracture injury.	0.21				A	C	
-rs1718119	12	effect allele increase risk	Not reported	G	A	Stress fracture	P2X7R gene, from PMID 26825304. Ala348Thr-gain of function was associated with a reduced occurrence of stress fracture	0.32				G	A	
-rs6976	3	effect allele increase risk	1.09	T	C	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.304712	1.09 (1.06–1.12)	6.56E-09	C/T	C	T	
-rs11177	3	effect allele increase risk	1.09	A	G	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.311901	1.09 (1.06–1.12)	5.13E-09	G/A	G	A	
-rs4836732	9	effect allele increase risk	1.04	C	T	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.491414	1.04 (1.01–1.07)	0.0156	C/T	T	C	
-rs9350591	6	effect allele increase risk	1.09	T	C	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.113419	1.09 (1.04–1.13)	0.000278	C/T	C	T	
-rs10492367	12	effect allele increase risk	1.06	T	G	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.066893	1.06 (1.03–1.10)	0.000902	G/T	G	T	
-rs835487	12	effect allele increase risk	1.05	G	A	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.452276	1.05 (1.02–1.08)	0.000622	A/G	A	G	
-rs12107036	3	effect allele increase risk	1.05	G	A	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.392971	1.05 (1.02–1.08)	0.00215	A/G	A	G	
-rs8044769	16	effect allele increase risk	1.07	C	T	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.386981	1.07 (1.04–1.10)	3.56E-06	T/C	C	T	
-rs10948172	6	effect allele increase risk	1.08	G	A	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.20028	1.08 (1.05–1.12)	6.14E-07	A/G	A	G	
-rs236918	11	0.0377		C	G	Iron Biomarker	From Oexle 2011. Reports association to soluble transferrin receptor (sTfR) in serum.	0.26258		NA	G/C	G	C	
-rs1800562	6	NA		NA	NA	Iron Biomarker	From Kullo 2010. GWAS, so reasonable strength of study. But a little unclear how strong connecetion to iron is. Recommend not to use.	0.01258		NA	G/A	G	A	
-rs964184	11	0.04		G	C	Vitamin E	From Major 2011. GWAS, so reasonable strength. Focus also ok. G-allele (minor) causes higher vitamin E levels)	0.222244		NA	G/C	C	G	
-rs2108622	19	0.04		T	C	Vitamin E	From Major 2011. GWAS, so reasonable strength. Focus also ok. T-allele (minor) causes higher vitamin E levels)	0.236821		NA	C/T	C	T	
-rs11057830	12	0.04		A	G	Vitamin E	From Major 2011. GWAS, so reasonable strength. Focus also ok. A-allele (minor) causes higher vitamin E levels)	0.139177		NA	G/A	G	A	
-rs2282679	4	0.212187604		G	T	Vitamin D	From Wang 2010b. GWAS in lancet, so definetly ok. Probably have to assume that minor allele is decreasing-allele. It seems the paper completely forgot to mention direction of effect.	0.202077	1.63	NA	T/G	T	G	
-rs12785878	11	0.08278537		G	T	Vitamin D	From Wang 2010b. GWAS in lancet, so definetly ok. Probably have to assume that minor allele is decreasing-allele. It seems the paper completely forgot to mention direction of effect.Note this is also mentioned as rs7944926 in the paper, its a perfect proxy.	0.354034	1.21	NA	G/T	T	G	
-rs10741657	11	0.08278537		A	G	Vitamin D	From Wang 2010b. GWAS in lancet, so definetly ok. Probably have to assume that minor allele is decreasing-allele. It seems the paper completely forgot to mention direction of effect.	0.307708	1.21	NA	A/G	G	A	
-rs4072037	1	-0.01		C	T	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.371206	NA	NA	C/T	C	T	
-rs13146355	4	-0.005		G	A	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.227636	NA	NA	G/A	A	G	
-rs11144134	9	-0.011		T	C	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.033946	NA	NA	T/C	T	C	
-rs3925584	11	-0.006		C	T	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.288938	NA	NA	T/C	T	C	
-rs7965584	12	-0.007		G	A	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.163139	NA	NA	A/G	NA	NA	
-rs7197653	16	-0.005		C	G	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.011382	NA	NA	G/C	G	C	
-rs2592394	2	-0.004		A	G	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.299121	NA	NA	A/G	G	A	
-rs448378	3	-0.004		G	A	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.416534	NA	NA	G/A	G	A	
-rs4561213	11	-0.004		G	T	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.441893	NA	NA	T/G	G	T	
-rs2298585	11	71.8		C	T	Vitamin B	From Lin 2012. Finds SNPs for Vitamin B.	0.044928	NA	NA	C/T	C	T	
-rs41281112	13	83.6		T	C	Vitamin B	From Lin 2012. Finds SNPs for Vitamin B.	0.021965	NA	NA	C/T	C	T	
-rs3760776	19	49.78		G	A	Vitamin B	From Lin 2012. Finds SNPs for Vitamin B.	0.248403	NA	NA	G/A	G	A	
-rs10515552	5	43.93		T	C	Vitamin B	From Lin 2012. Finds SNPs for Vitamin B.	0.104633	NA	NA	T/C	T	C	
-rs7422339	2	0.05		A	C	Homocysteine	From Lange 2010. Finds Homocysteine level associated SNPs.	NA	NA	NA	NA	NA	NA	
-rs4245791	2	effect allele increase level		C	T	Phytosterols	From Teupser 2010. Finds Phytosterols level associated SNPs.	0.158946	NA	NA	C/T	T	C	
-rs41360247	2	effect allele increase level		T	C	Phytosterols	From Teupser 2010. Finds Phytosterols level associated SNPs.	0.075879	NA	NA	T/C	T	C	
-rs657152	9	effect allele increase level		A	C	Phytosterols	From Teupser 2010. Finds Phytosterols level associated SNPs.	NA	NA	NA	NA	C	A	
-rs2120461	1	0.048		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.244409	NA	NA	C/T	C	T	
-rs7521902	1	-0.051		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.275958	NA	NA	C/A	C	A	
-rs6426749	1	0.108		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.214657	NA	NA	G/C	G	C	
-rs12137389	1	-0.127		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.008187	NA	NA	C/T	C	T	
-rs17482952	1	0.076		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.071885	NA	NA	A/G	A	G	
-rs12407028	1	0.048		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.273163	NA	NA	T/C	T	C	
-rs11809524	1	0.055		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.255192	NA	NA	C/T	T	C	
-rs479336	1	-0.05		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.394768	NA	NA	T/G	T	G	
-rs12120297	1	0.042		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.183906	NA	NA	T/C	T	C	
-rs13413210	2	-0.059		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.083267	NA	NA	A/C	A	C	
-rs7584262	2	0.053		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.221046	NA	NA	C/T	C	T	
-rs4233949	2	0.032		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.257188	NA	NA	C/G	G	C	
-rs730402	2	0.07		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.49381	NA	NA	G/A	A	G	
-rs17040773	2	0.045		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.145767	NA	NA	A/C	A	C	
-rs1878526	2	0.013		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.277556	NA	NA	G/A	G	A	
-rs1346004	2	-0.052		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.327476	NA	NA	G/A	G	A	
-rs11675051	2	0.049		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.188498	NA	NA	G/A	G	A	
-rs12995369	2	0.052		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.436102	NA	NA	G/A	A	G	
-rs6436440	2	0.046		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.48143	NA	NA	G/A	A	G	
-rs2291296	3	-0.007		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.111222	NA	NA	G/A	G	A	
-rs7427438	3	-0.047		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.296725	NA	NA	C/A	C	A	
-rs430727	3	-0.074		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.482228	NA	NA	T/C	T	C	
-rs1026364	3	0.041		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.352436	NA	NA	G/T	G	T	
-rs344081	3	0.112		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.245208	NA	NA	T/C	T	C	
-rs3755955	4	-0.061		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.16873	NA	NA	G/A	G	A	
-rs6532023	4	0.051		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.323682	NA	NA	T/G	G	T	
-rs1366594	5	0.092		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.39357	NA	NA	A/C	C	A	
-rs4957742	5	-0.044		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.277955	NA	NA	A/G	A	G	
-rs9466056	6	-0.048		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.402157	NA	NA	A/G	A	G	
-rs11755164	6	-0.012		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.366014	NA	NA	T/C	C	T	
-rs13204965	6	0.069		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.121406	NA	NA	A/C	A	C	
-rs4869742	6	-0.068		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.427915	NA	NA	C/T	C	T	
-rs7751941	6	-0.048		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.147165	NA	NA	G/A	G	A	
-rs7788807	7	0.043		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.071286	NA	NA	T/C	NA	NA	
-rs2008425	7	-0.127		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.028554	NA	NA	T/G	G	T	
-rs10226308	7	-0.029		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.105831	NA	NA	A/G	A	G	
-rs6959212	7	-0.03		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.356829	NA	NA	T/C	NA	NA	
-rs2282930	7	-0.057		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.312899	NA	NA	G/A	A	G	
-rs4727338	7	0.081		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.221046	NA	NA	G/C	C	G	
-rs13245690	7	0.032		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.255391	NA	NA	A/G	A	G	
-rs3801387	7	-0.071		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.259984	NA	NA	A/G	A	G	
-rs7812088	7	0.061		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.053714	NA	NA	G/A	G	A	
-rs1670346	7	-0.042		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.314896	NA	NA	A/G	G	A	
-rs7017914	8	0.053		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.252396	NA	NA	A/G	G	A	
-rs13272568	8	-0.039		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.364018	NA	NA	C/A	C	A	
-rs2062377	8	-0.063		A	T	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.28115	NA	NA	T/A	T	A	
-rs4240467	9	-0.043		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.245008	NA	NA	C/G	G	C	
-rs7851693	9	0.047		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.338458	NA	NA	C/G	G	C	
-rs3905706	10	0.005		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.390375	NA	NA	C/T	C	T	
-rs1373004	10	-0.065		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.273562	NA	NA	T/G	G	T	
-rs7071206	10	-0.02		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.275559	NA	NA	T/C	T	C	
-rs2784767	10	0.052		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.433906	NA	NA	T/C	C	T	
-rs7084921	10	0.045		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.369409	NA	NA	C/T	C	T	
-rs11602954	11	0.034		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.090256	NA	NA	G/A	G	A	
-rs7108738	11	-0.093		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.221246	NA	NA	T/G	T	G	
-rs10835187	11	-0.028		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.36242	NA	NA	C/T	T	C	
-rs163879	11	-0.042		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.443291	NA	NA	C/T	T	C	
-rs7932354	11	0.05		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.455871	NA	NA	T/C	C	T	
-rs600231	11	-0.051		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.498403	NA	NA	A/G	A	G	
-rs3736228	11	-0.054		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.116014	NA	NA	C/T	C	T	
-rs2887571	12	-0.037		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.216853	NA	NA	A/G	A	G	
-rs11048046	12	-0.148		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.017772	NA	NA	G/A	G	A	
-rs7953528	12	0.058		A	T	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.128994	NA	NA	T/A	T	A	
-rs12821008	12	0.032		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.308706	NA	NA	C/T	NA	NA	
-rs2016266	12	-0.045		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.344449	NA	NA	G/A	A	G	
-rs736825	12	0.036		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.369409	NA	NA	C/G	C	G	
-rs1053051	12	-0.036		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.334065	NA	NA	T/C	T	C	
-rs9533090	13	-0.054		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.283746	NA	NA	C/T	T	C	
-rs7326472	13	-0.055		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.126797	NA	NA	A/G	A	G	
-rs1286083	14	-0.059		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.235423	NA	NA	T/C	T	C	
-rs11623869	14	-0.041		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.245208	NA	NA	G/T	G	T	
-rs2118784	15	-0.05		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.378994	NA	NA	C/A	C	A	
-rs9921222	16	-0.043		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.432907	NA	NA	C/T	T	C	
-rs13336428	16	-0.043		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.382188	NA	NA	G/A	G	A	
-rs4985155	16	-0.031		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.417732	NA	NA	A/G	A	G	
-rs1564981	16	-0.025		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.281949	NA	NA	G/A	G	A	
-rs1566045	16	-0.074		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.115216	NA	NA	T/C	T	C	
-rs10048146	16	0.056		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.160743	NA	NA	A/G	NA	NA	
-rs4790881	17	0.051		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.302117	NA	NA	C/A	A	C	
-rs4792909	17	0.035		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.491414	NA	NA	G/T	T	G	
-rs227584	17	-0.06		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.423522	NA	NA	A/C	A	C	
-rs1864325	17	-0.04		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.086062	NA	NA	C/T	C	T	
-rs7226305	17	-0.017		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.29992	NA	NA	A/C	A	C	
-rs7217932	17	0.045		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.476637	NA	NA	A/G	A	G	
-rs4796995	18	0.04		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.429712	NA	NA	A/G	A	G	
-rs884205	18	-0.042		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.161342	NA	NA	A/C	C	A	
-rs7257450	19	0.014		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.48742	NA	NA	G/A	A	G	
-rs10416218	19	-0.042		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.469449	NA	NA	T/C	T	C	
-rs3790160	20	0.043		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.384784	NA	NA	T/C	C	T	
-rs4817775	21	0.023		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.497204	NA	NA	A/C	A	C	
-rs4820539	22	0.038		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.471446	NA	NA	A/G	G	A	
-rs5934507	X	-0.031		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.259338	NA	NA	A/G	A	G	
-rs5926033	X	0.037		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.311258	NA	NA	T/C	T	C	
-rs5952638	X	0.056		A	T	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.246623	NA	NA	A/T	A	T	
-rs4492531	X	-0.066		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.256954	NA	NA	A/G	A	G	
-rs964181	X	0.036		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.451126	NA	NA	T/C	C	T	
+SNP	chr_name	Beta	OR	effect_allele	non_effect_allele	Domain	Comment	minor_allele_freq	Combined.all.OR	Combined.all.P	ensembl_alleles	major_allele	minor_allele
+rs1815739	11	NA		T	C	Table1	This C variant of this SNP breaks the ACTN3. The T variant have been found to be associated with better sprint performance (PMID 12879365). The evidence supporting this is solid, with numerous meta-analysis performed - all with the same result. However, while it is a true finding (significance) it is also recommended to understand the limited magnitude of the SNP (effect size). The odds ratio for each T is 1.3, which is the added probability of being an elite athlete. This means that even in the olympic sprint it is likely that C/C individuals are participating (although to my knowledge, no one has ever made this study).	0.4			C/T	C	T
+rs4646994	17	NA		NA	NA	Table1	ACE - this variant is found in one study to potentially distinguish between capability in power-sports vs endurance-sports (PMID 25943990). However it is also mentioned in several studies of other traits such as hypertension and alzheimers. The evidence behind it's effect remain unclear. Insertations (I) are the ones supposed to be associated with endurance, and deletions (D) with power-sports. Note that the imputation often fails for this SNP, meaning that many users will see a 'blank' result.				I/D		
+rs1799752	17	NA		NA	NA	proxy_for_ace							
+rs4340	17	NA		NA	NA	proxy_for_ace							
+rs13447447	17	NA		NA	NA	proxy_for_ace							
+rs699	1	NA		C	T	Table1	AGT - the C allele of this SNP has been found to associate with ability in power-sports (PMID 20029521). The support for this SNP is slightly lower than the ACTN3 SNP, but it nonetheless seems to be a correct finding. The same comments on limited odds-ratios still apply.				C/T		
+rs1800012	17	NA		NA	NA	not_relevant	COL1A1 - the T allele was found to be associated with protection against injuries (acute soft tissue ruptures.). PMID 19193665.				G/T		
+rs9939609	16	NA		A	T	not_relevant	FTO - the A allele for this SNP is associated with obesity. Note that the evidence for this is stronger than remaining findings, and the finding has been replicated many times. The effect size however remains small.				A/T		
+rs7221412	17	NA		G	A	not_relevant	TRNAS6 - the G allele was found to be associated with later timing in a study of circadian rythm (PMID 23034908)				A/G		
+rs1800012	17	effect allele increase risk	15	A	C	ACL rupture	"COL1A1 - the T allele was found to be associated with injuries. A is associated with higher risk. (acute soft tissue ruptures.). PMID 19193665. COL1A1 - the T allele was found to be associated with injuries. A is associated with higher risk. (acute soft tissue ruptures.). PMID 19193665. Note that OR is probably due to a winner's curse effect in the reporting paper; few SNPs have such strong effect."	0.091054	NA	NA	C/A	C	A
+rs13946	9	effect allele increase risk	6.6	C	T	ACL rupture	COL5A1 gene SNPs. From Posthumus 2009 PMID 19654427. Very weak evidence behind this one, but used in Goodlin 2015. For example it is only significant in female participants in the study. The C is the risk-allele in this case	0.248602	NA	NA	C/T	T	C
+rs12722	9	NA	NA	NA	NA	ACL rupture	COL5A1 gene SNPs. From Posthumus 2009 PMID 19654427. Very weak evidence behind this one, but used in Goodlin 2015. This SNP does not seem to have any effect, so should not be used for any analysis.	0.349441	NA	NA	C/T	NA	NA
+rs240736	6	NA	NA	NA	NA	ACL rupture	COL12A1 gene SNPs. From PMID 19443461 (posthumus 2010a). They call it BsrI. Sligthly weak evidence behind this one, but used in Goodlin 2015. This SNP does not seem to have any effect, so should not be used for any analysis.	0.264976	NA	NA	A/G	A	G
+rs970547	6	effect allele increase risk	2.4	T	C	ACL rupture	COL12A1 gene SNPs. From PMID 19443461 (posthumus 2010a). They call it AluI. Sligthly weak evidence behind this one and only in women, but used in Goodlin 2015. The find that the A-allele (major) is the risk genotype, corresponding to TT in modern notation.	0.288139	NA	NA	C/T	T	C
+rs2276109	11	effect allele increase risk	Not reported	T	C	ACL rupture	MMP12 gene SNP. From Posthumus 2011. Same level evidence as the COL12A1 and COL5A1. They find that AA genotype (major) is over-represented in NON, corresponding to T being risk. Used in Goodlin 2015.	0.055511	2.56	NA	T/C	T	C
+rs679620	11	effect allele increase risk	2.5	C	T	Achilles tendon	MMP3 gene SNPs. From Raleigh 2009. Same level evidence as above but for Achilles Tendon.	0.347843	2.5	NA	T/C	T	C
+rs591058	11	effect allele increase risk	2.3	C	T	Achilles tendon	MMP3 gene SNPs. From Raleigh 2009. Same level evidence as above but for Achilles Tendon.	0.355232	2.3	NA	T/C	T	C
+rs650108	11	effect allele increase risk	4.9	A	G	Achilles tendon	MMP3 gene SNPs. From Raleigh 2009. Same level evidence as above but for Achilles Tendon.	0.442692	NA	NA	G/A	G	A
+rs3196378	9	effect allele increase risk	2.38	A	C	Achilles tendon	COL5A1 SNP. From September 2009 (sic). Note that they also report the rs12722 as Achilles tendon effect. LD is 0.722 R^2 between the two. Goodlin et al also use PMID 16430677 as support, but not downloaded.	0.32528	NA	NA	C/A	A	C
+rs143383	20	NA		NA	NA	Achilles tendon	GDF5 SNP. From Posthumus 2010b, PMID 20360039. The usual weak level of evidence from candidate genes. Note paper has TT as risk but different in modern notation. Also poorly proxy SNP tagged. Should not use this in analysis.	0.453474	NA	NA	G/A	A	G
+rs3834129	2	NA		NA	NA	Achilles tendon	CASP8 SNPs. From Nell 2012. The usual weak level of evidence from candidate gene studies. Not imputable, shouldnt be analyzed.	0.388978		NA	I/D	NA	NA
+rs1045485	2	effect allele increase risk	1.69	G	C	Achilles tendon	CASP8 SNPs. From Nell 2012. The usual weak level of evidence from candidate gene studies. G is risk allele.	0.052716		NA	G/C	G	C
+rs3018362	11	effect allele increase risk	1.49	A	G	Stress fracture	RANK gene, from PMID 25464125.	0.38				G	A
+rs1021188	13	effect allele increase risk	1.25	C	T	Stress fracture	RANKL gene, from PMID 25464125.	0.22				T	C
+rs3751143	12	effect allele increase risk	Not reported	C	A	Stress fracture	P2X7R gene, from PMID 26825304. Glu496Ala-loss of function) was associated with stress fracture injury.	0.21				A	C
+rs1718119	12	effect allele increase risk	Not reported	G	A	Stress fracture	P2X7R gene, from PMID 26825304. Ala348Thr-gain of function was associated with a reduced occurrence of stress fracture	0.32				G	A
+rs6976	3	effect allele increase risk	1.09	T	C	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.304712	1.09 (1.06–1.12)	6.56E-09	C/T	C	T
+rs11177	3	effect allele increase risk	1.09	A	G	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.311901	1.09 (1.06–1.12)	5.13E-09	G/A	G	A
+rs4836732	9	effect allele increase risk	1.04	C	T	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.491414	1.04 (1.01–1.07)	0.0156	C/T	T	C
+rs9350591	6	effect allele increase risk	1.09	T	C	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.113419	1.09 (1.04–1.13)	0.000278	C/T	C	T
+rs10492367	12	effect allele increase risk	1.06	T	G	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.066893	1.06 (1.03–1.10)	0.000902	G/T	G	T
+rs835487	12	effect allele increase risk	1.05	G	A	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.452276	1.05 (1.02–1.08)	0.000622	A/G	A	G
+rs12107036	3	effect allele increase risk	1.05	G	A	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.392971	1.05 (1.02–1.08)	0.00215	A/G	A	G
+rs8044769	16	effect allele increase risk	1.07	C	T	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.386981	1.07 (1.04–1.10)	3.56E-06	T/C	C	T
+rs10948172	6	effect allele increase risk	1.08	G	A	Osteoarthritis	From arcOGEN 2012. This source is a well-powered GWAS. These SNPs are well-supported for the osteoarthritis phenotype	0.20028	1.08 (1.05–1.12)	6.14E-07	A/G	A	G
+rs236918	11	0.0377		C	G	Iron Biomarker	From Oexle 2011. Reports association to soluble transferrin receptor (sTfR) in serum.	0.26258		NA	G/C	G	C
+rs1800562	6	NA		NA	NA	Iron Biomarker	From Kullo 2010. GWAS, so reasonable strength of study. But a little unclear how strong connecetion to iron is. Recommend not to use.	0.01258		NA	G/A	G	A
+rs964184	11	0.04		G	C	Vitamin E	From Major 2011. GWAS, so reasonable strength. Focus also ok. G-allele (minor) causes higher vitamin E levels)	0.222244		NA	G/C	C	G
+rs2108622	19	0.04		T	C	Vitamin E	From Major 2011. GWAS, so reasonable strength. Focus also ok. T-allele (minor) causes higher vitamin E levels)	0.236821		NA	C/T	C	T
+rs11057830	12	0.04		A	G	Vitamin E	From Major 2011. GWAS, so reasonable strength. Focus also ok. A-allele (minor) causes higher vitamin E levels)	0.139177		NA	G/A	G	A
+rs2282679	4	0.212187604		G	T	Vitamin D	From Wang 2010b. GWAS in lancet, so definetly ok. Probably have to assume that minor allele is decreasing-allele. It seems the paper completely forgot to mention direction of effect.	0.202077	1.63	NA	T/G	T	G
+rs12785878	11	0.08278537		G	T	Vitamin D	From Wang 2010b. GWAS in lancet, so definetly ok. Probably have to assume that minor allele is decreasing-allele. It seems the paper completely forgot to mention direction of effect.Note this is also mentioned as rs7944926 in the paper, its a perfect proxy.	0.354034	1.21	NA	G/T	T	G
+rs10741657	11	0.08278537		A	G	Vitamin D	From Wang 2010b. GWAS in lancet, so definetly ok. Probably have to assume that minor allele is decreasing-allele. It seems the paper completely forgot to mention direction of effect.	0.307708	1.21	NA	A/G	G	A
+rs4072037	1	-0.01		C	T	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.371206	NA	NA	C/T	C	T
+rs13146355	4	-0.005		G	A	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.227636	NA	NA	G/A	A	G
+rs11144134	9	-0.011		T	C	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.033946	NA	NA	T/C	T	C
+rs3925584	11	-0.006		C	T	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.288938	NA	NA	T/C	T	C
+rs7965584	12	-0.007		G	A	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.163139	NA	NA	A/G	NA	NA
+rs7197653	16	-0.005		C	G	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.011382	NA	NA	G/C	G	C
+rs2592394	2	-0.004		A	G	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.299121	NA	NA	A/G	G	A
+rs448378	3	-0.004		G	A	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.416534	NA	NA	G/A	G	A
+rs4561213	11	-0.004		G	T	Magnesium	From Meyer 2010. Affects the Magnesium concentration. Good evidence level.	0.441893	NA	NA	T/G	G	T
+rs2298585	11	71.8		C	T	Vitamin B	From Lin 2012. Finds SNPs for Vitamin B.	0.044928	NA	NA	C/T	C	T
+rs41281112	13	83.6		T	C	Vitamin B	From Lin 2012. Finds SNPs for Vitamin B.	0.021965	NA	NA	C/T	C	T
+rs3760776	19	49.78		G	A	Vitamin B	From Lin 2012. Finds SNPs for Vitamin B.	0.248403	NA	NA	G/A	G	A
+rs10515552	5	43.93		T	C	Vitamin B	From Lin 2012. Finds SNPs for Vitamin B.	0.104633	NA	NA	T/C	T	C
+rs7422339	2	0.05		A	C	Homocysteine	From Lange 2010. Finds Homocysteine level associated SNPs.	NA	NA	NA	NA	NA	NA
+rs4245791	2	effect allele increase level		C	T	Phytosterols	From Teupser 2010. Finds Phytosterols level associated SNPs.	0.158946	NA	NA	C/T	T	C
+rs41360247	2	effect allele increase level		T	C	Phytosterols	From Teupser 2010. Finds Phytosterols level associated SNPs.	0.075879	NA	NA	T/C	T	C
+rs657152	9	effect allele increase level		A	C	Phytosterols	From Teupser 2010. Finds Phytosterols level associated SNPs.	NA	NA	NA	NA	C	A
+rs2120461	1	0.048		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.244409	NA	NA	C/T	C	T
+rs7521902	1	-0.051		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.275958	NA	NA	C/A	C	A
+rs6426749	1	0.108		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.214657	NA	NA	G/C	G	C
+rs12137389	1	-0.127		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.008187	NA	NA	C/T	C	T
+rs17482952	1	0.076		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.071885	NA	NA	A/G	A	G
+rs12407028	1	0.048		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.273163	NA	NA	T/C	T	C
+rs11809524	1	0.055		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.255192	NA	NA	C/T	T	C
+rs479336	1	-0.05		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.394768	NA	NA	T/G	T	G
+rs12120297	1	0.042		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.183906	NA	NA	T/C	T	C
+rs13413210	2	-0.059		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.083267	NA	NA	A/C	A	C
+rs7584262	2	0.053		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.221046	NA	NA	C/T	C	T
+rs4233949	2	0.032		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.257188	NA	NA	C/G	G	C
+rs730402	2	0.07		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.49381	NA	NA	G/A	A	G
+rs17040773	2	0.045		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.145767	NA	NA	A/C	A	C
+rs1878526	2	0.013		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.277556	NA	NA	G/A	G	A
+rs1346004	2	-0.052		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.327476	NA	NA	G/A	G	A
+rs11675051	2	0.049		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.188498	NA	NA	G/A	G	A
+rs12995369	2	0.052		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.436102	NA	NA	G/A	A	G
+rs6436440	2	0.046		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.48143	NA	NA	G/A	A	G
+rs2291296	3	-0.007		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.111222	NA	NA	G/A	G	A
+rs7427438	3	-0.047		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.296725	NA	NA	C/A	C	A
+rs430727	3	-0.074		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.482228	NA	NA	T/C	T	C
+rs1026364	3	0.041		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.352436	NA	NA	G/T	G	T
+rs344081	3	0.112		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.245208	NA	NA	T/C	T	C
+rs3755955	4	-0.061		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.16873	NA	NA	G/A	G	A
+rs6532023	4	0.051		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.323682	NA	NA	T/G	G	T
+rs1366594	5	0.092		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.39357	NA	NA	A/C	C	A
+rs4957742	5	-0.044		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.277955	NA	NA	A/G	A	G
+rs9466056	6	-0.048		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.402157	NA	NA	A/G	A	G
+rs11755164	6	-0.012		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.366014	NA	NA	T/C	C	T
+rs13204965	6	0.069		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.121406	NA	NA	A/C	A	C
+rs4869742	6	-0.068		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.427915	NA	NA	C/T	C	T
+rs7751941	6	-0.048		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.147165	NA	NA	G/A	G	A
+rs7788807	7	0.043		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.071286	NA	NA	T/C	NA	NA
+rs2008425	7	-0.127		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.028554	NA	NA	T/G	G	T
+rs10226308	7	-0.029		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.105831	NA	NA	A/G	A	G
+rs6959212	7	-0.03		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.356829	NA	NA	T/C	NA	NA
+rs2282930	7	-0.057		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.312899	NA	NA	G/A	A	G
+rs4727338	7	0.081		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.221046	NA	NA	G/C	C	G
+rs13245690	7	0.032		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.255391	NA	NA	A/G	A	G
+rs3801387	7	-0.071		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.259984	NA	NA	A/G	A	G
+rs7812088	7	0.061		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.053714	NA	NA	G/A	G	A
+rs1670346	7	-0.042		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.314896	NA	NA	A/G	G	A
+rs7017914	8	0.053		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.252396	NA	NA	A/G	G	A
+rs13272568	8	-0.039		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.364018	NA	NA	C/A	C	A
+rs2062377	8	-0.063		A	T	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.28115	NA	NA	T/A	T	A
+rs4240467	9	-0.043		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.245008	NA	NA	C/G	G	C
+rs7851693	9	0.047		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.338458	NA	NA	C/G	G	C
+rs3905706	10	0.005		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.390375	NA	NA	C/T	C	T
+rs1373004	10	-0.065		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.273562	NA	NA	T/G	G	T
+rs7071206	10	-0.02		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.275559	NA	NA	T/C	T	C
+rs2784767	10	0.052		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.433906	NA	NA	T/C	C	T
+rs7084921	10	0.045		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.369409	NA	NA	C/T	C	T
+rs11602954	11	0.034		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.090256	NA	NA	G/A	G	A
+rs7108738	11	-0.093		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.221246	NA	NA	T/G	T	G
+rs10835187	11	-0.028		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.36242	NA	NA	C/T	T	C
+rs163879	11	-0.042		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.443291	NA	NA	C/T	T	C
+rs7932354	11	0.05		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.455871	NA	NA	T/C	C	T
+rs600231	11	-0.051		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.498403	NA	NA	A/G	A	G
+rs3736228	11	-0.054		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.116014	NA	NA	C/T	C	T
+rs2887571	12	-0.037		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.216853	NA	NA	A/G	A	G
+rs11048046	12	-0.148		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.017772	NA	NA	G/A	G	A
+rs7953528	12	0.058		A	T	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.128994	NA	NA	T/A	T	A
+rs12821008	12	0.032		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.308706	NA	NA	C/T	NA	NA
+rs2016266	12	-0.045		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.344449	NA	NA	G/A	A	G
+rs736825	12	0.036		C	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.369409	NA	NA	C/G	C	G
+rs1053051	12	-0.036		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.334065	NA	NA	T/C	T	C
+rs9533090	13	-0.054		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.283746	NA	NA	C/T	T	C
+rs7326472	13	-0.055		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.126797	NA	NA	A/G	A	G
+rs1286083	14	-0.059		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.235423	NA	NA	T/C	T	C
+rs11623869	14	-0.041		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.245208	NA	NA	G/T	G	T
+rs2118784	15	-0.05		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.378994	NA	NA	C/A	C	A
+rs9921222	16	-0.043		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.432907	NA	NA	C/T	T	C
+rs13336428	16	-0.043		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.382188	NA	NA	G/A	G	A
+rs4985155	16	-0.031		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.417732	NA	NA	A/G	A	G
+rs1564981	16	-0.025		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.281949	NA	NA	G/A	G	A
+rs1566045	16	-0.074		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.115216	NA	NA	T/C	T	C
+rs10048146	16	0.056		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.160743	NA	NA	A/G	NA	NA
+rs4790881	17	0.051		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.302117	NA	NA	C/A	A	C
+rs4792909	17	0.035		T	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.491414	NA	NA	G/T	T	G
+rs227584	17	-0.06		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.423522	NA	NA	A/C	A	C
+rs1864325	17	-0.04		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.086062	NA	NA	C/T	C	T
+rs7226305	17	-0.017		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.29992	NA	NA	A/C	A	C
+rs7217932	17	0.045		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.476637	NA	NA	A/G	A	G
+rs4796995	18	0.04		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.429712	NA	NA	A/G	A	G
+rs884205	18	-0.042		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.161342	NA	NA	A/C	C	A
+rs7257450	19	0.014		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.48742	NA	NA	G/A	A	G
+rs10416218	19	-0.042		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.469449	NA	NA	T/C	T	C
+rs3790160	20	0.043		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.384784	NA	NA	T/C	C	T
+rs4817775	21	0.023		A	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.497204	NA	NA	A/C	A	C
+rs4820539	22	0.038		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.471446	NA	NA	A/G	G	A
+rs5934507	X	-0.031		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.259338	NA	NA	A/G	A	G
+rs5926033	X	0.037		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.311258	NA	NA	T/C	T	C
+rs5952638	X	0.056		A	T	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.246623	NA	NA	A/T	A	T
+rs4492531	X	-0.066		A	G	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.256954	NA	NA	A/G	A	G
+rs964181	X	0.036		T	C	Bone mineral density	From Estrada 2012. This source is a well-powered GWAS. These SNPs are well-supported for the bone mineral density phenotype	0.451126	NA	NA	T/C	C	T

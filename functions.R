@@ -896,9 +896,10 @@ get_genotypes<-function(
       
       #looping over all chromosomes and extracting the relevant genotypes in each using gtools
       for(chr in chromosomes){
+        genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
         
         #This is wrapped in a try block, because it has previously failed from unpredictble memory issues, so it's better to give a few tries
-        for(tryCount in 1:5){
+        for(tryCount in 1:3){
           print(paste("Getting ped and map file at chr",chr," - try",tryCount))
           gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
           snpsHere<-rownames(requestDeNovo)[requestDeNovo[,"chr_name"]%in%chr]
@@ -906,10 +907,11 @@ get_genotypes<-function(
           cmd1<-paste(gtools," -S --g " , gen, " --s ",idTempFolder,"/samples.txt --inclusion ",idTempFolder,"/snps_in_chr",chr,".txt",sep="")
           system(cmd1)
           subsetFile<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset",sep="")
-          if(!file.exists(subsetFile)){
+          if(!file.exists(subsetFile) || file.info(subsetFile)[["size"]]==0){
             print(paste("Did not find any of the SNPs on chr",chr))	
             next
           }
+
           cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold ",call_threshold,sep="")
           system(cmd2)
           
@@ -927,16 +929,17 @@ get_genotypes<-function(
               genotypes_here<-try(data.frame(row.names=map[include_these,2],genotype=sub(" ","/",ped[include_these]),stringsAsFactors=F))
             }						
             break
-          }else{
-            genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
           }
         }
+        
         genotypes<-rbind(genotypes,genotypes_here)
       }
     }
     
+    if("N/N"%in%genotypes[,"genotype"]){
+      genotypes[genotypes[,"genotype"]%in%"N/N","genotype"]<-NA  
+    }
     
-    genotypes[genotypes[,"genotype"]%in%"N/N","genotype"]<-NA
     stillMissing<-rownames(requestDeNovo)[!rownames(requestDeNovo)%in%rownames(genotypes)]
     genotypes<-rbind(genotypes,data.frame(row.names=stillMissing,genotype=rep(NA,length(stillMissing),stringsAsFactors=F)))
     

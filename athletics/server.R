@@ -41,6 +41,8 @@ shinyServer(function(input, output) {
 		
 		table[,"Your genotype"]<-genotypes[rownames(table),]
 
+		table<-table[table[,"Domain"]%in%"Table1",]
+		
 		table<-table[,c("SNP","Your genotype","Comment")]
 		colnames(table)<-c("SNP","Your genotype","Description")
 		
