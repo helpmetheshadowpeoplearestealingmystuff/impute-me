@@ -178,7 +178,7 @@ shinyServer(function(input, output) {
     #write the methods text
     methodsToReturn<-paste0("<small><br><b>Methods</b><br>GWAS data was obtained from the <u><a href='http://www.ukbiobank.ac.uk/'>UK biobank</a></u> (with summary stats calculated by <u><a href='http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank'>Neale lab</a></u>). Then a per-SNP score was calculated by counting the risk-alleles multiplied by the effect size (OR or beta as reported in original paper). This was centered so that the average score in the general population would be zero ('population normalized'). This means, that if a person is homozygote for a very rare risk variant this will result in a very high Z-score, conversely if the SNP is common, the Z-score will be less extreme. The sum of these normalized SNP-scores are calculated to get a trait-wide genetic risk score (GRS). This GRS was additionally scaled so that standard-deviation in the general population is 1 (unit-variance), effectively making the scores <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-scores</a></u>. ", ethnicity_explanation_text, " Further details of the calculation can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/56813bf071d7fa4c0a658c90d2ebee196a781e8a/functions.R#L1166-L1326'>source code</a></u>. 
                             
-                            <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections. In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
+                            <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections (Only implemented for GWAS calculator, not UK-biobank. yet). In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
                             
                       <br><br>Using UK-biobank compared to the GWAS calculator data this has the advantage of being a highly systematic and well-powered approach. The trade-off is that less per-trait curation has been applied at the GWAS calculation step.
                             <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also check out the <u><a href='http://www.impute.me/HeuristicHealth'>HeuresticHealth-module</a></u> under development - based on this info, but without having to scroll through all entries</small>")
@@ -219,8 +219,8 @@ shinyServer(function(input, output) {
       SNPs_to_analyze=SNPs_to_analyze,
       textToReturn=textToReturn,
       methodsToReturn=methodsToReturn,
-      GRS=GRS,
-      distributionCurve=distributionCurve))
+      GRS=GRS))#,
+      # distributionCurve=distributionCurve))
   })
   
   
@@ -233,7 +233,7 @@ shinyServer(function(input, output) {
       o<-get_data()
       SNPs_to_analyze<-o[["SNPs_to_analyze"]]
       GRS_beta<-o[["GRS"]]
-      distributionCurve <- o[["distributionCurve"]]
+      # distributionCurve <- o[["distributionCurve"]]
       
       if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
       
@@ -266,13 +266,13 @@ shinyServer(function(input, output) {
       
       
       #optionally add real distribution curve
-      if(!is.null(distributionCurve)){
-        real_x <- distributionCurve[["x"]]
-        real_y <- distributionCurve[["y"]]
-        adj_y<-real_y * (max(y_control) / max(real_y))
-        lines(x=real_x,y=adj_y,lty=2)
-        
-      }
+      # if(!is.null(distributionCurve)){
+      #   real_x <- distributionCurve[["x"]]
+      #   real_y <- distributionCurve[["y"]]
+      #   adj_y<-real_y * (max(y_control) / max(real_y))
+      #   lines(x=real_x,y=adj_y,lty=2)
+      #   
+      # }
       
       legend("topleft",legend=c("Population distribution","Your genetic risk score"),lty=c(1,1),lwd=c(2,3),col=c("blue","black"))
       
