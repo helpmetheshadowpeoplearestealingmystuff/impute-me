@@ -64,7 +64,7 @@ shinyServer(function(input, output) {
     }
   })
   
-  output$text1 <- renderDataTable({ 
+  output$text1 <- renderText({ 
     if(input$goButton == 0){
       return("")
     }else if(input$goButton > 0) {

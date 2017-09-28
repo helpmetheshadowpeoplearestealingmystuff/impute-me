@@ -56,7 +56,7 @@ shinyServer(function(input, output) {
     SNPs_to_analyze<-data[data[,"study_id"]%in%study_id ,]
     
     #setting P-value treshold
-    SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"P.VALUE"] < snp_p_value,]
+    SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"P.VALUE"] < 10^ -snp_p_value,]
     
     
     #setting up back-ground frequency sources

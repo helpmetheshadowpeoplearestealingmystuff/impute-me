@@ -45,7 +45,7 @@ shinyUI(bootstrapPage(
 	titlePanel("UK-Biobank Calculator"),
 	beginPage(),	
 	beginPanel('1/3'),
-	HTML("A sutdy of ~½ million UK residents, known as the UK biobank, have recently been published. This module allows the calculation of genetic risk score for any of the published traits.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:<br>"),
+	HTML("A study of ~½ million UK residents, known as the UK biobank, have recently been published. This module allows the calculation of genetic risk score for any of the published traits.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:<br>"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	
 	conditionalPanel(
@@ -74,7 +74,7 @@ shinyUI(bootstrapPage(
 	  condition = "input.advanced",
 	  radioButtons("trait_group", "Trait categories:", trait_groups, selected = "all"),
 	  radioButtons("ethnicity_group", label="Reference population:", choices=ethnicities, selected = "automatic", inline = FALSE,width = NULL),
-	  sliderInput("snp_p_value", "Per-SNP -log10(P):",min = 7, max = 9,value = 7, step = 0.1)
+	  sliderInput("snp_p_value", "Per-SNP -log10(P):",min = 7, max = 11,value = 7, step = 0.1)
 	  # checkboxInput("real_dist", label ="Plot real distribution (experimental)", value = FALSE)
 	  
 	),

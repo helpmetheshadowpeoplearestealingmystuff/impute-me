@@ -15,7 +15,7 @@ shinyServer(function(input, output) {
 		}else if(input$goButton > 0) {
 			print(paste("Ok",input$goButton))
 		}
-		
+	  show_non_measured <- input$show_non_measured
 	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
@@ -51,6 +51,11 @@ shinyServer(function(input, output) {
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=BRCA_table)
 		BRCA_table[,"Your genotype"]<-genotypes[rownames(BRCA_table),]
 
+		
+		#remove non measured if needed
+		if(!show_non_measured){
+		  BRCA_table<-BRCA_table[!is.na(BRCA_table[,"Your genotype"]),]
+		}
 		
 		#order so pathogenic is always on top
 		order<-c('Pathogenic','Likely pathogenic','Conflicting interpretations of pathogenicity','Uncertain significance','not provided','Likely benign','Benign')
