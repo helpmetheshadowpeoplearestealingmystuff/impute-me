@@ -1918,7 +1918,7 @@ run_bulk_imputation<-function(
     
     #check for MT presence, other non-sorted behaviour and just plain weird thing. Note this is an exception, and it will raise a log entry no matter what. Best to submit sorted clean data data. 
     if(out1 == 3){
-      special_error_check(uniqueID)
+      special_error_check(uniqueID,runDir)
     }  
     
     #Rscript to omit duplicates
