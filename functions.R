@@ -1905,7 +1905,7 @@ run_bulk_imputation<-function(
   cat(paste0("Starting imputation running on these files:\nc('",paste(uniqueIDs,collapse="','"),"')\nGood luck!\n"))
   setwd(runDir)
   chromosomes <- c("X",as.character(1:22))
-  chromosomes <- c("22")
+  # chromosomes <- c("22")
   
   for(uniqueID in uniqueIDs){
     rawdata_file<-rawdata_files[uniqueID]
