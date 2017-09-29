@@ -221,8 +221,7 @@ for(uniqueID in uniqueIDs){
   
   
   
-  mailingResult<-try(stop(),silent=TRUE)
-  while(class(mailingResult) == "try-error"){
+  for(tryCount in 1:3){
     print(paste("Trying to mail to",email))
     mailingResult<-try(send.mail(from = email_address,
                                  to = "lassefolkersen@gmail.com",
@@ -239,8 +238,10 @@ for(uniqueID in uniqueIDs){
                                  authenticate = TRUE,
                                  send = TRUE))
     Sys.sleep(10)
-    
+    if(class(mailingResult)!="try-error")break
   }
+    
+  
   
   
   #delete the imputaitons/imputation_folder_idXXXXX position afterwards

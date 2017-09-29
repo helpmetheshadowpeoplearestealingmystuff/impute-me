@@ -226,8 +226,7 @@ message <- paste("<HTML>We have completed imputation of your genome. You can ret
 
 
 
-mailingResult<-try(stop(),silent=TRUE)
-while(class(mailingResult) == "try-error"){
+for(tryCount in 1:3){
   print(paste("Trying to mail to",email))
   mailingResult<-try(send.mail(from = email_address,
                                to = email,
@@ -244,8 +243,9 @@ while(class(mailingResult) == "try-error"){
                                authenticate = TRUE,
                                send = TRUE))
   Sys.sleep(10)
-  
+  if(class(mailingResult)!="try-error")break
 }
+
 
 setwd("..")
 unlink(runDir,recursive=TRUE)
