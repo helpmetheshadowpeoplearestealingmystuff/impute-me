@@ -154,10 +154,13 @@ unlink(runDir,recursive=TRUE)
 
 for(uniqueID in uniqueIDs){
   
+    
   #summarizing files
   summary_folder<-paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID)
   summarize_imputation(runDir=summary_folder,uniqueID=uniqueID,destinationDir="/home/ubuntu/data")  
   
+  #load variables
+  load(paste0(summary_folder,"/variables.rdata"))
   
   
   
