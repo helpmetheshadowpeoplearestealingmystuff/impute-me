@@ -1904,6 +1904,8 @@ run_bulk_imputation<-function(
   
   cat(paste0("Starting imputation running on these files:\nc('",paste(uniqueIDs,collapse="','"),"')\nGood luck!\n"))
   setwd(runDir)
+  chromosomes <- c("X",as.character(1:22))
+  chromosomes <- c("22")
   
   for(uniqueID in uniqueIDs){
     rawdata_file<-rawdata_files[uniqueID]
@@ -1926,9 +1928,7 @@ run_bulk_imputation<-function(
     write.table(exclude,file=paste0('step_2_',uniqueID,'_exclusions'),sep='\t',row.names=FALSE,col.names=F,quote=F)
 
     #loop over chromosomes
-    for(chr in "22"){
-      # for(chr in c("X",as.character(1:22))){
-      
+    for(chr in chromosomes){
       #First in loop - extract only one specific chromosome
       cmd2<-paste(plink," --file step_1_",uniqueID," --chr ",chr," --make-bed --out step_2_",uniqueID,"_chr",chr," --exclude step_2_",uniqueID,"_exclusions",sep="")
       system(cmd2)
@@ -1939,8 +1939,7 @@ run_bulk_imputation<-function(
 
   
   #loop over chromosomes
-  for(chr in c("X",as.character(1:22))){
-    
+  for(chr in chromosomes){
     merge_files<-paste0("step_2_",sub("_raw_data.txt","",basename(rawdata_files)),"_chr",chr)
     merge_df<-data.frame(bed=paste0(merge_files,".bed"),bim=paste0(merge_files,".bim"),fam=paste0(merge_files,".fam"))
     merge_df<-merge_df[2:nrow(merge_df),]
@@ -2092,7 +2091,7 @@ run_bulk_imputation<-function(
   sample_file<-grep("step_5",grep("\\.sample$",list.files(),value=T),value=T)[1] #just pick the first one - they should be identical
   samples<-read.table(sample_file,stringsAsFactors=F)
   allFiles1<-list.files(runDir)
-  for(chr in c("X",as.character(1:22))){
+  for(chr in chromosomes){
     for(uniqueID in uniqueIDs){
       # uniqueID<-sub("^.+/","",sub("_raw_data.txt$","",rawdata_file))
       outfolder <- paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/")
