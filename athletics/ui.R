@@ -9,7 +9,7 @@ shinyUI(bootstrapPage(
 	titlePanel("Athletics related SNPs"),
 	beginPage(),
 	beginPanel('1/3'),
-	HTML("<i>Note, I have marked this module as a <b>legacy</b> module. That's not because it is wrong, merely because the content is somewhat information-poor.</i><br><br> Example ID to test: id_613z86871"),
+	HTML("<br><br> Example ID to test: id_613z86871"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	actionButton("goButton","Run analysis"),
 	endPanel(),
