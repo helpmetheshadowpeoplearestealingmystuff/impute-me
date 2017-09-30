@@ -69,7 +69,7 @@ shinyServer(function(input, output) {
       table<-table[,c("SNP","genotype","Comment")]
       colnames(table)<-c("SNP","Your genotype","Description")
       
-      return(table1)
+      return(table)
     }
   })
   
@@ -77,7 +77,7 @@ shinyServer(function(input, output) {
     if(input$goButton == 0){
       return("")
     }else if(input$goButton > 0) {
-      message <- "These SNPs are the most well-known atheletics SNPs. They all have fairly well-supported studies behind them, albeit limited effect sizes"
+      message <- "<br><br>These SNPs are the most well-known atheletics SNPs. They all have fairly well-supported studies behind them, albeit limited effect sizes<br>"
       
       return(message)
     }
@@ -115,10 +115,18 @@ shinyServer(function(input, output) {
         domains[i,"Level-score"] <- paste(signif(GRS_beta*100,3),"%")
         
         if(source_notes){
-          domains[i,"Source notes"]<-paste(unique(d[,"Comment"]), collapse=" ")  
+          
+          d[,"snps_line"] <- rownames(d)
+          d[,"duplicated"]<-duplicated(d[,"Comment"])
+          duplicated_snps<-unique(rownames(d)[d[,"duplicated"]])
+          for(duplicated_snp in duplicated_snps){
+            w<-which(d[,"Comment"]  %in% d[duplicated_snp,"Comment"])
+            d[!d[w,"duplicated"],"snps_line"]<-paste(rownames(d)[w],collapse=", ")
+          }
+          d<-d[!d[,"duplicated"],]
+          domains[i,"Source notes"]<-paste(paste0(d[,"snps_line"],": ",d[,"Comment"]),collapse="; ")
         }
-        
-        
+
       }
       
       
@@ -130,7 +138,7 @@ shinyServer(function(input, output) {
     if(input$goButton == 0){
       return("")
     }else if(input$goButton > 0) {
-      message <- "This table calculates genetic risk scores for all domains covered in <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/25919592'>Goodlin et al</a></u>, which covers a number of often encountered injuries and dietary needs in athletics. The risk score is indicated as percentile, i.e. 'percent of population with a lower score'. So it <i>should not</i> be translated as the direkt risk propensity, just how much more genetic effect there is for any of these domains."
+      message <- "<br><br>This table calculates genetic risk scores for all domains covered in <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/25919592'>Goodlin et al</a></u>, which covers a number of often encountered injuries and dietary needs in athletics. The risk score is indicated as percentile, i.e. 'percent of population with a lower score'. So it <i>should not</i> be translated as the direkt risk propensity, just how much more genetic effect there is for any of these domains.<br><br>"
       
       return(message)
     }
