@@ -94,7 +94,7 @@ shinyServer(function(input, output) {
     #gathering some background info for the study		
     sampleSize_case<-unique(SNPs_to_analyze[,"case_count"])
     sampleSize_control<-unique(SNPs_to_analyze[,"control_count"])
-    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from the <u><a href='http://www.ukbiobank.ac.uk/'>UK biobank</a></u>, which were reported to be associated with the trait <i>'",trait,"'</i> (field code: ",sub("_ukbiobank$","",trait),").")
+    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from the <u><a href='http://www.ukbiobank.ac.uk/'>UK biobank</a></u>, which were reported to be associated with the trait <i>'",trait,"'</i> (field code: ",sub("_ukbiobank$","",study_id),").")
     textToReturn <- paste0(textToReturn," The summary statistics were calculated by <u><a href='http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank'>Neale lab</a></u> and reports a total sample size of ",sampleSize_case," cases and ", sampleSize_control," controls as downloaded on 2017-09-15.")
     
     
