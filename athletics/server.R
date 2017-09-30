@@ -111,7 +111,7 @@ shinyServer(function(input, output) {
         d<-get_GRS_2(d, mean_scale=T, unit_variance=T, verbose=T)
         population_sum_sd<-sqrt(sum(d[,"population_score_sd"]^2,na.rm=T))
         GRS_beta <-sum(d[,"score_diff"],na.rm=T) / population_sum_sd
-        domains[i,"number of SNPs"] <- sum(!is.na(d[,"score_diff"]))
+        domains[i,"Number of SNPs"] <- sum(!is.na(d[,"score_diff"]))
         domains[i,"Level-score"] <- paste(signif(GRS_beta*100,3),"%")
         
         if(source_notes){
