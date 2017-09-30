@@ -92,8 +92,9 @@ shinyServer(function(input, output) {
       table<-get_data()
       
       source_notes <- input$source_notes
-      
-      domains <- data.frame(row.names=c('ACL rupture','Achilles tendon','Stress fracture','Osteoarthritis','Iron Biomarker','Vitamin E','Vitamin D','Magnesium','Vitamin B','Homocysteine','Phytosterols','Bone mineral density'))
+      domains <- c('ACL rupture','Achilles tendon','Stress fracture','Osteoarthritis','Iron Biomarker','Vitamin E','Vitamin D','Magnesium','Vitamin B','Homocysteine','Phytosterols','Bone mineral density')
+      domains <- c('ACL rupture','Achilles tendon','Stress fracture','Osteoarthritis','Iron Biomarker','Vitamin E','Vitamin D','Magnesium','Vitamin B','Phytosterols','Bone mineral density')
+      domains <- data.frame(row.names=domains,domains=domains)
       
       
       for(i in 1:nrow(domains)){
@@ -112,7 +113,9 @@ shinyServer(function(input, output) {
         population_sum_sd<-sqrt(sum(d[,"population_score_sd"]^2,na.rm=T))
         GRS_beta <-sum(d[,"score_diff"],na.rm=T) / population_sum_sd
         domains[i,"Number of SNPs"] <- sum(!is.na(d[,"score_diff"]))
-        domains[i,"Level-score"] <- paste(signif(GRS_beta*100,3),"%")
+        domains[i,"Level-score"] <- paste(signif(pnorm(GRS_beta,mean=0,sd=1)*100,3),"%")
+        
+        
         
         if(source_notes){
           
