@@ -92,18 +92,8 @@ shinyServer(function(input, output) {
     
     
     #gathering some background info for the study		
-    # link<-unique(SNPs_to_analyze[,"LINK"])
-    # if(length(link)!=1)stop("Problem with link length")
-    # author<-unique(SNPs_to_analyze[,"FIRST.AUTHOR"])
-    # if(length(author)!=1)stop("Problem with author length")
     sampleSize_case<-unique(SNPs_to_analyze[,"case_count"])
     sampleSize_control<-unique(SNPs_to_analyze[,"control_count"])
-    # if(length(sampleSize)!=1){
-      # print("Problem with sampleSize length - but just took mean")
-      # sampleSize <- round(mean(sampleSize,na.rm=T))
-    # }
-    # DATE<-unique(SNPs_to_analyze[,"DATE"])
-    # if(length(DATE)!=1)stop("Problem with DATE length")
     textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from the <u><a href='http://www.ukbiobank.ac.uk/'>UK biobank</a></u>, which were reported to be associated with the trait <i>'",trait,"'</i>.")
     textToReturn <- paste0(textToReturn," The summary statistics were calculated by <u><a href='http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank'>Neale lab</a></u> and reports a total sample size of ",sampleSize_case," cases and ", sampleSize_control," controls as downloaded on 2017-09-15.")
     
@@ -142,8 +132,6 @@ shinyServer(function(input, output) {
     }else{
       SNPs_to_analyze_duplicates<-SNPs_to_analyze[0,]
     }
-    
-    
     rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
     genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
     SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
@@ -151,6 +139,14 @@ shinyServer(function(input, output) {
     population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
     GRS <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
     
+
+    
+    #Note for non-available SNPs (seems more important in the ukbiobank setup)
+    non_measured <- sum(is.na(SNPs_to_analyze[,"genotype"]))
+    if(non_measured>=0){
+      textToReturn <- paste0(textToReturn," Note that ",non_measured," SNPs were not available in your genotype data at all, because the current imputation algorithm was not able to guess them.")
+      
+    }
     
     
     

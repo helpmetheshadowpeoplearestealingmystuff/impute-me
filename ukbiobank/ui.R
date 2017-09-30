@@ -21,8 +21,8 @@ ethnicities<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
 names(ethnicities)<-c("Automatic guess","Global average","African","Ad Mixed American","East Asian","European","South Asian")
 
 #Trait groups
-trait_groups<-c("all","diagnosis","treatment","self_rep","other")
-names(trait_groups)<-c("All","Diagnosis","Treatment","Self-reported illness","Other")
+trait_groups<-c("all","diagnosis","treatment","self_rep","illness_of_relatives","other")
+names(trait_groups)<-c("All","Diagnosis","Treatment","Self-reported illness","Illness of Relatives","Other")
 
 
 
