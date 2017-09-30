@@ -23,8 +23,8 @@ Here I have tried to collect a set of SNPs that clearly are of interest to know 
 	dataTableOutput("table1"),
 
 	
-	# htmlOutput("text2"),
-	# dataTableOutput("table2"),
+	htmlOutput("text2"),
+	dataTableOutput("table2"),
 
 	# htmlOutput("text3"),
 	# dataTableOutput("table3"),
