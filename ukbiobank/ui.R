@@ -7,11 +7,13 @@ initialize('gmh',TRUE)
 load("/home/ubuntu/srv/impute-me/ukbiobank/2017-09-28_trait_overoverview.rdata")
 
 
-#traits to omit ad-hoc (because they don't work)
-omitThese<-c(
-  
-  )
-traits<-traits[!rownames(traits)%in%omitThese,]
+#omit traits
+traits<-traits[!traits[,"omit"],]
+#can also omit ad-hoc if necessary
+# omitThese<-c(
+  #traits to omit ad-hoc (because they don't work)  
+  # )
+# traits<-traits[!rownames(traits)%in%omitThese,]
 
 
 #defining 1000 genomes populations
@@ -35,6 +37,9 @@ names(selections_treatment)<-traits[traits[,"treatment"],"niceName"]
 
 selections_self_rep<-traits[traits[,"self_rep"],"study_id"]
 names(selections_self_rep)<-traits[traits[,"self_rep"],"niceName"]
+
+selections_illness_of_relatives<-traits[traits[,"illness_of_relatives"],"study_id"]
+names(selections_illness_of_relatives)<-traits[traits[,"illness_of_relatives"],"niceName"]
 
 selections_other<-traits[traits[,"other"],"study_id"]
 names(selections_other)<-traits[traits[,"other"],"niceName"]
@@ -63,6 +68,10 @@ shinyUI(bootstrapPage(
 	conditionalPanel(
 	  condition = "input.trait_group == 'self_rep'",
 	  selectInput("trait_self_rep", "Traits:", choices = selections_self_rep)
+	),
+	conditionalPanel(
+	  condition = "input.trait_group == 'illness_of_relatives'",
+	  selectInput("trait_ilness_of_relatives", "Traits:", choices = selections_illness_of_relatives)
 	),
 	conditionalPanel(
 	  condition = "input.trait_group == 'other'",
