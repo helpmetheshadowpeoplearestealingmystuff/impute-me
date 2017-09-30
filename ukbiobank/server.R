@@ -143,11 +143,22 @@ shinyServer(function(input, output) {
     
     #Note for non-available SNPs (seems more important in the ukbiobank setup)
     non_measured <- sum(is.na(SNPs_to_analyze[,"genotype"]))
-    if(non_measured>=0){
-      textToReturn <- paste0(textToReturn," Note that ",non_measured," SNPs were not available in your genotype data at all, because the current imputation algorithm was not able to guess them.")
+    if(non_measured>0){
       
+      #if more than half are missing we bold the warning
+      if(non_measured/2 > nrow(SNPs_to_analyze)){
+        textToReturn <- paste0(textToReturn," <b>Note that ",non_measured," SNPs were not available</b> in your genotype data at all, because the current imputation algorithm was not able to guess them. This will reduce the accuracy of the risk score a lot.")  
+      }else{
+        textToReturn <- paste0(textToReturn," Note that ",non_measured," SNPs were not available in your genotype data at all, because the current imputation algorithm was not able to guess them.")  
+      }
     }
     
+    
+    #inset a warning if less than 5 SNPs are analyzable
+    analyzable_snps<-sum(!is.na(SNPs_to_analyze[,"score_diff"]))
+    if(analyzable_snps<5){
+      textToReturn <- paste0(textToReturn," Overall, <b>only ",analyzable_snps," SNPs were analyzable. This is too little for a genetic risk score and the results should not be trusted very much</b>.")  
+    }
     
     
     #check for question marks in risk-allele
@@ -156,7 +167,9 @@ shinyServer(function(input, output) {
       textToReturn <- paste0(textToReturn," Also note that ",sum(c1>0)," SNP(s) had <b>missing or discrepant</b> allele information, meaning that risk-allele or minor/major allele could not be correctly assigned. This is indicated with a '?' in the results table and causes the SNP to be omitted from the GRS-calculation. This is likely due to strand-reporting issues, and may be fixable by checking the original study.")
     }
     
+
     
+        
     
     #add the overall population SD value
     textToReturn <- paste0(textToReturn," The population-wide standard deviation of this GRS was calculated to be ",signif(population_sum_sd,2)," which is taken into account when arriving at a trait GRS Z-score of ",signif(GRS,2),".")
