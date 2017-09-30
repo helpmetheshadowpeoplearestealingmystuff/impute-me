@@ -11,6 +11,11 @@ shinyUI(bootstrapPage(
 	beginPanel('1/3'),
 	HTML("<br><br> Example ID to test: id_613z86871"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
+	checkboxInput("advanced", label ="Advanced options", value = FALSE),
+	conditionalPanel(
+	  condition = "input.advanced",
+	  checkboxInput("source_notes", label ="Show source notes for risk score", value = FALSE)
+	),
 	actionButton("goButton","Run analysis"),
 	endPanel(),
 	beginPanel('2/3'),

@@ -85,11 +85,13 @@ shinyServer(function(input, output) {
   
   
   
-  output$table1 <- renderDataTable({ 
+  output$table2 <- renderDataTable({ 
     if(input$goButton == 0){
       return(NULL)
     }else if(input$goButton > 0) {
       table<-get_data()
+      
+      source_notes <- input$source_notes
       
       domains <- data.frame(row.names=c('ACL rupture','Achilles tendon','Stress fracture','Osteoarthritis','Iron Biomarker','Vitamin E','Vitamin D','Magnesium','Vitamin B','Homocysteine','Phytosterols','Bone mineral density'))
       
@@ -112,8 +114,10 @@ shinyServer(function(input, output) {
         domains[i,"number of SNPs"] <- sum(!is.na(d[,"score_diff"]))
         domains[i,"Level-score"] <- paste(signif(GRS_beta*100,3),"%")
         
+        if(source_notes){
+          domains[i,"Source notes"]<-paste(unique(d[,"Comment"]), collapse=" ")  
+        }
         
-        domains[i,"Source notes"]<-paste0("<small>",paste(unique(d[,"Comment"]), collapse=" "),"</small>")
         
       }
       
@@ -122,7 +126,7 @@ shinyServer(function(input, output) {
     }
   })
   
-  output$text1 <- renderText({ 
+  output$text2 <- renderText({ 
     if(input$goButton == 0){
       return("")
     }else if(input$goButton > 0) {
