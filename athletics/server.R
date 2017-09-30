@@ -77,7 +77,7 @@ shinyServer(function(input, output) {
     if(input$goButton == 0){
       return("")
     }else if(input$goButton > 0) {
-      message <- "<br><br>These SNPs are the most well-known atheletics SNPs. They all have fairly well-supported studies behind them, albeit limited effect sizes<br>"
+      message <- "<br><br><br><br>These SNPs are the most well-known atheletics SNPs. They all have fairly well-supported studies behind them, although with limited effect sizes. If you wish to use these findings it is worth it to spend some time understanding the concept of the <u><a href='https://en.wikipedia.org/wiki/Odds_ratio'>odds-ratio</a></u>. This is because the effect size for these studies are typically given as e.g. odds ration 1.3 for each allele for the chance of being an elite athlete. Of course that means that there is 1.3 times increased chance of being an elite sprinter, for each allele - but it also means that within the group of elite sprinters, quite a large fraction will not necessarily have the TT genotype. <br>"
       
       return(message)
     }
@@ -92,9 +92,9 @@ shinyServer(function(input, output) {
       table<-get_data()
       
       source_notes <- input$source_notes
-      domains <- c('ACL rupture','Achilles tendon','Stress fracture','Osteoarthritis','Iron Biomarker','Vitamin E','Vitamin D','Magnesium','Vitamin B','Homocysteine','Phytosterols','Bone mineral density')
+      # domains <- c('ACL rupture','Achilles tendon','Stress fracture','Osteoarthritis','Iron Biomarker','Vitamin E','Vitamin D','Magnesium','Vitamin B','Homocysteine','Phytosterols','Bone mineral density')
       domains <- c('ACL rupture','Achilles tendon','Stress fracture','Osteoarthritis','Iron Biomarker','Vitamin E','Vitamin D','Magnesium','Vitamin B','Phytosterols','Bone mineral density')
-      domains <- data.frame(row.names=domains,domains=domains)
+      domains <- data.frame(row.names=domains,Domain=domains)
       
       
       for(i in 1:nrow(domains)){
