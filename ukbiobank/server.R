@@ -94,7 +94,7 @@ shinyServer(function(input, output) {
     #gathering some background info for the study		
     sampleSize_case<-unique(SNPs_to_analyze[,"case_count"])
     sampleSize_control<-unique(SNPs_to_analyze[,"control_count"])
-    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from the <u><a href='http://www.ukbiobank.ac.uk/'>UK biobank</a></u>, which were reported to be associated with the trait <i>'",trait,"'</i>.")
+    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from the <u><a href='http://www.ukbiobank.ac.uk/'>UK biobank</a></u>, which were reported to be associated with the trait <i>'",trait,"'</i> (field code: ",sub("_ukbiobank$","",trait),").")
     textToReturn <- paste0(textToReturn," The summary statistics were calculated by <u><a href='http://www.nealelab.is/blog/2017/7/19/rapid-gwas-of-thousands-of-phenotypes-for-337000-samples-in-the-uk-biobank'>Neale lab</a></u> and reports a total sample size of ",sampleSize_case," cases and ", sampleSize_control," controls as downloaded on 2017-09-15.")
     
     
@@ -156,7 +156,9 @@ shinyServer(function(input, output) {
     
     #inset a warning if less than 5 SNPs are analyzable
     analyzable_snps<-sum(!is.na(SNPs_to_analyze[,"score_diff"]))
-    if(analyzable_snps<5){
+    if(analyzable_snps==1){
+      textToReturn <- paste0(textToReturn," Overall, <b>only a single SNP was analyzable. This is definetly too little for a genetic risk score and the results should not be trusted</b>.")  
+    }else if(analyzable_snps<5){
       textToReturn <- paste0(textToReturn," Overall, <b>only ",analyzable_snps," SNPs were analyzable. This is too little for a genetic risk score and the results should not be trusted very much</b>.")  
     }
     
@@ -164,7 +166,7 @@ shinyServer(function(input, output) {
     #check for question marks in risk-allele
     c1<-apply(SNPs_to_analyze[,c("minor_allele","major_allele","effect_allele","non_effect_allele")]=="?",1,sum)
     if(sum(c1>0)){
-      textToReturn <- paste0(textToReturn," Also note that ",sum(c1>0)," SNP(s) had <b>missing or discrepant</b> allele information, meaning that risk-allele or minor/major allele could not be correctly assigned. This is indicated with a '?' in the results table and causes the SNP to be omitted from the GRS-calculation. This is likely due to strand-reporting issues, and may be fixable by checking the original study.")
+      textToReturn <- paste0(textToReturn," Also note that ",sum(c1>0)," SNP(s) had missing or discrepant allele information, meaning that risk-allele or minor/major allele could not be correctly assigned. This is indicated with a '?' in the results table and causes the SNP to be omitted from the GRS-calculation. This is likely due to strand-reporting issues, and may be fixable by checking the original study.")
     }
     
 
