@@ -148,12 +148,11 @@ run_bulk_imputation(uniqueIDs, runDir)
 
 
 
-#delete the bulk_imputations/folder - this will save a lot of space, maybe we can keep one run under 30 GB even
 unlink(runDir,recursive=TRUE)
 
 
 for(uniqueID in uniqueIDs){
-  
+  print(paste("Looping over uniqueID",uniqueID),"for the summarization part")  
     
   #summarizing files
   summary_folder<-paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID)

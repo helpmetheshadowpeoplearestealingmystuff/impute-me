@@ -2081,6 +2081,7 @@ run_bulk_imputation<-function(
   
   
   #clean up pre-step-5 files to save space
+  print("Performing file-deletion and clean-up")
   unlink(list.files(pattern="^step_1.+"))
   unlink(list.files(pattern="^step_2.+"))
   unlink(list.files(pattern="^step_3.+"))
@@ -2093,6 +2094,7 @@ run_bulk_imputation<-function(
   allFiles1<-list.files(runDir)
   for(chr in chromosomes){
     for(uniqueID in uniqueIDs){
+      print(paste("Cutting from",uniqueID,"chromosome",chr))
       # uniqueID<-sub("^.+/","",sub("_raw_data.txt$","",rawdata_file))
       outfolder <- paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/")
       w<-which(samples[,1]%in%uniqueID) -2
@@ -2102,7 +2104,7 @@ run_bulk_imputation<-function(
       write.table(samples[c(1:2,w+2),],file=paste0(outfolder,"step_4_chr",chr,".sample"),quote=F,row.names=F,col.names = F)
       
       #cut and transfer gen files
-      step7Files<-grep(paste0("^step_7_chr",chr),allFiles1,value=T)
+      step7Files<-grep(paste0("^step_7_chr",chr,"_"),allFiles1,value=T)
       step7ResultsFiles<-grep("[0-9]$",step7Files,value=T)
       left <- 5 + (w-1) * 3 + 1
       middle <- 5 + (w-1) * 3 + 2
@@ -2112,10 +2114,8 @@ run_bulk_imputation<-function(
         system(cmd8)
       }
     }
-    
     Sys.sleep(0.5) #take a break
     unlink(step7Files) #clean up files afterwards (or else we break the 30GB limit)
-    
   }
 }
 
