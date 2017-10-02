@@ -75,7 +75,9 @@ shinyServer(function(input, output) {
   
   output$text1 <- renderText({ 
     if(input$goButton == 0){
-      return("")
+      return("There exists SNPs that give various pre-dispositions for fitness-levels. While the these power-vs-endurance variants are clearly reproducible throughout many studies, their effect is still rather limited - meaning that one can be a world-class sprinter without necessarily having 'the sprinter gene'. Many tests are sold for these specific SNPs, giving you knowledge of handful of specific fitness related SNPs. Many tests are over-sold. And of course the very same information is also available for free if you already have imputed genotyping microarray information. 
+
+             Here I have tried to collect a set of SNPs that clearly are of interest to know if you are into athletics")
     }else if(input$goButton > 0) {
       message <- "<br><br><br><br>These SNPs are the most well-known atheletics SNPs. They all have fairly well-supported studies behind them, although with limited effect sizes. If you wish to use these findings it is worth it to spend some time understanding the concept of the <u><a href='https://en.wikipedia.org/wiki/Odds_ratio'>odds-ratio</a></u>. This is because the effect size for these studies are typically given as e.g. odds ration 1.3 for each allele for the chance of being an elite athlete. Of course that means that there is 1.3 times increased chance of being an elite sprinter, for each allele - but it also means that within the group of elite sprinters, quite a large fraction will not necessarily have the TT genotype. <br>"
       
