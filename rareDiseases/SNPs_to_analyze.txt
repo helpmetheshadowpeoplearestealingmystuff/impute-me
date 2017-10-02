@@ -315,5 +315,3 @@ rs121965075	NA	15	Tyrosinemia Type I	T	G	T	G	E357X	G to T	stand-in for i5012864
 rs111033260	NA	10	Usher Syndrome Type I (PCDH15 related)	A	G	A	G	R245X	NA	stand-in for i5012804
 rs111033258	NA	3	Usher Syndrome Type III	C	A	C	A	N48K	NA	stand-in for i4990151
 rs61750420	NA	7	Zellweger Syndrome Spectrum	T	C	T	C	G843D	NA	stand-in for i5012688
-NA	NA	input	NA	NA	NA	NA	NA	NA	NA	NA
-NA	NA	input	NA	NA	NA	NA	NA	NA	NA	NA
