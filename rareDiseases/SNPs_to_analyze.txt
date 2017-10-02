@@ -1,188 +1,366 @@
-SNP	chrom_start	chr_name	disease_name	risk_allele	non_risk_allele	alt_risk_allele	alt_non_risk_allele	alt_name	original_allele_naming
-i5012573	NA	input	Agenesis of the Corpus Callosum with Peripheral Neuropathy (ACCPN)	D	I	-	C	NA	NA
-i5012575	NA	input	Agenesis of the Corpus Callosum with Peripheral Neuropathy (ACCPN)	A	G	A	G	NA	NA
-rs28929474	NA	input	Alpha 1 Antitrypsin Deficiency	T	C	T	C	NA	NA
-rs17580	NA	input	Alpha 1 Antitrypsin Deficiency	A	T	A	T	NA	NA
-i5012578	NA	input	ARSACS	D	I	-	A	NA	NA
-rs28939383	NA	input	Autosomal Recessive Polycystic Kidney Disease	A	G	A	G	NA	NA
-i5000047	NA	input	Autosomal Recessive Polycystic Kidney Disease	C	T	C	T	NA	NA
-i5000045	NA	input	Autosomal Recessive Polycystic Kidney Disease	G	A	G	A	NA	NA
-i5000043	NA	input	Autosomal Recessive Polycystic Kidney Disease	G	A	G	A	NA	NA
-i5012610	NA	input	Autosomal Recessive Polycystic Kidney Disease	D	I	-	T	NA	NA
-i5012612	NA	input	Autosomal Recessive Polycystic Kidney Disease	A	G	A	G	NA	NA
-i3003137	NA	input	Beta Thalassemia	A	T	A	T	Hb S	T to A
-rs33950507	NA	input	Beta Thalassemia	T	C	T	C	Hb E	C to T
-rs33930165	NA	input	Beta Thalassemia	T	C	T	C	Hb C	C to T
-rs11549407	NA	input	Beta Thalassemia	A	G	A	G	HBB:c.118C>T	G to A
-rs33986703	NA	input	Beta Thalassemia	A	T	A	T	HBB:c.52A>T	T to A
-rs63750783	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.47G>A	C to T
-rs33971440	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.92+1G>A	C to T
-rs34716011	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.48G>A	C to T
-rs33960103	NA	input	Beta Thalassemia	G	C	G	C	HBB:c.92G>C	C to G
-rs35004220	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.93-21G>A	C to T
-rs34451549	NA	input	Beta Thalassemia	A	G	A	G	HBB:c.316-197C>T	G to A
-rs34690599	NA	input	Beta Thalassemia	C	G	C	G	HBB:c.316-106C>G	G to C
-rs35724775	NA	input	Beta Thalassemia	G	A	G	A	HBB:c.92+6T>C	A to G
-rs33915217	NA	input	Beta Thalassemia	G	C	G	C	HBB:c.92+5G>C	C to G
-rs33985472	NA	input	Beta Thalassemia	C	T	C	T	HBB:c.*+113A>G	T to C
-rs34598529	NA	input	Beta Thalassemia	C	T	C	T	HBB:c.-79A>G	T to C
-rs33944208	NA	input	Beta Thalassemia	A	G	A	G	HBB:c.-138C>T	G to A
-i4000396	NA	input	Blooms Syndrome	I	D	TAGATTC	ATCTGA 	NA	NA
-rs12948217	NA	input	Canavan Disease	A	C	A	C (or T)	NA	NA
-rs28940279	NA	input	Canavan Disease	C	A	C	A	NA	NA
-rs28940574	NA	input	Canavan Disease	A	C	A	C	R141H	NA
-i5012680	NA	input	Congenital Disorder of Glycosylation Type 1a (PMM2 CDG)	A	G	A	G	F119L	NA
-i5012679	NA	input	Congenital Disorder of Glycosylation Type 1a (PMM2 CDG)	A	C	A	C	NA	NA
-i4000434	NA	input	Connexin 26 Related Sensorineural Hearing Loss	D	I	-	G	NA	NA
-i4000435	NA	input	Connexin 26 Related Sensorineural Hearing Loss	D	I	-	T	NA	NA
-i3000001	NA	input	Cystic Fibrosis	D	I	-	CTT	DeltaF508	CTT to —
-i4000292	NA	input	Cystic Fibrosis	D	I	-	ATC	DeltaI507	ATC to —
-i4000294	NA	input	Cystic Fibrosis	A	G	A	G	G85E	G to A
-i4000296	NA	input	Cystic Fibrosis	T	C	T	C	R334W	C to T
-i4000297	NA	input	Cystic Fibrosis	C	G	C or A	G	R347P/H	G to C,A
-i4000291	NA	input	Cystic Fibrosis	A	C	A	C	A455E	C to A
-i4000299	NA	input	Cystic Fibrosis	T	G	T	G	V520F	G to T
-i4000300	NA	input	Cystic Fibrosis	T	G	T	G	G542X	G to T
-i4000301	NA	input	Cystic Fibrosis	A	G	A	G	S549N	G to A
-i4000305	NA	input	Cystic Fibrosis	A	G	A	G	G551D	G to A
-i4000306	NA	input	Cystic Fibrosis	T	C	T	C	R553X	C to T
-i4000307	NA	input	Cystic Fibrosis	C	G	C	G	R560T	G to C
-i4000308	NA	input	Cystic Fibrosis	T	C	T	C	R1162X	C to T
-i4000309	NA	input	Cystic Fibrosis	A	G	A	G	W1282X	G to A
-i4000311	NA	input	Cystic Fibrosis	G	C	G	C	N1303K	C to G
-i4000313	NA	input	Cystic Fibrosis	D	I	-	TT	394delTT	TT to —
-i4000314	NA	input	Cystic Fibrosis	T	G	T	G	621+1G>T	G to T
-i4000315	NA	input	Cystic Fibrosis	T	G	T	G	711+1G>T	G to T
-i4000316	NA	input	Cystic Fibrosis	D	I	-	T	1078delT	T to —
-i4000317	NA	input	Cystic Fibrosis	A	G	A	G	1717-1G>A	G to A
-i4000318	NA	input	Cystic Fibrosis	A	G	A	G	1898+1G>A	G to A
-i4000320	NA	input	Cystic Fibrosis	A	G	A	G	2789+5G>A	G to A
-i4000321	NA	input	Cystic Fibrosis	A	G	A	G	3120+1G>A	G to A
-i4000322	NA	input	Cystic Fibrosis	D	I	-	C	3659delC	C to —
-i4000324	NA	input	Cystic Fibrosis	I	D	T	-	3905insT	— to T
-i4000325	NA	input	Cystic Fibrosis	T	C	T	C	3849+10kbC>T	C to T
-i5007145	NA	input	D Bifunctional Protein Deficiency	A	G	A	G	G16S	NA
-i5007146	NA	input	D Bifunctional Protein Deficiency	T	A	T	A	N457Y	NA
-i5003700	NA	input	Dihydrolipoamide Dehydrogenase Deficiency	T	G	T	G	G229C	NA
-rs3918290	NA	input	DPD Deficiency	T	C	T	C	NA	NA
-i4000397	NA	input	Factor XI Deficiency	A	G	A	G	IVS14+1G>A	NA
-i4000398	NA	input	Factor XI Deficiency	T	G	T	G	E117X	NA
-i4000399	NA	input	Factor XI Deficiency	C	T	C	T	F283L	NA
-i4000334	NA	input	Familial Dysautonomia	G	A	G	A	IVS20+6T>C	NA
-i4000400	NA	input	Familial Dysautonomia	G	C	G	C	R696P	NA
-rs5742904	NA	input	Familial Hypercholesterolemia Type B	T	C	T	C	R3500Q	C to T
-i4000339	NA	input	Familial Hypercholesterolemia Type B	A	G	A	G	R3500W	G to A
-rs12713559	NA	input	Familial Hypercholesterolemia Type B	A	G	A	G	R3531C	G to A
-i5012556	NA	input	Familial Hyperinsulinism (ABCC8 related)	D	I	-	GAA	F1387del	GAA to —
-i5012558	NA	input	Familial Hyperinsulinism (ABCC8 related)	T	C	T	C	3989-9G>A	C to T
-i5008233	NA	input	Familial Hyperinsulinism (ABCC8 related)	T	A	T	A	V187D	A to T
-i4000406	NA	input	Familial Mediterranean Fever	C	T	C	T	M694V	T to C
-rs28940579	NA	input	Familial Mediterranean Fever	G	A	G	A	V726A	A to G
-rs28940580	NA	input	Familial Mediterranean Fever	G	C	G	C	M680I, C to G	C to G
-rs28940578	NA	input	Familial Mediterranean Fever	T	C	T	C	M694I	C to T
-i4000409	NA	input	Familial Mediterranean Fever	A	C	A	C	A744S	C to A
-i4000403	NA	input	Familial Mediterranean Fever	C	G	C	G	F479L	G to C
-i4000410	NA	input	Familial Mediterranean Fever	T	C	T	C	R761H	C to T
-i4000407	NA	input	Familial Mediterranean Fever	C	T	C	T	K695R	T to C
-rs3743930	NA	input	Familial Mediterranean Fever	G	C	G	C	E148Q	C to G
-rs11466023	NA	input	Familial Mediterranean Fever	A	G	A	G	P369S	G to A
-i4000336	NA	input	Fanconi Anemia (FANCC related)	A	T	A	T	IVS4+4A>T	T to A
-i4000412	NA	input	Fanconi Anemia (FANCC related)	A	G	A	G	R548X	G to A
-i4000413	NA	input	Fanconi Anemia (FANCC related)	D	I	-	G	322delG	G to —
-rs1050828	NA	input	G6PD Deficiency	T	C	T	C	VAL68MET	NA
-rs1050829	NA	input	G6PD Deficiency	C	T	C	T	ASN126ASP	NA
-i4000415	NA	input	Gaucher Disease	C	T	C	T	N370S	T to C
-i4000417	NA	input	Gaucher Disease	I	D	G	-	84GG	— to G
-i4000419	NA	input	Gaucher Disease	A	C	A	C	V394L	C to A
-i3002486	NA	input	Glycogen Storage Disease Type 1a	T	C	T	C	Arg83Cys	NA
-i5012880	NA	input	Glycogen Storage Disease Type 1b	D	I	-	AG	1042_1043delCT	NA
-i5012878	NA	input	Glycogen Storage Disease Type 1b	G	A	G	A	W118R	NA
-i5012660	NA	input	GRACILE Syndrome	G	A	G	A	S78G	NA
-rs1800562	NA	input	Hemochromatosis (HFE related)	A	G	A	G	NA	NA
-rs1799945	NA	input	Hemochromatosis (HFE related)	G	C	G	C	NA	NA
-i3002468	NA	input	Hemochromatosis (HFE related)	T	A	T	A	NA	NA
-rs1800546	NA	input	Hereditary Fructose Intolerance	G	C	G	C	A149P	C to G
-i5008215	NA	input	Hereditary Fructose Intolerance	T	G	T	G	A174D	G to T
-i5012664	NA	input	Hereditary Fructose Intolerance	C	G	C	G	N334K	G to C
-i5012665	NA	input	Hereditary Fructose Intolerance	D	I	-	GTTT	delta4E4	GTTT to —
-rs36212066	NA	input	Hypertrophic Cardiomyopathy (MYBPC3 25bp deletion)	D	I	-	normal	25bpdel	normal to —
-i5012672	NA	input	Junctional Epidermolysis Bullosa (LAMB3 related)	A	G	A	G	R635X	G to A
-i5012669	NA	input	Junctional Epidermolysis Bullosa (LAMB3 related)	A	G	A	G	R42X	G to A
-i5012671	NA	input	Junctional Epidermolysis Bullosa (LAMB3 related)	A	G	A	G	Q243X	G to A
-i5012749	NA	input	Leigh Syndrome, French Canadian Type (LSFC)	A	G	A	G	A354V	NA
-rs28933693	NA	input	Limb girdle Muscular Dystrophy	T	C	T	C	LGMD2D	C to T
-rs28936383	NA	input	Limb girdle Muscular Dystrophy	C	G	C	G	LGMD2E	G to C
-rs28937900	NA	input	Limb girdle Muscular Dystrophy	A	C	A	C	LGMD2I	C to A
-i3002808	NA	input	Maple Syrup Urine Disease Type 1B	C	G	C	G	R183P	G to C
-i4000422	NA	input	Maple Syrup Urine Disease Type 1B	A	G	A	G	G278S	G to A
-i5012759	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	G	A	G	A	K304E	A to G
-i5012758	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	C	T	C	T	Y42H	T to C
-i5012760	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	T	C	T	C	R181C	C to T
-i5012755	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	T	C	T	C	L59F	C to T
-i5003117	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	T	C	T	C	S220L	C to T
-i4000425	NA	input	Mucolipidosis IV	G	A	G	A	IVS3-2A>G	NA
-i5012678	NA	input	Neuronal Ceroid Lipofuscinosis (CLN5 related)	D	I	-	AT	Y392X	NA
-i5012624	NA	input	Neuronal Ceroid Lipofuscinosis (PPT1 related)	A	G	A	G	R151X	G to A
-i5012622	NA	input	Neuronal Ceroid Lipofuscinosis (PPT1 related)	G	T	G	T	T75P	T to G
-i5012623	NA	input	Neuronal Ceroid Lipofuscinosis (PPT1 related)	A	T	A	T	R122W	T to A
-i4000381	NA	input	Niemann Pick Disease Type A	C	T	C	T	L302P	T to C
-i4000383	NA	input	Niemann Pick Disease Type A	D	I	-	G	fsP330	G to —
-i4000430	NA	input	Niemann Pick Disease Type A	T	G	T	G	R496L	G to T
-i5012770	NA	input	Nijmegen Breakage Syndrome	D	I	-	TTTGT 	657del5	NA
-i5012616	NA	input	Pendred Syndrome	C	T	C	T	L236P	T to C
-i5000003	NA	input	Pendred Syndrome	G	A	G	A	E384G	A to G
-i5012618	NA	input	Pendred Syndrome	C	A	C	A	T416P	A to C
-i5000693	NA	input	Pendred Syndrome	T	G	T	G	V138F	G to T
-i5000002	NA	input	Pendred Syndrome	G	A	G	A	H723R	A to G
-i5000696	NA	input	Pendred Syndrome	G	T	G	T	L445W	T to G
-i4000470	NA	input	Phenylketonuria	C	G	C	G	F39L	G to C
-rs5030841	NA	input	Phenylketonuria	G	A	G	A	L48S	A to G
-i4000472	NA	input	Phenylketonuria	G	A	G	A	I65T	A to G
-i4000473	NA	input	Phenylketonuria	A	G	A	G	R111X	G to A
-i3003397	NA	input	Phenylketonuria	T	C	T	C	R158Q	C to T
-i4000481	NA	input	Phenylketonuria	T	C	T	C	R243Q	C to T
-i3003398	NA	input	Phenylketonuria	A	G	A	G	R243X	G to A
-i3003399	NA	input	Phenylketonuria	A	G	A	G	R252W	G to A
-i4000474	NA	input	Phenylketonuria	T	C	T	C	A259T	C to T
-rs5030849	NA	input	Phenylketonuria	T	C	T	C	R261Q	C to T
-i3003400	NA	input	Phenylketonuria	A	G	A	G	R261X	G to A
-i4000467	NA	input	Phenylketonuria	A	C	A	C	G272X	C to A
-i4000478	NA	input	Phenylketonuria	T	C	T	C	E280K	C to T
-i3003401	NA	input	Phenylketonuria	A	G	A	G	P281L	G to A
-i4000475	NA	input	Phenylketonuria	C	A	C	A	F299C	A to C
-rs5030853	NA	input	Phenylketonuria	A	C	A	C	A300S	C to A
-i4000476	NA	input	Phenylketonuria	C	G	C	G	L348V	G to C
-i4000479	NA	input	Phenylketonuria	C	G	C	G	Y356X	G to C
-i3003403	NA	input	Phenylketonuria	C	T	C	T	E390G	T to C
-rs5030857	NA	input	Phenylketonuria	A	G	A	G	A403V	G to A
-rs5030858	NA	input	Phenylketonuria	A	G	A	G	R408W	G to A
-i3003404	NA	input	Phenylketonuria	T	C	T	C	R408Q	C to T
-rs28934899	NA	input	Phenylketonuria	G	C	G	C	R413P	C to G
-i3003405	NA	input	Phenylketonuria	C	T	C	T	Y414C	T to C
-rs5030855	NA	input	Phenylketonuria	T	C	T	C	IVS10-11G>A	C to T
-rs5030861	NA	input	Phenylketonuria	T	C	T	C	IVS12+1G>A	C to T
-rs5030852	NA	input	Phenylketonuria	T	C	T	C	IVS7+1G>A	C to T
-i5012628	NA	input	Primary Hyperoxaluria Type 2 (PH2)	D	I	-	G	103delG	G to —
-i5012629	NA	input	Primary Hyperoxaluria Type 2 (PH2)	D	I	-	AAGT	c.404+3_6delAAGT	AAGT to —
-i3002517	NA	input	Rhizomelic Chondrodysplasia Punctata Type 1 (RCDP1)	A	T	A	T	NA	NA
-i5012634	NA	input	Salla Disease	A	G	A	G	R39C	NA
-i3003137	NA	input	Sickle Cell Anemia	A	T	A	T	rs334	NA
-rs72547571	NA	input	Sjögren Larsson Syndrome	T	C	T	C	P315S	NA
-i4000436	NA	input	Tay Sachs Disease	T	C	T	C	G269S	C to T
-i4000391	NA	input	Tay Sachs Disease	I	D	TATC	-	1278insTATC	— to TATC
-i4000393	NA	input	Tay Sachs Disease	G	C	G	C	IVS12+1G>C	C to G
-i4000438	NA	input	Tay Sachs Disease	T	C	T	C	IVS9+1G>A	C to T
-i4000440	NA	input	Tay Sachs Disease	A	G	A	G	R249W	G to A
-i4000442	NA	input	Tay Sachs Disease	A	G	A	G	R247W	G to A
-i4000446	NA	input	Torsion Dystonia	D	I	-	CTC	deltaE302	NA
-i3002759	NA	input	TTR Related Cardiac Amyloidosis	A	G	A	G	V122I	NA
-i3002758	NA	input	TTR Related Familial Amyloid Polyneuropathy	A	G	A	G	Val30Met, p.Val50Met, c.148G>A	NA
-i5004213	NA	input	TTR Related Familial Amyloid Polyneuropathy	G	A	G	A	Thr60Ala, p.Thr80Ala, c.238A>G	NA
-i5012862	NA	input	Tyrosinemia Type I	A	G	A	G	W262X	G to A
-i5012861	NA	input	Tyrosinemia Type I	T	C	T	C	P261L	C to T
-i5012865	NA	input	Tyrosinemia Type I	A	G	A	G	IVS12+5G>A	G to A
-i5012867	NA	input	Tyrosinemia Type I	T	G	T	G	IVS6-1G>T	G to T
-i5012864	NA	input	Tyrosinemia Type I	T	G	T	G	E357X	G to T
-i5012804	NA	input	Usher Syndrome Type I (PCDH15 related)	A	G	A	G	R245X	NA
-i4990151	NA	input	Usher Syndrome Type III	C	A	C	A	N48K	NA
-i5012688	NA	input	Zellweger Syndrome Spectrum	T	C	T	C	G843D	NA
+SNP	chrom_start	chr_name	disease_name	risk_allele	non_risk_allele	alt_risk_allele	alt_non_risk_allele	alt_name	original_allele_naming	comment
+i5012573	NA	input	Agenesis of the Corpus Callosum with Peripheral Neuropathy (ACCPN)	D	I	-	C	NA	NA	original 23andme array input
+i5012575	NA	input	Agenesis of the Corpus Callosum with Peripheral Neuropathy (ACCPN)	A	G	A	G	NA	NA	original 23andme array input
+rs28929474	NA	input	Alpha 1 Antitrypsin Deficiency	T	C	T	C	NA	NA	original 23andme array input
+rs17580	NA	input	Alpha 1 Antitrypsin Deficiency	A	T	A	T	NA	NA	original 23andme array input
+i5012578	NA	input	ARSACS	D	I	-	A	NA	NA	original 23andme array input
+rs28939383	NA	input	Autosomal Recessive Polycystic Kidney Disease	A	G	A	G	NA	NA	original 23andme array input
+i5000047	NA	input	Autosomal Recessive Polycystic Kidney Disease	C	T	C	T	NA	NA	original 23andme array input
+i5000045	NA	input	Autosomal Recessive Polycystic Kidney Disease	G	A	G	A	NA	NA	original 23andme array input
+i5000043	NA	input	Autosomal Recessive Polycystic Kidney Disease	G	A	G	A	NA	NA	original 23andme array input
+i5012610	NA	input	Autosomal Recessive Polycystic Kidney Disease	D	I	-	T	NA	NA	original 23andme array input
+i5012612	NA	input	Autosomal Recessive Polycystic Kidney Disease	A	G	A	G	NA	NA	original 23andme array input
+i3003137	NA	input	Beta Thalassemia	A	T	A	T	Hb S	T to A	original 23andme array input
+rs33950507	NA	input	Beta Thalassemia	T	C	T	C	Hb E	C to T	original 23andme array input
+rs33930165	NA	input	Beta Thalassemia	T	C	T	C	Hb C	C to T	original 23andme array input
+rs11549407	NA	input	Beta Thalassemia	A	G	A	G	HBB:c.118C>T	G to A	original 23andme array input
+rs33986703	NA	input	Beta Thalassemia	A	T	A	T	HBB:c.52A>T	T to A	original 23andme array input
+rs63750783	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.47G>A	C to T	original 23andme array input
+rs33971440	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.92+1G>A	C to T	original 23andme array input
+rs34716011	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.48G>A	C to T	original 23andme array input
+rs33960103	NA	input	Beta Thalassemia	G	C	G	C	HBB:c.92G>C	C to G	original 23andme array input
+rs35004220	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.93-21G>A	C to T	original 23andme array input
+rs34451549	NA	input	Beta Thalassemia	A	G	A	G	HBB:c.316-197C>T	G to A	original 23andme array input
+rs34690599	NA	input	Beta Thalassemia	C	G	C	G	HBB:c.316-106C>G	G to C	original 23andme array input
+rs35724775	NA	input	Beta Thalassemia	G	A	G	A	HBB:c.92+6T>C	A to G	original 23andme array input
+rs33915217	NA	input	Beta Thalassemia	G	C	G	C	HBB:c.92+5G>C	C to G	original 23andme array input
+rs33985472	NA	input	Beta Thalassemia	C	T	C	T	HBB:c.*+113A>G	T to C	original 23andme array input
+rs34598529	NA	input	Beta Thalassemia	C	T	C	T	HBB:c.-79A>G	T to C	original 23andme array input
+rs33944208	NA	input	Beta Thalassemia	A	G	A	G	HBB:c.-138C>T	G to A	original 23andme array input
+i4000396	NA	input	Blooms Syndrome	I	D	TAGATTC	ATCTGA 	NA	NA	original 23andme array input
+rs12948217	NA	input	Canavan Disease	A	C	A	C (or T)	NA	NA	original 23andme array input
+rs28940279	NA	input	Canavan Disease	C	A	C	A	NA	NA	original 23andme array input
+rs28940574	NA	input	Canavan Disease	A	C	A	C	R141H	NA	original 23andme array input
+i5012680	NA	input	Congenital Disorder of Glycosylation Type 1a (PMM2 CDG)	A	G	A	G	F119L	NA	original 23andme array input
+i5012679	NA	input	Congenital Disorder of Glycosylation Type 1a (PMM2 CDG)	A	C	A	C	NA	NA	original 23andme array input
+i4000434	NA	input	Connexin 26 Related Sensorineural Hearing Loss	D	I	-	G	NA	NA	original 23andme array input
+i4000435	NA	input	Connexin 26 Related Sensorineural Hearing Loss	D	I	-	T	NA	NA	original 23andme array input
+i3000001	NA	input	Cystic Fibrosis	D	I	-	CTT	DeltaF508	CTT to —	original 23andme array input
+i4000292	NA	input	Cystic Fibrosis	D	I	-	ATC	DeltaI507	ATC to —	original 23andme array input
+i4000294	NA	input	Cystic Fibrosis	A	G	A	G	G85E	G to A	original 23andme array input
+i4000296	NA	input	Cystic Fibrosis	T	C	T	C	R334W	C to T	original 23andme array input
+i4000297	NA	input	Cystic Fibrosis	C	G	C or A	G	R347P/H	G to C,A	original 23andme array input
+i4000291	NA	input	Cystic Fibrosis	A	C	A	C	A455E	C to A	original 23andme array input
+i4000299	NA	input	Cystic Fibrosis	T	G	T	G	V520F	G to T	original 23andme array input
+i4000300	NA	input	Cystic Fibrosis	T	G	T	G	G542X	G to T	original 23andme array input
+i4000301	NA	input	Cystic Fibrosis	A	G	A	G	S549N	G to A	original 23andme array input
+i4000305	NA	input	Cystic Fibrosis	A	G	A	G	G551D	G to A	original 23andme array input
+i4000306	NA	input	Cystic Fibrosis	T	C	T	C	R553X	C to T	original 23andme array input
+i4000307	NA	input	Cystic Fibrosis	C	G	C	G	R560T	G to C	original 23andme array input
+i4000308	NA	input	Cystic Fibrosis	T	C	T	C	R1162X	C to T	original 23andme array input
+i4000309	NA	input	Cystic Fibrosis	A	G	A	G	W1282X	G to A	original 23andme array input
+i4000311	NA	input	Cystic Fibrosis	G	C	G	C	N1303K	C to G	original 23andme array input
+i4000313	NA	input	Cystic Fibrosis	D	I	-	TT	394delTT	TT to —	original 23andme array input
+i4000314	NA	input	Cystic Fibrosis	T	G	T	G	621+1G>T	G to T	original 23andme array input
+i4000315	NA	input	Cystic Fibrosis	T	G	T	G	711+1G>T	G to T	original 23andme array input
+i4000316	NA	input	Cystic Fibrosis	D	I	-	T	1078delT	T to —	original 23andme array input
+i4000317	NA	input	Cystic Fibrosis	A	G	A	G	1717-1G>A	G to A	original 23andme array input
+i4000318	NA	input	Cystic Fibrosis	A	G	A	G	1898+1G>A	G to A	original 23andme array input
+i4000320	NA	input	Cystic Fibrosis	A	G	A	G	2789+5G>A	G to A	original 23andme array input
+i4000321	NA	input	Cystic Fibrosis	A	G	A	G	3120+1G>A	G to A	original 23andme array input
+i4000322	NA	input	Cystic Fibrosis	D	I	-	C	3659delC	C to —	original 23andme array input
+i4000324	NA	input	Cystic Fibrosis	I	D	T	-	3905insT	— to T	original 23andme array input
+i4000325	NA	input	Cystic Fibrosis	T	C	T	C	3849+10kbC>T	C to T	original 23andme array input
+i5007145	NA	input	D Bifunctional Protein Deficiency	A	G	A	G	G16S	NA	original 23andme array input
+i5007146	NA	input	D Bifunctional Protein Deficiency	T	A	T	A	N457Y	NA	original 23andme array input
+i5003700	NA	input	Dihydrolipoamide Dehydrogenase Deficiency	T	G	T	G	G229C	NA	original 23andme array input
+rs3918290	NA	input	DPD Deficiency	T	C	T	C	NA	NA	original 23andme array input
+i4000397	NA	input	Factor XI Deficiency	A	G	A	G	IVS14+1G>A	NA	original 23andme array input
+i4000398	NA	input	Factor XI Deficiency	T	G	T	G	E117X	NA	original 23andme array input
+i4000399	NA	input	Factor XI Deficiency	C	T	C	T	F283L	NA	original 23andme array input
+i4000334	NA	input	Familial Dysautonomia	G	A	G	A	IVS20+6T>C	NA	original 23andme array input
+i4000400	NA	input	Familial Dysautonomia	G	C	G	C	R696P	NA	original 23andme array input
+rs5742904	NA	input	Familial Hypercholesterolemia Type B	T	C	T	C	R3500Q	C to T	original 23andme array input
+i4000339	NA	input	Familial Hypercholesterolemia Type B	A	G	A	G	R3500W	G to A	original 23andme array input
+rs12713559	NA	input	Familial Hypercholesterolemia Type B	A	G	A	G	R3531C	G to A	original 23andme array input
+i5012556	NA	input	Familial Hyperinsulinism (ABCC8 related)	D	I	-	GAA	F1387del	GAA to —	original 23andme array input
+i5012558	NA	input	Familial Hyperinsulinism (ABCC8 related)	T	C	T	C	3989-9G>A	C to T	original 23andme array input
+i5008233	NA	input	Familial Hyperinsulinism (ABCC8 related)	T	A	T	A	V187D	A to T	original 23andme array input
+i4000406	NA	input	Familial Mediterranean Fever	C	T	C	T	M694V	T to C	original 23andme array input
+rs28940579	NA	input	Familial Mediterranean Fever	G	A	G	A	V726A	A to G	original 23andme array input
+rs28940580	NA	input	Familial Mediterranean Fever	G	C	G	C	M680I, C to G	C to G	original 23andme array input
+rs28940578	NA	input	Familial Mediterranean Fever	T	C	T	C	M694I	C to T	original 23andme array input
+i4000409	NA	input	Familial Mediterranean Fever	A	C	A	C	A744S	C to A	original 23andme array input
+i4000403	NA	input	Familial Mediterranean Fever	C	G	C	G	F479L	G to C	original 23andme array input
+i4000410	NA	input	Familial Mediterranean Fever	T	C	T	C	R761H	C to T	original 23andme array input
+i4000407	NA	input	Familial Mediterranean Fever	C	T	C	T	K695R	T to C	original 23andme array input
+rs3743930	NA	input	Familial Mediterranean Fever	G	C	G	C	E148Q	C to G	original 23andme array input
+rs11466023	NA	input	Familial Mediterranean Fever	A	G	A	G	P369S	G to A	original 23andme array input
+i4000336	NA	input	Fanconi Anemia (FANCC related)	A	T	A	T	IVS4+4A>T	T to A	original 23andme array input
+i4000412	NA	input	Fanconi Anemia (FANCC related)	A	G	A	G	R548X	G to A	original 23andme array input
+i4000413	NA	input	Fanconi Anemia (FANCC related)	D	I	-	G	322delG	G to —	original 23andme array input
+rs1050828	NA	input	G6PD Deficiency	T	C	T	C	VAL68MET	NA	original 23andme array input
+rs1050829	NA	input	G6PD Deficiency	C	T	C	T	ASN126ASP	NA	original 23andme array input
+i4000415	NA	input	Gaucher Disease	C	T	C	T	N370S	T to C	original 23andme array input
+i4000417	NA	input	Gaucher Disease	I	D	G	-	84GG	— to G	original 23andme array input
+i4000419	NA	input	Gaucher Disease	A	C	A	C	V394L	C to A	original 23andme array input
+i3002486	NA	input	Glycogen Storage Disease Type 1a	T	C	T	C	Arg83Cys	NA	original 23andme array input
+i5012880	NA	input	Glycogen Storage Disease Type 1b	D	I	-	AG	1042_1043delCT	NA	original 23andme array input
+i5012878	NA	input	Glycogen Storage Disease Type 1b	G	A	G	A	W118R	NA	original 23andme array input
+i5012660	NA	input	GRACILE Syndrome	G	A	G	A	S78G	NA	original 23andme array input
+rs1800562	NA	input	Hemochromatosis (HFE related)	A	G	A	G	NA	NA	original 23andme array input
+rs1799945	NA	input	Hemochromatosis (HFE related)	G	C	G	C	NA	NA	original 23andme array input
+i3002468	NA	input	Hemochromatosis (HFE related)	T	A	T	A	NA	NA	original 23andme array input
+rs1800546	NA	input	Hereditary Fructose Intolerance	G	C	G	C	A149P	C to G	original 23andme array input
+i5008215	NA	input	Hereditary Fructose Intolerance	T	G	T	G	A174D	G to T	original 23andme array input
+i5012664	NA	input	Hereditary Fructose Intolerance	C	G	C	G	N334K	G to C	original 23andme array input
+i5012665	NA	input	Hereditary Fructose Intolerance	D	I	-	GTTT	delta4E4	GTTT to —	original 23andme array input
+rs36212066	NA	input	Hypertrophic Cardiomyopathy (MYBPC3 25bp deletion)	D	I	-	normal	25bpdel	normal to —	original 23andme array input
+i5012672	NA	input	Junctional Epidermolysis Bullosa (LAMB3 related)	A	G	A	G	R635X	G to A	original 23andme array input
+i5012669	NA	input	Junctional Epidermolysis Bullosa (LAMB3 related)	A	G	A	G	R42X	G to A	original 23andme array input
+i5012671	NA	input	Junctional Epidermolysis Bullosa (LAMB3 related)	A	G	A	G	Q243X	G to A	original 23andme array input
+i5012749	NA	input	Leigh Syndrome, French Canadian Type (LSFC)	A	G	A	G	A354V	NA	original 23andme array input
+rs28933693	NA	input	Limb girdle Muscular Dystrophy	T	C	T	C	LGMD2D	C to T	original 23andme array input
+rs28936383	NA	input	Limb girdle Muscular Dystrophy	C	G	C	G	LGMD2E	G to C	original 23andme array input
+rs28937900	NA	input	Limb girdle Muscular Dystrophy	A	C	A	C	LGMD2I	C to A	original 23andme array input
+i3002808	NA	input	Maple Syrup Urine Disease Type 1B	C	G	C	G	R183P	G to C	original 23andme array input
+i4000422	NA	input	Maple Syrup Urine Disease Type 1B	A	G	A	G	G278S	G to A	original 23andme array input
+i5012759	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	G	A	G	A	K304E	A to G	original 23andme array input
+i5012758	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	C	T	C	T	Y42H	T to C	original 23andme array input
+i5012760	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	T	C	T	C	R181C	C to T	original 23andme array input
+i5012755	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	T	C	T	C	L59F	C to T	original 23andme array input
+i5003117	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	T	C	T	C	S220L	C to T	original 23andme array input
+i4000425	NA	input	Mucolipidosis IV	G	A	G	A	IVS3-2A>G	NA	original 23andme array input
+i5012678	NA	input	Neuronal Ceroid Lipofuscinosis (CLN5 related)	D	I	-	AT	Y392X	NA	original 23andme array input
+i5012624	NA	input	Neuronal Ceroid Lipofuscinosis (PPT1 related)	A	G	A	G	R151X	G to A	original 23andme array input
+i5012622	NA	input	Neuronal Ceroid Lipofuscinosis (PPT1 related)	G	T	G	T	T75P	T to G	original 23andme array input
+i5012623	NA	input	Neuronal Ceroid Lipofuscinosis (PPT1 related)	A	T	A	T	R122W	T to A	original 23andme array input
+i4000381	NA	input	Niemann Pick Disease Type A	C	T	C	T	L302P	T to C	original 23andme array input
+i4000383	NA	input	Niemann Pick Disease Type A	D	I	-	G	fsP330	G to —	original 23andme array input
+i4000430	NA	input	Niemann Pick Disease Type A	T	G	T	G	R496L	G to T	original 23andme array input
+i5012770	NA	input	Nijmegen Breakage Syndrome	D	I	-	TTTGT 	657del5	NA	original 23andme array input
+i5012616	NA	input	Pendred Syndrome	C	T	C	T	L236P	T to C	original 23andme array input
+i5000003	NA	input	Pendred Syndrome	G	A	G	A	E384G	A to G	original 23andme array input
+i5012618	NA	input	Pendred Syndrome	C	A	C	A	T416P	A to C	original 23andme array input
+i5000693	NA	input	Pendred Syndrome	T	G	T	G	V138F	G to T	original 23andme array input
+i5000002	NA	input	Pendred Syndrome	G	A	G	A	H723R	A to G	original 23andme array input
+i5000696	NA	input	Pendred Syndrome	G	T	G	T	L445W	T to G	original 23andme array input
+i4000470	NA	input	Phenylketonuria	C	G	C	G	F39L	G to C	original 23andme array input
+rs5030841	NA	input	Phenylketonuria	G	A	G	A	L48S	A to G	original 23andme array input
+i4000472	NA	input	Phenylketonuria	G	A	G	A	I65T	A to G	original 23andme array input
+i4000473	NA	input	Phenylketonuria	A	G	A	G	R111X	G to A	original 23andme array input
+i3003397	NA	input	Phenylketonuria	T	C	T	C	R158Q	C to T	original 23andme array input
+i4000481	NA	input	Phenylketonuria	T	C	T	C	R243Q	C to T	original 23andme array input
+i3003398	NA	input	Phenylketonuria	A	G	A	G	R243X	G to A	original 23andme array input
+i3003399	NA	input	Phenylketonuria	A	G	A	G	R252W	G to A	original 23andme array input
+i4000474	NA	input	Phenylketonuria	T	C	T	C	A259T	C to T	original 23andme array input
+rs5030849	NA	input	Phenylketonuria	T	C	T	C	R261Q	C to T	original 23andme array input
+i3003400	NA	input	Phenylketonuria	A	G	A	G	R261X	G to A	original 23andme array input
+i4000467	NA	input	Phenylketonuria	A	C	A	C	G272X	C to A	original 23andme array input
+i4000478	NA	input	Phenylketonuria	T	C	T	C	E280K	C to T	original 23andme array input
+i3003401	NA	input	Phenylketonuria	A	G	A	G	P281L	G to A	original 23andme array input
+i4000475	NA	input	Phenylketonuria	C	A	C	A	F299C	A to C	original 23andme array input
+rs5030853	NA	input	Phenylketonuria	A	C	A	C	A300S	C to A	original 23andme array input
+i4000476	NA	input	Phenylketonuria	C	G	C	G	L348V	G to C	original 23andme array input
+i4000479	NA	input	Phenylketonuria	C	G	C	G	Y356X	G to C	original 23andme array input
+i3003403	NA	input	Phenylketonuria	C	T	C	T	E390G	T to C	original 23andme array input
+rs5030857	NA	input	Phenylketonuria	A	G	A	G	A403V	G to A	original 23andme array input
+rs5030858	NA	input	Phenylketonuria	A	G	A	G	R408W	G to A	original 23andme array input
+i3003404	NA	input	Phenylketonuria	T	C	T	C	R408Q	C to T	original 23andme array input
+rs28934899	NA	input	Phenylketonuria	G	C	G	C	R413P	C to G	original 23andme array input
+i3003405	NA	input	Phenylketonuria	C	T	C	T	Y414C	T to C	original 23andme array input
+rs5030855	NA	input	Phenylketonuria	T	C	T	C	IVS10-11G>A	C to T	original 23andme array input
+rs5030861	NA	input	Phenylketonuria	T	C	T	C	IVS12+1G>A	C to T	original 23andme array input
+rs5030852	NA	input	Phenylketonuria	T	C	T	C	IVS7+1G>A	C to T	original 23andme array input
+i5012628	NA	input	Primary Hyperoxaluria Type 2 (PH2)	D	I	-	G	103delG	G to —	original 23andme array input
+i5012629	NA	input	Primary Hyperoxaluria Type 2 (PH2)	D	I	-	AAGT	c.404+3_6delAAGT	AAGT to —	original 23andme array input
+i3002517	NA	input	Rhizomelic Chondrodysplasia Punctata Type 1 (RCDP1)	A	T	A	T	NA	NA	original 23andme array input
+i5012634	NA	input	Salla Disease	A	G	A	G	R39C	NA	original 23andme array input
+i3003137	NA	input	Sickle Cell Anemia	A	T	A	T	rs334	NA	original 23andme array input
+rs72547571	NA	input	Sjögren Larsson Syndrome	T	C	T	C	P315S	NA	original 23andme array input
+i4000436	NA	input	Tay Sachs Disease	T	C	T	C	G269S	C to T	original 23andme array input
+i4000391	NA	input	Tay Sachs Disease	I	D	TATC	-	1278insTATC	— to TATC	original 23andme array input
+i4000393	NA	input	Tay Sachs Disease	G	C	G	C	IVS12+1G>C	C to G	original 23andme array input
+i4000438	NA	input	Tay Sachs Disease	T	C	T	C	IVS9+1G>A	C to T	original 23andme array input
+i4000440	NA	input	Tay Sachs Disease	A	G	A	G	R249W	G to A	original 23andme array input
+i4000442	NA	input	Tay Sachs Disease	A	G	A	G	R247W	G to A	original 23andme array input
+i4000446	NA	input	Torsion Dystonia	D	I	-	CTC	deltaE302	NA	original 23andme array input
+i3002759	NA	input	TTR Related Cardiac Amyloidosis	A	G	A	G	V122I	NA	original 23andme array input
+i3002758	NA	input	TTR Related Familial Amyloid Polyneuropathy	A	G	A	G	Val30Met, p.Val50Met, c.148G>A	NA	original 23andme array input
+i5004213	NA	input	TTR Related Familial Amyloid Polyneuropathy	G	A	G	A	Thr60Ala, p.Thr80Ala, c.238A>G	NA	original 23andme array input
+i5012862	NA	input	Tyrosinemia Type I	A	G	A	G	W262X	G to A	original 23andme array input
+i5012861	NA	input	Tyrosinemia Type I	T	C	T	C	P261L	C to T	original 23andme array input
+i5012865	NA	input	Tyrosinemia Type I	A	G	A	G	IVS12+5G>A	G to A	original 23andme array input
+i5012867	NA	input	Tyrosinemia Type I	T	G	T	G	IVS6-1G>T	G to T	original 23andme array input
+i5012864	NA	input	Tyrosinemia Type I	T	G	T	G	E357X	G to T	original 23andme array input
+i5012804	NA	input	Usher Syndrome Type I (PCDH15 related)	A	G	A	G	R245X	NA	original 23andme array input
+i4990151	NA	input	Usher Syndrome Type III	C	A	C	A	N48K	NA	original 23andme array input
+i5012688	NA	input	Zellweger Syndrome Spectrum	T	C	T	C	G843D	NA	original 23andme array input
+rs121908428	NA	input	Agenesis of the Corpus Callosum with Peripheral Neuropathy (ACCPN)	A	G	A	G	NA	NA	stand-in for i5012575
+rs28929474	NA	input	Alpha 1 Antitrypsin Deficiency	T	C	T	C	NA	NA	imputation-derived source for rs28929474
+rs17580	NA	input	Alpha 1 Antitrypsin Deficiency	A	T	A	T	NA	NA	imputation-derived source for rs17580
+rs281865117	NA	input	ARSACS	D	I	-	A	NA	NA	stand-in for i5012578
+rs28939383	NA	input	Autosomal Recessive Polycystic Kidney Disease	A	G	A	G	NA	NA	imputation-derived source for rs28939383
+rs369925690	NA	input	Autosomal Recessive Polycystic Kidney Disease	C	T	C	T	NA	NA	stand-in for i5000047
+rs760222236	NA	input	Autosomal Recessive Polycystic Kidney Disease	G	A	G	A	NA	NA	stand-in for i5000045
+rs200511261	NA	input	Autosomal Recessive Polycystic Kidney Disease	G	A	G	A	NA	NA	stand-in for i5000043
+rs398124502	NA	input	Autosomal Recessive Polycystic Kidney Disease	D	I	-	T	NA	NA	stand-in for i5012610
+rs137852949	NA	input	Autosomal Recessive Polycystic Kidney Disease	A	G	A	G	NA	NA	stand-in for i5012612
+rs334	NA	input	Beta Thalassemia	A	T	A	T	Hb S	T to A	stand-in for i3003137
+rs33950507	NA	input	Beta Thalassemia	T	C	T	C	Hb E	C to T	imputation-derived source for rs33950507
+rs33930165	NA	input	Beta Thalassemia	T	C	T	C	Hb C	C to T	imputation-derived source for rs33930165
+rs11549407	NA	input	Beta Thalassemia	A	G	A	G	HBB:c.118C>T	G to A	imputation-derived source for rs11549407
+rs33986703	NA	input	Beta Thalassemia	A	T	A	T	HBB:c.52A>T	T to A	imputation-derived source for rs33986703
+rs63750783	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.47G>A	C to T	imputation-derived source for rs63750783
+rs33971440	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.92+1G>A	C to T	imputation-derived source for rs33971440
+rs34716011	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.48G>A	C to T	imputation-derived source for rs34716011
+rs33960103	NA	input	Beta Thalassemia	G	C	G	C	HBB:c.92G>C	C to G	imputation-derived source for rs33960103
+rs35004220	NA	input	Beta Thalassemia	T	C	T	C	HBB:c.93-21G>A	C to T	imputation-derived source for rs35004220
+rs34451549	NA	input	Beta Thalassemia	A	G	A	G	HBB:c.316-197C>T	G to A	imputation-derived source for rs34451549
+rs34690599	NA	input	Beta Thalassemia	C	G	C	G	HBB:c.316-106C>G	G to C	imputation-derived source for rs34690599
+rs35724775	NA	input	Beta Thalassemia	G	A	G	A	HBB:c.92+6T>C	A to G	imputation-derived source for rs35724775
+rs33915217	NA	input	Beta Thalassemia	G	C	G	C	HBB:c.92+5G>C	C to G	imputation-derived source for rs33915217
+rs33985472	NA	input	Beta Thalassemia	C	T	C	T	HBB:c.*+113A>G	T to C	imputation-derived source for rs33985472
+rs34598529	NA	input	Beta Thalassemia	C	T	C	T	HBB:c.-79A>G	T to C	imputation-derived source for rs34598529
+rs33944208	NA	input	Beta Thalassemia	A	G	A	G	HBB:c.-138C>T	G to A	imputation-derived source for rs33944208
+rs113993962	NA	input	Blooms Syndrome	I	D	TAGATTC	ATCTGA 	NA	NA	stand-in for i4000396
+rs12948217	NA	input	Canavan Disease	A	C	A	C (or T)	NA	NA	imputation-derived source for rs12948217
+rs28940279	NA	input	Canavan Disease	C	A	C	A	NA	NA	imputation-derived source for rs28940279
+rs28940574	NA	input	Canavan Disease	A	C	A	C	R141H	NA	imputation-derived source for rs28940574
+rs28936415	NA	input	Congenital Disorder of Glycosylation Type 1a (PMM2 CDG)	A	G	A	G	F119L	NA	stand-in for i5012680
+rs80338939	NA	input	Connexin 26 Related Sensorineural Hearing Loss	D	I	-	G	NA	NA	stand-in for i4000434
+rs80338942	NA	input	Connexin 26 Related Sensorineural Hearing Loss	D	I	-	T	NA	NA	stand-in for i4000435
+rs113993960	NA	input	Cystic Fibrosis	D	I	-	CTT	DeltaF508	CTT to —	stand-in for i3000001
+rs121908745	NA	input	Cystic Fibrosis	D	I	-	ATC	DeltaI507	ATC to —	stand-in for i4000292
+rs75961395	NA	input	Cystic Fibrosis	A	G	A	G	G85E	G to A	stand-in for i4000294
+rs121909011	NA	input	Cystic Fibrosis	T	C	T	C	R334W	C to T	stand-in for i4000296
+rs77932196	NA	input	Cystic Fibrosis	C	G	C or A	G	R347P/H	G to C,A	stand-in for i4000297
+rs74551128	NA	input	Cystic Fibrosis	A	C	A	C	A455E	C to A	stand-in for i4000291
+rs77646904	NA	input	Cystic Fibrosis	T	G	T	G	V520F	G to T	stand-in for i4000299
+rs113993959	NA	input	Cystic Fibrosis	T	G	T	G	G542X	G to T	stand-in for i4000300
+rs121908755	NA	input	Cystic Fibrosis	A	G	A	G	S549N	G to A	stand-in for i4000301
+rs75527207	NA	input	Cystic Fibrosis	A	G	A	G	G551D	G to A	stand-in for i4000305
+rs74597325	NA	input	Cystic Fibrosis	T	C	T	C	R553X	C to T	stand-in for i4000306
+rs80055610	NA	input	Cystic Fibrosis	C	G	C	G	R560T	G to C	stand-in for i4000307
+rs74767530	NA	input	Cystic Fibrosis	T	C	T	C	R1162X	C to T	stand-in for i4000308
+rs77010898	NA	input	Cystic Fibrosis	A	G	A	G	W1282X	G to A	stand-in for i4000309
+rs80034486	NA	input	Cystic Fibrosis	G	C	G	C	N1303K	C to G	stand-in for i4000311
+rs121908769	NA	input	Cystic Fibrosis	D	I	-	TT	394delTT	TT to —	stand-in for i4000313
+rs78756941	NA	input	Cystic Fibrosis	T	G	T	G	621+1G>T	G to T	stand-in for i4000314
+rs77188391	NA	input	Cystic Fibrosis	T	G	T	G	711+1G>T	G to T	stand-in for i4000315
+rs121908744	NA	input	Cystic Fibrosis	D	I	-	T	1078delT	T to —	stand-in for i4000316
+rs76713772	NA	input	Cystic Fibrosis	A	G	A	G	1717-1G>A	G to A	stand-in for i4000317
+rs121908748	NA	input	Cystic Fibrosis	A	G	A	G	1898+1G>A	G to A	stand-in for i4000318
+rs80224560	NA	input	Cystic Fibrosis	A	G	A	G	2789+5G>A	G to A	stand-in for i4000320
+rs75096551	NA	input	Cystic Fibrosis	A	G	A	G	3120+1G>A	G to A	stand-in for i4000321
+rs121908747	NA	input	Cystic Fibrosis	D	I	-	C	3659delC	C to —	stand-in for i4000322
+rs121908789	NA	input	Cystic Fibrosis	I	D	T	-	3905insT	— to T	stand-in for i4000324
+rs75039782	NA	input	Cystic Fibrosis	T	C	T	C	3849+10kbC>T	C to T	stand-in for i4000325
+rs3918290	NA	input	DPD Deficiency	T	C	T	C	NA	NA	imputation-derived source for rs3918290
+rs373297713	NA	input	Factor XI Deficiency	A	G	A	G	IVS14+1G>A	NA	stand-in for i4000397
+rs121965063	NA	input	Factor XI Deficiency	T	G	T	G	E117X	NA	stand-in for i4000398
+rs121965064	NA	input	Factor XI Deficiency	C	T	C	T	F283L	NA	stand-in for i4000399
+rs111033171	NA	input	Familial Dysautonomia	G	A	G	A	IVS20+6T>C	NA	stand-in for i4000334
+rs137853022	NA	input	Familial Dysautonomia	G	C	G	C	R696P	NA	stand-in for i4000400
+rs5742904	NA	input	Familial Hypercholesterolemia Type B	T	C	T	C	R3500Q	C to T	imputation-derived source for rs5742904
+rs144467873	NA	input	Familial Hypercholesterolemia Type B	A	G	A	G	R3500W	G to A	stand-in for i4000339
+rs12713559	NA	input	Familial Hypercholesterolemia Type B	A	G	A	G	R3531C	G to A	imputation-derived source for rs12713559
+rs61752717	NA	input	Familial Mediterranean Fever	C	T	C	T	M694V	T to C	stand-in for i4000406
+rs28940579	NA	input	Familial Mediterranean Fever	G	A	G	A	V726A	A to G	imputation-derived source for rs28940579
+rs28940580	NA	input	Familial Mediterranean Fever	G	C	G	C	M680I, C to G	C to G	imputation-derived source for rs28940580
+rs28940578	NA	input	Familial Mediterranean Fever	T	C	T	C	M694I	C to T	imputation-derived source for rs28940578
+rs61732874	NA	input	Familial Mediterranean Fever	A	C	A	C	A744S	C to A	stand-in for i4000409
+rs104895083	NA	input	Familial Mediterranean Fever	C	G	C	G	F479L	G to C	stand-in for i4000403
+rs104895097	NA	input	Familial Mediterranean Fever	T	C	T	C	R761H	C to T	stand-in for i4000410
+rs104895094	NA	input	Familial Mediterranean Fever	C	T	C	T	K695R	T to C	stand-in for i4000407
+rs3743930	NA	input	Familial Mediterranean Fever	G	C	G	C	E148Q	C to G	imputation-derived source for rs3743930
+rs11466023	NA	input	Familial Mediterranean Fever	A	G	A	G	P369S	G to A	imputation-derived source for rs11466023
+rs104886456	NA	input	Fanconi Anemia (FANCC related)	A	T	A	T	IVS4+4A>T	T to A	stand-in for i4000336
+rs104886457	NA	input	Fanconi Anemia (FANCC related)	A	G	A	G	R548X	G to A	stand-in for i4000412
+rs104886459	NA	input	Fanconi Anemia (FANCC related)	D	I	-	G	322delG	G to —	stand-in for i4000413
+rs1050828	NA	input	G6PD Deficiency	T	C	T	C	VAL68MET	NA	imputation-derived source for rs1050828
+rs1050829	NA	input	G6PD Deficiency	C	T	C	T	ASN126ASP	NA	imputation-derived source for rs1050829
+rs76763715	NA	input	Gaucher Disease	C	T	C	T	N370S	T to C	stand-in for i4000415
+rs387906315	NA	input	Gaucher Disease	I	D	G	-	84GG	— to G	stand-in for i4000417
+rs80356769	NA	input	Gaucher Disease	A	C	A	C	V394L	C to A	stand-in for i4000419
+rs1801175	NA	input	Glycogen Storage Disease Type 1a	T	C	T	C	Arg83Cys	NA	stand-in for i3002486
+rs80356491	NA	input	Glycogen Storage Disease Type 1b	D	I	-	AG	1042_1043delCT	NA	stand-in for i5012880
+rs80356489	NA	input	Glycogen Storage Disease Type 1b	G	A	G	A	W118R	NA	stand-in for i5012878
+rs28937590	NA	input	GRACILE Syndrome	G	A	G	A	S78G	NA	stand-in for i5012660
+rs1800562	NA	input	Hemochromatosis (HFE related)	A	G	A	G	NA	NA	imputation-derived source for rs1800562
+rs1799945	NA	input	Hemochromatosis (HFE related)	G	C	G	C	NA	NA	imputation-derived source for rs1799945
+rs1800730	NA	input	Hemochromatosis (HFE related)	T	A	T	A	NA	NA	stand-in for i3002468
+rs1800546	NA	input	Hereditary Fructose Intolerance	G	C	G	C	A149P	C to G	imputation-derived source for rs1800546
+rs76917243	NA	input	Hereditary Fructose Intolerance	T	G	T	G	A174D	G to T	stand-in for i5008215
+rs78340951	NA	input	Hereditary Fructose Intolerance	C	G	C	G	N334K	G to C	stand-in for i5012664
+rs387906225	NA	input	Hereditary Fructose Intolerance	D	I	-	GTTT	delta4E4	GTTT to —	stand-in for i5012665
+rs36212066	NA	input	Hypertrophic Cardiomyopathy (MYBPC3 25bp deletion)	D	I	-	normal	25bpdel	normal to —	imputation-derived source for rs36212066
+rs80356682	NA	input	Junctional Epidermolysis Bullosa (LAMB3 related)	A	G	A	G	R635X	G to A	stand-in for i5012672
+rs80356680	NA	input	Junctional Epidermolysis Bullosa (LAMB3 related)	A	G	A	G	R42X	G to A	stand-in for i5012669
+rs80356681	NA	input	Junctional Epidermolysis Bullosa (LAMB3 related)	A	G	A	G	Q243X	G to A	stand-in for i5012671
+rs119466000	NA	input	Leigh Syndrome, French Canadian Type (LSFC)	A	G	A	G	A354V	NA	stand-in for i5012749
+rs28933693	NA	input	Limb girdle Muscular Dystrophy	T	C	T	C	LGMD2D	C to T	imputation-derived source for rs28933693
+rs28936383	NA	input	Limb girdle Muscular Dystrophy	C	G	C	G	LGMD2E	G to C	imputation-derived source for rs28936383
+rs28937900	NA	input	Limb girdle Muscular Dystrophy	A	C	A	C	LGMD2I	C to A	imputation-derived source for rs28937900
+rs79761867	NA	input	Maple Syrup Urine Disease Type 1B	C	G	C	G	R183P	G to C	stand-in for i3002808
+rs386834233	NA	input	Maple Syrup Urine Disease Type 1B	A	G	A	G	G278S	G to A	stand-in for i4000422
+rs77931234	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	G	A	G	A	K304E	A to G	stand-in for i5012759
+rs77931234	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	C	T	C	T	Y42H	T to C	stand-in for i5012758
+rs373715782	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	T	C	T	C	R181C	C to T	stand-in for i5012760
+rs121434281	NA	input	Medium Chain Acyl CoA Dehydrogenase (MCAD) Deficiency	T	C	T	C	S220L	C to T	stand-in for i5003117
+rs104886461	NA	input	Mucolipidosis IV	G	A	G	A	IVS3-2A>G	NA	stand-in for i4000425
+rs386833969	NA	input	Neuronal Ceroid Lipofuscinosis (CLN5 related)	D	I	-	AT	Y392X	NA	stand-in for i5012678
+rs137852700	NA	input	Neuronal Ceroid Lipofuscinosis (PPT1 related)	A	G	A	G	R151X	G to A	stand-in for i5012624
+rs137852696	NA	input	Neuronal Ceroid Lipofuscinosis (PPT1 related)	G	T	G	T	T75P	T to G	stand-in for i5012622
+rs137852695	NA	input	Neuronal Ceroid Lipofuscinosis (PPT1 related)	A	T	A	T	R122W	T to A	stand-in for i5012623
+rs120074124	NA	input	Niemann Pick Disease Type A	C	T	C	T	L302P	T to C	stand-in for i4000381
+rs387906289	NA	input	Niemann Pick Disease Type A	D	I	-	G	fsP330	G to —	stand-in for i4000383
+rs120074117	NA	input	Niemann Pick Disease Type A	T	G	T	G	R496L	G to T	stand-in for i4000430
+rs587776650	NA	input	Nijmegen Breakage Syndrome	D	I	-	TTTGT 	657del5	NA	stand-in for i5012770
+rs80338848	NA	input	Pendred Syndrome	C	T	C	T	L236P	T to C	stand-in for i5012616
+rs111033244	NA	input	Pendred Syndrome	G	A	G	A	E384G	A to G	stand-in for i5000003
+rs28939086	NA	input	Pendred Syndrome	C	A	C	A	T416P	A to C	stand-in for i5012618
+rs111033199	NA	input	Pendred Syndrome	T	G	T	G	V138F	G to T	stand-in for i5000693
+rs121908362	NA	input	Pendred Syndrome	G	A	G	A	H723R	A to G	stand-in for i5000002
+rs111033307	NA	input	Pendred Syndrome	G	T	G	T	L445W	T to G	stand-in for i5000696
+rs62642926	NA	input	Phenylketonuria	C	G	C	G	F39L	G to C	stand-in for i4000470
+rs5030841	NA	input	Phenylketonuria	G	A	G	A	L48S	A to G	imputation-derived source for rs5030841
+rs75193786	NA	input	Phenylketonuria	G	A	G	A	I65T	A to G	stand-in for i4000472
+rs76296470	NA	input	Phenylketonuria	A	G	A	G	R111X	G to A	stand-in for i4000473
+rs5030843	NA	input	Phenylketonuria	T	C	T	C	R158Q	C to T	stand-in for i3003397
+rs62508588	NA	input	Phenylketonuria	T	C	T	C	R243Q	C to T	stand-in for i4000481
+rs5030846	NA	input	Phenylketonuria	A	G	A	G	R243X	G to A	stand-in for i3003398
+rs5030847	NA	input	Phenylketonuria	A	G	A	G	R252W	G to A	stand-in for i3003399
+rs62642932	NA	input	Phenylketonuria	T	C	T	C	A259T	C to T	stand-in for i4000474
+rs5030849	NA	input	Phenylketonuria	T	C	T	C	R261Q	C to T	imputation-derived source for rs5030849
+rs5030850	NA	input	Phenylketonuria	A	G	A	G	R261X	G to A	stand-in for i3003400
+rs62514952	NA	input	Phenylketonuria	A	C	A	C	G272X	C to A	stand-in for i4000467
+rs118203925	NA	input	Phenylketonuria	T	C	T	C	E280K	C to T	stand-in for i4000478
+rs5030851	NA	input	Phenylketonuria	A	G	A	G	P281L	G to A	stand-in for i3003401
+rs62642933	NA	input	Phenylketonuria	C	A	C	A	F299C	A to C	stand-in for i4000475
+rs5030853	NA	input	Phenylketonuria	A	C	A	C	A300S	C to A	imputation-derived source for rs5030853
+rs62516092	NA	input	Phenylketonuria	C	G	C	G	L348V	G to C	stand-in for i4000476
+rs62516095	NA	input	Phenylketonuria	C	G	C	G	Y356X	G to C	stand-in for i4000479
+rs5030856	NA	input	Phenylketonuria	C	T	C	T	E390G	T to C	stand-in for i3003403
+rs5030857	NA	input	Phenylketonuria	A	G	A	G	A403V	G to A	imputation-derived source for rs5030857
+rs5030858	NA	input	Phenylketonuria	A	G	A	G	R408W	G to A	imputation-derived source for rs5030858
+rs5030859	NA	input	Phenylketonuria	T	C	T	C	R408Q	C to T	stand-in for i3003404
+rs28934899	NA	input	Phenylketonuria	G	C	G	C	R413P	C to G	imputation-derived source for rs28934899
+rs5030860	NA	input	Phenylketonuria	C	T	C	T	Y414C	T to C	stand-in for i3003405
+rs5030855	NA	input	Phenylketonuria	T	C	T	C	IVS10-11G>A	C to T	imputation-derived source for rs5030855
+rs5030861	NA	input	Phenylketonuria	T	C	T	C	IVS12+1G>A	C to T	imputation-derived source for rs5030861
+rs5030852	NA	input	Phenylketonuria	T	C	T	C	IVS7+1G>A	C to T	imputation-derived source for rs5030852
+rs80356708	NA	input	Primary Hyperoxaluria Type 2 (PH2)	D	I	-	G	103delG	G to —	stand-in for i5012628
+rs180177309	NA	input	Primary Hyperoxaluria Type 2 (PH2)	D	I	-	AAGT	c.404+3_6delAAGT	AAGT to —	stand-in for i5012629
+rs1805137	NA	input	Rhizomelic Chondrodysplasia Punctata Type 1 (RCDP1)	A	T	A	T	NA	NA	stand-in for i3002517
+rs80338794	NA	input	Salla Disease	A	G	A	G	R39C	NA	stand-in for i5012634
+rs334	NA	input	Sickle Cell Anemia	A	T	A	T	rs334	NA	stand-in for i3003137
+rs72547571	NA	input	Sjögren Larsson Syndrome	T	C	T	C	P315S	NA	imputation-derived source for rs72547571
+rs121907954	NA	input	Tay Sachs Disease	T	C	T	C	G269S	C to T	stand-in for i4000436
+rs387906309	NA	input	Tay Sachs Disease	I	D	TATC	-	1278insTATC	— to TATC	stand-in for i4000391
+rs147324677	NA	input	Tay Sachs Disease	G	C	G	C	IVS12+1G>C	C to G	stand-in for i4000393
+rs76173977	NA	input	Tay Sachs Disease	T	C	T	C	IVS9+1G>A	C to T	stand-in for i4000438
+rs138058578	NA	input	Tay Sachs Disease	A	G	A	G	R249W	G to A	stand-in for i4000440
+rs121907970	NA	input	Tay Sachs Disease	A	G	A	G	R247W	G to A	stand-in for i4000442
+rs80358233	NA	input	Torsion Dystonia	D	I	-	CTC	deltaE302	NA	stand-in for i4000446
+rs76992529	NA	input	TTR Related Cardiac Amyloidosis	A	G	A	G	V122I	NA	stand-in for i3002759
+rs28933979	NA	input	TTR Related Familial Amyloid Polyneuropathy	A	G	A	G	Val30Met, p.Val50Met, c.148G>A	NA	stand-in for i3002758
+rs121918070	NA	input	TTR Related Familial Amyloid Polyneuropathy	G	A	G	A	Thr60Ala, p.Thr80Ala, c.238A>G	NA	stand-in for i5004213
+rs80338899	NA	input	Tyrosinemia Type I	A	G	A	G	W262X	G to A	stand-in for i5012862
+rs80338898	NA	input	Tyrosinemia Type I	T	C	T	C	P261L	C to T	stand-in for i5012861
+rs80338901	NA	input	Tyrosinemia Type I	A	G	A	G	IVS12+5G>A	G to A	stand-in for i5012865
+rs80338895	NA	input	Tyrosinemia Type I	T	G	T	G	IVS6-1G>T	G to T	stand-in for i5012867
+rs121965075	NA	input	Tyrosinemia Type I	T	G	T	G	E357X	G to T	stand-in for i5012864
+rs111033260	NA	input	Usher Syndrome Type I (PCDH15 related)	A	G	A	G	R245X	NA	stand-in for i5012804
+rs111033258	NA	input	Usher Syndrome Type III	C	A	C	A	N48K	NA	stand-in for i4990151
+rs61750420	NA	input	Zellweger Syndrome Spectrum	T	C	T	C	G843D	NA	stand-in for i5012688
