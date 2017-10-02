@@ -124,7 +124,7 @@ shinyServer(function(input, output) {
           duplicated_snps<-unique(rownames(d)[d[,"duplicated"]])
           for(duplicated_snp in duplicated_snps){
             w<-which(d[,"Comment"]  %in% d[duplicated_snp,"Comment"])
-            d[!d[w,"duplicated"],"snps_line"]<-paste(rownames(d)[w],collapse=", ")
+            d[!d[w,"duplicated"],"snps_line"]<-paste(sort(rownames(d)[w]),collapse=", ")
           }
           d<-d[!d[,"duplicated"],]
           domains[i,"Source notes"]<-paste(paste0(d[,"snps_line"],": ",d[,"Comment"]),collapse="; ")
