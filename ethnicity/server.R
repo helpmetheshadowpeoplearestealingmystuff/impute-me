@@ -28,7 +28,32 @@ ethnicity_desc<-read.table("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethn
 shinyServer(function(input, output){
   output$text_1 <- renderText({ 
     if(input$goButton == 0){
-      m<-paste0("There are several ways to investigate genotype-based ethnicity, many center around assigning country-of-ancestry percentage ('IBD methods'). This ethnicity module takes a different, but more simple, approach. Starting from the large <u><a href='http://www.internationalgenome.org/'>1000 genomes project</a></u>, it identifies the ~1000 SNPs that are most ethnicity dependent. The module then performs a cluster analysis (<u><a href='https://en.wikipedia.org/wiki/Principal_component_analysis'>'PCA'</a></u>) of each of the 1000 genomes-project samples, as well as your sample. You can then investigate which known ethnicity your genome is most similar to. Your genome is indicated as a slightly larger black dot in the resulting plot, you may have to zoom in to see it.<br>"
+      
+      #try to get the pre-guesssed ethnicity
+      hint_message <- ""
+      uniqueID<-isolate(gsub(" ","",input$uniqueID))
+      json_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
+      if(file.exists(json_path)){
+        library(jsonlite)
+        d1<-fromJSON(json_path)
+        if("ethnicity"%in%names(d1)){
+          d2 <- d1[["ethnicity"]]  
+          if("guessed_super_pop"%in%names(d2)){
+            d3 <- d2[["guessed_super_pop"]]
+            
+            col<-c('light-blue','green','red','purple','orange')
+            names(col)<-c('AFR','AMR','EAS','EUR','SAS')
+            
+            if(!is.na(d3)){
+              if(d3%in%names(col)){
+                hint_message <- paste0(" Look in the ",col[d3]," cluster.")                
+              }
+            }
+          }
+        }
+      }
+      
+      m<-paste0("There are several ways to investigate genotype-based ethnicity, many center around assigning country-of-ancestry percentage ('IBD methods'). This ethnicity module takes a different, but more simple, approach. Starting from the large <u><a href='http://www.internationalgenome.org/'>1000 genomes project</a></u>, it identifies the ~1000 SNPs that are most ethnicity dependent. The module then performs a cluster analysis (<u><a href='https://en.wikipedia.org/wiki/Principal_component_analysis'>'PCA'</a></u>) of each of the 1000 genomes-project samples, as well as your sample. You can then investigate which known ethnicity your genome is most similar to. Your genome is indicated as a slightly larger black dot in the resulting plot, you may have to zoom in to see it.",hint_message,"<br>"
       )
       
     }else{
