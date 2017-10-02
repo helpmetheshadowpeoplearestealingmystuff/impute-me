@@ -1104,20 +1104,23 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
       genotypes<-try(get_genotypes(uniqueID,coding_snps,namingLabel="cached.nonsenser"))
     }
   }
+
   
-  #getting the AllDiseases SNPs if possible
+  
+  #getting the AllDiseases + ukbiobank SNPs if possible
   load("/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_all_gwas_snps.rdata")
   e1<-gwas_snps
   load("/home/ubuntu/srv/impute-me/ukbiobank/2017-09-28_all_ukbiobank_snps.rdata")
   e2<-gwas_snps
+  e2<-e2[!rownames(e2)%in%rownames(e1),]
   e<-rbind(e1,e2)
   if(class(e)!="try-error"){
     for(uniqueID in uniqueIDs){
-      genotypes<-try(get_genotypes(uniqueID,gwas_snps,namingLabel="cached.all_gwas"))
+      genotypes<-try(get_genotypes(uniqueID,e,namingLabel="cached.all_gwas"))
     }
   }
   
-  
+
   #getting the ethnicity SNPs if possible
   e<-try(load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_snps.rdata"))
   if(class(e)!="try-error"){
