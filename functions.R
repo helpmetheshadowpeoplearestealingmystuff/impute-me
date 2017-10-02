@@ -864,19 +864,11 @@ get_genotypes<-function(
     #if input is in as a chromosome, use the 23andmefile as input
     if("input"%in%chromosomes){
       snpsFromInput<-requestDeNovo[requestDeNovo[,"chr_name"]%in%"input","SNP"]
-      outZip<-unzip(inputZipFile, overwrite = TRUE,exdir = idTempFolder, unzip = "internal",)
+      outZip<-unzip(inputZipFile, overwrite = TRUE,exdir = idTempFolder, unzip = "internal")
       cmd0 <- paste("grep -E '",paste(paste(snpsFromInput,"\t",sep=""),collapse="|"),"' ",outZip,sep="")
       input_genotypes<-system(cmd0,intern=T)
       input_genotypes<-do.call(rbind,strsplit(input_genotypes,"\t"))
       input_genotypes[,4]<-sub("\r$","",input_genotypes[,4])
-      
-      
-      male_x_chr <- which(input_genotypes[,2]%in%"X" & nchar(input_genotypes[,4])==1)
-      if(length(male_x_chr) > 0){
-        input_genotypes[male_x_chr,4] <- paste(input_genotypes[male_x_chr,4]," ",sep="")	
-      }
-      
-      
       
       if(any(nchar(input_genotypes[,4])!=2))stop("input data must have length 2 genotypes")
       
@@ -896,12 +888,12 @@ get_genotypes<-function(
         chromosomes<-chromosomes[!chromosomes%in%sub("\\.gen$","",sub("^.+_chr","",missing))]
         warning(paste("These were missing in the zip-gen file:",paste(missing,collapse=", ")))
       }
-      outZip<-unzip(genZipFile, files = gensToExtract, overwrite = TRUE,exdir = idTempFolder, unzip = "internal",)
+      outZip<-unzip(genZipFile, files = gensToExtract, overwrite = TRUE,exdir = idTempFolder, unzip = "internal")
       
       f<-file(paste(idTempFolder,"/samples.txt",sep=""),"w")
       writeLines("ID_1 ID_2 missing sex",f)
       writeLines("0 0 0 D",f)
-      writeLines("John Doe 0.0 2 ",f)#gender probably doesn't matter here
+      writeLines(paste(uniqueID,uniqueID,"0.0 2 "),f)#gender probably doesn't matter here
       close(f)
       
       
@@ -909,38 +901,38 @@ get_genotypes<-function(
       for(chr in chromosomes){
         genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
         
-        #This is wrapped in a try block, because it has previously failed from unpredictble memory issues, so it's better to give a few tries
-        for(tryCount in 1:3){
-          print(paste("Getting ped and map file at chr",chr," - try",tryCount))
-          gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
-          snpsHere<-rownames(requestDeNovo)[requestDeNovo[,"chr_name"]%in%chr]
-          write.table(snpsHere,file=paste(idTempFolder,"/snps_in_chr",chr,".txt",sep=""),quote=F,row.names=F,col.names=F)
-          cmd1<-paste(gtools," -S --g " , gen, " --s ",idTempFolder,"/samples.txt --inclusion ",idTempFolder,"/snps_in_chr",chr,".txt",sep="")
-          system(cmd1)
-          subsetFile<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset",sep="")
-          if(!file.exists(subsetFile) || file.info(subsetFile)[["size"]]==0){
-            print(paste("Did not find any of the SNPs on chr",chr))	
-            next
-          }
-
-          cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold ",call_threshold,sep="")
-          system(cmd2)
+        #This was wrapped in a try block, because it has previously failed from unpredictable memory issues, so it's better to give a few tries - but I think that's pretty bad programming for such an important function, so we change to a stop argument
+        # for(tryCount in 1:3){
+        print(paste("Getting ped and map file at chr",chr))
+        gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
+        snpsHere<-rownames(requestDeNovo)[requestDeNovo[,"chr_name"]%in%chr]
+        write.table(snpsHere,file=paste(idTempFolder,"/snps_in_chr",chr,".txt",sep=""),quote=F,row.names=F,col.names=F)
+        cmd1<-paste(gtools," -S --g " , gen, " --s ",idTempFolder,"/samples.txt --inclusion ",idTempFolder,"/snps_in_chr",chr,".txt",sep="")
+        system(cmd1)
+        subsetFile<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset",sep="")
+        if(!file.exists(subsetFile) || file.info(subsetFile)[["size"]]==0){
+          print(paste("Did not find any of the SNPs on chr",chr))	
+          next #jump to next chromosome
+        }
+        cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold ",call_threshold,sep="")
+        system(cmd2)
+        Sys.sleep(0.3) 
+        
+        ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]],silent=T)
+        map<-try(read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE),silent=T)
+        
+        if(class(ped)!="try-error" & class(map)!="try-error"){
+          ped<-ped[7:length(ped)]
+          genotypes_here<-try(data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F))
+          #error where there's duplicate row names
+          if(class(genotypes_here)=="try-error"){
+            print("Found a duplicate row names error")
+            include_these<-which(!duplicated(map[,2]))
+            genotypes_here<-try(data.frame(row.names=map[include_these,2],genotype=sub(" ","/",ped[include_these]),stringsAsFactors=F))
+          }						
           
-          
-          ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]],silent=T)
-          map<-try(read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE),silent=T)
-          
-          if(class(ped)!="try-error" & class(map)!="try-error"){
-            ped<-ped[7:length(ped)]
-            genotypes_here<-try(data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F))
-            #error where there's duplicate row names
-            if(class(genotypes_here)=="try-error"){
-              print("Found a duplicate row names error")
-              include_these<-which(!duplicated(map[,2]))
-              genotypes_here<-try(data.frame(row.names=map[include_these,2],genotype=sub(" ","/",ped[include_these]),stringsAsFactors=F))
-            }						
-            break
-          }
+        }else{
+          stop("Serious error with get_genotypes - you need to investigate this")
         }
         
         genotypes<-rbind(genotypes,genotypes_here)

@@ -23,8 +23,8 @@ d[grep("^i",d[,"SNP"]),"chr_name"]<-"input"
 d[is.na(d[,"chr_name"]),]
 
 #these two won't be updated anyway
-d["rs28939383","chr_name"] <- "input"
-d["rs28934899","chr_name"] <- "input"
+d[d[,"SNP"]%in%"rs28939383","chr_name"] <- "input"
+d[d[,"SNP"]%in%"rs28934899","chr_name"] <- "input"
 
 
 write.table(d,"rareDiseases/SNPs_to_analyze.txt",sep="\t",row.names=F,col.names=T,quote=F)
