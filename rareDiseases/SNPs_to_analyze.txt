@@ -4,7 +4,7 @@ i5012575	NA	input	Agenesis of the Corpus Callosum with Peripheral Neuropathy (AC
 rs28929474	NA	14	Alpha 1 Antitrypsin Deficiency	T	C	T	C	NA	NA	original 23andme array input
 rs17580	NA	14	Alpha 1 Antitrypsin Deficiency	A	T	A	T	NA	NA	original 23andme array input
 i5012578	NA	input	ARSACS	D	I	-	A	NA	NA	original 23andme array input
-rs28939383	NA	NA	Autosomal Recessive Polycystic Kidney Disease	A	G	A	G	NA	NA	original 23andme array input
+rs28939383	NA	input	Autosomal Recessive Polycystic Kidney Disease	A	G	A	G	NA	NA	original 23andme array input
 i5000047	NA	input	Autosomal Recessive Polycystic Kidney Disease	C	T	C	T	NA	NA	original 23andme array input
 i5000045	NA	input	Autosomal Recessive Polycystic Kidney Disease	G	A	G	A	NA	NA	original 23andme array input
 i5000043	NA	input	Autosomal Recessive Polycystic Kidney Disease	G	A	G	A	NA	NA	original 23andme array input
@@ -157,7 +157,7 @@ i3003403	NA	input	Phenylketonuria	C	T	C	T	E390G	T to C	original 23andme array in
 rs5030857	NA	12	Phenylketonuria	A	G	A	G	A403V	G to A	original 23andme array input
 rs5030858	NA	12	Phenylketonuria	A	G	A	G	R408W	G to A	original 23andme array input
 i3003404	NA	input	Phenylketonuria	T	C	T	C	R408Q	C to T	original 23andme array input
-rs28934899	NA	NA	Phenylketonuria	G	C	G	C	R413P	C to G	original 23andme array input
+rs28934899	NA	input	Phenylketonuria	G	C	G	C	R413P	C to G	original 23andme array input
 i3003405	NA	input	Phenylketonuria	C	T	C	T	Y414C	T to C	original 23andme array input
 rs5030855	NA	12	Phenylketonuria	T	C	T	C	IVS10-11G>A	C to T	original 23andme array input
 rs5030861	NA	12	Phenylketonuria	T	C	T	C	IVS12+1G>A	C to T	original 23andme array input
@@ -315,3 +315,5 @@ rs121965075	NA	15	Tyrosinemia Type I	T	G	T	G	E357X	G to T	stand-in for i5012864
 rs111033260	NA	10	Usher Syndrome Type I (PCDH15 related)	A	G	A	G	R245X	NA	stand-in for i5012804
 rs111033258	NA	3	Usher Syndrome Type III	C	A	C	A	N48K	NA	stand-in for i4990151
 rs61750420	NA	7	Zellweger Syndrome Spectrum	T	C	T	C	G843D	NA	stand-in for i5012688
+NA	NA	input	NA	NA	NA	NA	NA	NA	NA	NA
+NA	NA	input	NA	NA	NA	NA	NA	NA	NA	NA
