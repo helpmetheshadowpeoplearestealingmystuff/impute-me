@@ -56,7 +56,7 @@ shinyServer(function(input, output){
         }
       }
       
-      m <- paste0("Your genome is indicated as a slightly larger black dot in the resulting plot, you may have to zoom in to see it.",hint_message,"<br>")
+      m <- paste0("Your genome is indicated as a slightly larger black dot in this plot, you may have to zoom in to see it.",hint_message,"<br>")
     }
     return(m)
   })
