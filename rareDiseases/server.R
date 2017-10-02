@@ -18,22 +18,43 @@ shinyServer(function(input, output) {
 			stop(safeError("Did not find a user with this id"))
 		}
 		table_file <-"/home/ubuntu/srv/impute-me/rareDiseases/SNPs_to_analyze.txt"
-		table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")
+		request <- table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")
+    
+		request<-request[!duplicated(request[,"SNP"]),]
+		rownames(request) <- request[,"SNP"]
+		genotypes<-get_genotypes(uniqueID=uniqueID,request=request )
 		
-		#we have to remove the i3003137/Beta-Thalassemia because it's double with sickle-cell anemia
-		table<-table[!(table[,"SNP"]%in%"i3003137" & table[,"disease_name"]%in%"Beta Thalassemia"),]
+		iXXXX_na_count <- sum(is.na(genotypes[grep("^i",rownames(genotypes)),1]))
+		if(iXXXX_na_count > 10){ #then this is probably not a 23andme array
+		  
+		  #remove the iXXXX
+		  table<-table[grep("^i",table[,"SNP"],invert=T),]
+		  table<-table[order(table[,"disease_name"]),]
+		  
+		  #more intelligible comment
+		  table[grep("^original",table[,"comment"]),"comment"] <-"rs-id from original 23andme"
+		  
+		  #adding genotypes in (many will be missing unfortuntaly)
+		  table[,"Your genotype"]<-genotypes[table[,"SNP"],]
+		  
+		}else{ #then it is a 23andme array
+		  #remove the stand-in stuff
+		  table<-table[grep("^stand-in",table[,"comment"],invert=T),]
+		  table<-table[order(table[,"disease_name"]),]
+		  
+		  
+		  #more intelligible comment
+		  table[,"comment"] <-""
+		  
+		  
+		  #adding genotypes in (many will be missing unfortuntaly)
+		  table[,"Your genotype"]<-genotypes[table[,"SNP"],]
+		  
+		}
 		
-		
-		rownames(table)<-table[,"SNP"]
-		genotypes<-get_genotypes(uniqueID=uniqueID,request=table)
-		
-		table[,"Your genotype"]<-genotypes[rownames(table),]
 		
 		table[,"First_allele"]<-substr(table[,"Your genotype"],1,1)
 		table[,"Second_allele"]<-substr(table[,"Your genotype"],3,3)
-		#Not necessary - actually it's quite good to have the male-X genotype of " " explicit, because it's certainly not a risk-genotype
-		# table[table[,"First_allele"]==" ","First_allele"]<-NA
-		# table[table[,"Second_allele"]==" ","Second_allele"]<-NA
 		
 		table[,"First_carrier"]<-table[,"First_allele"]==table[,"risk_allele"]
 		table[,"Second_carrier"]<-table[,"Second_allele"]==table[,"risk_allele"]
@@ -50,8 +71,8 @@ shinyServer(function(input, output) {
 		
 		# diseases_of_interest <- unique(table[table[,"Second_carrier"] | table[,"First_carrier"],"disease_name"])
 		
-		table<-table[,c("SNP","Your genotype","risk_allele","non_risk_allele","disease_name")]
-		colnames(table)<-c("SNP","Your genotype","Risk-allele","Non-Risk-allele","Inherited Condition")
+		table<-table[,c("SNP","Your genotype","risk_allele","non_risk_allele","disease_name","comment")]
+		colnames(table)<-c("SNP","Your genotype","Risk-allele","Non-Risk-allele","Inherited Condition","Comment")
 		return(table)
 		
 		
