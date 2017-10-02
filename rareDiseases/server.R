@@ -34,7 +34,7 @@ shinyServer(function(input, output) {
 		  #more intelligible comment
 		  table[grep("^original",table[,"comment"]),"comment"] <-"rs-id from original 23andme"
 		  
-		  #adding genotypes in (many will be missing unfortuntaly)
+		  #adding genotypes in (many will be missing unfortunately)
 		  table[,"Your genotype"]<-genotypes[table[,"SNP"],]
 		  
 		}else{ #then it is a 23andme array
