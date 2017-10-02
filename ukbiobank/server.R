@@ -156,7 +156,9 @@ shinyServer(function(input, output) {
     
     #inset a warning if less than 5 SNPs are analyzable
     analyzable_snps<-sum(!is.na(SNPs_to_analyze[,"score_diff"]))
-    if(analyzable_snps==1){
+    if(analyzable_snps==0){
+      stop(safeError("No SNPs were analyzable for this trait"))
+    }else if(analyzable_snps==1){
       textToReturn <- paste0(textToReturn," Overall, <b>only a single SNP was analyzable. This is definetly too little for a genetic risk score and the results should not be trusted</b>.")  
     }else if(analyzable_snps<5){
       textToReturn <- paste0(textToReturn," Overall, <b>only ",analyzable_snps," SNPs were analyzable. This is too little for a genetic risk score and the results should not be trusted very much</b>.")  
