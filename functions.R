@@ -881,6 +881,8 @@ get_genotypes<-function(
     #if any normal style chromosome names are in use the gen files
     if(any(c(as.character(1:22),"X")%in%chromosomes)){
       chromosomes<-chromosomes[chromosomes%in%c(as.character(1:22),"X")]
+      chromosomes<-chromosomes[order(suppressWarnings(as.numeric(chromosomes)))]
+      
       gensToExtract<-paste(uniqueID,"_chr",chromosomes,".gen",sep="")
       if(!all(gensToExtract%in%contents[,"Name"])){
         missing<-gensToExtract[!gensToExtract%in%contents[,"Name"]]
