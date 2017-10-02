@@ -99,6 +99,12 @@ shinyServer(function(input, output) {
 		m <- paste(m,".<br>",sep="")
 
 		
+		percent_missing<-signif(100 * sum(is.na(table[,"Your genotype"])) / nrow(table),2)
+		if(percent_missing > 50){
+		  m<-paste0(m, "Note however, that ",percent_missing,"% of the queried SNPs was unavailable in your data, <i>even</i> after imputation. This is because these rare-disease causing SNPs are difficult to impute, and only the microarray-types from 23andme have custom modifications in order to measure them.<br>")
+		  
+		}
+		
 		#write the query to the log file
 		log_function<-function(uniqueID,diseases_of_interest){
 			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
