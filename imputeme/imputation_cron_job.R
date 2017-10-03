@@ -216,7 +216,7 @@ if(serverRole== "Node"){
 
 print("Getting IP and sending mail")
 # ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
-ip<-"www.impute.me"
+ip<-"https://www.impute.me"
 location_23andme <- paste(ip,"/www/",uniqueID,".23andme.zip",sep="")
 location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
 
