@@ -162,13 +162,13 @@ summarize_imputation(runDir=runDir,uniqueID=uniqueID,destinationDir="/home/ubunt
 
 
 #creating the pData file
-timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
-md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
-gender<-system(paste("cut --delimiter=' ' -f 5 ",runDir,"/step_1.ped",sep=""),intern=T)
-f<-file(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),"w")
-writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion"),collapse="\t"),f)
-writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,protect_from_deletion),collapse="\t"),f)
-close(f)
+# timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
+# md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
+# gender<-system(paste("cut --delimiter=' ' -f 5 ",runDir,"/step_1.ped",sep=""),intern=T)
+# f<-file(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),"w")
+# writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion"),collapse="\t"),f)
+# writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,protect_from_deletion),collapse="\t"),f)
+# close(f)
 
 
 #Run the genotype extraction routine

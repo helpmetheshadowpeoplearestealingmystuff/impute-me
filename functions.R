@@ -776,6 +776,19 @@ summarize_imputation<-function(
   file.rename(zipFileOriginal, paste(prepDestinationDir,basename(zipFileOriginal),sep="/"))
   
   
+  
+  
+  #creating the pData file
+  load(paste0(runDir,"/variables.rdata"))
+  timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
+  md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
+  gender<-system(paste("cut --delimiter=' ' -f 6 ",runDir,"/step_4_chr22.sample",sep=""),intern=T)[3]
+  f<-file(paste0(prepDestinationDir,"/pData.txt"),"w")
+  writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion"),collapse="\t"),f)
+  writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,protect_from_deletion),collapse="\t"),f)
+  close(f)
+  
+
   #return paths
   returnPaths<-c(
     paste(prepDestinationDir,basename(zipFile23andme),sep="/"),
@@ -903,40 +916,41 @@ get_genotypes<-function(
       for(chr in chromosomes){
         genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
         
-        #This was wrapped in a try block, because it has previously failed from unpredictable memory issues, so it's better to give a few tries - but I think that's pretty bad programming for such an important function, so we change to a stop argument
-        # for(tryCount in 1:3){
-        print(paste("Getting ped and map file at chr",chr))
-        gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
-        snpsHere<-rownames(requestDeNovo)[requestDeNovo[,"chr_name"]%in%chr]
-        write.table(snpsHere,file=paste(idTempFolder,"/snps_in_chr",chr,".txt",sep=""),quote=F,row.names=F,col.names=F)
-        cmd1<-paste(gtools," -S --g " , gen, " --s ",idTempFolder,"/samples.txt --inclusion ",idTempFolder,"/snps_in_chr",chr,".txt",sep="")
-        system(cmd1)
-        subsetFile<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset",sep="")
-        if(!file.exists(subsetFile) || file.info(subsetFile)[["size"]]==0){
-          print(paste("Did not find any of the SNPs on chr",chr))	
-          next #jump to next chromosome
-        }
-        cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold ",call_threshold,sep="")
-        system(cmd2)
-        Sys.sleep(0.3) 
-        
-        ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]],silent=T)
-        map<-try(read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE),silent=T)
-        
-        if(class(ped)!="try-error" & class(map)!="try-error"){
-          ped<-ped[7:length(ped)]
-          genotypes_here<-try(data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F))
-          #error where there's duplicate row names
-          if(class(genotypes_here)=="try-error"){
-            print("Found a duplicate row names error")
-            include_these<-which(!duplicated(map[,2]))
-            genotypes_here<-try(data.frame(row.names=map[include_these,2],genotype=sub(" ","/",ped[include_these]),stringsAsFactors=F))
-          }						
+        #This is wrapped in a try block, because it has previously failed from unpredictble memory issues, so it's better to give a few tries
+        for(tryCount in 1:5){
+          print(paste("Getting ped and map file at chr",chr," - try",tryCount))
+          gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
+          snpsHere<-rownames(requestDeNovo)[requestDeNovo[,"chr_name"]%in%chr]
+          write.table(snpsHere,file=paste(idTempFolder,"/snps_in_chr",chr,".txt",sep=""),quote=F,row.names=F,col.names=F)
+          cmd1<-paste(gtools," -S --g " , gen, " --s ",idTempFolder,"/samples.txt --inclusion ",idTempFolder,"/snps_in_chr",chr,".txt",sep="")
+          system(cmd1)
+          subsetFile<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset",sep="")
+          if(!file.exists(subsetFile)){
+            print(paste("Did not find any of the SNPs on chr",chr))	
+            next
+          }
+          cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold 0.7",sep="")
+          system(cmd2)
           
-        }else{
-          stop("Serious error with get_genotypes - you need to investigate this")
+          
+          ped<-try(strsplit(readLines(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.ped",sep="")),"\t")[[1]],silent=T)
+          map<-try(read.table(paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen.subset.map",sep=""),stringsAsFactors=FALSE),silent=T)
+          
+          if(class(ped)!="try-error" & class(map)!="try-error"){
+            ped<-ped[7:length(ped)]
+            genotypes_here<-try(data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F))
+            #error where there's duplicate row names
+            if(class(genotypes_here)=="try-error"){
+              print("Found a duplicate row names error")
+              include_these<-which(!duplicated(map[,2]))
+              genotypes_here<-try(data.frame(row.names=map[include_these,2],genotype=sub(" ","/",ped[include_these]),stringsAsFactors=F))
+            }						
+            break
+          }else{
+            genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
+          }
         }
-        
+
         genotypes<-rbind(genotypes,genotypes_here)
       }
     }

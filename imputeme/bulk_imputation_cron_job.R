@@ -152,26 +152,18 @@ unlink(runDir,recursive=TRUE)
 
 
 for(uniqueID in uniqueIDs){
-  print(paste("Looping over uniqueID",uniqueID),"for the summarization part")  
-    
-  #summarizing files
-  summary_folder<-paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID)
-  summarize_imputation(runDir=summary_folder,uniqueID=uniqueID,destinationDir="/home/ubuntu/data")  
+  print(paste("Looping over uniqueID",uniqueID,"for the summarization part"))
   
-  #load variables
+  #load variables specifically for this uniqueID
+  summary_folder<-paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID)
   load(paste0(summary_folder,"/variables.rdata"))
   
+    
+  #summarizing files
+  summarize_imputation(runDir=summary_folder,uniqueID=uniqueID,destinationDir="/home/ubuntu/data")  
   
   
-  #creating the pData file
-  load(paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/variables.rdata"))
-  timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
-  md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
-  gender<-system(paste("cut --delimiter=' ' -f 6 ",runDir,"/step_4_chr22.sample",sep=""),intern=T)[3]
-  f<-file(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),"w")
-  writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion"),collapse="\t"),f)
-  writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,protect_from_deletion),collapse="\t"),f)
-  close(f)
+  
   
   #Run the genotype extraction routine
   try(crawl_for_snps_to_analyze(uniqueIDs=uniqueID))
