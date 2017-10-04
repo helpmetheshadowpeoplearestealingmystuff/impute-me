@@ -159,11 +159,9 @@ for(uniqueID in uniqueIDs){
   load(paste0(summary_folder,"/variables.rdata"))
   
     
-  #summarizing files
+  #summarizing files and remove the summary_folder
   summarize_imputation(runDir=summary_folder,uniqueID=uniqueID,destinationDir="/home/ubuntu/data")  
-  
-  
-  
+  unlink(summary_folder,recursive = T)
   
   #Run the genotype extraction routine
   try(crawl_for_snps_to_analyze(uniqueIDs=uniqueID))

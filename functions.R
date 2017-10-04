@@ -751,8 +751,12 @@ summarize_imputation<-function(
     
   }
   
+  #removing some temporary files
+  unlist(list.files(runDir,pattern="tped$",full.names=T))
+  unlist(list.files(runDir,pattern="map$",full.names=T))
+  unlist(list.files(runDir,pattern="^step_10",full.names=T))
   
-  
+
   #preparing destinationDir
   prepDestinationDir<-paste(destinationDir,"/",uniqueID,sep="")
   if(!file.exists(prepDestinationDir))dir.create(prepDestinationDir)
@@ -762,7 +766,7 @@ summarize_imputation<-function(
   twentythreeandmeFiles<-paste(uniqueID,"_chr",chromosomes,".23andme.txt",sep="")
   zip(zipFile23andme, twentythreeandmeFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
   file.rename(zipFile23andme, paste(prepDestinationDir,basename(zipFile23andme),sep="/"))
-  
+  unlist(list.files(runDir,pattern="23andme",full.names=T))
   
   #zipping gen files
   zipFileGen<-paste(runDir,paste(uniqueID,".gen.zip",sep=""),sep="/")
@@ -917,7 +921,7 @@ get_genotypes<-function(
         genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
         
         #This is wrapped in a try block, because it has previously failed from unpredictble memory issues, so it's better to give a few tries
-        for(tryCount in 1:5){
+        for(tryCount in 1:3){
           print(paste("Getting ped and map file at chr",chr," - try",tryCount))
           gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
           snpsHere<-rownames(requestDeNovo)[requestDeNovo[,"chr_name"]%in%chr]
@@ -950,7 +954,9 @@ get_genotypes<-function(
             genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
           }
         }
-
+        
+        #space-saving clean up
+        
         genotypes<-rbind(genotypes,genotypes_here)
       }
     }
