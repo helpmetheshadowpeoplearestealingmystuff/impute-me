@@ -235,12 +235,7 @@ for(uniqueID in uniqueIDs){
     
   
   
-  
-  #delete the imputaitons/imputation_folder_idXXXXX position afterwards
-  unlink(summary_folder,recursive=TRUE)
-  
-  
-  
+
   #also clear the hub imputation_folder if running as node
   if(serverRole== "Node"){
     cmd8 <- paste("ssh ubuntu@",hubAddress," 'rm -r /home/ubuntu/imputations/imputation_folder_",uniqueID,"'",sep="")
