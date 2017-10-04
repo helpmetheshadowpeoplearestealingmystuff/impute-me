@@ -162,13 +162,14 @@ for(uniqueID in uniqueIDs){
   #summarizing files and remove the summary_folder
   summarize_imputation(runDir=summary_folder,uniqueID=uniqueID,destinationDir="/home/ubuntu/data")  
   unlink(summary_folder,recursive = T)
+  setwd("~")
   
   #Run the genotype extraction routine
-  try(crawl_for_snps_to_analyze(uniqueIDs=uniqueID))
+  crawl_for_snps_to_analyze(uniqueIDs=uniqueID)
   
   
   #Run the json extraction routine
-  try(run_export_script(uniqueIDs=uniqueID))
+  run_export_script(uniqueIDs=uniqueID)
   
   
   #If this is running as a node, we need to copy it back around here
