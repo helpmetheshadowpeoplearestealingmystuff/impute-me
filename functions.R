@@ -920,7 +920,7 @@ get_genotypes<-function(
       for(chr in chromosomes){
         genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
         
-        #This is wrapped in a try block, because it has previously failed from unpredictble memory issues, so it's better to give a few tries
+        #This is wrapped in a try block, because it has previously failed from unpredictable memory issues, so it's better to give a few tries
         for(tryCount in 1:3){
           print(paste("Getting ped and map file at chr",chr," - try",tryCount))
           gen<-paste(idTempFolder,"/",uniqueID,"_chr",chr,".gen",sep="")
@@ -954,8 +954,6 @@ get_genotypes<-function(
             genotypes_here<-data.frame(row.names=vector(),genotype=vector(),stringsAsFactors=F)
           }
         }
-        
-        #space-saving clean up
         
         genotypes<-rbind(genotypes,genotypes_here)
       }
