@@ -171,3 +171,4 @@ data[,"minor_allele"]<-query[data[,"SNP"],"minor_allele"]
 write.table(data,file="precisionMedicine/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
 
 
+data[!data[,"chr_name"]%in%c(1:22,"X"),]

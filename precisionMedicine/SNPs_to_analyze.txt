@@ -1,251 +1,247 @@
-SNP	PMID	Ethnicity	Disease	Drug	chr_name	effect_allele	non_effect_allele	effect_size	Effect_direction	Effect_measure	minor_allele_freq	minor_allele	major_allele	Comment	locus	gene
-rs4363657	22189199		Cholesterol	Statin	12	C	T	NA	C alleles are claimed to have worse response to statin		0.214856	C	T	A boston based company working with heart diagnostics, sells this test to determine statin response	12p12.1	
-rs2395029	18684101		HIV	abacavir	6	G	T	NA	T-allele carriers have worse response		0.0333466	G	T	Note, that the studies supporting this are specifically only valid for caucasian ethnicities. Several other ethnicities are much more likely to have a T-allele, without problems.	6p21.33	
-rs1799971	18250251		Alcoholism	naltrexone	6	G	A	NA	The minor allele (G) had a better effect		0.223442	G	A	Asn40 is the major allele, and Asp40 is the minor allele. Asp40 (minor) had good outcome and should be effect	6q25.2	
-rs3745274	24128861		CLL	fludarabine plus cyclophosphamide	19	G	T	NA	The minor allele (T) has a worse response		0.315695	T	G	The CYP2B6 c.516G.T polymorphism variant from Johnson 2013. 	19q13.2	
-rs2279343	24128861		CLL	fludarabine plus cyclophosphamide	19	T	G	NA	The minor allele (G) has a worse response		NA		?	The CYP2B6 c.785A.G polymorphism variant from Johnson 2013	19q13.2	
-rs602633	28223407		Cholesterol	Statin	1	G	T	1.12			0.351837	T	G		1p13.3	SORT1
-rs17114036	28223407		Cholesterol	Statin	1	A	G	1.11			0.091254	G	A		1p32.2	PPAP2B
-rs11206510	28223407		Cholesterol	Statin	1	T	C	1.06			0.101837	C	T		1p32.3	PCSK9
-rs4845625	28223407		Cholesterol	Statin	1	T	C	1.06			0.441693	T	C		1q21.3	IL6R
-rs17464857	28223407		Cholesterol	Statin	1	T	G	1.05			0.0784744	G	T		1q41	MIA3
-rs9982601	28223407		Cholesterol	Statin	21	T	C	1.13			0.110024	T	C		21q22.11	KCNE2
-rs180803	28223407		Cholesterol	Statin	22	G	T	1.02			0.0820687	T	G		22q11.23	POM121L9P-ADORA22B
-rs1561198	28223407		Cholesterol	Statin	2	T	C	1.06			0.488419	T	C		2p11.2	VAMP5-VAMP8-GGCX
-rs6544713	28223407		Cholesterol	Statin	2	T	C	1.06			0.167532	T	C		2p21	ABCG5-ABCG8
-rs515135	28223407		Cholesterol	Statin	2	C	T	1.07			0.249401	T	C		2p24.1	APOB
-rs2252641	28223407		Cholesterol	Statin	2	?	?	1.06			0.307109	T	C		2q22.3	ZEB2-AC074093.1
-rs6725887	28223407		Cholesterol	Statin	2	C	T	1.12			0.0469249	C	T		2q33.2	WDR12-NBEAL
-rs1801251	28223407		Cholesterol	Statin	2	A	G	1.05			0.360024	A	G		2q37.1	KCNJ13-GIGYF2
-rs9818870	28223407		Cholesterol	Statin	3	T	C	1.07			0.0878594	T	C		3q22.3	MRAS
-rs17087335	28223407		Cholesterol	Statin	4	T	G	1.06			0.239018	T	G		4q12	REST-NOA1
-rs1878406	28223407		Cholesterol	Statin	4	A	?	1.1			0.182907	T	?		4q31.22	EDNRA
-rs7692387	28223407		Cholesterol	Statin	4	G	A	1.08			0.16254	A	G		4q32.1	GUCY1A3
-rs273909	28223407		Cholesterol	Statin	5	G	A	1.07			0.0922524	G	A		5q31.1	SLC22A4-SLC22A5
-rs10947789	28223407		Cholesterol	Statin	6	T	C	1.07			0.167332	C	T		6p21.2	KCNK5
-rs12205331	28223407		Cholesterol	Statin	6	C	T	1.04			0.077476	T	C		6p21.31	ANKS1A
-rs3130683	28223407		Cholesterol	Statin	6	T	C	1.09			0.0353434	C	T		6p21.33	C2
-rs9369640	28223407		Cholesterol	Statin	6	A	C	1.09			0.357428	C	A		6p24.1	PHACTR1
-rs12190287	28223407		Cholesterol	Statin	6	C	G	1.07			0.338059	G	C		6q23.2	TCF21
-rs3798220	28223407		Cholesterol	Statin	6	C	T	1.28			0.0513179	C	T		6q25.3	LPA
-rs2048327	28223407		Cholesterol	Statin	6	C	T	1.06			0.291334	C	T		6q25.3	LPA
-rs4252120	28223407		Cholesterol	Statin	6	T	C	1.07			0.139976	C	T		6q26	PLG
-rs2023938	28223407		Cholesterol	Statin	7	C	T	1.08			0.107228	C	T		7p21.1	HDAC9
-rs12539895	28223407		Cholesterol	Statin	7	A	C	1.08			0.123602	A	C		7q22.3	NA
-rs11556924	28223407		Cholesterol	Statin	7	C	T	1.09			0.155751	T	C		7q32.2	ZC3HC1
-rs3918226	28223407		Cholesterol	Statin	7	T	C	1.14			0.0289537	T	C		7q36.1	NOS3
-rs264	28223407		Cholesterol	Statin	8	G	A	1.11			0.160144	A	G		8p21.3	LPL
-rs2954029	28223407		Cholesterol	Statin	8	A	T	1.06			0.404952	T	A		8q24.13	TRIB1
-rs1333049	28223407		Cholesterol	Statin	9	?	?	1.21			0.418131	C	G		9p21.3	CDKN2A
-rs3217992	28223407		Cholesterol	Statin	9	T	C	1.16			0.348243	T	C		9p21.3	CDKN2A
-rs111245230	28223407		Cholesterol	Statin	9	C	T	1.14			0.0159744	C	T		9q31.3	SVEP1
-rs579459	28223407		Cholesterol	Statin	9	C	T	1.07			0.161342	C	T		9q34.2	ABO
-rs2505083	28223407		Cholesterol	Statin	10	C	T	1.06			0.251597	C	T		10p11.23	KIAA1462
-rs501120	28223407		Cholesterol	Statin	10	T	C	1.07			0.332668	C	T		10q11.21	CXCL12
-rs2047009	28223407		Cholesterol	Statin	10	G	T	1.05			0.340056	G	T		10q11.21	CXCL12
-rs2246833	28223407		Cholesterol	Statin	10	T	C	1.06			0.42492	T	C		10q23.31	LIPA
-rs11203042	28223407		Cholesterol	Statin	10	T	C	1.04			0.433307	T	C		10q23.31	LIPA
-rs12413409	28223407		Cholesterol	Statin	10	G	A	1.1			0.15655	A	G		10q24.32	CYP17A1
-rs11042937	28223407		Cholesterol	Statin	11	T	G	1.04			0.316693	G	T		11p15.3	NA
-rs10840293	28223407		Cholesterol	Statin	11	A	G	1.06			0.472244	A	G		11p15.4	SWAP70
-rs974819	28223407		Cholesterol	Statin	11	T	C	1.07			0.413139	T	C		11q22.3	PDGF
-rs9326246	28223407		Cholesterol	Statin	11	C	G	1.09			0.125599	C	G		11q23.3	APOA5-APOA1
-rs11172113	28223407		Cholesterol	Statin	12	C	T	1.06			0.389377	C	T		12p13.3	LRP1
-rs11057830	28223407		Cholesterol	Statin	12	A	G	1.08			0.139177	A	G		12p24.31	SCARB1
-rs3184504	28223407		Cholesterol	Statin	12	T	C	1.07			0.147364	T	C		12q24.12	SH2B3
-rs9319428	28223407		Cholesterol	Statin	13	A	G	1.06			0.328674	A	G		13q12.3	FLT1
-rs9515203	28223407		Cholesterol	Statin	13	T	C	1.08			0.21885	C	T		13q34	COL4A1
-rs4773144	28223407		Cholesterol	Statin	13	G	A	1.07			0.398163	G	A		13q34	COL4A1
-rs2895811	28223407		Cholesterol	Statin	14	C	T	1.06			0.32488	C	T		14q32.2	HHIPL1
-rs17293632	28223407		Cholesterol	Statin	15	C	T	1.05			0.0992412	T	C		15q22.33	SMAD3
-rs7173743	28223407		Cholesterol	Statin	15	T	C	1.07			0.469649	C	T		15q25.1	ADAMTS7
-rs8042271	28223407		Cholesterol	Statin	15	G	A	1.1			0.305911	A	G		15q26.1	MFGE8-ABHD2
-rs17514846	28223407		Cholesterol	Statin	15	A	C	1.07			0.474641	A	C		15q26.1	FURIN
-rs247616	28223407		Cholesterol	Statin	16	C	T	1.05			0.267572	T	C		16q13	CETP
-rs12936587	28223407		Cholesterol	Statin	17	G	A	1.06			0.267971	A	G		17p11.2	RASD1
-rs2281727	28223407		Cholesterol	Statin	17	G	A	1.04			0.367812	G	A		17p13.3	SMG6
-rs15563	28223407		Cholesterol	Statin	17	?	?	1.04			0.422923	G	A		17q21.32	UBE2Z
-rs8080784	28223407		Cholesterol	Statin	17	C	T	1.06			0.195887	C	T		17q23.2	BCAS3
-rs663129	28223407		Cholesterol	Statin	18	A	G	1.06			0.250599	A	G		18q21.32	PMAIP1-MC4R
-rs116843064	28223407		Cholesterol	Statin	19	G	A	1.16			0.00938498	A	G		19p13.2	ANGPTL4
-rs1122608	28223407		Cholesterol	Statin	19	G	T	1.1			0.138179	T	G		19p13.2	LDLR
-rs445925	28223407		Cholesterol	Statin	19	G	A	1.13			0.14976	A	G		19q13.32	APOE-APOC1
-rs2075650	28223407		Cholesterol	Statin	19	G	A	1.11			0.119409	G	A		19q13.32	APOE-APOC1
-rs12979860	19684573	"European;African-Americans"	hepatitis C virus (HCV)	peginterferon-alpha-2b or -alpha-2a combined with ribavirin	19	C	T	NA	better treatment response		0.355831	T				
-rs8099917	19749758	Australian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	1.98	no response	OR	0.13119	G		Lili-research		
-rs12980275	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	A	17.7	no response	OR	0.323283	G		Lili-research		
-rs8099917	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	27.1	no response	OR	0.13119	G		Lili-research		
-rs8105790	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	C	T	25.7	no response	OR	0.172724	C		Lili-research		
-rs11881222	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	A	25.6	no response	OR	0.251198	G		Lili-research		
-rs8103142	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	C	T	26.6	no response	OR	0.365415	C		Lili-research		
-rs28416813	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	C	22.3	no response	OR	0.352835	G		Lili-research		
-rs4803219	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	T	C	23.3	no response	OR	0.235823	T		Lili-research		
-rs7248668	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	A	G	24.7	no response	OR	0.130791	A		Lili-research		
-rs17109204	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	T	10.1334	better response	OR	0.091254	C		Lili-research		
-rs2025445	19706858	Amish	acute coronary syndromes	clopidogrel	10	A	G	5.56405	better response	OR	0.244209	G		Lili-research		
-rs1326837	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	6.35312	better response	OR	0.352436	C		Lili-research		
-rs12777823	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	8.14925	better response	OR	0.245407	A		Lili-research		
-rs717238	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	8.030021	better response	OR	0.228834	T		Lili-research		
-rs2860838	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	C	8.192431	better response	OR	0.233027	G		Lili-research		
-rs2860903	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	8.24412	better response	OR	0.21266	C		Lili-research		
-rs9332105	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	G	7.429776	better response	OR	0.178315	C		Lili-research		
-rs9332113	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	G	7.266465	better response	OR	0.175919	C		Lili-research		
-rs12572351	19706858	Amish	acute coronary syndromes	clopidogrel	10	A	G	7.158826	better response	OR	0.179113	A		Lili-research		
-rs10509679	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	7.38364	better response	OR	0.179113	A		Lili-research		
-rs1934951	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	7.624059	better response	OR	0.29972	T		Lili-research		
-rs1934980	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	5.20992	better response	OR	0.245208	G		Lili-research		
-rs10871454	18535201	NA	NA	warfarin	16	NA	NA	NA	NA		0.356629	T		Lili-research		
- rs9923231	19300499	Swede	NA	warfarin	NA	T	C	0.97	sensitivity	OR	NA	NA		Lili-research		
-rs1057910	19300499	Swede	NA	warfarin	10	C	A	1.11	sensitivity	OR	0.0485224	C		Lili-research		
-rs1799853	19300499	Swede	NA	warfarin	10	T	C	0.54	sensitivity	OR	0.0479233	T		Lili-research		
-rs2108622	19300499	Swede	NA	warfarin	19	T	C	0.21	no sensitivity	OR	0.236821	T		Lili-research		
-rs10871454	19578179	Caucasian	NA	acenocoumarol	16	NA	NA	5.2	NA	OR	0.356629	T		Lili-research		
-rs4086116 	19578179	Caucasian	NA	acenocoumarol	NA	NA	NA	2.9	NA	OR	NA	NA		Lili-research		
-rs2108622	19578179	Caucasian	NA	acenocoumarol	19	NA	NA	NA	NA	OR	0.236821	T		Lili-research		
-rs11045879	19901119	NA	acute lymphoblastic leukemia	methotrexate	12	T	C	NA	higher clearance		0.219249	C		Lili-research		
- rs4149081	19901119	NA	acute lymphoblastic leukemia	methotrexate	NA	G	A	NA	higher clearance		NA	NA		Lili-research		
-rs317689	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.223642	G		Lili-research		
-rs315135	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.0491214	G		Lili-research		
-rs7297610	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.115815	T		Lili-research		
-rs10509373	22180457	Japanese	breast cancer	tamoxifen	10	C	T	4.51	Higher clearance	HR	0.183906	C		Lili-research		
-rs4363657	18650507	British	NA	statin	12	C	T	4.3	increased risk of myopathy	OR	0.214856	C		Lili-research		
-rs4149056	18650507	British	NA	statin	12	C	T	4.5	increased risk of myopathy	OR	0.0876597	C		Lili-research		
-rs11697186	21659334	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	T	A	4.5	higher risk of developing thrombocytopenia	OR	0.0992412	T		Lili-research		
-rs6139030	21659334	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	T	3.9	higher risk of developing thrombocytopenia	OR	0.109824	C		Lili-research		
-rs9274407	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	T	A	3.1	increased risk of drug-induced liver injury	OR	0.240615	A		Lili-research		
-rs3135388	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	T	C	2.8	increased risk of drug-induced liver injury	OR	0.0429313	A		Lili-research		
-rs2523822	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	NA	NA	2.3	increased risk of drug-induced liver injury	OR	0.250799	G		Lili-research		
-rs11045879	21387541	Spanish	acute lymphoblastic leukemia	methotrexate	12	T	C	1	higher clearance	OR	0.219249	C		Lili-research		
- rs4149081	21387541	Spanish	acute lymphoblastic leukemia	methotrexate	NA	G	A	1	higher clearance	OR	NA	NA		Lili-research		
-rs1127354	20547162	NA	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	A	C	0.02	lower risk of hemolytic anemia	OR	0.0894569	A		Lili-research		
-rs7270101	20547162	NA	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	A	0.38	lower risk of hemolytic anemia	OR	0.0591054	C		Lili-research		
-rs1127354	20173735	European-Americans	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	A	C	NA	lower risk of hemolytic anemia		0.0894569	A		Lili-research		
-rs7270101	20173735	European-Americans	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	A	NA	lower risk of hemolytic anemia		0.0591054	C		Lili-research		
-rs1934951	18594024	NA	multiple myeloma	bisphosphonate	10	T	C	12.75	higher risk of osteonecrosis of the jaw development	OR	0.29972	T		Lili-research		
-rs80191572	28569182		multiple sclerosis	Copaxone	11	A	G	0.5	higher response	OR	0.0305511	G		Lili-research		
-rs28724893	28569182		multiple sclerosis	Copaxone	6	G	A	0.59	higher response	OR	0.42492	T		Lili-research		
-rs1789084	28569182		multiple sclerosis	Copaxone	18	G	A	0.54	higher response	OR	0.381989	A		Lili-research		
-rs139890339	28569182		multiple sclerosis	Copaxone	2	G	A	0.23	higher response	OR	0.00698882	T		Lili-research		
-rs2514036	28353407	Finnish	hypertension	atenolol	11	G	A	NA	higher response		0.196885	C		Lili-research		
-rs3814995	28353407	Finnish	hypertension	losartan	19	A	G	NA	higher response		0.291933	T		Lili-research		
-rs12794714	28296915	Thai	hepatitis B virus (HBV)	pegylated interferon	11	T	C	4.53	good response	OR	0.349241	A		Lili-research		
-rs17047200	28163062	Japanese	hepatitis C virus (HCV) 	interferon	4	T	A	2.37	a risk for hepatocellular carcinoma	OR	0.163339	T		Lili-research		
-rs10995	28115488		hypertension	thiazide diuretics	19	G	A	NA	better blood pressure response		0.217053	G		Lili-research		
-rs10156	28115488		hypertension	thiazide diuretics	19	T	C	NA	better blood pressure response		0.216853	T		Lili-research		
-rs12913988	27981573	Chinese	coronary heart disease	clopidogrel	15	C	T	1.876	higher risk of major adverse cardiac events	OR	0.391973	G		Lili-research		
-rs12456693	27981573	Chinese	coronary heart disease	clopidogrel	18	C	T	0.654	higher risk of major adverse cardiac events	OR	0.182708	T		Lili-research		
-rs2254638	27981573	Chinese	coronary heart disease	clopidogrel	21	T	C	1.428	higher risk of major adverse cardiac events	OR	0.251198	A		Lili-research		
-rs7412	27943270	Swedish		statin	19	T	C	NA	better response		0.0750799	T		Lili-research		
-rs4420638	27943270	Swedish		statin	19	G	A	NA	better response		0.150958	G		Lili-research		
-rs2002042	27943270	Swedish		statin	10	T	C	NA	better response		0.28095	T		Lili-research		
-rs646776	27943270	Swedish		statin	1	C	T	NA	better response		0.238419	C		Lili-research		
-rs6701290	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	1	A	G	9.659	good response	OR	0.175519	G		Lili-research		
-rs3784240	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	14	G	A	9.714	good response	OR	0.0860623	A		Lili-research		
-rs2390256	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	7	G	A	10	good response	OR	0.406749	T		Lili-research		
-rs2219538	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	4	G	A	13.75	good response	OR	0.241813	A		Lili-research		
-rs10515637	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	5	A	G	13.75	good response	OR	0.214856	G		Lili-research		
-rs10823825	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	10	A	G	9.442	good response	OR	0.26278	C		Lili-research		
-rs1927159	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	10	C	A	0.0625	good response	OR	0.33766	A		Lili-research		
-rs7820834	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	8	G	A	7.857	good response	OR	0.465256	C		Lili-research		
-rs553668	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	10	G	A	0.1019	good response	OR	0.329473	A		Lili-research		
-rs4867965	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	5	A	C	8.148	good response	OR	0.332268	A		Lili-research		
-rs8192675	27500523	European ancestry	type 2 diabetes	metformin	3	C	T	0.127	higher response	OR	0.41234	C		Lili-research		
-rs17180299	27010727	Han Chinese 	Heroin-Dependent	methadone	9	G	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.0453275	G		Lili-research		
-rs970905	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	T	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.405351	C		Lili-research		
-rs12000653	27010727	Han Chinese 	Heroin-Dependent	methadone	9	G	T/C	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.176717	T		Lili-research		
-rs11138610	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.292532	A		Lili-research		
-rs72744905	27010727	Han Chinese 	Heroin-Dependent	methadone	9	G	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.129193	A		Lili-research		
-rs10115245	27010727	Han Chinese 	Heroin-Dependent	methadone	9	T	C	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.327875	T		Lili-research		
-rs62572435	27010727	Han Chinese 	Heroin-Dependent	methadone	9	T	C	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.0561102	T		Lili-research		
-rs1572144	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	A	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.419329	C		Lili-research		
-rs1333935	27010727	Han Chinese 	Heroin-Dependent	methadone	9	G	A	0.5973	a higher plasma concentration of R-methadone	slope estimate	0.24381	A		Lili-research		
-rs1333934	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	A	0.5973	a higher plasma concentration of R-methadone	slope estimate	0.367812	C		Lili-research		
-rs4085128	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	T	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.404353	T		Lili-research		
-rs4877551	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	T	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.48143	C		Lili-research		
-rs4877552	27010727	Han Chinese 	Heroin-Dependent	methadone	9	A	G	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.481629	A		Lili-research		
-rs4756776	27010727	Han Chinese 	Heroin-Dependent	methadone	11	T	A/C/G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.327875	G		Lili-research		
-rs4757240	27010727	Han Chinese 	Heroin-Dependent	methadone	11	T	G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.49361	T		Lili-research		
-rs4756779	27010727	Han Chinese 	Heroin-Dependent	methadone	11	A	G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.126398	G		Lili-research		
-rs4757242	27010727	Han Chinese 	Heroin-Dependent	methadone	11	T	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.121406	A		Lili-research		
-rs7936301	27010727	Han Chinese 	Heroin-Dependent	methadone	11	C	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.353435	C		Lili-research		
-rs60857987	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.119409	C		Lili-research		
-rs713547	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.228435	T		Lili-research		
-rs705912	27010727	Han Chinese 	Heroin-Dependent	methadone	16	A	G	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.336462	A		Lili-research		
-rs4787995	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.276558	T		Lili-research		
-rs8182215	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.129792	C		Lili-research		
-rs60857987	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.119409	C		Lili-research		
-rs713547	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.228435	T		Lili-research		
-rs705912	27010727	Han Chinese 	Heroin-Dependent	methadone	16	G	A	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.336462	A		Lili-research		
-rs4787995	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.276558	T		Lili-research		
-rs8182215 	27010727	Han Chinese 	Heroin-Dependent	methadone	NA	T	C	0.3671	a higher plasma concentration of S-methadone	slope estimate	NA	NA		Lili-research		
-rs60857987	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.119409	C		Lili-research		
-rs713547	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.228435	T		Lili-research		
-rs705912	27010727	Han Chinese 	Heroin-Dependent	methadone	16	G	A	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.336462	A		Lili-research		
-rs4787995	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.276558	T		Lili-research		
-rs8182215	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.129792	C		Lili-research		
-AX-13044173	27010727	Han Chinese 	Heroin-Dependent	methadone	NA	C		0.3947	a higher plasma concentration of S-methadone	slope estimate	NA	NA		Lili-research		
-rs772972	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.428315	T		Lili-research		
-rs772973	27010727	Han Chinese 	Heroin-Dependent	methadone	16	G	A	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.283347	A		Lili-research		
-rs11639671	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.441494	C		Lili-research		
-AX-13044173	27010727	Han Chinese 	Heroin-Dependent	methadone	NA	T		0.2284	a lower plasma concentration of S-methadone	slope estimate	NA	NA		Lili-research		
-rs772972	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.428315	T		Lili-research		
-rs772973	27010727	Han Chinese 	Heroin-Dependent	methadone	16	A	G	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.283347	A		Lili-research		
-rs11639671	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.441494	C		Lili-research		
-rs12461727	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	G	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.147364	A		Lili-research		
-rs73038469	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.350639	A		Lili-research		
-rs4803406	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.124201	T		Lili-research		
-rs8110485	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.4196	a lower plasma concentration of S-methadone	slope estimate	0.221246	G		Lili-research		
-rs4124633	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4196	a higher plasma concentration of S-methadone	slope estimate	0.216054	C		Lili-research		
-rs4560022	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.239217	C		Lili-research		
-rs3889806	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.207867	T		Lili-research		
-rs4803410	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.139776	C		Lili-research		
-rs1017384	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	A	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.333067	A		Lili-research		
-rs7251950	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.305511	T		Lili-research		
-rs1808682	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.171925	A		Lili-research		
-AX-13442755	27010727	Han Chinese 	Heroin-Dependent	methadone	NA	C		0.4247	a lower plasma concentration of S-methadone	slope estimate	NA	NA		Lili-research		
-rs3760657	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	G	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.122804	G		Lili-research		
-rs2054675	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.325479	C		Lili-research		
-rs4560022	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.239217	C		Lili-research		
-rs3889806	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.207867	T		Lili-research		
-rs4803410	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.139776	C		Lili-research		
-rs1017384	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.333067	A		Lili-research		
-rs7251950	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.305511	T		Lili-research		
-rs1808682	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.417	a higher plasma concentration of S-methadone	slope estimate	0.171925	A		Lili-research		
-AX-13442755	27010727	Han Chinese 	Heroin-Dependent	methadone	NA	C		0.417	a higher plasma concentration of S-methadone	slope estimate	NA	NA		Lili-research		
-rs3760657	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	G	0.417	a higher plasma concentration of S-methadone	slope estimate	0.122804	G		Lili-research		
-rs2054675	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.325479	C		Lili-research		
-rs8100458	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.304313	C		Lili-research		
-rs7250601	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.321486	C		Lili-research		
-rs7250991	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.341653	C		Lili-research		
-rs11882424	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.0523163	C		Lili-research		
-rs8192719	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.316893	T		Lili-research		
-rs10853744	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	T	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.32508	T		Lili-research		
-rs8100458	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.304313	C		Lili-research		
-rs7250601	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	A	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.321486	C		Lili-research		
-rs7250991	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	A	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.341653	C		Lili-research		
-rs11882424	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.0523163	C		Lili-research		
-rs8192719	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.316893	T		Lili-research		
-rs10853744	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	G	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.32508	T		Lili-research		
-rs61073883	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.201478	T		Lili-research		
-rs1552222	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	A	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.19369	A		Lili-research		
-rs7255904	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	G	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.468251	G		Lili-research		
-rs11666982	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	T	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.366214	T		Lili-research		
-rs61073883	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.426	a lower plasma concentration of S-methadone	slope estimate	0.201478	T		Lili-research		
-rs1552222	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	A	0.426	a lower plasma concentration of S-methadone	slope estimate	0.19369	A		Lili-research		
-rs7255904	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.426	a lower plasma concentration of S-methadone	slope estimate	0.468251	G		Lili-research		
-rs11666982	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	G	0.426	a lower plasma concentration of S-methadone	slope estimate	0.366214	T		Lili-research		
-rs17726861	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	G	0.343	a higher plasma concentration of S-methadone	slope estimate	0.289337	C		Lili-research		
-rs7257703	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.208267	A		Lili-research		
-rs17726963	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.304513	C		Lili-research		
-rs12982859	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.145966	A		Lili-research		
-rs17726861	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	G	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.289337	C		Lili-research		
-rs7257703	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	G	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.208267	A		Lili-research		
-rs17726963	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	C	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.304513	C		Lili-research		
-rs12982859	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.145966	A		Lili-research		
-rs2395029	18684101	Swiss	HIV	abacavir	6	G	T	NA	hypersensitivity		0.0333466	G		Lili-research		
-rs1799971	18250251		alcohol dependence	naltrexone	6	G	A	5.75	greater response	OR	0.223442	G		Lili-research		
-rs3745274	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	T	G	0.27	fewer treatment-related adverse events	OR	0.315695	T		Lili-research		
-rs2279343	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	G	A	0.27	fewer treatment-related adverse events	OR	NA			Lili-research		
-rs12979860	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	T	C	47.7	lower response	OR	0.355831	T		Lili-research		
-rs8099917	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	10.78	lower response	OR	0.13119	G		Lili-research		
-rs368234815	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	?G	TT	14.84	lower response	OR	NA			Lili-research		
+SNP	PMID	Ethnicity	Disease	Drug	chr_name	effect_allele	non_effect_allele	effect_size	Effect_direction	Effect_measure	minor_allele_freq	minor_allele	major_allele	Comment	locus	gene	ensembl_alleles
+rs4363657	22189199		Cholesterol	Statin	12	C	T	NA	C alleles are claimed to have worse response to statin		0.214856	C	T	A boston based company working with heart diagnostics, sells this test to determine statin response	12p12.1		T/C
+rs2395029	18684101		HIV	abacavir	6	G	T	NA	T-allele carriers have worse response		0.0333466	G	T	Note, that the studies supporting this are specifically only valid for caucasian ethnicities. Several other ethnicities are much more likely to have a T-allele, without problems.	6p21.33		T/G
+rs1799971	18250251		Alcoholism	naltrexone	6	G	A	NA	The minor allele (G) had a better effect		0.223442	G	A	Asn40 is the major allele, and Asp40 is the minor allele. Asp40 (minor) had good outcome and should be effect	6q25.2		A/G
+rs3745274	24128861		CLL	fludarabine plus cyclophosphamide	19	G	T	NA	The minor allele (T) has a worse response		0.315695	T	G	The CYP2B6 c.516G.T polymorphism variant from Johnson 2013. 	19q13.2		G/A/T
+rs2279343	24128861		CLL	fludarabine plus cyclophosphamide	19	T	G	NA	The minor allele (G) has a worse response		NA		?	The CYP2B6 c.785A.G polymorphism variant from Johnson 2013	19q13.2		A/G
+rs602633	28223407		Cholesterol	Statin	1	G	T	1.12			0.351837	T	G		1p13.3	SORT1	T/G
+rs17114036	28223407		Cholesterol	Statin	1	A	G	1.11			0.091254	G	A		1p32.2	PPAP2B	A/G
+rs11206510	28223407		Cholesterol	Statin	1	T	C	1.06			0.101837	C	T		1p32.3	PCSK9	T/C
+rs4845625	28223407		Cholesterol	Statin	1	T	C	1.06			0.441693	T	C		1q21.3	IL6R	T/C
+rs17464857	28223407		Cholesterol	Statin	1	T	G	1.05			0.0784744	G	T		1q41	MIA3	T/G
+rs9982601	28223407		Cholesterol	Statin	21	T	C	1.13			0.110024	T	C		21q22.11	KCNE2	C/T
+rs180803	28223407		Cholesterol	Statin	22	G	T	1.02			0.0820687	T	G		22q11.23	POM121L9P-ADORA22B	G/T
+rs1561198	28223407		Cholesterol	Statin	2	T	C	1.06			0.488419	T	C		2p11.2	VAMP5-VAMP8-GGCX	C/T
+rs6544713	28223407		Cholesterol	Statin	2	T	C	1.06			0.167532	T	C		2p21	ABCG5-ABCG8	T/C
+rs515135	28223407		Cholesterol	Statin	2	C	T	1.07			0.249401	T	C		2p24.1	APOB	T/C
+rs2252641	28223407		Cholesterol	Statin	2	?	?	1.06			0.307109	T	C		2q22.3	ZEB2-AC074093.1	T/C/G
+rs6725887	28223407		Cholesterol	Statin	2	C	T	1.12			0.0469249	C	T		2q33.2	WDR12-NBEAL	T/C
+rs1801251	28223407		Cholesterol	Statin	2	A	G	1.05			0.360024	A	G		2q37.1	KCNJ13-GIGYF2	G/A
+rs9818870	28223407		Cholesterol	Statin	3	T	C	1.07			0.0878594	T	C		3q22.3	MRAS	C/A/T
+rs17087335	28223407		Cholesterol	Statin	4	T	G	1.06			0.239018	T	G		4q12	REST-NOA1	G/T
+rs1878406	28223407		Cholesterol	Statin	4	A	?	1.1			0.182907	T	?		4q31.22	EDNRA	C/A/G/T
+rs7692387	28223407		Cholesterol	Statin	4	G	A	1.08			0.16254	A	G		4q32.1	GUCY1A3	G/A
+rs273909	28223407		Cholesterol	Statin	5	G	A	1.07			0.0922524	G	A		5q31.1	SLC22A4-SLC22A5	A/G
+rs10947789	28223407		Cholesterol	Statin	6	T	C	1.07			0.167332	C	T		6p21.2	KCNK5	T/C
+rs12205331	28223407		Cholesterol	Statin	6	C	T	1.04			0.077476	T	C		6p21.31	ANKS1A	C/T
+rs3130683	28223407		Cholesterol	Statin	6	T	C	1.09			0.0353434	C	T		6p21.33	C2	C/T
+rs9369640	28223407		Cholesterol	Statin	6	A	C	1.09			0.357428	C	A		6p24.1	PHACTR1	C/A/G
+rs12190287	28223407		Cholesterol	Statin	6	C	G	1.07			0.338059	G	C		6q23.2	TCF21	C/G/T
+rs3798220	28223407		Cholesterol	Statin	6	C	T	1.28			0.0513179	C	T		6q25.3	LPA	T/C
+rs2048327	28223407		Cholesterol	Statin	6	C	T	1.06			0.291334	C	T		6q25.3	LPA	T/C
+rs4252120	28223407		Cholesterol	Statin	6	T	C	1.07			0.139976	C	T		6q26	PLG	T/C
+rs2023938	28223407		Cholesterol	Statin	7	C	T	1.08			0.107228	C	T		7p21.1	HDAC9	T/C
+rs12539895	28223407		Cholesterol	Statin	7	A	C	1.08			0.123602	A	C		7q22.3	NA	C/A
+rs11556924	28223407		Cholesterol	Statin	7	C	T	1.09			0.155751	T	C		7q32.2	ZC3HC1	C/T
+rs3918226	28223407		Cholesterol	Statin	7	T	C	1.14			0.0289537	T	C		7q36.1	NOS3	C/T
+rs264	28223407		Cholesterol	Statin	8	G	A	1.11			0.160144	A	G		8p21.3	LPL	G/A
+rs2954029	28223407		Cholesterol	Statin	8	A	T	1.06			0.404952	T	A		8q24.13	TRIB1	A/T
+rs1333049	28223407		Cholesterol	Statin	9	?	?	1.21			0.418131	C	G		9p21.3	CDKN2A	G/C
+rs3217992	28223407		Cholesterol	Statin	9	T	C	1.16			0.348243	T	C		9p21.3	CDKN2A	C/T
+rs111245230	28223407		Cholesterol	Statin	9	C	T	1.14			0.0159744	C	T		9q31.3	SVEP1	T/C
+rs579459	28223407		Cholesterol	Statin	9	C	T	1.07			0.161342	C	T		9q34.2	ABO	C/T
+rs2505083	28223407		Cholesterol	Statin	10	C	T	1.06			0.251597	C	T		10p11.23	KIAA1462	T/C
+rs501120	28223407		Cholesterol	Statin	10	T	C	1.07			0.332668	C	T		10q11.21	CXCL12	T/C
+rs2047009	28223407		Cholesterol	Statin	10	G	T	1.05			0.340056	G	T		10q11.21	CXCL12	T/G
+rs2246833	28223407		Cholesterol	Statin	10	T	C	1.06			0.42492	T	C		10q23.31	LIPA	C/T
+rs11203042	28223407		Cholesterol	Statin	10	T	C	1.04			0.433307	T	C		10q23.31	LIPA	T/C
+rs12413409	28223407		Cholesterol	Statin	10	G	A	1.1			0.15655	A	G		10q24.32	CYP17A1	G/A
+rs11042937	28223407		Cholesterol	Statin	11	T	G	1.04			0.316693	G	T		11p15.3	NA	G/T
+rs10840293	28223407		Cholesterol	Statin	11	A	G	1.06			0.472244	A	G		11p15.4	SWAP70	G/A
+rs974819	28223407		Cholesterol	Statin	11	T	C	1.07			0.413139	T	C		11q22.3	PDGF	T/C
+rs9326246	28223407		Cholesterol	Statin	11	C	G	1.09			0.125599	C	G		11q23.3	APOA5-APOA1	C/G
+rs11172113	28223407		Cholesterol	Statin	12	C	T	1.06			0.389377	C	T		12p13.3	LRP1	T/C
+rs11057830	28223407		Cholesterol	Statin	12	A	G	1.08			0.139177	A	G		12p24.31	SCARB1	G/A
+rs3184504	28223407		Cholesterol	Statin	12	T	C	1.07			0.147364	T	C		12q24.12	SH2B3	T/C
+rs9319428	28223407		Cholesterol	Statin	13	A	G	1.06			0.328674	A	G		13q12.3	FLT1	G/A
+rs9515203	28223407		Cholesterol	Statin	13	T	C	1.08			0.21885	C	T		13q34	COL4A1	T/C
+rs4773144	28223407		Cholesterol	Statin	13	G	A	1.07			0.398163	G	A		13q34	COL4A1	A/G
+rs2895811	28223407		Cholesterol	Statin	14	C	T	1.06			0.32488	C	T		14q32.2	HHIPL1	T/C
+rs17293632	28223407		Cholesterol	Statin	15	C	T	1.05			0.0992412	T	C		15q22.33	SMAD3	C/T
+rs7173743	28223407		Cholesterol	Statin	15	T	C	1.07			0.469649	C	T		15q25.1	ADAMTS7	T/C
+rs8042271	28223407		Cholesterol	Statin	15	G	A	1.1			0.305911	A	G		15q26.1	MFGE8-ABHD2	G/A
+rs17514846	28223407		Cholesterol	Statin	15	A	C	1.07			0.474641	A	C		15q26.1	FURIN	C/A/G
+rs247616	28223407		Cholesterol	Statin	16	C	T	1.05			0.267572	T	C		16q13	CETP	C/T
+rs12936587	28223407		Cholesterol	Statin	17	G	A	1.06			0.267971	A	G		17p11.2	RASD1	G/A
+rs2281727	28223407		Cholesterol	Statin	17	G	A	1.04			0.367812	G	A		17p13.3	SMG6	A/G
+rs15563	28223407		Cholesterol	Statin	17	?	?	1.04			0.422923	G	A		17q21.32	UBE2Z	A/G
+rs8080784	28223407		Cholesterol	Statin	17	C	T	1.06			0.195887	C	T		17q23.2	BCAS3	T/C
+rs663129	28223407		Cholesterol	Statin	18	A	G	1.06			0.250599	A	G		18q21.32	PMAIP1-MC4R	G/A
+rs116843064	28223407		Cholesterol	Statin	19	G	A	1.16			0.00938498	A	G		19p13.2	ANGPTL4	G/A
+rs1122608	28223407		Cholesterol	Statin	19	G	T	1.1			0.138179	T	G		19p13.2	LDLR	G/T
+rs445925	28223407		Cholesterol	Statin	19	G	A	1.13			0.14976	A	G		19q13.32	APOE-APOC1	G/A/C
+rs2075650	28223407		Cholesterol	Statin	19	G	A	1.11			0.119409	G	A		19q13.32	APOE-APOC1	A/G
+rs12979860	19684573	"European;African-Americans"	hepatitis C virus (HCV)	peginterferon-alpha-2b or -alpha-2a combined with ribavirin	19	C	T	NA	better treatment response		0.355831	T					C/T
+rs8099917	19749758	Australian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	1.98	no response	OR	0.13119	G		Lili-research			T/G
+rs12980275	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	A	17.7	no response	OR	0.323283	G		Lili-research			A/G
+rs8099917	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	27.1	no response	OR	0.13119	G		Lili-research			T/G
+rs8105790	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	C	T	25.7	no response	OR	0.172724	C		Lili-research			T/C
+rs11881222	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	A	25.6	no response	OR	0.251198	G		Lili-research			A/G
+rs8103142	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	C	T	26.6	no response	OR	0.365415	C		Lili-research			T/C
+rs28416813	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	C	22.3	no response	OR	0.352835	G		Lili-research			C/G
+rs4803219	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	T	C	23.3	no response	OR	0.235823	T		Lili-research			C/T
+rs7248668	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	A	G	24.7	no response	OR	0.130791	A		Lili-research			G/A
+rs17109204	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	T	10.1334	better response	OR	0.091254	C		Lili-research			T/C
+rs2025445	19706858	Amish	acute coronary syndromes	clopidogrel	10	A	G	5.56405	better response	OR	0.244209	G		Lili-research			A/G
+rs1326837	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	6.35312	better response	OR	0.352436	C		Lili-research			T/C
+rs12777823	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	8.14925	better response	OR	0.245407	A		Lili-research			G/A
+rs717238	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	8.030021	better response	OR	0.228834	T		Lili-research			C/T
+rs2860838	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	C	8.192431	better response	OR	0.233027	G		Lili-research			C/G
+rs2860903	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	8.24412	better response	OR	0.21266	C		Lili-research			T/C
+rs9332105	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	G	7.429776	better response	OR	0.178315	C		Lili-research			G/C
+rs9332113	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	G	7.266465	better response	OR	0.175919	C		Lili-research			G/C
+rs12572351	19706858	Amish	acute coronary syndromes	clopidogrel	10	A	G	7.158826	better response	OR	0.179113	A		Lili-research			G/A
+rs10509679	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	7.38364	better response	OR	0.179113	A		Lili-research			G/A
+rs1934951	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	7.624059	better response	OR	0.29972	T		Lili-research			C/T
+rs1934980	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	5.20992	better response	OR	0.245208	G		Lili-research			A/G
+rs10871454	18535201	NA	NA	warfarin	16	NA	NA	NA	NA		0.356629	T		Lili-research			C/T
+rs9923231	19300499	Swede	NA	warfarin	16	T	C	0.97	sensitivity	OR	0.355631	T		Lili-research			C/A/G/T
+rs1057910	19300499	Swede	NA	warfarin	10	C	A	1.11	sensitivity	OR	0.0485224	C		Lili-research			A/C
+rs1799853	19300499	Swede	NA	warfarin	10	T	C	0.54	sensitivity	OR	0.0479233	T		Lili-research			C/T
+rs2108622	19300499	Swede	NA	warfarin	19	T	C	0.21	no sensitivity	OR	0.236821	T		Lili-research			C/T
+rs10871454	19578179	Caucasian	NA	acenocoumarol	16	NA	NA	5.2	NA	OR	0.356629	T		Lili-research			C/T
+rs4086116	19578179	Caucasian	NA	acenocoumarol	10	NA	NA	2.9	NA	OR	0.163938	T		Lili-research			C/T
+rs2108622	19578179	Caucasian	NA	acenocoumarol	19	NA	NA	NA	NA	OR	0.236821	T		Lili-research			C/T
+rs11045879	19901119	NA	acute lymphoblastic leukemia	methotrexate	12	T	C	NA	higher clearance		0.219249	C		Lili-research			T/C
+rs4149081	19901119	NA	acute lymphoblastic leukemia	methotrexate	12	G	A	NA	higher clearance		0.21885	A		Lili-research			G/A
+rs317689	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.223642	G		Lili-research			G/A
+rs315135	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.0491214	G		Lili-research			A/G
+rs7297610	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.115815	T		Lili-research			C/T
+rs10509373	22180457	Japanese	breast cancer	tamoxifen	10	C	T	4.51	Higher clearance	HR	0.183906	C		Lili-research			T/C
+rs4363657	18650507	British	NA	statin	12	C	T	4.3	increased risk of myopathy	OR	0.214856	C		Lili-research			T/C
+rs4149056	18650507	British	NA	statin	12	C	T	4.5	increased risk of myopathy	OR	0.0876597	C		Lili-research			T/C
+rs11697186	21659334	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	T	A	4.5	higher risk of developing thrombocytopenia	OR	0.0992412	T		Lili-research			A/C/T
+rs6139030	21659334	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	T	3.9	higher risk of developing thrombocytopenia	OR	0.109824	C		Lili-research			T/C
+rs9274407	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	T	A	3.1	increased risk of drug-induced liver injury	OR	0.240615	A		Lili-research			A/T
+rs3135388	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	T	C	2.8	increased risk of drug-induced liver injury	OR	0.0429313	A		Lili-research			A/G
+rs2523822	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	NA	NA	2.3	increased risk of drug-induced liver injury	OR	0.250799	G		Lili-research			A/G
+rs11045879	21387541	Spanish	acute lymphoblastic leukemia	methotrexate	12	T	C	1	higher clearance	OR	0.219249	C		Lili-research			T/C
+rs4149081	21387541	Spanish	acute lymphoblastic leukemia	methotrexate	12	G	A	1	higher clearance	OR	0.21885	A		Lili-research			G/A
+rs1127354	20547162	NA	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	A	C	0.02	lower risk of hemolytic anemia	OR	0.0894569	A		Lili-research			C/A/G
+rs7270101	20547162	NA	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	A	0.38	lower risk of hemolytic anemia	OR	0.0591054	C		Lili-research			A/C
+rs1127354	20173735	European-Americans	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	A	C	NA	lower risk of hemolytic anemia		0.0894569	A		Lili-research			C/A/G
+rs7270101	20173735	European-Americans	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	A	NA	lower risk of hemolytic anemia		0.0591054	C		Lili-research			A/C
+rs1934951	18594024	NA	multiple myeloma	bisphosphonate	10	T	C	12.75	higher risk of osteonecrosis of the jaw development	OR	0.29972	T		Lili-research			C/T
+rs80191572	28569182		multiple sclerosis	Copaxone	11	A	G	0.5	higher response	OR	0.0305511	G		Lili-research			A/G
+rs28724893	28569182		multiple sclerosis	Copaxone	6	G	A	0.59	higher response	OR	0.42492	T		Lili-research			T/C
+rs1789084	28569182		multiple sclerosis	Copaxone	18	G	A	0.54	higher response	OR	0.381989	A		Lili-research			G/A
+rs139890339	28569182		multiple sclerosis	Copaxone	2	G	A	0.23	higher response	OR	0.00698882	T		Lili-research			C/T
+rs2514036	28353407	Finnish	hypertension	atenolol	11	G	A	NA	higher response		0.196885	C		Lili-research			C/T
+rs3814995	28353407	Finnish	hypertension	losartan	19	A	G	NA	higher response		0.291933	T		Lili-research			C/G/T
+rs12794714	28296915	Thai	hepatitis B virus (HBV)	pegylated interferon	11	T	C	4.53	good response	OR	0.349241	A		Lili-research			G/A
+rs17047200	28163062	Japanese	hepatitis C virus (HCV) 	interferon	4	T	A	2.37	a risk for hepatocellular carcinoma	OR	0.163339	T		Lili-research			A/T
+rs10995	28115488		hypertension	thiazide diuretics	19	G	A	NA	better blood pressure response		0.217053	G		Lili-research			G/A
+rs10156	28115488		hypertension	thiazide diuretics	19	T	C	NA	better blood pressure response		0.216853	T		Lili-research			T/C
+rs12913988	27981573	Chinese	coronary heart disease	clopidogrel	15	C	T	1.876	higher risk of major adverse cardiac events	OR	0.391973	G		Lili-research			G/A
+rs12456693	27981573	Chinese	coronary heart disease	clopidogrel	18	C	T	0.654	higher risk of major adverse cardiac events	OR	0.182708	T		Lili-research			C/T
+rs2254638	27981573	Chinese	coronary heart disease	clopidogrel	21	T	C	1.428	higher risk of major adverse cardiac events	OR	0.251198	A		Lili-research			A/G
+rs7412	27943270	Swedish		statin	19	T	C	NA	better response		0.0750799	T		Lili-research			C/T
+rs4420638	27943270	Swedish		statin	19	G	A	NA	better response		0.150958	G		Lili-research			A/G
+rs2002042	27943270	Swedish		statin	10	T	C	NA	better response		0.28095	T		Lili-research			C/T
+rs646776	27943270	Swedish		statin	1	C	T	NA	better response		0.238419	C		Lili-research			C/T
+rs6701290	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	1	A	G	9.659	good response	OR	0.175519	G		Lili-research			G/A
+rs3784240	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	14	G	A	9.714	good response	OR	0.0860623	A		Lili-research			G/A/C
+rs2390256	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	7	G	A	10	good response	OR	0.406749	T		Lili-research			C/T
+rs2219538	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	4	G	A	13.75	good response	OR	0.241813	A		Lili-research			G/A
+rs10515637	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	5	A	G	13.75	good response	OR	0.214856	G		Lili-research			A/G
+rs10823825	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	10	A	G	9.442	good response	OR	0.26278	C		Lili-research			T/C
+rs1927159	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	10	C	A	0.0625	good response	OR	0.33766	A		Lili-research			A/C
+rs7820834	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	8	G	A	7.857	good response	OR	0.465256	C		Lili-research			T/C
+rs553668	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	10	G	A	0.1019	good response	OR	0.329473	A		Lili-research			A/G
+rs4867965	27129929	Japanese	psoriasis	anti-tumor necrosis factor (TNF)-?	5	A	C	8.148	good response	OR	0.332268	A		Lili-research			A/C
+rs8192675	27500523	European ancestry	type 2 diabetes	metformin	3	C	T	0.127	higher response	OR	0.41234	C		Lili-research			T/C
+rs17180299	27010727	Han Chinese 	Heroin-Dependent	methadone	9	G	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.0453275	G		Lili-research			A/G
+rs970905	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	T	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.405351	C		Lili-research			C/T
+rs12000653	27010727	Han Chinese 	Heroin-Dependent	methadone	9	G	T/C	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.176717	T		Lili-research			G/C/T
+rs11138610	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.292532	A		Lili-research			A/C
+rs72744905	27010727	Han Chinese 	Heroin-Dependent	methadone	9	G	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.129193	A		Lili-research			G/A
+rs10115245	27010727	Han Chinese 	Heroin-Dependent	methadone	9	T	C	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.327875	T		Lili-research			T/C
+rs62572435	27010727	Han Chinese 	Heroin-Dependent	methadone	9	T	C	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.0561102	T		Lili-research			C/T
+rs1572144	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	A	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.419329	C		Lili-research			C/A
+rs1333935	27010727	Han Chinese 	Heroin-Dependent	methadone	9	G	A	0.5973	a higher plasma concentration of R-methadone	slope estimate	0.24381	A		Lili-research			A/G
+rs1333934	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	A	0.5973	a higher plasma concentration of R-methadone	slope estimate	0.367812	C		Lili-research			C/A
+rs4085128	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	T	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.404353	T		Lili-research			T/C
+rs4877551	27010727	Han Chinese 	Heroin-Dependent	methadone	9	C	T	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.48143	C		Lili-research			C/T
+rs4877552	27010727	Han Chinese 	Heroin-Dependent	methadone	9	A	G	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.481629	A		Lili-research			A/G
+rs4756776	27010727	Han Chinese 	Heroin-Dependent	methadone	11	T	A/C/G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.327875	G		Lili-research			T/A/C/G
+rs4757240	27010727	Han Chinese 	Heroin-Dependent	methadone	11	T	G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.49361	T		Lili-research			G/A/T
+rs4756779	27010727	Han Chinese 	Heroin-Dependent	methadone	11	A	G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.126398	G		Lili-research			A/G
+rs4757242	27010727	Han Chinese 	Heroin-Dependent	methadone	11	T	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.121406	A		Lili-research			A/T
+rs7936301	27010727	Han Chinese 	Heroin-Dependent	methadone	11	C	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.353435	C		Lili-research			A/C
+rs60857987	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.119409	C		Lili-research			T/C
+rs713547	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.228435	T		Lili-research			C/T
+rs705912	27010727	Han Chinese 	Heroin-Dependent	methadone	16	A	G	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.336462	A		Lili-research			A/G
+rs4787995	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.276558	T		Lili-research			C/T
+rs8182215	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.129792	C		Lili-research			T/C
+rs60857987	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.119409	C		Lili-research			T/C
+rs713547	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.228435	T		Lili-research			C/T
+rs705912	27010727	Han Chinese 	Heroin-Dependent	methadone	16	G	A	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.336462	A		Lili-research			A/G
+rs4787995	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.276558	T		Lili-research			C/T
+rs8182215	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.129792	C		Lili-research			T/C
+rs60857987	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.119409	C		Lili-research			T/C
+rs713547	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.228435	T		Lili-research			C/T
+rs705912	27010727	Han Chinese 	Heroin-Dependent	methadone	16	G	A	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.336462	A		Lili-research			A/G
+rs4787995	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.276558	T		Lili-research			C/T
+rs8182215	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.129792	C		Lili-research			T/C
+rs772972	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.428315	T		Lili-research			C/T
+rs772973	27010727	Han Chinese 	Heroin-Dependent	methadone	16	G	A	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.283347	A		Lili-research			G/A/C
+rs11639671	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.441494	C		Lili-research			T/C
+rs772972	27010727	Han Chinese 	Heroin-Dependent	methadone	16	T	C	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.428315	T		Lili-research			C/T
+rs772973	27010727	Han Chinese 	Heroin-Dependent	methadone	16	A	G	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.283347	A		Lili-research			G/A/C
+rs11639671	27010727	Han Chinese 	Heroin-Dependent	methadone	16	C	T	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.441494	C		Lili-research			T/C
+rs12461727	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	G	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.147364	A		Lili-research			G/A
+rs73038469	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.350639	A		Lili-research			G/A
+rs4803406	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.124201	T		Lili-research			C/T
+rs8110485	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.4196	a lower plasma concentration of S-methadone	slope estimate	0.221246	G		Lili-research			A/G
+rs4124633	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4196	a higher plasma concentration of S-methadone	slope estimate	0.216054	C		Lili-research			T/C
+rs4560022	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.239217	C		Lili-research			T/C
+rs3889806	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.207867	T		Lili-research			T/C
+rs4803410	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.139776	C		Lili-research			T/C
+rs1017384	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	A	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.333067	A		Lili-research			C/A
+rs7251950	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.305511	T		Lili-research			C/T
+rs1808682	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.171925	A		Lili-research			G/A
+rs3760657	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	G	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.122804	G		Lili-research			A/G
+rs2054675	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.325479	C		Lili-research			T/C
+rs4560022	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.239217	C		Lili-research			T/C
+rs3889806	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.207867	T		Lili-research			T/C
+rs4803410	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.139776	C		Lili-research			T/C
+rs1017384	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.333067	A		Lili-research			C/A
+rs7251950	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.305511	T		Lili-research			C/T
+rs1808682	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.417	a higher plasma concentration of S-methadone	slope estimate	0.171925	A		Lili-research			G/A
+rs3760657	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	G	0.417	a higher plasma concentration of S-methadone	slope estimate	0.122804	G		Lili-research			A/G
+rs2054675	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.325479	C		Lili-research			T/C
+rs8100458	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.304313	C		Lili-research			T/C
+rs7250601	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.321486	C		Lili-research			A/C/T
+rs7250991	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.341653	C		Lili-research			A/C
+rs11882424	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.0523163	C		Lili-research			T/C
+rs8192719	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.316893	T		Lili-research			C/T
+rs10853744	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	T	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.32508	T		Lili-research			G/T
+rs8100458	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.304313	C		Lili-research			T/C
+rs7250601	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	A	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.321486	C		Lili-research			A/C/T
+rs7250991	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	A	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.341653	C		Lili-research			A/C
+rs11882424	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.0523163	C		Lili-research			T/C
+rs8192719	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.316893	T		Lili-research			C/T
+rs10853744	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	G	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.32508	T		Lili-research			G/T
+rs61073883	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.201478	T		Lili-research			C/T
+rs1552222	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	A	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.19369	A		Lili-research			T/A
+rs7255904	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	G	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.468251	G		Lili-research			G/A
+rs11666982	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	T	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.366214	T		Lili-research			T/G
+rs61073883	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	T	0.426	a lower plasma concentration of S-methadone	slope estimate	0.201478	T		Lili-research			C/T
+rs1552222	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	A	0.426	a lower plasma concentration of S-methadone	slope estimate	0.19369	A		Lili-research			T/A
+rs7255904	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.426	a lower plasma concentration of S-methadone	slope estimate	0.468251	G		Lili-research			G/A
+rs11666982	27010727	Han Chinese 	Heroin-Dependent	methadone	19	T	G	0.426	a lower plasma concentration of S-methadone	slope estimate	0.366214	T		Lili-research			T/G
+rs17726861	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	G	0.343	a higher plasma concentration of S-methadone	slope estimate	0.289337	C		Lili-research			G/C
+rs7257703	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.208267	A		Lili-research			A/G
+rs17726963	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.304513	C		Lili-research			A/C
+rs12982859	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.145966	A		Lili-research			G/A
+rs17726861	27010727	Han Chinese 	Heroin-Dependent	methadone	19	C	G	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.289337	C		Lili-research			G/C
+rs7257703	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	G	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.208267	A		Lili-research			A/G
+rs17726963	27010727	Han Chinese 	Heroin-Dependent	methadone	19	A	C	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.304513	C		Lili-research			A/C
+rs12982859	27010727	Han Chinese 	Heroin-Dependent	methadone	19	G	A	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.145966	A		Lili-research			G/A
+rs2395029	18684101	Swiss	HIV	abacavir	6	G	T	NA	hypersensitivity		0.0333466	G		Lili-research			T/G
+rs1799971	18250251		alcohol dependence	naltrexone	6	G	A	5.75	greater response	OR	0.223442	G		Lili-research			A/G
+rs3745274	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	T	G	0.27	fewer treatment-related adverse events	OR	0.315695	T		Lili-research			G/A/T
+rs2279343	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	G	A	0.27	fewer treatment-related adverse events	OR	NA			Lili-research			A/G
+rs12979860	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	T	C	47.7	lower response	OR	0.355831	T		Lili-research			C/T
+rs8099917	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	10.78	lower response	OR	0.13119	G		Lili-research			T/G
+rs368234815	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	?G	TT	14.84	lower response	OR	NA			Lili-research			TT/G
