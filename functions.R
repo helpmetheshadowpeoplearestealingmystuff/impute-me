@@ -751,14 +751,15 @@ summarize_imputation<-function(
     cmd12 <- paste("awk '{ if($4 != \"NN\") print}' step_10_chr",chr,".txt  >", sub("\\.gen$","",genFile),".23andme.txt",sep="")
     system(cmd12)
     
+    
+    #removing some temporary files
+    unlist(list.files(runDir,pattern=paste0("^step_8_chr",chr),full.names=T))
+    unlist(list.files(runDir,pattern=paste0("^step_9_chr",chr),full.names=T))
+    unlist(list.files(runDir,pattern=paste0("^step_10_chr",chr),full.names=T))
+    
   }
   
-  #removing some temporary files
-  unlist(list.files(runDir,pattern="tped$",full.names=T))
-  unlist(list.files(runDir,pattern="map$",full.names=T))
-  unlist(list.files(runDir,pattern="^step_8",full.names=T))
-  unlist(list.files(runDir,pattern="^step_9",full.names=T))
-  unlist(list.files(runDir,pattern="^step_10",full.names=T))
+
   
 
   #preparing destinationDir
