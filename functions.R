@@ -709,6 +709,8 @@ summarize_imputation<-function(
     cmd5 <- paste(plink," --file step_8_chr",chr,".gen --recode --transpose --noweb --out step_9_chr",chr,sep="")
     system(cmd5)
     
+    
+    
     #re-order to 23andme format
     cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' step_9_chr",chr,".tped  > step_10_chr",chr,".txt",sep="")
     system(cmd6)
@@ -754,6 +756,8 @@ summarize_imputation<-function(
   #removing some temporary files
   unlist(list.files(runDir,pattern="tped$",full.names=T))
   unlist(list.files(runDir,pattern="map$",full.names=T))
+  unlist(list.files(runDir,pattern="^step_8",full.names=T))
+  unlist(list.files(runDir,pattern="^step_9",full.names=T))
   unlist(list.files(runDir,pattern="^step_10",full.names=T))
   
 
