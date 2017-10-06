@@ -173,7 +173,8 @@ shinyServer(function(input, output) {
 	    return(NULL)
 	  }
 	  table<-get_data()
-	  table[,"Ethnicity"]<-table[,"Disease"]<-table[,"Drug"]<-NULL
+	  # table[,"Ethnicity"]<-table[,"Disease"]<-table[,"Drug"]<-NULL
+	  table[,"Ethnicity"]<-table[,"Disease"]<-NULL
 	  return(table)
 	  
 	},include.rownames = FALSE)
