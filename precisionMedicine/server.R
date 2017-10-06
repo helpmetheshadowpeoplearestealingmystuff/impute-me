@@ -26,16 +26,14 @@ shinyServer(function(input, output) {
     SNPs_to_retrieve<-SNPs_to_analyze<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
     
     #retrieving SNPs
-    SNPs_to_retrieve<-SNPs_to_retrieve[!duplicated(SNPs_to_retrieve),]
+    SNPs_to_retrieve<-SNPs_to_retrieve[!duplicated(SNPs_to_retrieve[,"SNP"]),]
     rownames(SNPs_to_retrieve) <- SNPs_to_retrieve[,"SNP"]
     SNPs_to_retrieve<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_retrieve)
+
     
-    
-    SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
-    SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T, verbose=T)
-    # population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
-    # GRS_beta <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
-    
+    #inserting SNPs and calculating GRS
+    SNPs_to_analyze[,"genotype"] <- SNPs_to_retrieve[rownames(SNPs_to_analyze),"genotype"]
+
     
     keep<-c("SNP","locus","genotype","effect_allele","non_effect_allele","effect_size","minor_allele","major_allele","minor_allele_freq","Source_PMID","Direction","gene","Context","Comment","personal_score","population_score_average","population_score_sd","score_diff")
     SNPs_to_analyze<-SNPs_to_analyze[,keep]
@@ -60,29 +58,29 @@ shinyServer(function(input, output) {
   
   
   
-  output$downloadData <- downloadHandler(
-    filename = paste(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"data.xlsx",sep="_"),
-    content = function(file){
-      library(openxlsx)
-
-      SNPs_to_analyze<-get_data()
-        
-        #summarising allele info into single-columns
-        SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
-        SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
-        
-        #adding genotype GRS and rounding MAF
-        SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
-        
-        
-        keep<-c("SNP","genotype","Risk/non-risk Allele","personal_score","population_score_average","effect_size","Major/minor Allele","minor_allele_freq","Source_PMID","gene","Context","Comment")
-        SNPs_to_analyze<-SNPs_to_analyze[,keep]
-        colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","Major/ minor Allele","Minor Allele Frequency","Source PMID","Gene","Context","Comment")
-      
-      write.xlsx(x=SNPs_to_analyze,file=file,rowNames=F)
-      
-    }
-  )
+  # output$downloadData <- downloadHandler(
+  #   filename = paste(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"data.xlsx",sep="_"),
+  #   content = function(file){
+  #     library(openxlsx)
+  # 
+  #     SNPs_to_analyze<-get_data()
+  #       
+  #       #summarising allele info into single-columns
+  #       SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
+  #       SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
+  #       
+  #       #adding genotype GRS and rounding MAF
+  #       # SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
+  #       
+  #       
+  #       # keep<-c("SNP","genotype","Risk/non-risk Allele","personal_score","population_score_average","effect_size","Major/minor Allele","minor_allele_freq","Source_PMID","gene","Context","Comment")
+  #       SNPs_to_analyze<-SNPs_to_analyze[,keep]
+  #       colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","Major/ minor Allele","Minor Allele Frequency","Source PMID","Gene","Context","Comment")
+  #     
+  #     write.xlsx(x=SNPs_to_analyze,file=file,rowNames=F)
+  #     
+  #   }
+  # )
 
   
   output$table1 <- renderTable({ 

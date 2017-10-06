@@ -12,7 +12,7 @@ shinyUI(bootstrapPage(
 	
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	actionButton("goButton","Run analysis"),
-	downloadButton("downloadData", label = "Download data"),
+	# downloadButton("downloadData", label = "Download data"),
 	endPanel(),
 	beginPanel('2/3'),
 	h2("Introduction"),
