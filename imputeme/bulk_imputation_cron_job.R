@@ -52,10 +52,10 @@ if(serverRole== "Node"){
   
   
   #check if there's any fast-queue jobs to put up-front
-  cmd0 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/misc_files/fast_queue_emails.txt
-",sep="")
-  f<-system(cmd0,intern=T)
-  remoteFoldersToCheck<-c(remoteFoldersToCheck[remoteFoldersToCheck%in%f],remoteFoldersToCheck[!remoteFoldersToCheck%in%f])
+#   cmd0 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/misc_files/fast_queue_emails.txt
+# ",sep="")
+#   f<-system(cmd0,intern=T)
+#   remoteFoldersToCheck<-c(remoteFoldersToCheck[remoteFoldersToCheck%in%f],remoteFoldersToCheck[!remoteFoldersToCheck%in%f])
   
   
   #then loop over all remote folders - first checking if there is 'length_requested'  ready jobs
