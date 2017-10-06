@@ -165,4 +165,19 @@ shinyServer(function(input, output) {
 		return(table)
 		
 	},include.rownames = FALSE)
+	
+	
+	
+	
+	
+	
+	output$table5 <- renderTable({ 
+	  if(input$goButton == 0){
+	    return(NULL)
+	  }
+	  table<-get_data()
+	  return(table)
+	  
+	},include.rownames = FALSE)
+	
 })
