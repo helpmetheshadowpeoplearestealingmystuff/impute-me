@@ -132,3 +132,42 @@ data["rs2279343","non_effect_allele"]<-"G" #this one got lost but didn't have to
 write.table(data,file="statins/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#2017-10-06 check LiLi's MAF and chr
+rm(list=ls())
+data<-read.table("precisionMedicine/SNPs_to_analyze.txt",header=T,sep="\t",comment.char="",quote="",stringsAsFactors=F)
+
+
+
+
+#retrieve chr-ID (for double-check), minor allele frequency and assign effect and non-effect allele
+library(biomaRt)
+snp_mart <- useMart("ENSEMBL_MART_SNP", dataset = "hsapiens_snp",host="www.ensembl.org")
+attributes<-c("refsnp_id","chr_name","chrom_start","allele","minor_allele_freq","minor_allele")
+query<-getBM(attributes, filters = c("snp_filter"), values = data[,"SNP"], mart = snp_mart)
+query<-query[nchar(query[,"chr_name"])%in%1:2,]
+rownames(query)<-query[,"refsnp_id"]
+
+data[,"ensembl_alleles"]<-query[data[,"SNP"],"allele"]
+data[,"chr_name"]<-query[data[,"SNP"],"chr_name"]
+data[,"minor_allele_freq"]<-query[data[,"SNP"],"minor_allele_freq"]
+data[,"minor_allele"]<-query[data[,"SNP"],"minor_allele"]
+
+write.table(data,file="precisionMedicine/SNPs_to_analyze.txt",col.names=T,row.names=F,quote=F,sep="\t")
+
+
