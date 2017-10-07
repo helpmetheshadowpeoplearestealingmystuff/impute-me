@@ -598,10 +598,16 @@ save(traits, file="ukbiobank/2017-09-28_trait_overoverview.rdata")
 
 
 
+#2017-10-07
+#seems my own chr9p21 cad allele is found ok, thats a fine qc. But the direction is flipped.
+# on further reading it aeems thia is in fact consistent with the work of neale lab:
+#https://github.com/Nealelab/UK_Biobank_GWAS/blob/master/README.md#summary-stat-output
 
-
-
-
-
+load("ukbiobank/2017-09-28_semi_curated_version_ukbiobank.rdata")
+data[,"temp"]<-data[,"non_effect_allele"]
+data[,"non_effect_allele"]<-data[,"effect_allele"]
+data[,"effect_allele"]<-data[,"temp"]
+data[,"temp"]<-NULL
+save(data, file="ukbiobank/2017-09-28_semi_curated_version_ukbiobank.rdata")
 
 
