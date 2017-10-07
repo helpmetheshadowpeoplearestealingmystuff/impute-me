@@ -168,7 +168,7 @@ shinyServer(function(input, output) {
     #check for question marks in risk-allele
     c1<-apply(SNPs_to_analyze[,c("minor_allele","major_allele","effect_allele","non_effect_allele")]=="?",1,sum)
     if(sum(c1>0)){
-      textToReturn <- paste0(textToReturn," Also note that ",sum(c1>0)," SNP(s) had missing or discrepant allele information, meaning that risk-allele or minor/major allele could not be correctly assigned. This is indicated with a '?' in the results table and causes the SNP to be omitted from the GRS-calculation. This is likely due to strand-reporting issues, and may be fixable by checking the original study.")
+      textToReturn <- paste0(textToReturn," Also note that ",sum(c1>0)," SNP(s) had missing or discrepant allele information, meaning that risk-allele or minor/major allele could not be correctly assigned. This is indicated with a '?' in the results table and causes the SNP to be omitted from the GRS-calculation.")
     }
     
 
