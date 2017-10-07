@@ -89,6 +89,8 @@ shinyServer(function(input, output) {
 		# table<-table["rs2395029",,drop=FALSE]
 		table<-table[table[,"SNP"]%in%c("rs2395029"),]
 		
+		table<-table[!duplicated(table[,"SNP"]),]
+		
 		# rownames(table)<-NULL
 		return(table)
 
@@ -137,6 +139,7 @@ shinyServer(function(input, output) {
 		# table<-table["rs1799971",,drop=FALSE]
 		table<-table[table[,"SNP"]%in%c("rs1799971"),]
 		# rownames(table)<-NULL
+		table<-table[!duplicated(table[,"SNP"]),]
 		return(table)
 
 	},include.rownames = FALSE)
@@ -158,7 +161,7 @@ shinyServer(function(input, output) {
 		table<-table[table[,"SNP"]%in%c("rs3745274","rs2279343"),]
 		# table<-table[c("rs3745274","rs2279343"),,drop=FALSE]
 
-
+		table<-table[!duplicated(table[,"SNP"]),]
 
 
 
