@@ -21,7 +21,7 @@ shinyServer(function(input, output) {
 	output$text_1 <- renderText({ 
 		
 		if(input$goButton == 0){
-			m<-paste0("A genetic risk score is an arbitrary value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the specialized trait GWAS modules on <u><a href='http://www.impute.me/autoimmuneDiseases/'>autoimmune diseases</a></u> or <u><a href='http://www.impute.me/leukemia/'>leukemia</a></u>, with the added caveat that only automated curation have been performed on these thousands of additional studies.<br><br>"
+			m<-paste0("A genetic risk score is a value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the specialized trait GWAS modules on <u><a href='http://www.impute.me/autoimmuneDiseases/'>autoimmune diseases</a></u> or <u><a href='http://www.impute.me/leukemia/'>leukemia</a></u>, with the added caveat that only automated curation have been performed on these thousands of additional studies.<br><br>"
 			)
 			
 		}else{
