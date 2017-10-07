@@ -86,7 +86,9 @@ shinyServer(function(input, output) {
 	  table<-get_data()
 		table<-table[,c("SNP","genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Risk allele")
-		table<-table["rs2395029",,drop=FALSE]
+		# table<-table["rs2395029",,drop=FALSE]
+		table<-table[c("rs2395029")%in%table[,"SNP"],]
+		
 		# rownames(table)<-NULL
 		return(table)
 
@@ -132,7 +134,8 @@ shinyServer(function(input, output) {
 
 		table<-table[,c("SNP","genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Effect allele")
-		table<-table["rs1799971",,drop=FALSE]
+		# table<-table["rs1799971",,drop=FALSE]
+		table<-table[c("rs1799971")%in%table[,"SNP"],]
 		# rownames(table)<-NULL
 		return(table)
 
@@ -151,7 +154,9 @@ shinyServer(function(input, output) {
 
 		table<-table[,c("SNP","genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Effect allele")
-		table<-table[c("rs3745274","rs2279343"),,drop=FALSE]
+		
+		table<-table[c("rs3745274","rs2279343")%in%table[,"SNP"],]
+		# table<-table[c("rs3745274","rs2279343"),,drop=FALSE]
 
 
 
