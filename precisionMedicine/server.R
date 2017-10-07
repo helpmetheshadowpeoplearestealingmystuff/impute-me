@@ -32,7 +32,7 @@ shinyServer(function(input, output) {
 
     
     #inserting SNPs and calculating GRS
-    SNPs_to_analyze[,"genotype"] <- SNPs_to_retrieve[rownames(SNPs_to_analyze),"genotype"]
+    SNPs_to_analyze[,"genotype"] <- SNPs_to_retrieve[SNPs_to_analyze[,"SNP"],"genotype"]
 
 
     
@@ -87,7 +87,7 @@ shinyServer(function(input, output) {
 		table<-table[,c("SNP","genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Risk allele")
 		# table<-table["rs2395029",,drop=FALSE]
-		table<-table[c("rs2395029")%in%table[,"SNP"],]
+		table<-table[table[,"SNP"]%in%c("rs2395029"),]
 		
 		# rownames(table)<-NULL
 		return(table)
@@ -135,7 +135,7 @@ shinyServer(function(input, output) {
 		table<-table[,c("SNP","genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Effect allele")
 		# table<-table["rs1799971",,drop=FALSE]
-		table<-table[c("rs1799971")%in%table[,"SNP"],]
+		table<-table[table[,"SNP"]%in%c("rs1799971"),]
 		# rownames(table)<-NULL
 		return(table)
 
@@ -155,7 +155,7 @@ shinyServer(function(input, output) {
 		table<-table[,c("SNP","genotype","effect_allele")]
 		colnames(table)<-c("SNP","Your genotype","Effect allele")
 		
-		table<-table[c("rs3745274","rs2279343")%in%table[,"SNP"],]
+		table<-table[table[,"SNP"]%in%c("rs3745274","rs2279343"),]
 		# table<-table[c("rs3745274","rs2279343"),,drop=FALSE]
 
 
