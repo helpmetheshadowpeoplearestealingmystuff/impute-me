@@ -15,7 +15,7 @@
   <changefreq>monthly</changefreq>
 </url>
 <url>
-  <loc>http://www.impute.me/guessMyHeight/</loc>
+  <loc>http://www.impute.me/AllDiseases/</loc>
   <changefreq>monthly</changefreq>
 </url>
 <url>
@@ -38,6 +38,11 @@
   <loc>http://www.impute.me/athletics/</loc>
   <changefreq>monthly</changefreq>
 </url>
+<url>
+  <loc>http://www.impute.me/ukbiobank/</loc>
+  <changefreq>monthly</changefreq>
+</url>
+
 <url>
   <loc>http://www.impute.me/contact/</loc>
   <changefreq>monthly</changefreq>
