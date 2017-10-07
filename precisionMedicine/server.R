@@ -32,7 +32,7 @@ shinyServer(function(input, output) {
 
     
     #inserting SNPs and calculating GRS
-    SNPs_to_analyze[,"Your genotype"] <- SNPs_to_retrieve[rownames(SNPs_to_analyze),"genotype"]
+    SNPs_to_analyze[,"genotype"] <- SNPs_to_retrieve[rownames(SNPs_to_analyze),"genotype"]
 
 
     
@@ -79,89 +79,89 @@ shinyServer(function(input, output) {
   # )
 
   
-#   output$table1 <- renderTable({ 
-# 		if(input$goButton == 0){
-# 			return(NULL)
-# 		}
-# 	  table<-get_data()
-# 		table<-table[,c("SNP","genotype","effect_allele")]
-# 		colnames(table)<-c("SNP","Your genotype","Risk allele")
-# 		table<-table["rs2395029",,drop=FALSE]
-# 		# rownames(table)<-NULL
-# 		return(table)
-# 		
-# 	},include.rownames = FALSE)
+  output$table1 <- renderTable({
+		if(input$goButton == 0){
+			return(NULL)
+		}
+	  table<-get_data()
+		table<-table[,c("SNP","genotype","effect_allele")]
+		colnames(table)<-c("SNP","Your genotype","Risk allele")
+		table<-table["rs2395029",,drop=FALSE]
+		# rownames(table)<-NULL
+		return(table)
+
+	},include.rownames = FALSE)
 # 	
 # 	
-# 	output$table2 <- renderTable({ 
-# 		if(input$goButton == 0){
-# 			return(NULL)
-# 		}
-# 	  SNPs_to_analyze<-get_data()
-# 	  
-# 	  SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"Source_PMID"]%in%"28223407",]
-# 	  
-# 	  population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
-# 	  GRS_beta <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
-# 	  
-# 	  
-# 		Proportion<-signif(pnorm(GRS_beta,mean=0,sd=1),2)*100
-# 		if(Proportion > 80){
-# 		  type <- "High Genetic Risk"
-# 		}else{
-# 		  type<-"All Others"
-# 		}
-# 		
-# 		
-# 		out<-data.frame("Z_score"=GRS_beta,"Percent_score"=paste0(Proportion,"%"),"risk_level"=type)
-# 		colnames(out)<-c("GRS Z-score","Percentile Score","'Score category'")
-# 		return(out)
-# 		
-# 	},include.rownames = FALSE)
-# 	
-# 	
-# 	
-# 	
-# 	
-# 	
-# 	output$table3 <- renderTable({ 
-# 		if(input$goButton == 0){
-# 			return(NULL)
-# 		}
-# 	  table<-get_data()
-# 	  
-# 		table<-table[,c("SNP","genotype","effect_allele")]
-# 		colnames(table)<-c("SNP","Your genotype","Effect allele")
-# 		table<-table["rs1799971",,drop=FALSE]
-# 		# rownames(table)<-NULL
-# 		return(table)
-# 		
-# 	},include.rownames = FALSE)
+	output$table2 <- renderTable({
+		if(input$goButton == 0){
+			return(NULL)
+		}
+	  SNPs_to_analyze<-get_data()
+
+	  SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"Source_PMID"]%in%"28223407",]
+
+	  population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
+	  GRS_beta <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
+
+
+		Proportion<-signif(pnorm(GRS_beta,mean=0,sd=1),2)*100
+		if(Proportion > 80){
+		  type <- "High Genetic Risk"
+		}else{
+		  type<-"All Others"
+		}
+
+
+		out<-data.frame("Z_score"=GRS_beta,"Percent_score"=paste0(Proportion,"%"),"risk_level"=type)
+		colnames(out)<-c("GRS Z-score","Percentile Score","'Score category'")
+		return(out)
+
+	},include.rownames = FALSE)
 # 	
 # 	
 # 	
 # 	
 # 	
 # 	
-# 	output$table4 <- renderTable({ 
-# 		if(input$goButton == 0){
-# 			return(NULL)
-# 		}
-# 	  table<-get_data()
-# 	  
-# 		table<-table[,c("SNP","genotype","effect_allele")]
-# 		colnames(table)<-c("SNP","Your genotype","Effect allele")
-# 		table<-table[c("rs3745274","rs2279343"),,drop=FALSE]
+	output$table3 <- renderTable({
+		if(input$goButton == 0){
+			return(NULL)
+		}
+	  table<-get_data()
+
+		table<-table[,c("SNP","genotype","effect_allele")]
+		colnames(table)<-c("SNP","Your genotype","Effect allele")
+		table<-table["rs1799971",,drop=FALSE]
+		# rownames(table)<-NULL
+		return(table)
+
+	},include.rownames = FALSE)
 # 	
-# 		
-# 		
 # 	
-# 		
-# 		
-# 		
-# 		return(table)
-# 		
-# 	},include.rownames = FALSE)
+# 	
+# 	
+# 	
+# 	
+	output$table4 <- renderTable({
+		if(input$goButton == 0){
+			return(NULL)
+		}
+	  table<-get_data()
+
+		table<-table[,c("SNP","genotype","effect_allele")]
+		colnames(table)<-c("SNP","Your genotype","Effect allele")
+		table<-table[c("rs3745274","rs2279343"),,drop=FALSE]
+
+
+
+
+
+
+
+		return(table)
+
+	},include.rownames = FALSE)
 # 	
 	
 	
