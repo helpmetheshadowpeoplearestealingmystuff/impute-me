@@ -19,7 +19,7 @@ shinyServer(function(input, output) {
   output$text_1 <- renderText({ 
     
     if(input$goButton == 0){
-      m<-paste0("A genetic risk score is an arbitrary value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the specialized trait GWAS modules on <u><a href='http://www.impute.me/autoimmuneDiseases/'>autoimmune diseases</a></u> or <u><a href='http://www.impute.me/leukemia/'>leukemia</a></u>, with the added caveat that only automated curation have been performed on these thousands of additional studies.<br><br>"
+      m<-paste0("A genetic risk score is a value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the specialized trait GWAS modules on <u><a href='http://www.impute.me/autoimmuneDiseases/'>autoimmune diseases</a></u> or <u><a href='http://www.impute.me/leukemia/'>leukemia</a></u>, with the added caveat that only automated curation have been performed on these thousands of additional studies.<br><br>"
       )
       
     }else{
@@ -203,8 +203,7 @@ shinyServer(function(input, output) {
                             <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections (Only implemented for GWAS calculator, not UK-biobank. yet).
                             
                       <br><br>Using UK-biobank compared to the GWAS calculator data has the advantage of being a highly systematic and (often) more well-powered approach. The trade-off is that less per-trait curation has been applied at the GWAS calculation step and that results are <i>not</i> peer-reviewed. The UK-biobank trait-note for this trait was: <i>",ukbiobank_notes,"</i>. Further, keep in mind that the UK-biobank consists of individuals of European ethnicity. Even though the normalization scheme can be changed here, it still may not always translate well. For further information on how such may translate between ethnicities, refer to e.g. the work of <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/?term=24390342'>Okada et al</a></u> for a comparison of Asian and European ethnicity (extended data figure 3).
-                            <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. It is possible that the automated GWAS analysis note for this trait can be of help: <i>",phesant_notes,"</i> (but you'd probably have to refer to the documentation for the PHESANT tool, which may get complex).
-                            
+                           
                             </small>")
     
     
