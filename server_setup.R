@@ -627,3 +627,24 @@ sudo git clone https://github.com/lassefolkersen/gene-surfer
 # 
 # 
 # 
+
+
+
+
+
+#2017-10-07 transfer data for server update
+# fs<-paste0(list.files("~/data",full.names=T),"/")
+# 
+# for(f in fs){
+#   l<-paste0(f,"user_log_file.txt")
+#  if(file.exists(l)){
+#    cmd1 <- paste0("scp ",l," ubuntu@ec2-52-39-54-32.us-west-2.compute.amazonaws.com:",f)
+#    system(cmd1)
+#  } 
+#   
+#   
+# }
+
+#this is better
+
+rsync -avm --include='user_log_file.txt' -f 'hide,! */' /home/ubuntu/data/ ubuntu@ec2-52-42-135-134.us-west-2.compute.amazonaws.com:~/data/
