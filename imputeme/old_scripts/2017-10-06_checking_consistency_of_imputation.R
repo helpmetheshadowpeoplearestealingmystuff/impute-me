@@ -71,3 +71,21 @@ grep 25335093 id_823J76y50_raw_data.txt
 
 #OK - so the verdict here is that they are NOT measured in the new data set. Maybe they have been force inserted somehow in the merge step. In other words - we need to do more checkups for that :-(
 
+
+
+
+
+
+#2017-10-09 continuing evaluation after re-run with deletion filters off
+
+# We look at the rs5760747 rs5996794 and rs5760748 in chr22 (the last SNP is just a grep-working-check)
+# 
+
+grep 'rs5760747\|rs5996794\|rs5760748\|rs13328684' step_1_id_823J76y50.map
+#none found in input
+
+grep 'rs5760747\|rs5996794\|rs5760748\|rs147574439' step_2_id_823J76y50_chr22.bim 
+#none found in step2
+
+#check this once it is ready - presumably it will give that at least 2 or 3 are found - given that we check the fam
+grep 'rs5760747\|rs5996794\|rs5760748\|rs147574439' step_2m_chr22.bim
