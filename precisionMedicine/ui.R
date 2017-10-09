@@ -18,9 +18,9 @@ shinyUI(bootstrapPage(
 	h2("Introduction"),
 	HTML("This is currently a collection of actionable pharmacogenetic SNPs. It is by no means meant to be a complete overview of all that exists, but instead is focusing on variants that seems reasonably validated, interesting and useful. Work is under way for a more comprehensive overview."),
 	
-	h2("HIV treatment response"),
-	HTML("This is a fairly rare SNP, for which T-alleles are associated with adverse response to the <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/18684101'>HIV-drug abacavir</a></u>. It is sometimes tested for before initiating abacavir treatment. Note however, that the studies supporting this are specifically only valid for caucasian ethnicities. Several other ethnicities are much more likely to have a T-allele, without problems. Note, that this SNP is also available in raw 23andme data without imputation. However it is included here because it is one of the more variants more often being checked for actual clinical use"),
-	tableOutput("table1"),
+	# h2("HIV treatment response"),
+	# HTML("This is a fairly rare SNP, for which T-alleles are associated with adverse response to the <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/18684101'>HIV-drug abacavir</a></u>. It is sometimes tested for before initiating abacavir treatment. Note however, that the studies supporting this are specifically only valid for caucasian ethnicities. Several other ethnicities are much more likely to have a T-allele, without problems. Note, that this SNP is also available in raw 23andme data without imputation. However it is included here because it is one of the more variants more often being checked for actual clinical use"),
+	# tableOutput("table1"),
 	# dataTableOutput("table1"),
 	
 	# h2("Statin response"),
@@ -29,18 +29,18 @@ shinyUI(bootstrapPage(
 	# 
 	
 	
-	h2("Opiod receptor"),
-	HTML("This is based <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/18250251'>on a study.</a></u> which found that having this opiod receptor variant responded better to naltrexone treatment of alcoholism. It has in subsequent studies been linked to other effects in opiod-receptor related diseases.<br><br>"),
-	tableOutput("table3"),
+	# h2("Opiod receptor"),
+	# HTML("This is based <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/18250251'>on a study.</a></u> which found that having this opiod receptor variant responded better to naltrexone treatment of alcoholism. It has in subsequent studies been linked to other effects in opiod-receptor related diseases.<br><br>"),
+	# tableOutput("table3"),
 	
 	
-	h2("CLL treatment response"),
-	HTML("This is based <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/24128861'>on a study.</a></u> which found that patients having the minor allele of both rs3745274 (T) and rs2279343 (G) responded worse to fludarabine plus cyclophosphamide treatment of chronic lymphoblastic leukemia (CLL).<br><br>"),
-	tableOutput("table4"),
+	# h2("CLL treatment response"),
+	# HTML("This is based <u><a href='http://www.ncbi.nlm.nih.gov/pubmed/24128861'>on a study.</a></u> which found that patients having the minor allele of both rs3745274 (T) and rs2279343 (G) responded worse to fludarabine plus cyclophosphamide treatment of chronic lymphoblastic leukemia (CLL).<br><br>"),
+	# tableOutput("table4"),
 
 	
 	h2("Testing systematic research into precision-medicine SNPs"),
-	HTML("First test at broader view of precision medicine SNPs.<br><br>"),
+	HTML("First test at broader view of precision medicine SNPs. Further work will include browsing-by disease and/or drug.<br><br>"),
 	tableOutput("table5"),
 	
 	
