@@ -39,9 +39,9 @@ shinyUI(bootstrapPage(
 	tableOutput("table4"),
 
 	
-	# h2("Testing systematic research into precision-medicine SNPs"),
-	# HTML("First test at broader view of precision medicine SNPs.<br><br>"),
-	# tableOutput("table5"),
+	h2("Testing systematic research into precision-medicine SNPs"),
+	HTML("First test at broader view of precision medicine SNPs.<br><br>"),
+	tableOutput("table5"),
 	
 	
 	endPanel(),
