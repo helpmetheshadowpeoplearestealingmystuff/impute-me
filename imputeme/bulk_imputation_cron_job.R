@@ -146,7 +146,7 @@ setwd(runDir)
 #run the imputation
 run_bulk_imputation(uniqueIDs, runDir)
 
-stop("Stopping imputation on purpose, to work with 23andme merging")
+# stop("Stopping imputation on purpose, to work with 23andme merging")
 
 unlink(runDir,recursive=TRUE)
 

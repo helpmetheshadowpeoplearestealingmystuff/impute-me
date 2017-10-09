@@ -2006,10 +2006,10 @@ run_bulk_imputation<-function(
     
     #Many homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
     logFile<-read.table(paste("step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1)
-    omitMissing<-logFile[logFile[,1] %in% 'Missing',3]
+    omitMissing<-logFile[logFile[,1] %in% 'Missing',3] #SNPs that were not found in 1kgenomes. Lot's of 23andme iXXXXX here.
     logStrand<-logFile[logFile[,1] %in% 'Strand',]
-    omitNonIdentical<-logStrand[logStrand[,5] != logStrand[,6],3]
-    omitBlank<-logStrand[logStrand[,5]%in%'',3]
+    omitNonIdentical<-logStrand[logStrand[,5] != logStrand[,6],3] #typically indels with different notation than 1kgenomes (<10 counts is usual)
+    omitBlank<-logStrand[logStrand[,5]%in%'',3] #these are SNPs that are in map-file but contents is all-blank in input data. Safe to omit
     
     #These are super-annoying. We have to create another (fake) person with the alternative allele just for their sake. This next command takes all the homozygotes, minus the indels (which are too complicated to lift out from 23andme)
     forceHomozygoteTable<-logStrand[
@@ -2102,9 +2102,9 @@ run_bulk_imputation<-function(
   
   #clean up pre-step-5 files to save space
   print("Performing file-deletion and clean-up")
-  # unlink(list.files(pattern="^step_1.+"))
-  # unlink(list.files(pattern="^step_2.+"))
-  # unlink(list.files(pattern="^step_3.+"))
+  unlink(list.files(pattern="^step_1.+"))
+  unlink(list.files(pattern="^step_2.+"))
+  unlink(list.files(pattern="^step_3.+"))
   
   
   
