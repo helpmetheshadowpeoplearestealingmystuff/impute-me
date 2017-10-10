@@ -178,6 +178,8 @@ for(uniqueID_here in uniqueIDs){
 #put these in priority queue and do single run
 id_4I5w1F001, id_4I5w1F002, id_525Q45001, id_525Q45002, id_55c026001, id_55c026002
 
+#these can be used for later priority queue runs
+id_4I5w1F003, id_4I5w1F004, id_4I5w1F005, id_525Q45003, id_525Q45004, id_525Q45005, id_55c026003, id_55c026004, id_55c026005
 
 #delete if necessary folders
 rm -r imputation_folder_id_4I5w1F001 imputation_folder_id_4I5w1F002 imputation_folder_id_525Q45001 imputation_folder_id_525Q45002 imputation_folder_id_55c026001 imputation_folder_id_55c026002
