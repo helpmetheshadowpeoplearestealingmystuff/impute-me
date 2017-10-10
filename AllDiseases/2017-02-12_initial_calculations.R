@@ -382,3 +382,55 @@ data[,"CHROM"]<-data[,"POS"]<-data[,"REF"]<-data[,"ALT"]<-data[,"AF"]<-NULL
 
 
 save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
+
+
+
+
+
+
+
+
+#2017-10-10 Petukhova was just too awfully annotated in GWAS central (lots of "?") and I got a direct request on it. So decided to fix from source pdf
+rm(list=ls())
+library(openxlsx)
+d<-read.xlsx("AllDiseases/2017-10-10_fixing_petukhova.xlsx")
+rownames(d)<-d[,"SNP"]
+load("AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
+w<-which(data[,"PUBMEDID"]%in%"20596022")
+
+#getting the raw data merged with our data
+d1<-cbind(d[data[w,"SNP"],],data[w,])
+d1
+#conclusion: a risk_allele flip is consistent with minor allele frequencies
+
+nucleotides<-c("A","T","C","G")
+names(nucleotides) <- c("T","A","G","C")
+d1[,"risk_allele"]<-nucleotides[d1[,"risk_allele"]] 
+
+
+#non-risk should then be the alternative allele according to the minor/major notation
+
+
+for(i in 1:nrow(d1)){
+  if(d1[i,"risk_allele"] == d1[i,"minor_allele"]){
+    d1[i,"non_risk_allele"] <- d1[i,"major_allele"]
+  }else{
+    d1[i,"non_risk_allele"] <- d1[i,"minor_allele"]
+  }
+}
+
+
+
+ 
+  
+data[w,"effect_allele"]<-d1[,"risk_allele"]
+data[w,"non_effect_allele"]<-d1[,"non_risk_allele"]
+
+
+
+save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
+
+
