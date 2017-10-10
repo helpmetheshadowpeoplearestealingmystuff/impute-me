@@ -1,8 +1,12 @@
 library("shiny")
 
 
-source("/home/ubuntu/srv/impute-me/functions.R")
+# source("/home/ubuntu/srv/impute-me/functions.R")
+# source("../functions.R")
 
+
+# table_file <-"/home/ubuntu/srv/impute-me/precisionMedicine/SNPs_to_analyze.txt"
+table_file <-"SNPs_to_analyze.txt"
 
 
 
@@ -11,10 +15,32 @@ shinyServer(function(input, output) {
 	
   
   
+  
+  output$ui <- renderUI({
+    # uniqueID <- gsub(" ","",input$uniqueID)
+    disease <- input$disease
+    blank <- selectInput("drug", "Drug:", choices = c())
+    SNPs_to_analyze<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
+    if(!disease%in%SNPs_to_analyze[,"Disease"]){
+      return(blank)
+    }else{
+      drugs <- sort(unique(SNPs_to_analyze[SNPs_to_analyze[,"Disease"]%in%disease,"Drug"]))
+      out <- selectInput("drug", "Drug:", drugs)
+      return(out)
+    }
+  })
+  
+  
+  
+  
+  
   get_data <- reactive({
     
     #initial UI data gathering and user-check
     uniqueID<-gsub(" ","",input$uniqueID)
+    disease <- input$disease
+    drug <- input$drug
+    
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
     if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
@@ -22,10 +48,17 @@ shinyServer(function(input, output) {
       stop(safeError(paste("Did not find a user with this id",uniqueID)))
     }
     
-    table_file <-"/home/ubuntu/srv/impute-me/precisionMedicine/SNPs_to_analyze.txt"
-    SNPs_to_retrieve<-SNPs_to_analyze<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
+    SNPs_to_analyze<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
+    
+    #subset to only relevant
+    SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"Disease"]%in%disease & SNPs_to_analyze[,"Drug"]%in%drug,]
+    if(nrow(SNPs_to_analyze)==0)stop(safeError("No SNPs found for this disease-drug combination"))
+    
+    
+    
     
     #retrieving SNPs
+    SNPs_to_retrieve<-SNPs_to_analyze
     SNPs_to_retrieve<-SNPs_to_retrieve[!duplicated(SNPs_to_retrieve[,"SNP"]),]
     rownames(SNPs_to_retrieve) <- SNPs_to_retrieve[,"SNP"]
     SNPs_to_retrieve<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_retrieve)
@@ -34,7 +67,7 @@ shinyServer(function(input, output) {
     #inserting SNPs and calculating GRS
     SNPs_to_analyze[,"genotype"] <- SNPs_to_retrieve[SNPs_to_analyze[,"SNP"],"genotype"]
 
-
+  
     
     #write the query to the log file
     log_function<-function(uniqueID){
@@ -181,8 +214,15 @@ shinyServer(function(input, output) {
 	    return(NULL)
 	  }
 	  table<-get_data()
-	  # table[,"Ethnicity"]<-table[,"Disease"]<-table[,"Drug"]<-NULL
-	  # table[,"Disease"]<-NULL
+	  table[,"Comment"]<-NULL
+	  table[,"gene"]<-NULL
+	  table[,"ensembl_alleles"]<-NULL
+	  table[,"locus"]<-NULL
+	  table[,"gene"]<-NULL
+	  
+
+	  table<-table[,which(colnames(table)%in%c("SNP","genotype")),which(!colnames(table)%in%"genotype")]
+	  
 	  return(table)
 	  
 	},include.rownames = FALSE)
