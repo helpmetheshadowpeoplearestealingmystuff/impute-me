@@ -429,8 +429,11 @@ data[w,"effect_allele"]<-d1[,"risk_allele"]
 data[w,"non_effect_allele"]<-d1[,"non_risk_allele"]
 
 
+data[data[,"SNP"]%in%"rs694739" & data[,"PUBMEDID"]%in%"20596022","effect_allele"] <-"A"
+data[data[,"SNP"]%in%"rs694739" & data[,"PUBMEDID"]%in%"20596022","non_effect_allele"] <-"G"
 
 save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
 
 
 
