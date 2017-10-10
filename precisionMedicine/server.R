@@ -221,7 +221,7 @@ shinyServer(function(input, output) {
 	  table[,"gene"]<-NULL
 	  
 
-	  table<-table[,which(colnames(table)%in%c("SNP","genotype")),which(!colnames(table)%in%"genotype")]
+	  table<-table[,c(which(colnames(table)%in%c("SNP","genotype")),which(!colnames(table)%in%"genotype"))]
 	  
 	  return(table)
 	  
