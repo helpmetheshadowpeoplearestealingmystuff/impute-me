@@ -147,5 +147,37 @@ grep rs5760747 step_4_chr22.haps
 #what to do
 
 
+#OK - we take three samples and rename them and also duplicate them. Then we can get a sense of how reproducible it is
+uniqueIDs<-c("id_4I5w1F047","id_525Q456B2","id_55c026704")
+duplicates <- 2
 
 
+for(uniqueID_here in uniqueIDs){
+  source <- paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID_here)
+  if(!file.exists(source))stop("!")
+  for(i in 1:duplicates){
+    new_name<-paste0(substr(uniqueID_here,1,9),"00",i)
+    destination <- paste0("/home/ubuntu/imputations/imputation_folder_",new_name)
+    dir.create(destination)
+    files_to_copy<-list.files(source,full.names=T)
+    for(f in files_to_copy){
+      file.copy(f, gsub(uniqueID_here,new_name,f))
+    }
+    var_path<-paste0(destination,"/variables.rdata")
+    o<-load(var_path)
+    uniqueID <- new_name
+    save( "uniqueID","email","filename", "protect_from_deletion",file=var_path)
+    job_status_file<-paste(destination,"/job_status.txt",sep="")
+    unlink(job_status_file)
+    write.table("Job is ready",file=job_status_file,col.names=F,row.names=F,quote=F)
+    
+    cat(paste0("'",new_name,"',"))
+  }
+}
+
+#put these in priority queue and do single run
+id_4I5w1F001, id_4I5w1F002, id_525Q45001, id_525Q45002, id_55c026001, id_55c026002
+
+
+#delete if necessary folders
+rm -r imputation_folder_id_4I5w1F001 imputation_folder_id_4I5w1F002 imputation_folder_id_525Q45001 imputation_folder_id_525Q45002 imputation_folder_id_55c026001 imputation_folder_id_55c026002
