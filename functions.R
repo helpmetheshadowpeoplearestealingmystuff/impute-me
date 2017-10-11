@@ -896,7 +896,10 @@ get_genotypes<-function(
       if(any(nchar(input_genotypes[,4])!=2))stop("input data must have length 2 genotypes")
       
       input_genotypes[,4]<-paste(substr(input_genotypes[,4],1,1),substr(input_genotypes[,4],2,2),sep="/")
-      genotypes<-data.frame(row.names=input_genotypes[,1],genotype=input_genotypes[,4],stringsAsFactors=F)
+      genotypes<-data.frame(rsids=input_genotypes[,1],genotype=input_genotypes[,4],stringsAsFactors=F)
+      genotypes<-genotypes[!duplicated(genotypes[,"rsids"]),]
+      rownames(genotypes)<-genotypes[,"rsids"]
+      genotypes[,"rsids"]<-NULL
     }else{
       genotypes<-data.frame(genotype=vector(),stringsAsFactors=F)
     }
@@ -1683,19 +1686,19 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
   
   
   
-  #generate list of waiting genomes
-  waiting_files<-vector()
-  for(w1 in list.files("/home/ubuntu/imputations",full.names=T)){
-    if(!file.exists(paste0(w1,"/variables.rdata")))next
-    load(paste0(w1,"/variables.rdata"))
-    status<-sub("Job is ","",read.table(paste0(w1,"/job_status.txt"),sep="\t",stringsAsFactors = F)[1,1])
-    waiting_files<-c(waiting_files,paste(uniqueID,email,status,sep=" - "))
-  }
-  plot(NULL,ylim=c(0,length(waiting_files)+1),xlim=c(0,1),frame=F,xaxt="n",yaxt="n",xlab="",ylab="")
-  for(w2 in 1:length(waiting_files)){
-    text(x=0.02,y=length(waiting_files)-w2,label=waiting_files[w2],adj=0,cex=0.6)
-  }
-  
+  # #generate list of waiting genomes
+  # waiting_files<-vector()
+  # for(w1 in list.files("/home/ubuntu/imputations",full.names=T)){
+  #   if(!file.exists(paste0(w1,"/variables.rdata")))next
+  #   load(paste0(w1,"/variables.rdata"))
+  #   status<-sub("Job is ","",read.table(paste0(w1,"/job_status.txt"),sep="\t",stringsAsFactors = F)[1,1])
+  #   waiting_files<-c(waiting_files,paste(uniqueID,email,status,sep=" - "))
+  # }
+  # plot(NULL,ylim=c(0,length(waiting_files)+1),xlim=c(0,1),frame=F,xaxt="n",yaxt="n",xlab="",ylab="")
+  # for(w2 in 1:length(waiting_files)){
+  #   text(x=0.02,y=length(waiting_files)-w2,label=waiting_files[w2],adj=0,cex=0.6)
+  # }
+  # 
   
   
   dev.off()

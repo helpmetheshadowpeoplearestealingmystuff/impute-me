@@ -166,8 +166,8 @@ for(uniqueID in uniqueIDs){
   
   
   #check if all is ok
-  if(!file.exists(paste0("/home/ubuntu/data/",uniqueID,"/",".gen.zip")))stop(paste("Didn't find gen file for",uniqueID))
-  if(!file.exists(paste0("/home/ubuntu/data/",uniqueID,"/",".23andme.zip")))stop(paste("Didn't find 23andme file file for",uniqueID))
+  if(!file.exists(paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip")))stop(paste("Didn't find gen file for",uniqueID))
+  if(!file.exists(paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip")))stop(paste("Didn't find 23andme file file for",uniqueID))
   
 
   #Run the genotype extraction routine
