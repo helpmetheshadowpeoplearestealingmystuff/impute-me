@@ -143,7 +143,7 @@ shinyServer(function(input, output) {
     if(input$goButton == 0){
       return("")
     }else if(input$goButton > 0) {
-      message <- "<br><br>This table calculates genetic risk scores for all domains covered in <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/25919592'>Goodlin et al</a></u>, which covers a number of often encountered injuries and dietary needs in athletics. The risk score is indicated as percentile, i.e. 'percent of population with a lower score'. So it <i>should not</i> be translated as the direkt risk probability. It is just a measure of how you scale relative to other people, based on a measurement of the known genetic component.<br><br>"
+      message <- "<br><br>This table calculates genetic risk scores for all domains covered in <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/25919592'>Goodlin et al</a></u>, which covers a number of often encountered injuries and dietary needs in athletics. The risk score is indicated as percentile, i.e. 'how many percent of people have a lower score'. So it <i>should not</i> be translated as the direkt risk probability. It is just a measure of how you scale relative to other people, based on a measurement of the known genetic component.<br><br>"
       
       return(message)
     }
