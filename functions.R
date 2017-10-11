@@ -668,6 +668,7 @@ summarize_imputation<-function(
   step7Files<-grep("^step_7_chr",allFiles1,value=T)
   step7ResultsFiles<-grep("[0-9]$",step7Files,value=T)
   chromosomes<-unique(sub("_[0-9-]+$","",sub("^step_7_chr","",step7ResultsFiles)))
+  chromosomes<-chromosomes[order(suppressWarnings(as.numeric(chromosomes)))]
   
   for(chr in chromosomes){
     print(paste("Merging chunks in chromosome",chr))
@@ -753,9 +754,9 @@ summarize_imputation<-function(
     
     
     #removing some temporary files
-    unlist(list.files(runDir,pattern=paste0("^step_8_chr",chr),full.names=T))
-    unlist(list.files(runDir,pattern=paste0("^step_9_chr",chr),full.names=T))
-    unlist(list.files(runDir,pattern=paste0("^step_10_chr",chr),full.names=T))
+    unlink(list.files(runDir,pattern=paste0("^step_8_chr",chr),full.names=T))
+    unlink(list.files(runDir,pattern=paste0("^step_9_chr",chr),full.names=T))
+    unlink(list.files(runDir,pattern=paste0("^step_10_chr",chr),full.names=T))
     
   }
   
@@ -771,13 +772,13 @@ summarize_imputation<-function(
   twentythreeandmeFiles<-paste(uniqueID,"_chr",chromosomes,".23andme.txt",sep="")
   zip(zipFile23andme, twentythreeandmeFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
   file.rename(zipFile23andme, paste(prepDestinationDir,basename(zipFile23andme),sep="/"))
-  unlist(list.files(runDir,pattern="23andme",full.names=T))
+  unlink(list.files(runDir,pattern="23andme",full.names=T))
   
   #zipping gen files
   zipFileGen<-paste(runDir,paste(uniqueID,".gen.zip",sep=""),sep="/")
   zip(zipFileGen, genFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
   file.rename(zipFileGen, paste(prepDestinationDir,basename(zipFileGen),sep="/"))
-  
+  unlink(genFiles)
   
   #move the original file as well
   zipFileOriginal<-paste(runDir,paste(uniqueID,".input_data.zip",sep=""),sep="/")
