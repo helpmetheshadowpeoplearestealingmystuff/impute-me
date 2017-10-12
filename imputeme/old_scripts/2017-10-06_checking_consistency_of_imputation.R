@@ -149,13 +149,14 @@ grep rs5760747 step_4_chr22.haps
 
 #OK - we take three samples and rename them and also duplicate them. Then we can get a sense of how reproducible it is
 uniqueIDs<-c("id_4I5w1F047","id_525Q456B2","id_55c026704")
+uniqueIDs<-c("id_525Q456B2","id_55c026704")
 duplicates <- 2
 
 
 for(uniqueID_here in uniqueIDs){
   source <- paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID_here)
   if(!file.exists(source))stop("!")
-  for(i in 1:duplicates){
+  for(i in 6:(duplicates+6)){
     new_name<-paste0(substr(uniqueID_here,1,9),"00",i)
     destination <- paste0("/home/ubuntu/imputations/imputation_folder_",new_name)
     dir.create(destination)
@@ -175,8 +176,16 @@ for(uniqueID_here in uniqueIDs){
   }
 }
 
+
+#put these in priority queue and do bulk run
+# id_4I5w1F006, id_4I5w1F007, id_4I5w1F008, id_525Q45006, id_525Q45007, id_525Q45008, id_55c026006, id_55c026007, id_55c026008
+
 #put these in priority queue and do single run
-id_4I5w1F001, id_4I5w1F002, id_525Q45001, id_525Q45002, id_55c026001, id_55c026002
+# id_4I5w1F001, id_4I5w1F002, id_525Q45001, id_525Q45002, id_55c026001, id_55c026002
+
+
+#These were already run with a bulk imputaiton run:
+# id_4I5w1F047, id_525Q456B2, id_55c026704
 
 #these can be used for later priority queue runs
 id_4I5w1F003, id_4I5w1F004, id_4I5w1F005, id_525Q45003, id_525Q45004, id_525Q45005, id_55c026003, id_55c026004, id_55c026005
