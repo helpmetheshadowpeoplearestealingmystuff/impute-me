@@ -260,8 +260,9 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     servers_running <- 8  #default for summer 2017 (don't want to tinker too much with it)
     genomes_per_day <- servers_running * (run_time / 24)
     days_left <- round(queue_length / genomes_per_day)
+    half_days_left <- round(days_left/2)
     
-    queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect approximately ",days_left," days of waiting.")
+    queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect approximately ",half_days_left,"-",days_left," days of waiting.")
   }else if(queue_length > 5){
     queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect several days of waiting.")
   }else{
