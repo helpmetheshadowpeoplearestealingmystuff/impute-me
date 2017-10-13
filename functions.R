@@ -797,6 +797,19 @@ summarize_imputation<-function(
   writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion"),collapse="\t"),f)
   writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,protect_from_deletion),collapse="\t"),f)
   close(f)
+  #determine if it is a bulk or single imputation
+  crontabs<-grep("^#",system("crontab -l",intern=T),invert = T,value=T)
+  crontabs<-sub(" .+$","",sub("^.+Rscript /home/ubuntu/srv/impute-me/imputeme/","",crontabs))
+  if(any(c("bulk_imputation_cron_job.R","imputation_cron_job.R")%in%crontabs)){
+    pData<-read.table(paste0(prepDestinationDir,"/pData.txt"),header=T)
+    if("imputation_cron_job.R"%in%crontabs){
+      pData[1,"imputation_type"]<-"bulk"  
+    }else{
+      pData[1,"imputation_type"]<-"single"  
+    }
+    write.table(pData,file=paste0(prepDestinationDir,"/pData.txt"),sep="\t",col.names=T,row.names=F,quote=F)
+  }
+  
   
 
   #return paths
