@@ -192,3 +192,16 @@ id_4I5w1F003, id_4I5w1F004, id_4I5w1F005, id_525Q45003, id_525Q45004, id_525Q450
 
 #delete if necessary folders
 rm -r imputation_folder_id_4I5w1F001 imputation_folder_id_4I5w1F002 imputation_folder_id_525Q45001 imputation_folder_id_525Q45002 imputation_folder_id_55c026001 imputation_folder_id_55c026002
+
+
+
+
+
+
+#comparison
+rm(list=ls())
+bulk_imputation_runs<-c("id_4I5w1F006","id_4I5w1F007","id_4I5w1F008","id_525Q45006","id_525Q45007","id_525Q45008","id_55c026006","id_55c026007","id_55c026008","id_4I5w1F047","id_525Q456B2","id_55c026704")
+single_imputation_runs<-c("id_4I5w1F001","id_4I5w1F002","id_525Q45001","id_525Q45002","id_55c026001","id_55c026002")
+
+runs<-data.frame(uniqueIDs=c(bulk_imputation_runs,single_imputation_runs),type=c(rep("bulk",length(bulk_imputation_runs)),rep("single",length(single_imputation_runs))))
+runs[,"source"]<-substr(runs[,"uniqueIDs"],1,9)

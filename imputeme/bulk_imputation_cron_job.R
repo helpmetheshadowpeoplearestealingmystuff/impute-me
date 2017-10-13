@@ -223,9 +223,9 @@ for(uniqueID in uniqueIDs){
   for(tryCount in 1:3){
     print(paste("Trying to mail to",email))
     mailingResult<-try(send.mail(from = email_address,
-                                 to = "lassefolkersen@gmail.com",
+                                 to = email,
                                  bcc="lassefolkersen@gmail.com",
-                                 subject = "BULK-Imputation is ready",
+                                 subject = "Imputation is ready",
                                  body = message,
                                  html=T,
                                  smtp = list(
