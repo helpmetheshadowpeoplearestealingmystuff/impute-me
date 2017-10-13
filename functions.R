@@ -460,7 +460,7 @@ run_imputation<-function(
   
   
   #Rscript to omit duplicates
-  map<-read.table('step_1.map',sep='\t',stringsAsFactors=F)
+  map<-read.table('step_1.map',sep='\t',stringsAsFactors=F,comment.char="")
   exclude<-map[duplicated(map[,4]),2]
   print(paste('Removed',length(exclude),'SNPs that were duplicated'))
   write.table(exclude,file='step_2_exclusions',sep='\t',row.names=FALSE,col.names=F,quote=F)
@@ -553,7 +553,7 @@ run_imputation<-function(
     
     #This removes any duplicates there might be
     forceHomozygoteTable<-forceHomozygoteTable[!duplicated(forceHomozygoteTable[,4]),]
-    map<-read.table(paste("step_2_chr",chr,".map",sep=""),sep="\t",stringsAsFactors=F)
+    map<-read.table(paste("step_2_chr",chr,".map",sep=""),sep="\t",stringsAsFactors=F,comment.char = "")
     #This loads the ped file, and doubles it
     ped2<-ped1<-strsplit(readLines(paste("step_2_chr",chr,".ped",sep=""))," ")[[1]]
     ped2[1]<-"Temporary"
@@ -1959,7 +1959,7 @@ run_bulk_imputation<-function(
     }  
     
     #Rscript to omit duplicates
-    map<-read.table(paste0("step_1_",uniqueID,".map"),sep='\t',stringsAsFactors=F)
+    map<-read.table(paste0("step_1_",uniqueID,".map"),sep='\t',stringsAsFactors=F,comment.char = "")
     exclude<-map[duplicated(map[,4]),2]
     print(paste('Removed',length(exclude),'SNPs that were duplicated'))
     write.table(exclude,file=paste0('step_2_',uniqueID,'_exclusions'),sep='\t',row.names=FALSE,col.names=F,quote=F)
@@ -2005,7 +2005,7 @@ run_bulk_imputation<-function(
 
     
     #check for position duplicates
-    map<-read.table(paste0("step_2m_chr",chr,".map"),stringsAsFactors = F)
+    map<-read.table(paste0("step_2m_chr",chr,".map"),stringsAsFactors = F,comment.char = "")
     if(sum(duplicated(map[,4]))>10000)stop("Found way too many duplicate positions")
     exclude<-unique(map[duplicated(map[,4]),2])
     write.table(exclude,file=paste0('step_2_overall_exclusions_chr',chr),sep='\t',row.names=FALSE,col.names=F,quote=F)
@@ -2042,7 +2042,7 @@ run_bulk_imputation<-function(
     
     #This removes any duplicates there might be
     forceHomozygoteTable<-forceHomozygoteTable[!duplicated(forceHomozygoteTable[,4]),]
-    map<-read.table(paste("step_2_chr",chr,".map",sep=""),sep="\t",stringsAsFactors=F)
+    map<-read.table(paste("step_2_chr",chr,".map",sep=""),sep="\t",stringsAsFactors=F,comment.char = "")
     #This loads the ped file, and doubles it
     p_all<-strsplit(readLines(paste("step_2_chr",chr,".ped",sep=""))," ")
     ped2<-ped1<-p_all[[1]]
@@ -2288,7 +2288,7 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
   colnames(canaries)<-c("snp","1kg_pos")
   canaries[,"1kg_pos"] <- as.numeric(canaries[,"1kg_pos"])
   map_file <- paste0(runDir,"/step_1_",uniqueID,".map")
-  map<-read.table(map_file,sep='\t',stringsAsFactors=F)
+  map<-read.table(map_file,sep='\t',stringsAsFactors=F,comment.char = "")
   map<-map[!duplicated(map[,2]),]
   rownames(map) <- map[,2]
   canaries<-canaries[canaries[,"snp"]%in%rownames(map),]
