@@ -205,3 +205,135 @@ single_imputation_runs<-c("id_4I5w1F001","id_4I5w1F002","id_525Q45001","id_525Q4
 
 runs<-data.frame(uniqueIDs=c(bulk_imputation_runs,single_imputation_runs),type=c(rep("bulk",length(bulk_imputation_runs)),rep("single",length(single_imputation_runs))))
 runs[,"source"]<-substr(runs[,"uniqueIDs"],1,9)
+rownames(runs)<-runs[,"uniqueIDs"]
+
+
+# genotypes <- data.frame((matrix(nrow=0,ncol=nrow(runs),dimnames=list(NULL,rownames(runs)))),stringsAsFactors = F)
+genotypes <- data.frame()
+for(source_ind in unique(runs[,"source"])){
+  r<-runs[runs[,"source"]%in%source_ind,]
+  for(uniqueID in rownames(r)){
+    g_file<-paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.all_gwas.gz")
+    runs[uniqueID,"has_gwas"]<-file.exists(g_file)
+    if(!runs[uniqueID,"has_gwas"])next
+    g<-try(read.table(g_file,stringsAsFactors = F, header=T,row.names=1),silent=T)
+    if(class(g)=="try-error"){
+      runs[uniqueID,"has_gwas"]<-F
+      next
+    }
+    print(uniqueID)
+    genotypes<-merge(genotypes,g,by="row.names",all=T)    
+    rownames(genotypes) <- genotypes[,"Row.names"]
+    genotypes[,"Row.names"]<-NULL
+    colnames(genotypes)[colnames(genotypes)%in%"genotype"]<-uniqueID
+    
+  }
+}
+
+
+save(genotypes,runs,file="genotypes.rdata")
+
+
+
+rm(list=ls())
+load("C:/Users/FOLK/Documents/Work/Administrative/2015-09-29 kickstarter for impute-me/2017-10-13_check_up_up_bulk_run/genotypes.rdata")
+
+
+
+
+for(source_ind in unique(runs[,"source"])){
+  r<-runs[runs[,"source"]%in%source_ind,]
+  
+  uniqueIDs<-rownames(r)[rownames(r)%in%colnames(genotypes)]
+  if(length(uniqueIDs)<2)next
+  com<-combn(uniqueIDs,2)
+  for(j in 1:ncol(com)){
+    g1<-genotypes[,com[1,j] ]
+    g2<-genotypes[,com[2,j] ]
+    
+    total <- length(g1)  
+    nas<-sum(is.na(g2 == g1))
+    mismatch<-sum(g2 != g1,na.rm=T)
+    
+    
+    type<-paste(as.character(runs[com[1,j],"type"]),"vs",as.character(runs[com[2,j],"type"]))
+    
+    
+    print(paste("In",type,"there was",mismatch,"mismatch and",nas,"NAs out of",total))
+  }
+  print("")
+  
+}
+
+
+# 
+# [1] "In bulk vs single there was 229 mismatch and 2659 NAs out of 20011"
+# [1] "In bulk vs single there was 249 mismatch and 2624 NAs out of 20011"
+# [1] "In single vs single there was 35 mismatch and 2585 NAs out of 20011"
+# [1] ""
+# [1] "In bulk vs bulk there was 260 mismatch and 2656 NAs out of 20011"
+# [1] "In bulk vs bulk there was 489 mismatch and 2683 NAs out of 20011"
+# [1] "In bulk vs single there was 976 mismatch and 2696 NAs out of 20011"
+# [1] "In bulk vs single there was 934 mismatch and 2711 NAs out of 20011"
+# [1] "In bulk vs bulk there was 501 mismatch and 2688 NAs out of 20011"
+# [1] "In bulk vs single there was 937 mismatch and 2704 NAs out of 20011"
+# [1] "In bulk vs single there was 917 mismatch and 2721 NAs out of 20011"
+# [1] "In bulk vs single there was 783 mismatch and 2661 NAs out of 20011"
+# [1] "In bulk vs single there was 763 mismatch and 2673 NAs out of 20011"
+# [1] "In single vs single there was 449 mismatch and 2652 NAs out of 20011"
+# [1] ""
+
+#so in conclusions there *always* is about 400 mismatches on a separate run, i.e. 2%. 
+#when comparing different persons (in this set), this goes up to 6000
+# i.e. 30% mismatch (and this value probably is hugely dependent on ethnicity and relatedness)
+
+#so in conclusion, there is so far no reason to believe that bulk running introduces a lot of errors.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#OK - we take three samples and rename them and also duplicate them. Then we can get a sense of how reproducible it is
+uniqueIDs<-c("id_4I5w1F047","id_525Q456B2","id_55c026704")
+duplicates <- 7
+
+
+for(uniqueID_here in uniqueIDs){
+  source <- paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID_here)
+  if(!file.exists(source))stop("!")
+  for(i in 1:duplicates){
+    new_name<-paste0(substr(uniqueID_here,1,9),"00",i)
+    destination <- paste0("/home/ubuntu/imputations/imputation_folder_",new_name)
+    dir.create(destination)
+    files_to_copy<-list.files(source,full.names=T)
+    for(f in files_to_copy){
+      file.copy(f, gsub(uniqueID_here,new_name,f))
+    }
+    var_path<-paste0(destination,"/variables.rdata")
+    o<-load(var_path)
+    uniqueID <- new_name
+    save( "uniqueID","email","filename", "protect_from_deletion",file=var_path)
+    job_status_file<-paste(destination,"/job_status.txt",sep="")
+    unlink(job_status_file)
+    write.table("Job is ready",file=job_status_file,col.names=F,row.names=F,quote=F)
+    
+    cat(paste0("'",new_name,"',"))
+  }
+}
+
