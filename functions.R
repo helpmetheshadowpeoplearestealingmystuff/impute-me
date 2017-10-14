@@ -342,123 +342,9 @@ run_imputation<-function(
   
   
   #check for MT presence, other non-sorted behaviour and just plain weird thing. Note this is an exception, and it will raise a log entry no matter what. Best to submit sorted clean data data. 
-  
-  special_error_status<-vector()
   if(out1 == 3){
-    line_count_cmd<-paste0("wc -l ",rawdata)
-    line_count_0<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
-    
-    
-    #Common problem 1: mitochondrial SNPs (not used in any analysis anyway)
-    cmd_special_1<-paste("sed -i.bak1 '/\\tMT\\t/d'",rawdata)
-    system(cmd_special_1)
-    line_count_1<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
-    if(line_count_1-line_count_0<0)special_error_status <- c(special_error_status, paste0("MT removals (",line_count_1-line_count_0,")"))
-    
-        
-    #Common problem 2: Presence of triple dashes, that should just be double dashes
-    md5_before <- md5sum(rawdata)
-    cmd_special_2<-paste0("sed -i.bak2 's/\\t---/\\t--/' ",rawdata)
-    system(cmd_special_2)
-    if(md5_before != md5sum(rawdata))c(special_error_status, "--- to --")
-
-    
-    #Common problem 3: Presence of indels that can't be handled by the plink -23file function
-    #this needs to be handled in a very weird way, because clearly awk can distinguish all line endings systematically
-    cmd_special_3a<-paste0("awk '!(length($4) != 3)' ",rawdata, " > ",runDir,"/temp_indel_01.txt")
-    system(cmd_special_3a)
-    line_count_3a<-as.integer(sub(" .+$","",system(paste0("wc -l ",runDir,"/temp_indel_01.txt"),intern=T)))
-    
-    cmd_special_3b<-paste0("awk '!(length($4) != 2)' ",rawdata, " > ",runDir,"/temp_indel_02.txt")
-    system(cmd_special_3b)
-    line_count_3b<-as.integer(sub(" .+$","",system(paste0("wc -l ",runDir,"/temp_indel_02.txt"),intern=T)))
-    
-    if(line_count_3a > line_count_3b){
-      file.rename(paste0(runDir,"/temp_indel_01.txt"),rawdata)
-    }else{
-      file.rename(paste0(runDir,"/temp_indel_02.txt"),rawdata)
-    }
-    line_count_3<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
-    
-    
-    if(line_count_3-line_count_1<0)special_error_status <- c(special_error_status, paste0("INDEL removals (",line_count_3-line_count_1,")"))
-    
-
-    
-            
-    #Common problem 4: lack of sorting (first re-check if this is a problem after MT removal)
-    cmd_special_3<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
-    sorting_check<-system(cmd_special_3,intern=T)
-    if(length(grep("are out of order",sorting_check))>0){
-      
-      #sorting by chr then pos
-      cmd_sort_1<-paste0("sort -k2 -k3 -g -o ",runDir,"/temp01.txt ",rawdata)
-      system(cmd_sort_1)
-      
-      #removing Y, xY, 23 chr (too risky to keep in after a sort)
-      cmd_sort_2<-paste0("sed -e '/\\tY\\t/d' -e '/\\t23\\t/d' -e '/\\tYX\\t/d' -e '/\\tXY\\t/d' ",runDir,"/temp01.txt > ",runDir,"/temp02.txt")
-      system(cmd_sort_2)
-      
-      #switching X chr and the rest (because X gets sorted first)
-      cmd_sort_3<-paste0("grep -v \tX\t ",runDir,"/temp02.txt > ",runDir,"/temp03.txt")
-      system(cmd_sort_3)
-      cmd_sort_4<-paste0("grep \tX\t ",runDir,"/temp02.txt >> ",runDir,"/temp03.txt")
-      system(cmd_sort_4)
-      
-      #replace X with 23
-      cmd_sort_5<-paste0("sed 's/\\tX\\t/\\t23\t/' ",runDir,"/temp03.txt > ",rawdata)
-      system(cmd_sort_5)
-      
-      line_count_4<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
-      special_error_status<- c(special_error_status,paste0("sorting required (",line_count_3-line_count_4," lines removed)"))
-    }
-    
-  
-
-    #common problem 5: Removing all front quotes, all back quotes and all quote-comma-quotes
-    md5_before <- md5sum(rawdata)
-    cmd_special_5<-paste0("sed -i.bak3 -e 's/^\"//g' -e 's/\"$//g' -e 's/\",\"/\\t/g' -e 's/\"\\t\"/\\t/g' ",rawdata)
-    system(cmd_special_5)
-    if(md5_before != md5sum(rawdata))c(special_error_status, "removing weird quotes")
-    
-    
-    
-    #common problem 6: also when there is weird carriage returns    
-    md5_before <- md5sum(rawdata)
-    cmd_special_6<-paste0("sed -i.bak4 's/\"\r//g' ",rawdata)
-    system(cmd_special_6)
-    if(md5_before != md5sum(rawdata))c(special_error_status, "removing weird carriage returns")
-    
-  
-    
-        
-    #then re-check and decide future action
-    out1<-system(cmd1)
-    if(out1 == 0){
-      print(paste0("ok, somehow the special errors section actually cleared up this one. These were the error messages: ",paste(special_error_status,collapse=", ")))
-      #and move on
-    }else{
-      #however if still failing, we have to send a mail
-      library("mailR")
-      error1<-system(cmd1,intern=T)
-      message <- paste0(uniqueID," failed all attempts at starting imputation. It came with special error status:<b> ", paste(special_error_status,collapse=", "),". </b>The last error message was this: ",paste(error1,collapse="\n"))
-      send.mail(from = email_address,
-                to = "lassefolkersen@gmail.com",
-                subject = "Imputation has problem",
-                body = message,
-                html=T,
-                smtp = list(
-                  host.name = "smtp.gmail.com", 
-                  port = 465, 
-                  user.name = email_address, 
-                  passwd = email_password, 
-                  ssl = TRUE),
-                authenticate = TRUE,
-                send = TRUE)
-      stop("Sending error mail and giving up")
-    }
+    special_error_check(uniqueID,runDir)
   }  
-  
   
   #Rscript to omit duplicates
   map<-read.table('step_1.map',sep='\t',stringsAsFactors=F,comment.char="")
@@ -898,24 +784,26 @@ get_genotypes<-function(
     chromosomes<-unique(requestDeNovo[,"chr_name"])
     contents<-unzip(genZipFile,list=T)
     
+    #create a blank genotypes object
+    genotypes<-data.frame(genotype=vector(),stringsAsFactors=F)
+    
     #if input is in as a chromosome, use the 23andmefile as input
     if("input"%in%chromosomes){
       snpsFromInput<-requestDeNovo[requestDeNovo[,"chr_name"]%in%"input","SNP"]
       outZip<-unzip(inputZipFile, overwrite = TRUE,exdir = idTempFolder, unzip = "internal")
       cmd0 <- paste("grep -E '",paste(paste(snpsFromInput,"\t",sep=""),collapse="|"),"' ",outZip,sep="")
       input_genotypes<-system(cmd0,intern=T)
-      input_genotypes<-do.call(rbind,strsplit(input_genotypes,"\t"))
-      input_genotypes[,4]<-sub("\r$","",input_genotypes[,4])
-      
-      if(any(nchar(input_genotypes[,4])!=2))stop("input data must have length 2 genotypes")
-      
-      input_genotypes[,4]<-paste(substr(input_genotypes[,4],1,1),substr(input_genotypes[,4],2,2),sep="/")
-      genotypes<-data.frame(rsids=input_genotypes[,1],genotype=input_genotypes[,4],stringsAsFactors=F)
-      genotypes<-genotypes[!duplicated(genotypes[,"rsids"]),]
-      rownames(genotypes)<-genotypes[,"rsids"]
-      genotypes[,"rsids"]<-NULL
-    }else{
-      genotypes<-data.frame(genotype=vector(),stringsAsFactors=F)
+      if(length(input_genotypes)>0){
+        input_genotypes<-do.call(rbind,strsplit(input_genotypes,"\t"))
+        input_genotypes[,4]<-sub("\r$","",input_genotypes[,4])
+        if(any(nchar(input_genotypes[,4])!=2))stop("input data must have length 2 genotypes")
+        
+        input_genotypes[,4]<-paste(substr(input_genotypes[,4],1,1),substr(input_genotypes[,4],2,2),sep="/")
+        genotypes<-data.frame(rsids=input_genotypes[,1],genotype=input_genotypes[,4],stringsAsFactors=F)
+        genotypes<-genotypes[!duplicated(genotypes[,"rsids"]),]
+        rownames(genotypes)<-genotypes[,"rsids"]
+        genotypes[,"rsids"]<-NULL
+      }
     }
     
     #if any normal style chromosome names are in use the gen files
