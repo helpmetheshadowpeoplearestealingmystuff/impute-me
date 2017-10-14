@@ -341,8 +341,9 @@ run_imputation<-function(
   out1<-system(cmd1)
   
   
-  #check for MT presence, other non-sorted behaviour and just plain weird thing. Note this is an exception, and it will raise a log entry no matter what. Best to submit sorted clean data data. 
-  if(out1 == 3){
+  #If the standard command fails, we run an extensive error rescue. Hopefully shouldn't be used too often, but is nice for when people submit weird custom-setup data
+  genes_for_good<-length(grep("genes for good",tolower(readLines(rawdata_file,n=5)))>0)
+  if(out1 == 3 | genes_for_good){
     special_error_check(uniqueID,runDir)
   }  
   
@@ -1842,8 +1843,9 @@ run_bulk_imputation<-function(
     out1<-system(cmd1)
     
     
-    #check for MT presence, other non-sorted behaviour and just plain weird thing. Note this is an exception, and it will raise a log entry no matter what. Best to submit sorted clean data data. 
-    if(out1 == 3){
+    #If the standard command fails, we run an extensive error rescue. Hopefully shouldn't be used too often, but is nice for when people submit weird custom-setup data
+    genes_for_good<-length(grep("genes for good",tolower(readLines(rawdata_file,n=5)))>0)
+    if(out1 == 3 | genes_for_good){
       special_error_check(uniqueID,runDir)
     }  
     
@@ -2072,13 +2074,15 @@ run_bulk_imputation<-function(
 
 
 special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/plink"){
+  
   rawdata_file<-paste("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/",uniqueID,"_raw_data.txt",sep="")
   if(!file.exists(rawdata_file))stop(paste("error in special-error-check: didn't find file at",rawdata_file))
+  
+  
   
   special_error_status<-vector()
   line_count_cmd<-paste0("wc -l ",rawdata_file)
   line_count_0<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
-  
   
   #Common problem 1: mitochondrial SNPs (not used in any analysis anyway)
   cmd_special_1<-paste("sed -i.bak1 '/\\tMT\\t/d'",rawdata_file)
@@ -2095,7 +2099,7 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
   
   
   #Common problem 3: Presence of indels that can't be handled by the plink -23file function
-  #this needs to be handled in a very weird way, because clearly awk can distinguish all line endings systematically
+  #this needs to be handled in a very weird way, because clearly awk cant distinguish all line endings systematically
   cmd_special_3a<-paste0("awk '!(length($4) != 3)' ",rawdata_file, " > ",runDir,"/temp_indel_01.txt")
   system(cmd_special_3a)
   line_count_3a<-as.integer(sub(" .+$","",system(paste0("wc -l ",runDir,"/temp_indel_01.txt"),intern=T)))
@@ -2191,6 +2195,14 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
       c(special_error_status, paste("failed built check with",sum(canaries[,"1kg_pos"] != canaries[,"input_pos"]),"of",nrow(canaries),"snps"))
     }
   }
+  
+  
+  
+  #Common problem 8 - some providers have started putting # signs in the rsids (genes for good for example). Should remove those lines.
+  md5_before <- md5sum(rawdata_file)
+  cmd_special_8<-paste0("sed -i.bak5 '/#/d' ",rawdata_file)
+  system(cmd_special_8)
+  if(md5_before != md5sum(rawdata_file))c(special_error_status, "hashtags in rsids")
   
   
   #then re-check and decide future action
