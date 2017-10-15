@@ -342,7 +342,7 @@ run_imputation<-function(
   
   
   #If the standard command fails, we run an extensive error rescue. Hopefully shouldn't be used too often, but is nice for when people submit weird custom-setup data
-  genes_for_good<-length(grep("genes for good",tolower(readLines(rawdata_file,n=5)))>0)
+  genes_for_good<-length(grep("genes for good",tolower(readLines(rawdata,n=5)))>0)
   if(out1 == 3 | genes_for_good){
     special_error_check(uniqueID,runDir)
   }  
