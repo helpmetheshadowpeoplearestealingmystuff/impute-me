@@ -2075,6 +2075,7 @@ run_bulk_imputation<-function(
 
 
 genes_for_good_cleaner<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/plink"){
+  print("The genes_for_good_cleaner was activated")
   rawdata_file<-paste("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/",uniqueID,"_raw_data.txt",sep="")
   if(!file.exists(rawdata_file))stop(paste("error in special-error-check: didn't find file at",rawdata_file))
   #Common problem 1 -  # signs in the rsids. Should remove those lines.
@@ -2091,7 +2092,7 @@ genes_for_good_cleaner<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/
 
 
 special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/plink"){
-  
+  print("The special_error_check was activated")
   rawdata_file<-paste("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/",uniqueID,"_raw_data.txt",sep="")
   if(!file.exists(rawdata_file))stop(paste("error in special-error-check: didn't find file at",rawdata_file))
   
