@@ -691,9 +691,9 @@ summarize_imputation<-function(
   if(any(c("bulk_imputation_cron_job.R","imputation_cron_job.R")%in%crontabs)){
     pData<-read.table(paste0(prepDestinationDir,"/pData.txt"),header=T)
     if("imputation_cron_job.R"%in%crontabs){
-      pData[1,"imputation_type"]<-"bulk"  
-    }else{
       pData[1,"imputation_type"]<-"single"  
+    }else{
+      pData[1,"imputation_type"]<-"bulk"  
     }
     write.table(pData,file=paste0(prepDestinationDir,"/pData.txt"),sep="\t",col.names=T,row.names=F,quote=F)
   }
@@ -2180,7 +2180,16 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
   canaries<-data.frame(canaries,stringsAsFactors = F)
   colnames(canaries)<-c("snp","1kg_pos")
   canaries[,"1kg_pos"] <- as.numeric(canaries[,"1kg_pos"])
-  map_file <- paste0(runDir,"/step_1_",uniqueID,".map")
+  
+  
+  map_file1 <- paste0(runDir,"/step_1_",uniqueID,".map")
+  map_file2 <- paste0(runDir,"/step_1_.map")
+  if(file.exists(map_file1)){
+    map_file<-map_file1
+  }else if(file.exists(map_file2)){
+    map_file<-map_file2
+  }else{stop("Didn't find map-file")}
+  
   map<-read.table(map_file,sep='\t',stringsAsFactors=F,comment.char = "")
   map<-map[!duplicated(map[,2]),]
   rownames(map) <- map[,2]
