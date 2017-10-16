@@ -2183,7 +2183,7 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
   
   
   map_file1 <- paste0(runDir,"/step_1_",uniqueID,".map")
-  map_file2 <- paste0(runDir,"/step_1_.map")
+  map_file2 <- paste0(runDir,"/step_1.map")
   if(file.exists(map_file1)){
     map_file<-map_file1
   }else if(file.exists(map_file2)){
