@@ -341,9 +341,14 @@ run_imputation<-function(
   out1<-system(cmd1)
   
   
+  #need to always check if the genes_for_good_cleaner should be run
+  if(length(grep("genes for good",tolower(readLines(rawdata,n=5)))>0)){
+    genes_for_good_cleaner(uniqueID,runDir)
+  }
+  
+  
   #If the standard command fails, we run an extensive error rescue. Hopefully shouldn't be used too often, but is nice for when people submit weird custom-setup data
-  genes_for_good<-length(grep("genes for good",tolower(readLines(rawdata,n=5)))>0)
-  if(out1 == 3 | genes_for_good){
+  if(out1 == 3){
     special_error_check(uniqueID,runDir)
   }  
   
@@ -1843,9 +1848,15 @@ run_bulk_imputation<-function(
     out1<-system(cmd1)
     
     
+    
+    #need to always check if the genes_for_good_cleaner should be run
+    if(length(grep("genes for good",tolower(readLines(rawdata,n=5)))>0)){
+      genes_for_good_cleaner(uniqueID,runDir)
+    }
+    
+    
     #If the standard command fails, we run an extensive error rescue. Hopefully shouldn't be used too often, but is nice for when people submit weird custom-setup data
-    genes_for_good<-length(grep("genes for good",tolower(readLines(rawdata_file,n=5)))>0)
-    if(out1 == 3 | genes_for_good){
+    if(out1 == 3 ){
       special_error_check(uniqueID,runDir)
     }  
     
@@ -2063,7 +2074,13 @@ run_bulk_imputation<-function(
 
 
 
-
+genes_for_good_cleaner<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/plink"){
+  rawdata_file<-paste("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/",uniqueID,"_raw_data.txt",sep="")
+  if(!file.exists(rawdata_file))stop(paste("error in special-error-check: didn't find file at",rawdata_file))
+  #Common problem 1 -  # signs in the rsids. Should remove those lines.
+  cmd_special_8<-paste0("sed -i.bak6 '/#/d' ",rawdata_file)
+  system(cmd_special_8)
+}
 
 
 
