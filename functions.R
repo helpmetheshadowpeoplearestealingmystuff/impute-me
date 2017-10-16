@@ -1850,7 +1850,7 @@ run_bulk_imputation<-function(
     
     
     #need to always check if the genes_for_good_cleaner should be run
-    if(length(grep("genes for good",tolower(readLines(rawdata,n=5)))>0)){
+    if(length(grep("genes for good",tolower(readLines(rawdata_file,n=5)))>0)){
       genes_for_good_cleaner(uniqueID,runDir)
     }
     
