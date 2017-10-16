@@ -694,7 +694,7 @@ summarize_imputation<-function(
   crontabs<-grep("^#",system("crontab -l",intern=T),invert = T,value=T)
   crontabs<-sub(" .+$","",sub("^.+Rscript /home/ubuntu/srv/impute-me/imputeme/","",crontabs))
   if(any(c("bulk_imputation_cron_job.R","imputation_cron_job.R")%in%crontabs)){
-    pData<-read.table(paste0(prepDestinationDir,"/pData.txt"),header=T)
+    pData<-read.table(paste0(prepDestinationDir,"/pData.txt"),header=T,sep="\t",stringsAsFactors = F)
     if("imputation_cron_job.R"%in%crontabs){
       pData[1,"imputation_type"]<-"single"  
     }else{
