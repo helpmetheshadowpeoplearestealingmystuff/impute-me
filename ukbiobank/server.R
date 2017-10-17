@@ -279,10 +279,10 @@ shinyServer(function(input, output) {
       polygon(x=x_lines, y = y_lines, density = NULL, angle = 45,border = NA, col = rgb(0,0,1,0.3), lty = par("lty"))
       
       #add control text
-      prop<-signif(pnorm(GRS_beta,mean=control_mean,sd=control_sd),2)
-      x_text<-upper_x[round(length(upper_x)/2)]
-      y_text<-upper_y[round(length(upper_y)/2)] / 2
-      text(x_text,y_text,paste0(prop*100,"%"),col="blue")
+      # prop<-signif(pnorm(GRS_beta,mean=control_mean,sd=control_sd),2)
+      # x_text<-upper_x[round(length(upper_x)/2)]
+      # y_text<-upper_y[round(length(upper_y)/2)] / 2
+      # text(x_text,y_text,paste0(prop*100,"%"),col="blue")
       
       #draw the main line
       abline(v=GRS_beta,lwd=3)
