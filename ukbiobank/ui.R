@@ -71,7 +71,7 @@ shinyUI(bootstrapPage(
 	),
 	conditionalPanel(
 	  condition = "input.trait_group == 'illness_of_relatives'",
-	  selectInput("trait_ilness_of_relatives", "Traits:", choices = selections_illness_of_relatives)
+	  selectInput("trait_illness_of_relatives", "Traits:", choices = selections_illness_of_relatives)
 	),
 	conditionalPanel(
 	  condition = "input.trait_group == 'other'",
