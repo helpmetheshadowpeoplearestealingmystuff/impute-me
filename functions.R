@@ -335,16 +335,15 @@ run_imputation<-function(
   if(length(sample_ref)!=1)stop(paste("sample_ref must be lengh 1, not",length(sample_ref)))
   if(!file.exists(sample_ref))stop(paste("Did not find sample_ref at path:",sample_ref))
   
-  
-  #Load data using plink 1.9
-  cmd1<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
-  out1<-system(cmd1)
-  
-  
   #need to always check if the genes_for_good_cleaner should be run
   if(length(grep("genes for good",tolower(readLines(rawdata,n=5)))>0)){
     genes_for_good_cleaner(uniqueID,runDir)
   }
+  
+  
+  #Load data using plink 1.9
+  cmd1<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
+  out1<-system(cmd1)
   
   
   #If the standard command fails, we run an extensive error rescue. Hopefully shouldn't be used too often, but is nice for when people submit weird custom-setup data
@@ -357,54 +356,6 @@ run_imputation<-function(
   exclude<-map[duplicated(map[,4]),2]
   print(paste('Removed',length(exclude),'SNPs that were duplicated'))
   write.table(exclude,file='step_2_exclusions',sep='\t',row.names=FALSE,col.names=F,quote=F)
-  
-  
-  
-  #Check up of build version --- this could cause problems. We haven't seen them yet, but it is possible. So we make a hard stop if it comes
-  canaries<-rbind(
-    c("rs3762954","662955"),
-    c("rs390560","2601689"),
-    c("rs10043332","3128346"),
-    c("rs10070917","4955950"),
-    c("rs11740668","404623"),
-    c("rs999292","93218958"),
-    c("rs13147822","107960572"),
-    c("rs62574625","101218552"),
-    c("rs11023374","14903636")
-  )
-  canaries<-data.frame(canaries,stringsAsFactors = F)
-  colnames(canaries)<-c("snp","1kg_pos")
-  canaries[,"1kg_pos"] <- as.numeric(canaries[,"1kg_pos"])
-  map<-map[!duplicated(map[,2]),]
-  rownames(map) <- map[,2]
-  canaries<-canaries[canaries[,"snp"]%in%rownames(map),]
-  if(nrow(canaries)==0){
-    print("Skipping wrong-build check, because none of the tests SNPs were found in input data")
-  }else{
-    canaries[,"input_pos"]<-map[canaries[,"snp"],4]
-    if(all(canaries[,"1kg_pos"] == canaries[,"input_pos"])){
-      print(paste("Passed the wrong-build check.",nrow(canaries),"snps tested had the correct position."))
-    }else{
-      #Stop the process and send a warning email
-      library("mailR")
-      message <- paste0(uniqueID," failed a wrong-build check. Of ",nrow(canaries)," tested SNPs, ",sum(canaries[,"1kg_pos"] != canaries[,"input_pos"])," did not match 1kg position.")
-      send.mail(from = email_address,
-                to = "lassefolkersen@gmail.com",
-                subject = "Imputation has problem",
-                body = message,
-                html=T,
-                smtp = list(
-                  host.name = "smtp.gmail.com", 
-                  port = 465, 
-                  user.name = email_address, 
-                  passwd = email_password, 
-                  ssl = TRUE),
-                authenticate = TRUE,
-                send = TRUE)
-      stop("Sending error mail and giving up because of wrong-build check")
-    }
-  }
-  
   
   
   #loop over chromosomes
@@ -1842,17 +1793,15 @@ run_bulk_imputation<-function(
   for(uniqueID in uniqueIDs){
     rawdata_file<-rawdata_files[uniqueID]
 
+    #need to always check if the genes_for_good_cleaner should be run
+    if(length(grep("genes for good",tolower(readLines(rawdata_file,n=5)))>0)){
+      genes_for_good_cleaner(uniqueID,runDir)
+    }
     
     #Load data using plink 1.9
     cmd1<-paste0(plink," --noweb --23file ",rawdata_file," ",uniqueID," ",uniqueID," --recode --out step_1_",uniqueID)
     out1<-system(cmd1)
     
-    
-    
-    #need to always check if the genes_for_good_cleaner should be run
-    if(length(grep("genes for good",tolower(readLines(rawdata_file,n=5)))>0)){
-      genes_for_good_cleaner(uniqueID,runDir)
-    }
     
     
     #If the standard command fails, we run an extensive error rescue. Hopefully shouldn't be used too often, but is nice for when people submit weird custom-setup data
@@ -1924,7 +1873,7 @@ run_bulk_imputation<-function(
     
     
     #Many homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
-    logFile<-read.table(paste("step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1)
+    logFile<-read.table(paste("step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1,comment.char="")
     omitMissing<-logFile[logFile[,1] %in% 'Missing',3] #SNPs that were not found in 1kgenomes. Lot's of 23andme iXXXXX here.
     logStrand<-logFile[logFile[,1] %in% 'Strand',]
     omitNonIdentical<-logStrand[logStrand[,5] != logStrand[,6],3] #typically indels with different notation than 1kgenomes (<10 counts is usual)
