@@ -79,7 +79,7 @@ shinyServer(function(input, output) {
 
              Here I have tried to collect a set of SNPs that clearly are of interest to know if you are into athletics")
     }else if(input$goButton > 0) {
-      message <- "<br><br><br><br>These SNPs are the most well-known atheletics SNPs. They all have well-supported studies behind them. If you wish to use these findings it is worth it to spend some time understanding the concept of the <u><a href='https://en.wikipedia.org/wiki/Odds_ratio'>odds-ratio</a></u>. This is because the effect size for these studies are typically given as e.g. odds-ratio '1.3' per-allele for the chance of being an elite athlete. That does mean that there is 1.3 times increased chance of being an elite sprinter, for each allele - but it also means that within the group of elite sprinters, a large fraction will not necessarily have the TT genotype. <br>"
+      message <- "<br><br><br><br>These SNPs are the most well-known athletics SNPs. They all have well-supported studies behind them. If you wish to use these findings it is worth it to spend some time understanding the concept of the <u><a href='https://en.wikipedia.org/wiki/Odds_ratio'>odds-ratio</a></u>. This is because the effect size for these studies are typically given as e.g. odds-ratio '1.3' per-allele for the chance of being an elite athlete. That does mean that there is 1.3 times increased chance of being an elite sprinter, for each allele - but it also means that within the group of elite sprinters, a large fraction will not necessarily have the TT genotype. <br>"
       
       return(message)
     }
