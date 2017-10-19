@@ -11,12 +11,14 @@ load("/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_trait_overoverview.rdata
 
 
 #traits to omit ad-hoc (because they don't work)
-omitThese<-c(
-  "behavioural_disinhibition_generation_interaction_23942779",
-  "body_mass_index_in_non-asthmatics_23517042"
-  
-  )
-traits<-traits[!rownames(traits)%in%omitThese,]
+traits<-traits[!traits[,"omit"],]
+# 
+# omitThese<-c(
+#   "behavioural_disinhibition_generation_interaction_23942779",
+#   "body_mass_index_in_non-asthmatics_23517042"
+#   
+#   )
+# traits<-traits[!rownames(traits)%in%omitThese,]
 
 
 #defining 1000 genomes populations

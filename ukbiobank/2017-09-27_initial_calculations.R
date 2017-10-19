@@ -611,3 +611,108 @@ data[,"temp"]<-NULL
 save(data, file="ukbiobank/2017-09-28_semi_curated_version_ukbiobank.rdata")
 
 
+
+
+
+
+
+
+
+#2017-10-19 I think we need to cut down a little on the traits. Way too many are driven by only one SNP and even at 1e-7. 
+rm(list=ls())
+load("~/srv/impute-me/ukbiobank/2017-09-28_semi_curated_version_ukbiobank.rdata")
+# load("ukbiobank/2017-09-28_semi_curated_version_ukbiobank.rdata")
+source("/home/ubuntu/srv/impute-me/functions.R")
+uniqueID <- "id_613z86871"
+
+snps<-data[!duplicated(data[,"SNP"]),]
+rownames(snps) <- snps[,"SNP"]
+genotypes<-get_genotypes(uniqueID,snps,namingLabel="cached.all_gwas")
+data[,"genotype"] <- genotypes[data[,"SNP"],]
+
+
+count <- 0
+
+study_ids_to_omit<-vector()
+for(study_id in sort(unique(data[,"study_id"]))){
+  d<-data[data[,"study_id"]%in%study_id,]
+  analyzable <- rep(TRUE,nrow(d))
+  for(al_info in c("effect_allele","non_effect_allele","minor_allele","major_allele")){
+    analyzable[d[,al_info]=="?"] <- FALSE
+  }
+  analyzable[is.na(d[,"genotype"])] <- FALSE
+  analyzable_and_significant <- d[analyzable,"P.VALUE"] < 1e-8
+  # print(paste(study_id,"had",nrow(d),"snps of which",sum(analyzable),"were analyzable.",sum(analyzable_and_significant),"of these were 1e-8"))
+  if(sum(analyzable_and_significant)>=2){
+    count <- count  +1  
+  }else{
+    study_ids_to_omit <- c(study_ids_to_omit, study_id)
+  }
+}
+count
+
+
+load("~/srv/impute-me/ukbiobank/2017-09-28_trait_overoverview.rdata")
+traits[,"omit_old"] <- traits[,"omit"]
+traits[study_ids_to_omit,"omit"]<-TRUE
+
+save(traits,file="2017-09-28_trait_overoverview.rdata")
+
+
+# 634 in total
+# 478 have 1 or more
+# 355 have 2 or more
+
+#let's go with 2 or more
+
+
+
+
+
+
+#2017-10-19 Doing the same for AllDisease
+rm(list=ls())
+load("~/srv/impute-me/AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+# load("ukbiobank/2017-09-28_semi_curated_version_ukbiobank.rdata")
+source("/home/ubuntu/srv/impute-me/functions.R")
+uniqueID <- "id_613z86871"
+
+snps<-data[!duplicated(data[,"SNP"]),]
+rownames(snps) <- snps[,"SNP"]
+genotypes<-get_genotypes(uniqueID,snps,namingLabel="cached.all_gwas")
+data[,"genotype"] <- genotypes[data[,"SNP"],]
+
+
+count <- 0
+study_ids_to_omit<-vector()
+for(study_id in sort(unique(data[,"study_id"]))){
+  d<-data[data[,"study_id"]%in%study_id,]
+  analyzable <- rep(TRUE,nrow(d))
+  for(al_info in c("effect_allele","non_effect_allele","minor_allele","major_allele")){
+    analyzable[d[,al_info]=="?"] <- FALSE
+  }
+  analyzable[is.na(d[,"genotype"])] <- FALSE
+  # analyzable_and_significant <- d[analyzable,"P.VALUE"] < 1e-8
+  # print(paste(study_id,"had",nrow(d),"snps of which",sum(analyzable),"were analyzable."))
+  if(sum(analyzable)>=1){
+    count <- count  +1  
+  }else{
+    study_ids_to_omit <- c(study_ids_to_omit, study_id)
+  }
+}
+count
+
+
+load("~/srv/impute-me/AllDiseases/2017-02-21_trait_overoverview.rdata")
+traits[,"omit"]<-FALSE
+previously_omitted_traits<-c("behavioural_disinhibition_generation_interaction_23942779","body_mass_index_in_non-asthmatics_23517042","aging_time_to_death_21782286","aging_time_to_event_21782286")
+traits[c(previously_omitted_traits,study_ids_to_omit),"omit"]<-TRUE
+
+save(traits,file="2017-02-21_trait_overoverview.rdata")
+
+
+# 634 in total
+# 478 have 1 or more
+# 355 have 2 or more
+
+#let's go with 2 or more
