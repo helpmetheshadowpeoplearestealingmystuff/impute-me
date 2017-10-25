@@ -437,3 +437,31 @@ save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
 
 
 
+
+#2017-10-25 discovered an error in minor-allele for the pethukova study
+rm(list=ls())
+load("AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+d<-data[data[,"study_id"]%in%"alopecia_areata_20596022",]
+
+d[,c("effect_allele", "non_effect_allele","minor_allele", "major_allele")]
+
+#here's the problem
+d["3119",]
+# SNP chr_name effect_allele non_effect_allele effect_size minor_allele_freq minor_allele major_allele PUBMEDID
+# 3119 rs9275572        6             C                 A        2.21          0.335064            A            G 20596022
+# FIRST.AUTHOR       DATE                                 LINK   DISEASE.TRAIT  REGION REPORTED.GENE.S.
+# 3119  Petukhova L 2010-07-01 www.ncbi.nlm.nih.gov/pubmed/20596022 Alopecia areata 6p21.32         HLA-DQA2
+# STRONGEST.SNP.RISK.ALLELE P.VALUE X95..CI..TEXT. sampleSize ensembl_alleles                 study_id EAS_AF AMR_AF
+# 3119               rs9275572-G   1e-35    [1.98-2.47]       4332             A/G alopecia_areata_20596022  0.254 0.3141
+# AFR_AF EUR_AF SAS_AF
+# 3119 0.3986 0.3996 0.2812
+
+
+#so the fix is this 
+rm(list=ls())
+load("AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+data["3119","effect_allele"] <- "G"
+save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
+
+
