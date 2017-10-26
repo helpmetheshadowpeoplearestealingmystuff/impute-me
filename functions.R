@@ -2243,7 +2243,7 @@ reset_runs_from_node<-function(uniqueIDs,check_is_running=T){
   }else{
     print(paste("Deleting",length(uniqueIDs),"uniqueIDs from local ~/imputation folder."))
   }
-  unlink(imp_to_delete)  
+  unlink(imp_to_delete,recursive=T)  
   
   bulk_to_delete<-list.files("~/bulk_imputations/")
   if(length(bulk_to_delete)==1){
@@ -2251,7 +2251,7 @@ reset_runs_from_node<-function(uniqueIDs,check_is_running=T){
   }else{
     print(paste("Deleting",length(bulk_to_delete),"folders in ~/bulk_imputations:",paste(bulk_to_delete,collapse=", ")))
   }
-  unlink(bulk_to_delete)  
+  unlink(bulk_to_delete,recursive=T)  
   
   print(paste("Setting Job ready tag for",length(uniqueIDs),"uniqueIDs on hub at:",hubAddress))
   for(uniqueID in uniqueIDs){
