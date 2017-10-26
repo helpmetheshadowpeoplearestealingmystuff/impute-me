@@ -151,7 +151,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     unlink(homeFolder,recursive=T)
     stop(safeError("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
   }
-
+  
   
   #Checking if it as a Genes for Good file (have to reject those, since it's different genome built)
   # if(length(grep("genes for good",tolower(readLines(path,n=2))))>0){
@@ -162,7 +162,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   #   stop(safeError(paste0("Your file seemed to be from Genes for Good. At the moment we can't accept data from Genes for Good because it is made in a different genomic version than other direct-to-consumer data. If you know how to translate to GRCH37-built yourself, you may remove the 'Genes for Good' line in the header and try to resubmit. Otherwise - we are working on a solution.")))
   #   
   # }
-    
+  
   
   #checking if there is at least 10k lines (otherwise imputation wouldn't be possible anyway)
   cmd1 <- paste0("wc -l ",path)
@@ -255,7 +255,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   queue_length <- length(list.files("/home/ubuntu/imputations/"))
   message_start <-paste0("<HTML>We received your data from file <i>", filename,"</i> at www.impute.me. It will now be processed, first through an imputation algorithm and then trough several types of genetic-risk score calculators. This takes approximately 19 hours per genome.")
   if(queue_length > 30){
-
+    
     run_time <- 19 #hours
     servers_running <- 8  #default for summer 2017 (don't want to tinker too much with it)
     genomes_per_day <- servers_running * (run_time / 24)
@@ -506,7 +506,7 @@ summarize_imputation<-function(
     }
     
   }
-    
+  
   
   allFiles1<-list.files(runDir)
   step7Files<-grep("^step_7_chr",allFiles1,value=T)
@@ -604,9 +604,9 @@ summarize_imputation<-function(
     
   }
   
-
   
-
+  
+  
   #preparing destinationDir
   prepDestinationDir<-paste(destinationDir,"/",uniqueID,sep="")
   if(!file.exists(prepDestinationDir))dir.create(prepDestinationDir)
@@ -655,7 +655,7 @@ summarize_imputation<-function(
   }
   
   
-
+  
   #return paths
   returnPaths<-c(
     paste(prepDestinationDir,basename(zipFile23andme),sep="/"),
@@ -990,7 +990,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
       genotypes<-try(get_genotypes(uniqueID,coding_snps,namingLabel="cached.nonsenser"))
     }
   }
-
+  
   
   
   #getting the AllDiseases + ukbiobank SNPs if possible
@@ -1006,7 +1006,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
     }
   }
   
-
+  
   #getting the ethnicity SNPs if possible
   e<-try(load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_snps.rdata"))
   if(class(e)!="try-error"){
@@ -1388,7 +1388,7 @@ get_GRS_2<-function(snp_data, mean_scale=T, unit_variance=T, verbose=T){
       snp_data[snp,"population_score_average"] <- average_effect_allele_count * effect_size
       snp_data[snp,"score_diff"]<-snp_data[snp,"personal_score"] - snp_data[snp,"population_score_average"]
       
-            
+      
       #calculate the extent of possible variance of the score
       #in other words -- Z-scores. The population mean will always be zero... but now we can ensure that 68% (1 SD) is within "1" and 95% (2 SD) is within "2"...
       if(unit_variance){
@@ -1403,7 +1403,7 @@ get_GRS_2<-function(snp_data, mean_scale=T, unit_variance=T, verbose=T){
     }      
   }      
   
-
+  
   #round values
   for(col in c("personal_score","population_score_average","population_score_sd","score_diff")){
     snp_data[,col]<-signif(snp_data[,col],2)
@@ -1429,11 +1429,11 @@ get_GRS_2<-function(snp_data, mean_scale=T, unit_variance=T, verbose=T){
   #the output can be summarized in several ways summarize results
   #in the no-mean scale no-unit variance case, the choice is simply between sum and mean of personal score.
   # GRS <- sum(snp_data[,"personal_score"],na.rm=T)
-
+  
   #In the mean-scale but no-unit variance, one should use the score_diff, either as sum or mean.
   #Using the mean is compatible with default settings for plink 1.9
   # GRS <- mean(snp_data[,"score_diff"],na.rm=T)
-    
+  
   #In the mean-scale and unit-variance case - one should (could) use the population_score_sd to
   #normalize the overall GRS to unit-variance. This is done first by summing all the per-SNP GRS's
   #like this (see http://mathworld.wolfram.com/NormalSumDistribution.html for details)
@@ -1753,7 +1753,7 @@ run_bulk_imputation<-function(
   
   if(class(uniqueIDs)!="character")stop(paste("uniqueIDs must be character, not",class(uniqueIDs)))
   if(length(uniqueIDs)!=10)stop(paste("rawdata must be lengh 10, not",length(uniqueIDs)))
-
+  
   if(class(runDir)!="character")stop(paste("runDir must be character, not",class(runDir)))
   if(length(runDir)!=1)stop(paste("runDir must be lengh 1, not",length(runDir)))
   if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
@@ -1792,7 +1792,7 @@ run_bulk_imputation<-function(
   
   for(uniqueID in uniqueIDs){
     rawdata_file<-rawdata_files[uniqueID]
-
+    
     #need to always check if the genes_for_good_cleaner should be run
     if(length(grep("genes for good",tolower(readLines(rawdata_file,n=5)))>0)){
       genes_for_good_cleaner(uniqueID,runDir)
@@ -1814,7 +1814,7 @@ run_bulk_imputation<-function(
     exclude<-map[duplicated(map[,4]),2]
     print(paste('Removed',length(exclude),'SNPs that were duplicated'))
     write.table(exclude,file=paste0('step_2_',uniqueID,'_exclusions'),sep='\t',row.names=FALSE,col.names=F,quote=F)
-
+    
     #loop over chromosomes
     for(chr in chromosomes){
       #First in loop - extract only one specific chromosome
@@ -1824,7 +1824,7 @@ run_bulk_imputation<-function(
     }  
   }
   
-
+  
   
   #loop over chromosomes
   for(chr in chromosomes){
@@ -1853,7 +1853,7 @@ run_bulk_imputation<-function(
       cmd1_a <- paste0(plink," --bfile ",merge_files[1]," --merge-list step_2_merge_list.txt --recode --out step_2m_chr",chr)
       out1_a<-system(cmd1_a)
     }
-
+    
     
     #check for position duplicates
     map<-read.table(paste0("step_2m_chr",chr,".map"),stringsAsFactors = F,comment.char = "")
@@ -1865,7 +1865,7 @@ run_bulk_imputation<-function(
     cmd1_b<-paste(plink," --file step_2m_chr",chr," --exclude step_2_overall_exclusions_chr",chr," --recode --out step_2_chr",chr,sep="")
     system(cmd1_b)
     
-
+    
     
     #Then check for strand flips etc. 
     cmd3<-paste(shapeit," -check --input-ped step_2_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_2_chr",chr,"_shapeit_log",sep="")
@@ -2211,3 +2211,52 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
 }  
 
 
+
+
+
+
+reset_runs_from_node<-function(uniqueIDs,check_is_running=T){
+  #function to reset a bulk-run from Node. Useful if there was a crash and we need to re-run
+  
+  if(class(uniqueIDs)!="character")stop("uniqueIDs must be a character")
+  if(!all(nchar(uniqueIDs)==12))stop("uniqueIDs must be of length 12")
+  if(length(grep("^id_",uniqueIDs)) != length(uniqueIDs))stop("all uniqueIDs must start with id_")
+  
+  if(check_is_running){
+    for(uniqueID in uniqueIDs){
+      cmd1 <- paste0("ssh ubuntu@",hubAddress," 'cat /home/ubuntu/imputations/imputation_folder_",uniqueID,"/job_status.txt'")
+      status<-system(cmd1,intern=T)
+      if(status!="Job is remote-running")stop(paste("Status for",uniqueID,"was not remote-running. This must be the case for a reset. Aborting with no change. Status was",status))
+    }
+  }
+  
+  
+  imp_to_delete<-list.files("~/imputations/")
+  if(!all(uniqueIDs %in% sub("imputation_folder_","",imp_to_delete))){
+    missing<-uniqueIDs[!uniqueIDs %in% sub("imputation_folder_","",imp_to_delete)]
+    uniqueIDs<-uniqueIDs[uniqueIDs %in% sub("imputation_folder_","",imp_to_delete)]
+    print(paste("These",length(missing),"uniqueIDs were not found in local imputation folder. They will be ignored also when resetting hub:",paste(missing,collapse=",")))
+  }
+  
+  if(length(imp_to_delete)>length(uniqueIDs)){
+    print(paste("Note that there was",length(imp_to_delete),"folders in  ~/imputations, but only a request for deleting",length(uniqueIDs),"uniqueIDs. The additional will be deleted nonetheless"))
+  }else{
+    print(paste("Deleting",length(uniqueIDs),"uniqueIDs from local ~/imputation folder."))
+  }
+  unlink(imp_to_delete)  
+  
+  bulk_to_delete<-list.files("~/bulk_imputations/")
+  if(length(bulk_to_delete)==1){
+    print("Also deleting one folder in ~/bulk_imputations")
+  }else{
+    print(paste("Deleting",length(bulk_to_delete),"folders in ~/bulk_imputations:",paste(bulk_to_delete,collapse=", ")))
+  }
+  unlink(bulk_to_delete)  
+  
+  print(paste("Setting Job ready tag for",length(uniqueIDs),"uniqueIDs on hub at:",hubAddress))
+  for(uniqueID in uniqueIDs){
+    cmd2 <- paste0("ssh ubuntu@",hubAddress," 'echo Job is ready > /home/ubuntu/imputations/imputation_folder_",uniqueID,"/job_status.txt'")
+    system(cmd2)
+  }
+  
+}
