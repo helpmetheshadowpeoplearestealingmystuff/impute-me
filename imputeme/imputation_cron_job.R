@@ -224,6 +224,7 @@ for(tryCount in 1:3){
                                send = TRUE))
   Sys.sleep(10)
   if(class(mailingResult)!="try-error")break
+  if(tryCount == 3)stop("MAILING FAILED. THIS SHOULD BE FOLLOWED UP")
 }
 
 
