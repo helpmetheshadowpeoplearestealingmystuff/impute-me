@@ -2155,8 +2155,13 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
     map_file<-map_file1
   }else if(file.exists(map_file2)){
     map_file<-map_file2
-  }else{stop("Didn't find map-file")}
-  
+  }else{
+    #This special case is when ALL prior plink runs have failed (probably due to sorting or whatever). In that case we re run plink, we can use the pre-sorting check command which really should work now
+    print("re-running to map")
+    system(cmd_special_3,intern=F)
+    map_file<-map_file2
+    if(!file.exists(map_file)){stop("Didn't find map file")}
+    }
   map<-read.table(map_file,sep='\t',stringsAsFactors=F,comment.char = "")
   map<-map[!duplicated(map[,2]),]
   rownames(map) <- map[,2]
