@@ -801,7 +801,7 @@ get_genotypes<-function(
             print(paste("Did not find any of the SNPs on chr",chr))	
             next
           }
-          cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold 0.7",sep="")
+          cmd2<-paste(gtools," -G --g " ,subsetFile," --s ",idTempFolder,"/samples.txt --snp --threshold ",call_threshold,sep="")
           system(cmd2)
           
           
