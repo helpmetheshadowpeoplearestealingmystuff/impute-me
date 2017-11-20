@@ -167,7 +167,7 @@ shinyServer(function(input, output) {
 		percentage<-floor(pnorm(GRS,mean=0,sd=1)*100)
 		if(percentage < 20){
 		  summary <- " This is a low score."
-		}else if(percentage > 80){
+		}else if(percentage > 90){
 		  summary <- " This is a high score. But keep in mind that additional calculation is necessary to determine a real life-time risk. For example having a very high genetic score for something that is not very heritable may make very little difference. These additional calculations typically require further studies, not always available. Refer to the <u><a href='http://www.impute.me/autoimmuneDiseases/'>autoimmune diseases</a></u> and <u><a href='http://www.impute.me/leukemia/'>leukemia</a></u> analysis modules for a more detailed illustration of this."
 		}else{
 		  summary <- " This is a fairly average score."
