@@ -679,7 +679,7 @@ get_genotypes<-function(
   request,
   gtools="/home/ubuntu/impute_dir/gtool",
   namingLabel="cached", #should default to cached, but it's a way of separately saving larger cached sets in a different file
-  call_threshold = 0.7 #threshold for calling SNP. Ok with 0.7 for multi-SNP signatures, but should definetly be increased in special high-importance SNPs. Default from gtool is suggested at 0.9.
+  call_threshold = 0.8 #threshold for calling SNP. Ok with 0.8 for multi-SNP signatures, but should definetly be increased in special high-importance SNPs. Default from gtool is suggested at 0.9.
 ){
   
   
