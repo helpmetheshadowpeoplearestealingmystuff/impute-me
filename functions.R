@@ -1836,12 +1836,17 @@ run_bulk_imputation<-function(
     merge_df<-merge_df[2:nrow(merge_df),]
     write.table(merge_df,file="step_2_merge_list.txt",sep="\t",quote=F,row.names=F,col.names=F)
     
-    
+    print(merge_df)
+    print(getwd)
     #check all files are there
     missing <- vector()
     for(i in 1:nrow(merge_df)){
       for(j in 1:ncol(merge_df)){
-        if(!file.exists(merge_df[i,j]))missing <-c(missing, merge_df[i,j])
+        print(paste(i,j,merge_df[i,j]))
+        
+        if(!file.exists(merge_df[i,j])){
+          missing <-c(missing, merge_df[i,j])
+        }
       }
     }
     if(length(missing)>0)stop(paste("Didn't find these",length(missing),"files:",paste(missing,collapse=", ")))
