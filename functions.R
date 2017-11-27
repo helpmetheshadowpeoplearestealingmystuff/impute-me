@@ -1791,6 +1791,9 @@ run_bulk_imputation<-function(
   # chromosomes <- c("22")
   
   for(uniqueID in uniqueIDs){
+    print("")
+    print(paste("Preparing files for",uniqueID))
+    
     rawdata_file<-rawdata_files[uniqueID]
     
     #need to always check if the genes_for_good_cleaner should be run
@@ -1832,6 +1835,16 @@ run_bulk_imputation<-function(
     merge_df<-data.frame(bed=paste0(merge_files,".bed"),bim=paste0(merge_files,".bim"),fam=paste0(merge_files,".fam"))
     merge_df<-merge_df[2:nrow(merge_df),]
     write.table(merge_df,file="step_2_merge_list.txt",sep="\t",quote=F,row.names=F,col.names=F)
+    
+    
+    #check all files are there
+    missing <- vector()
+    for(i in 1:nrow(merge_df)){
+      for(j in 1:ncol(merge_df)){
+        if(!file.exists(merge_df[i,j]))missing <-c(missing, merge_df[i,j])
+      }
+    }
+    if(length(missing)>0)stop(paste("Didn't find these",length(missing),"files:",paste(missing,collapse=", ")))
     
     
     
