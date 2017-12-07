@@ -710,3 +710,30 @@ save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
 # effect_allele non_effect_allele effect_size minor_allele major_allele
 # 14013             C                 T        1.29            C            T
 # 2616              T                 C       -0.23            C            T
+
+
+
+
+#finally switch so that the 'risk' becomes correct
+
+
+rm(list=ls())
+load("AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+w<-which(data[,"PUBMEDID"]%in%"28323831")
+
+
+to_switch <- w[data[w,"effect_size"] < 0]
+
+
+x<-data[to_switch,"effect_allele"]
+y<-data[to_switch,"non_effect_allele"]
+
+data[to_switch,"effect_size"] <- -data[to_switch,"effect_size"]
+
+data[to_switch,"effect_allele"]<-y
+data[to_switch,"non_effect_allele"]<-x
+
+save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
+
+
