@@ -465,3 +465,130 @@ save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#2017-12-05 Adding that nice alzheimers study
+rm(list=ls())
+library(openxlsx)
+load("AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
+w<-which(data[,"PUBMEDID"]%in%"28323831")
+
+
+
+
+rm(list=ls())
+load("2017-02-21_semi_curated_version_gwas_central.rdata")
+path_1kg<-"/home/people/lasfol/downloadBulk/annotation/1000_genomes_20130502/"
+
+w<-which(data[,"PUBMEDID"]%in%"28323831")
+
+data<-data[w,]
+
+output<-data.frame("CHROM"=vector(), "POS"=vector(),   "REF"=vector(),   "ALT"=vector(),   "AF"=vector(),    "EAS_AF"=vector(),"AMR_AF"=vector(),"AFR_AF"=vector(),"EUR_AF"=vector(),"SAS_AF"=vector(),stringsAsFactors = F)
+
+for(chr in sort(unique(data[,"chr_name"]))){
+  print(chr)
+  g1<-data[data[,"chr_name"]%in%chr,]
+  snps<-unique(g1[,"SNP"])
+  
+  write.table(snps,file="temp_list_of_snps.txt",sep="\t",col.names=F,row.names=F,quote=F)
+  
+  if(chr =="X"){
+    vcf_path<-paste0(path_1kg,"ALL.chrX.phase3_shapeit2_mvncall_integrated_v1b.20130502.genotypes.vcf.gz")
+  }else{
+    vcf_path<-paste0(path_1kg,"ALL.chr",chr,".phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz")
+  }
+  cmd1<-paste0("vcftools --indv HG00096 --snps temp_list_of_snps.txt --gzvcf ",vcf_path," --out chr",chr," --recode --recode-INFO-all")
+  system(cmd1)
+  
+  cmd2 <- paste0("cut -f 3 chr",chr,".recode.vcf")
+  snps<-grep("^[#I]",system(cmd2,inter=T),value=T,invert=T)
+  
+  cmd3 <- paste0("vcftools --vcf chr",chr,".recode.vcf --get-INFO AF --get-INFO EAS_AF --get-INFO AMR_AF --get-INFO AFR_AF --get-INFO EUR_AF --get-INFO SAS_AF --out chr",chr)
+  system(cmd3)
+  
+  result<-read.table(paste0("chr",chr,".INFO"),sep="\t",header=T,stringsAsFactors = F)
+  rownames(result)<-snps
+  output <- rbind(output, result)
+  
+}
+
+# cmd2<-paste0("cat ",paste(paste0("chr",c(1:22,"X"),".INFO"), collapse=" ")," > 2017-03-24_all_frequencies.txt")
+# system(cmd2)
+
+write.table(output,file="2017-12-07_all_frequencies.txt",sep="\t",col.names=NA)
+
+
+
+
+
+
+#on local
+rm(list=ls())
+load("AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+d<-read.table("AllDiseases/2017-12-07_all_frequencies.txt",sep="\t",header=T,stringsAsFactors = F,row.names=1)
+
+
+colnames(d)[colnames(d)%in%"AF"]<-"minor_allele_freq"
+
+for(snp in rownames(d)){
+ 
+  
+ w<-which(data[,"PUBMEDID"]%in%"28323831" & data[,"SNP"] %in% snp)
+ if(length(w)!=1)stop()
+ 
+ 
+ # data[w,"minor_allele_freq"] <- d[snp,"AF"]
+ 
+ 
+ if(d[snp,"minor_allele_freq"] < 0.5){
+   data[w,"minor_allele"] <- d[snp,"REF"]
+   data[w,"major_allele"] <- d[snp,"ALT"]
+   flip <- F
+ }else{
+   data[w,"minor_allele"] <- d[snp,"ALT"]
+   data[w,"major_allele"] <- d[snp,"REF"]
+   flip <- T
+ }
+
+ cols<-c("minor_allele_freq", "EAS_AF", "AMR_AF", "AFR_AF", "EUR_AF", "SAS_AF")
+ for(col in cols){
+  
+   if(flip){
+     f<-1-d[snp,col] 
+   }else{
+     f<-d[snp,col] 
+   }
+   data[w,col]<-f
+ }
+ 
+ data[w,"effect_allele"] <- "?"
+ data[w,"non_effect_allele"] <- "?"
+  
+}
+
+
+
+save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
+# data[data[,"PUBMEDID"]%in%"28323831",]

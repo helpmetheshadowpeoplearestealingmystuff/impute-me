@@ -1,1 +1,0 @@
-""	"CHROM"	"POS"	"REF"	"ALT"	"AF"	"EAS_AF"	"AMR_AF"	"AFR_AF"	"EUR_AF"	"SAS_AF"
