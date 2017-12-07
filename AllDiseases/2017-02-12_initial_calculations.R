@@ -592,3 +592,27 @@ for(snp in rownames(d)){
 save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
 
 # data[data[,"PUBMEDID"]%in%"28323831",]
+
+
+
+rm(list=ls())
+load("AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+load("AllDiseases/2017-02-21_all_gwas_snps.rdata")
+
+
+w<-which(data[,"PUBMEDID"]%in%"28323831")
+
+colnames(gwas_snps)
+
+d1<-data[w,c("SNP","chr_name","minor_allele","major_allele")]
+colnames(d1)[c(3,4)]<-c("effect_allele","non_effect_allele")
+rownames(d1)<-d1[,"SNP"]
+
+
+d2<-d1[!rownames(d1)%in% rownames(gwas_snps),]
+
+
+gwas_snps<-rbind(gwas_snps,d2)
+
+
+save(gwas_snps,file="AllDiseases/2017-02-21_all_gwas_snps.rdata")
