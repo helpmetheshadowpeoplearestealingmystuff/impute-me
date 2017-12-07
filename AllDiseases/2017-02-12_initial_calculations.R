@@ -616,3 +616,164 @@ gwas_snps<-rbind(gwas_snps,d2)
 
 
 save(gwas_snps,file="AllDiseases/2017-02-21_all_gwas_snps.rdata")
+
+
+
+
+#trying to reverse engineer that ¤#¤"% effect direction
+#on local
+rm(list=ls())
+load("AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
+
+w<-which(data[,"PUBMEDID"]%in%"28323831")
+
+snps<-data[w,"SNP"]
+
+
+has_snp_rows<-which(data[,"SNP"]%in%snps)
+
+
+duplicated_snps<-unique(data[has_snp_rows,"SNP"][duplicated(data[has_snp_rows,"SNP"])])
+
+for(duplicated_snp in duplicated_snps){
+  d<-data[data[,"SNP"]%in%duplicated_snp,]
+  
+  if(length(unique(d[,"minor_allele_freq"]))!=1){
+    # print(paste(duplicated_snp,"had weird allele freq"))
+    
+  }else{
+    # new_line<-which(d[,"effect_allele"]=="?")
+    # old_line<-which(d[,"effect_allele"]!="?")
+    
+    new_line<-which(d[,"PUBMEDID"]%in%"28323831")
+    old_line<-which(!d[,"PUBMEDID"]%in%"28323831")
+    if(length(new_line)!=1)stop("!")
+    
+    
+    old_relevant_line<-old_line[d[old_line,"DISEASE.TRAIT"]=="Alzheimer's disease (late onset)"]
+    
+    if(length(old_relevant_line)==1){
+      old_e<-d[old_relevant_line,c("effect_allele","non_effect_allele","effect_size","minor_allele","major_allele")]
+      new_e<-d[new_line,c("effect_allele","non_effect_allele","effect_size","minor_allele","major_allele")]
+      
+      
+      e<-rbind(old_e,new_e)  
+      print("")
+      print(e)
+      
+    }
+    
+  }
+}
+# 
+# 
+# 
+# 
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 13986             T                 C        1.22            T            C
+# 2593              ?                 ?       -0.15            C            T
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 14009             G                 A        1.07            G            A
+# 2607              ?                 ?       -0.07            A            G
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 14002             T                 C      1.2987            C            T
+# 2612              ?                 ?      0.1800            T            C
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 13999             T                 C      1.1364            C            T
+# 2621              ?                 ?      0.1000            T            C
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 14013             C                 T        1.29            C            T
+# 2616              ?                 ?       -0.23            T            C
+
+# So all in the PMID 24162737/Lambert have positive effect sizes (not surprising, I made it that way). 
+#and all have switched minor and major alleles --- that's pretty bad! Should switch back.
+#but the key here --- ALL cases with negative beta in Desikan 2017 have the minor allele as risk allele in Lambert et al. ALL cases with positive beta in Desikan 2017 have the major allele as risk allele in Lambert et al. So it should be ok have a minor allele is effect allele assumption on all SNPs of Desikan. 
+
+#implement this (and switch major and minor)
+
+
+rm(list=ls())
+load("AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+w<-which(data[,"PUBMEDID"]%in%"28323831")
+x<-data[w,"major_allele"]
+y<-data[w,"minor_allele"]
+
+data[w,"major_allele"] <- y
+data[w,"minor_allele"] <- x
+save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
+
+
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 13986             T                 C        1.22            T            C
+# 2593              ?                 ?       -0.15            T            C
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 14009             G                 A        1.07            G            A
+# 2607              ?                 ?       -0.07            G            A
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 14002             T                 C      1.2987            C            T
+# 2612              ?                 ?      0.1800            C            T
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 13999             T                 C      1.1364            C            T
+# 2621              ?                 ?      0.1000            C            T
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 14013             C                 T        1.29            C            T
+# 2616              ?                 ?       -0.23            C            T
+# > #
+
+
+
+rm(list=ls())
+load("AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+w<-which(data[,"PUBMEDID"]%in%"28323831")
+
+
+data[w,"non_effect_allele"] <- data[w,"minor_allele"]
+data[w,"effect_allele"] <- data[w,"major_allele"]
+
+save(data,file="AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata")
+
+# 
+# w1 <- w[data[w,"effect_size"] < 0] #negatives, minor is effect
+# w2 <- w[data[w,"effect_size"] >= 0] #positives, major is effect
+# intersect(w1,w2)
+# 
+# data[w1,"effect_allele"] <- data[w1,"minor_allele"]
+# data[w1,"non_effect_allele"] <- data[w1,"major_allele"]
+# 
+# 
+# data[w2,"effect_allele"] <- data[w2,"major_allele"]
+# data[w2,"non_effect_allele"] <- data[w2,"minor_allele"]
+# 
+
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 13986             T                 C        1.22            T            C
+# 2593              C                 T       -0.15            T            C
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 14009             G                 A        1.07            G            A
+# 2607              A                 G       -0.07            G            A
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 14002             T                 C      1.2987            C            T
+# 2612              T                 C      0.1800            C            T
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 13999             T                 C      1.1364            C            T
+# 2621              T                 C      0.1000            C            T
+# [1] ""
+# effect_allele non_effect_allele effect_size minor_allele major_allele
+# 14013             C                 T        1.29            C            T
+# 2616              T                 C       -0.23            C            T
