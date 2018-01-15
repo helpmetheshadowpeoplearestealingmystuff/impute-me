@@ -268,7 +268,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   }else{
     queue_message<-""
   }
-  message_end <-paste0(" The service is non-profit, but the computing price for one analysis is 5 USD per genome. Therefore we strongly encourage you to pay that as a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>). Also, if you put your unique ID, (<i>",uniqueID,"</i>) as payment-message, you'll be moved to priority queue. Either way, once the analysis is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using this uniqueID.<br></HTML> ")
+  message_end <-paste0(" The service is non-profit, but because of heavy computing-requirements for the imputation analysis it is not free to run. We therefore strongly encourage you to pay a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>, suggested 5 USD). Also, if you do this and put your unique ID, (<i>",uniqueID,"</i>) as payment-message, you'll be moved to priority queue. Either way, once the analysis is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using this uniqueID.<br></HTML> ")
   message <- paste0(message_start,queue_message,message_end)
   mailingResult<-try(send.mail(from = email_address,
                                to = email,
