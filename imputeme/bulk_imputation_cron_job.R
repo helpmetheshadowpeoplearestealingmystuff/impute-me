@@ -194,6 +194,9 @@ for(uniqueID in uniqueIDs){
     cmd7 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip /home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip'",sep="")
     system(cmd7)
     
+    cmd8 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json /home/ubuntu/srv/impute-me/www/",uniqueID,"_data.json'",sep="")
+    system(cmd8)
+    
     
   }else if(serverRole== "Hub"){
     file.symlink(
@@ -204,6 +207,11 @@ for(uniqueID in uniqueIDs){
       from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip",sep=""),
       to=paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip",sep="")
     )
+    file.symlink(
+      from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json",sep=""),
+      to=paste("/home/ubuntu/srv/impute-me/www/",uniqueID,"_data.json",sep="")
+    )
+    
   }else{stop("very odd")}
   
   
@@ -245,8 +253,8 @@ for(uniqueID in uniqueIDs){
 
   #also clear the hub imputation_folder if running as node
   if(serverRole== "Node"){
-    cmd8 <- paste("ssh ubuntu@",hubAddress," 'rm -r /home/ubuntu/imputations/imputation_folder_",uniqueID,"'",sep="")
-    system(cmd8)
+    cmd9 <- paste("ssh ubuntu@",hubAddress," 'rm -r /home/ubuntu/imputations/imputation_folder_",uniqueID,"'",sep="")
+    system(cmd9)
     
     #also don't leave the finished data here
     unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=TRUE)

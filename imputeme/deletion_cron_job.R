@@ -19,9 +19,10 @@ for(uniqueID in uniqueIDs){
   f3<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip",sep="")
   f4<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip",sep="")
   f5<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".input_data.zip",sep="")
+  f6<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,"_data.json",sep="")
   
   
-  if(!any(file.exists(c(f1,f2,f3,f4,f5)))){
+  if(!any(file.exists(c(f1,f2,f3,f4,f5,f6)))){
     print(paste("Skipping",uniqueID,"because all have already been deleted"))
     next
   }
@@ -32,10 +33,12 @@ for(uniqueID in uniqueIDs){
     
     #always delete download links at over-time (too easy to hack otherwise)
     if("link" %in% routinely_delete_this){
-      f1<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip",sep="")
-      f2<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip",sep="")
+      # f1<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip",sep="")
+      # f2<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip",sep="")
+      
       if(file.exists(f1))unlink(f1)
       if(file.exists(f2))unlink(f2)
+      if(file.exists(f6))unlink(f6)
     }
     
     #then check if user is protected from deletion or not   
@@ -52,7 +55,7 @@ for(uniqueID in uniqueIDs){
       }
       
       
-    }else{ #i.e. user in protected from deletion (but we still delete the most bulky files)
+    }else{ #i.e. user is in protected from deletion (but we still delete the most bulky files)
       print(paste("Deleting only easy-impute file from ",uniqueID,"because it is",round(timedif),"days old, and protect from deletion"))	
       if(file.exists(f4))unlink(f4)
     }
