@@ -124,7 +124,10 @@ shinyServer(function(input, output) {
 			#also store this in the all_heights file (for faster loading)
 			line<-paste(c(uniqueID,real_height,gheight,gender),collapse="\t")
 			all_heights_file<-"/home/ubuntu/misc_files/all_heights.txt"
-			write(line,file=all_heights_file,append=TRUE)
+			if(!is.na(real_height)){
+			  write(line,file=all_heights_file,append=TRUE)  
+			}
+			
 						
 			
 			#set gender stereotype colours
@@ -164,6 +167,8 @@ shinyServer(function(input, output) {
 			# 	heights_in_data<-rbind(heights_in_data,otherPersonPdata[1,c("height","gheight","gender")])
 			# }
 			heights_in_data <- read.table(all_heights_file,sep="\t",header=T,stringsAsFactors = F)
+			#only same-gender
+			heights_in_data<-heights_in_data[heights_in_data[,"gender"] %in% gender,]
 			
 			
 			#then plot them
