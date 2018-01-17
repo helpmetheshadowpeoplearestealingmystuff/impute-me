@@ -152,17 +152,20 @@ shinyServer(function(input, output) {
 			
 			
 			#load previous users data
-			otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
-			heights_in_data<-data.frame(height=vector(),gheight=vector(),gender=vector(),stringsAsFactors=F)
-			for(otherPerson in otherPersons){
-				if(!file.info(otherPerson)[["isdir"]])next
-				if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-				otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F,comment.char="",quote=""),silent=T)
-				if(class(otherPersonPdata)=="try-error")next
-				if(!all(c("gheight","height","gender")%in%colnames(otherPersonPdata)))next
-				if(otherPersonPdata[1,"gender"] != gender) next #only plot persons of the same gender
-				heights_in_data<-rbind(heights_in_data,otherPersonPdata[1,c("height","gheight","gender")])
-			}
+			# otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+			# heights_in_data<-data.frame(height=vector(),gheight=vector(),gender=vector(),stringsAsFactors=F)
+			# for(otherPerson in otherPersons){
+			# 	if(!file.info(otherPerson)[["isdir"]])next
+			# 	if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+			# 	otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F,comment.char="",quote=""),silent=T)
+			# 	if(class(otherPersonPdata)=="try-error")next
+			# 	if(!all(c("gheight","height","gender")%in%colnames(otherPersonPdata)))next
+			# 	if(otherPersonPdata[1,"gender"] != gender) next #only plot persons of the same gender
+			# 	heights_in_data<-rbind(heights_in_data,otherPersonPdata[1,c("height","gheight","gender")])
+			# }
+			heights_in_data <- read.table(all_heights_file,sep="\t",header=T,stringsAsFactors = F)
+			
+			
 			#then plot them
 			points(
 				x=heights_in_data[,"gheight"],
