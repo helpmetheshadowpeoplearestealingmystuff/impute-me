@@ -120,7 +120,12 @@ shinyServer(function(input, output) {
 			pData<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")
 			pData[,"gheight"]<-gheight
 			write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
-			
+
+			#also store this in the all_heights file (for faster loading)
+			line<-paste(c(uniqueID,real_height,gheight,gender),collapse="\t")
+			all_heights_file<-"/home/ubuntu/misc_files/all_heights.txt"
+			write(line,file=all_heights_file,append=TRUE)
+						
 			
 			#set gender stereotype colours
 			if(gender == 1){

@@ -371,3 +371,58 @@ dev.off()
 
 
 
+
+
+
+
+
+
+
+#2018-01-17 fixing sep filenames
+
+rm(list=ls())
+otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+for(otherPerson in otherPersons){
+  
+  if(!file.info(otherPerson)[["isdir"]])next
+  f<-paste(otherPerson,"pData.txt",sep="/")
+  if(!file.exists(f))next
+  otherPersonPdata<-try(read.table(f,sep="\t",header=T,stringsAsFactors=F,comment.char="",quote=""),silent=T)
+  if(class(otherPersonPdata)=="try-error")next
+  if(!all(c("gheight","height","gender")%in%colnames(otherPersonPdata)))next
+  # d<-otherPersonPdata[1,c("uniqueID","height","gheight","gender")]
+
+  if(is.na(otherPersonPdata[1,"uniqueID"])  || nchar(otherPersonPdata[1,"uniqueID"])!=12){
+    otherPersonPdata[1,"uniqueID"]<-basename(otherPerson)
+    print(f)
+    write.table(otherPersonPdata,file=f,sep="\t",col.names=T,row.names=F,quote=F)
+  }
+  
+  
+}
+
+
+
+
+
+
+#2018-01-17 moving heights to separate file (it takes way tooo long to iterate through all the users now)
+rm(list=ls())
+otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+heights_in_data<-data.frame(height=vector(),gheight=vector(),gender=vector(),stringsAsFactors=F)
+for(otherPerson in otherPersons){
+  if(!file.info(otherPerson)[["isdir"]])next
+  if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+  otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F,comment.char="",quote=""),silent=T)
+  if(class(otherPersonPdata)=="try-error")next
+  if(!all(c("gheight","height","gender")%in%colnames(otherPersonPdata)))next
+  # if(otherPersonPdata[1,"gender"] != gender) next #only plot persons of the same gender
+  
+  # if(otherPersonPdata[1,"uniqueID"] == "MyHeritage_raw_dna_data") stop()
+  
+  d<-otherPersonPdata[1,c("uniqueID","height","gheight","gender")]
+  heights_in_data<-rbind(heights_in_data,d)
+}
+
+
+write.table(heights_in_data,file="misc_files/all_heights.txt",sep="\t",col.names=T,row.names=F,quote=F)
