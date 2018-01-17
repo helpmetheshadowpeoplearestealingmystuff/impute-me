@@ -124,7 +124,7 @@ shinyServer(function(input, output) {
 			#also store this in the all_heights file (for faster loading)
 			line<-paste(c(uniqueID,real_height,gheight,gender),collapse="\t")
 			all_heights_file<-"/home/ubuntu/misc_files/all_heights.txt"
-			if(!is.na(real_height)){
+			if(!is.na(real_height) & uniqueID != "id_613z86871"){ #only save if height is given and it is not the test user
 			  write(line,file=all_heights_file,append=TRUE)  
 			}
 			
