@@ -220,9 +220,9 @@ for(uniqueID in uniqueIDs){
   ip<-"https://www.impute.me"
   location_23andme <- paste(ip,"/www/",uniqueID,".23andme.zip",sep="")
   location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
+  location_json <- paste(ip,"/www/",uniqueID,"_data.json",sep="")
   
-  
-  message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br><a href=",location_23andme,">",location_23andme,"</a><br><br>You can also go to <a href='www.impute.me'>www.impute.me</a> and explore the current analysis-modules using this log-in ID: <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format files</a>. These contain probabilistic information on genotype calls and may help in getting a more clear picture of the reason for specific SNP calls.<br></HTML>",sep="")
+  message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br><a href=",location_23andme,">",location_23andme,"</a><br><br>You can also go to <a href='www.impute.me'>www.impute.me</a> and explore the current analysis-modules using this log-in ID: <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain probabilistic information on genotype calls and calculated phenotype information, respectively.<br></HTML>",sep="")
   
   
   
