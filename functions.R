@@ -38,7 +38,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
   if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
   if(length(grep(" ",filename)))stop(safeError("Please don't have any blank spaces in the filename of the uploaded files."))
-  if(length(grep("[\\$\\&\\+\\,\\:\\;\\=\\?\\@\\#]",filename)))stop(safeError("Please don't have any special characters in the filename of the uploaded files."))
+  if(length(grep("[\\$\\&\\+\\,\\:\\;\\=\\?\\@\\#\\\"\\\']",filename)))stop(safeError("Please don't have any special characters in the filename of the uploaded files."))
   
   if(class(protect_from_deletion)!="logical")stop(paste("protect_from_deletion must be logical, not",class(protect_from_deletion)))
   if(length(protect_from_deletion)!=1)stop(paste("protect_from_deletion must be lengh 1, not",length(protect_from_deletion)))
