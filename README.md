@@ -21,8 +21,34 @@ The three functions are
 
 
 
-## Part 2: Module design description.
+## Part 2: Module design description
 
-Each module consists of a ui.R and a server.R file. The details of the setup of this can be found in the <a href='http://shiny.rstudio.com/'>R/Shiny</a> documentation. A template module which contains the very minimal configuration is found in the 'template' folder.
+Each module consists of a ui.R and a server.R file. The details of the setup of this can be found in the <a href='http://shiny.rstudio.com/'>R/Shiny</a> documentation. A template module which contains the very minimal configuration is found in the ['template'](https://github.com/lassefolkersen/impute-me/tree/master/template) folder.
 
-The specific module functions are documented by their UI-provided description.
+The specific module functions are documented by their UI-provided description. For many  of them the calculations are trivial, i.e. reporting the presence and/or absence of a specific SNP. For others, we rely heavily on polygenic risk scores. Three approaches to polygenic risk scores are implemented in the function [get_GRS_2](https://github.com/lassefolkersen/impute-me/blob/5901cb626d0e50a01106d74c48540a41100974a6/functions.R#L1287):
+
+
+**Basic count score**
+
+Basically just counting the effect alleles. This is the most simple setup of polygenic risk scores. It is intuitive to understand - the more risk alleles, the higher the score. The main drawback is that it doesn't distinguish SNPs with large and small effects.
+
+Count-score =  Σ Effect-allele-count<sub>snp</sub>
+
+
+**Weighted-score**
+
+A score that is weighted by the effect size of each SNP. This has the added benefit of weighting SNPs with large effect sizes more than SNPs with small effect sizes. Note that _beta_ is changed for _log(OR)_ as applicable for binary traits. The only draw-back of this score type is that it is on an arbitrary scale and does little to inform about risk compared to the rest of the population.
+
+Weighted-score =  Σ Beta<sub>snp</sub> * Effect-allele-count<sub>snp</sub>
+
+
+**Z-score**
+
+A score that is given in standard-deviations above or below the average risk-score for that population. This specific implementation of the Z-score is [found here](https://github.com/lassefolkersen/impute-me/blob/5901cb626d0e50a01106d74c48540a41100974a6/functions.R#L1387-L1404). The _frequency<sub>snp</sub>_ is obtained from 1000 genomes data for the relevant super-population. _Effect-allele-count_ and _Beta_ is used as in previous scores. The _Standard-deviation<sub>population</sub>_ is calculated according to [this code](https://github.com/lassefolkersen/impute-me/blob/5901cb626d0e50a01106d74c48540a41100974a6/functions.R#L1396-L1404). In many of the modules an extra step is added where the Z-score is converted to percentage of population with lower score. This is done with the standard [pnorm](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Normal.html) function, i.e. we assume everything is normally distributed. To check the validity of this assumption, some modules have an option to compare to [real distributions](https://www.impute.me/AllDiseases/).
+
+Population-score<sub>snp</sub> = frequency<sub>snp</sub> * 2 * beta<sub>snp</sub>
+
+Zero-centered-score =  Σ Beta<sub>snp</sub> * Effect-allele-count<sub>snp</sub> - Population-score<sub>snp</sub>
+
+Z-score = Zero-centered-score / Standard-deviation<sub>population</sub>
+
