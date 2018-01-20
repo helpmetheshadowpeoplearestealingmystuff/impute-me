@@ -52,3 +52,16 @@ Zero-centered-score =  Σ Beta<sub>snp</sub> * Effect-allele-count<sub>snp</sub>
 
 Z-score = Zero-centered-score / Standard-deviation<sub>population</sub>
 
+
+
+
+
+## Part 3: Downloads descriptions
+
+On each completed analysis-run an email is sent with the user's uniqueID. This uniqueID can be used to browse the above-mentioned modules. In addition three types of downloads are provided:
+
+**23andme-format** imputed output. This format, so-called because it was introduced by the company 23andme, contains rows of all SNPs with rs-ID, chromosome, position, and genotype. When given as output from the _impute.me_-site, the only difference is that _a lot_ more SNPs are available. This is a consequence of the imputation. The file is zipped and divided by chromosome and this output format is used regardless of your input-format i.e. if you upload from 23andme, ancestry.com, or any other genetics company.
+
+**Gen-format files** contains similar information to the 23andme-format files, i.e. all your imputed SNPs. But they do so in a more completely descriptive format, one that also reflects considerations of statistical uncertainty of genotype calls.. This format is called the [gen-format](http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html). The key to interpretation is that each of the three right-most columns contains probabilistic information regarding your genotype. This means that a value of _A C 1 0 0_ is almost sure to be A/A, whereas _A C 0.7 0.3 0_ could be interpreted as both A/A but with some probability of being A/C.
+
+**JSON-format files** contains calculated phenotypical data. This file contains the output of all the genetic-calculators that a sample is subjected to at _impute.me_. The JSON-format is made to be computer-readable, but many good [online viewers](http://jsonviewer.stack.hu/) exists, so you can easily inspect the data yourself. However, it is easier to browse by using the [web-interface](https://www.impute.me), so the only purpose of providing this format is long-term storage and data-interchange.
