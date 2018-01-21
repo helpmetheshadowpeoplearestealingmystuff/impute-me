@@ -37,14 +37,14 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   
   if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
   if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
-  if(length(grep(" ",filename))){
+  if(length(grep(" ",filename))>0){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"blank_space",email,filename)
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)
     stop(safeError("Please don't have any blank spaces in the filename of the uploaded files."))
     
   }
-  if(length(grep("[\\$\\&\\+\\,\\:\\;\\=\\?\\@\\#\\\"\\\']",filename))){
+  if(length(grep("[\\$\\&\\+\\,\\:\\;\\=\\?\\@\\#\\\"\\\']",filename))>0){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"special_character",email,filename)
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)
