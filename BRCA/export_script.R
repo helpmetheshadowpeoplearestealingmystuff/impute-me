@@ -32,10 +32,38 @@ export_function<-function(uniqueID){
   BRCA_table[,"Your genotype"]<-genotypes[rownames(BRCA_table),]
 
   
-  BRCA_table[,"chr_name"]<-BRCA_table[,"chrom_start"]<-BRCA_table[,"SNP"]<-NULL
+  #order so pathogenic is always on top
+  order<-c('Pathogenic','Likely pathogenic','Conflicting interpretations of pathogenicity','Uncertain significance','not provided','Likely benign','Benign')
+  BRCA_table[,"clinvar"]<-factor(BRCA_table[,"clinvar"],levels=order)
+  BRCA_table<-BRCA_table[order(BRCA_table[,"clinvar"]),]
+  
+  # BRCA_table[,"chr_name"]<-BRCA_table[,"chrom_start"]<-BRCA_table[,"SNP"]<-NULL
   
   
-  output<-list(BRCA_table)
+  
+  output<-list()
+  output[["differing_snps"]]<-vector()
+  
+  for(snp in rownames(BRCA_table)){
+    
+    if(is.na(BRCA_table[snp, "Your genotype"]))next
+    output[[snp]]<-list()
+    output[[snp]][["clinvar"]] <- as.character(BRCA_table[snp, "clinvar"])
+    output[[snp]][["polyphen_prediction"]] <- BRCA_table[snp, "polyphen_prediction"]
+    output[[snp]][["sift_prediction"]] <- BRCA_table[snp, "sift_prediction"]
+    output[[snp]][["consequence_type_tv"]] <- BRCA_table[snp, "consequence_type_tv"]
+    output[[snp]][["gene"]] <- BRCA_table[snp, "gene"]
+    output[[snp]][["normal"]] <- BRCA_table[snp, "normal"]
+    output[[snp]][["Your_genotype"]] <- BRCA_table[snp, "Your genotype"]
+    
+    
+    if(!is.na(BRCA_table[snp, "normal"]) & !is.na(BRCA_table[snp, "Your genotype"])){
+      if(BRCA_table[snp, "Your genotype"] != BRCA_table[snp, "normal"]){
+        output[["differing_snps"]] <- c(output[["differing_snps"]], snp)
+      }
+    }
+  }
+  
   
   return(output)
   

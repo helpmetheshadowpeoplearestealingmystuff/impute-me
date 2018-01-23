@@ -1640,6 +1640,8 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL){
       next
     }
     
+    
+    #get basic stuff
     for(imp in c("uniqueID","filename","email","first_timeStamp")){
       if(!imp %in%colnames(pData))stop(paste("pData lacked this column:",imp))  
       outputList[[imp]] <-pData[1,imp]
@@ -1648,6 +1650,27 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL){
     names(outputList)[names(outputList)%in%"email"] <- "original_submission_email"
     
     
+    #save ethnicity in pData (because it is needed elsewhere)
+    source(paste(paste0("/home/ubuntu/srv/impute-me/","ethnicity"  ,"/export_script.R")))
+    ethnicity <- try(export_function(uniqueID))
+    if(class(exp)=="try-error"){
+      ethnicity<-NA
+    }else{
+      ethnicity<-ethnicity[["guessed_super_pop"]]
+    }
+    pDataFile <- paste0("/home/ubuntu/data/",uniqueID,"/pData.txt")
+    pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F),silent=T)
+    if(class(pData)!="try-error"){
+      pData[1,"ethnicity"] <- ethnicity
+      write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
+      print(paste("Determined and saved ethnicity as:",ethnicity))
+    }else{
+      print(paste("Couldn't save ethnicity in pData:",ethnicity))
+    }
+    
+    
+    
+    #get remaining non-ethnicity modules
     for(module in modules){
       if(!file.info(paste0("/home/ubuntu/srv/impute-me/",module))["isdir"])next
       if("export_script.R" %in% list.files(paste0("/home/ubuntu/srv/impute-me/",module))){

@@ -57,6 +57,14 @@ export_function<-function(uniqueID){
   if(length(guessed_super_pop)!=1)guessed_super_pop<-NA #if there's more than one superpop among closest 5 - then we don't want to guess
   output[["guessed_super_pop"]]<- guessed_super_pop
 
+  
+  #adding in some coordinates to the JSON
+  output[["PCA_coordinates"]] <- list()
+  output[["PCA_coordinates"]][["PC1"]] <- pca[y,"pos_PC1"]
+  output[["PCA_coordinates"]][["PC2"]] <- pca[y,"pos_PC2"]
+  output[["PCA_coordinates"]][["PC3"]] <- pca[y,"pos_PC3"]
+  
+  
   return(output)  
 }
 

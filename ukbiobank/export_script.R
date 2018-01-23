@@ -10,7 +10,7 @@ export_function<-function(uniqueID){
   #preload
   load(snps_file)
   load(trait_file)
-  
+  traits<-traits[!traits[,"omit"],]
   
   if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
     stop("Did not find a user with this id")
@@ -35,9 +35,9 @@ export_function<-function(uniqueID){
     GRS_beta <-sum(snp_data[,"score_diff"],na.rm=T) / population_sum_sd
     
     
-    output[[study_id]]<- GRS_beta
-           
-           
+    output[[study_id]]<-list()
+    output[[study_id]][["GRS"]] <- GRS_beta
+    output[[study_id]][["trait"]] <- traits[study_id,"niceName"]
   }
   
   
