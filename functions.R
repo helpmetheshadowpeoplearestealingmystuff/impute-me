@@ -1599,9 +1599,16 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
 
 
 
-run_export_script<-function(uniqueIDs=NULL,modules=NULL){
+run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
   require(jsonlite)
   #A function that will crawl all module directories and execute the export script if present
+  #uniqueID:    Indicates if specific sets should be processed
+  #modules:     Indicates if specific modules should be procssed
+  #delay:       an integer, in seconds, giving an optional delay to insert after each uniqueID
+  
+  if(class(delay)!="numeric")stop(paste("delay must be numeric, not",class(delay)))
+  if(length(delay)!=1)stop(paste("delay must be lengh 1, not",length(delay)))
+  
   
   if(is.null(uniqueIDs)){
     uniqueIDs<-list.files("/home/ubuntu/data/")
@@ -1694,6 +1701,11 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL){
     writeLines(JSON,f)
     close(f)
     
+    
+    if(delay > 0){
+      Sys.sleep(delay)
+      
+    }
   }
   
   m<-paste("The module was successfully run for",length(uniqueIDs),"samples on",length(modules),"modules")
