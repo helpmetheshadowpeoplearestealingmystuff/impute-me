@@ -1660,7 +1660,7 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
     #save ethnicity in pData (because it is needed elsewhere)
     source(paste(paste0("/home/ubuntu/srv/impute-me/","ethnicity"  ,"/export_script.R")))
     ethnicity <- try(export_function(uniqueID))
-    if(class(exp)=="try-error"){
+    if(class(ethnicity)=="try-error"){
       ethnicity<-NA
     }else{
       ethnicity<-ethnicity[["guessed_super_pop"]]
