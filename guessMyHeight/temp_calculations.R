@@ -426,3 +426,38 @@ for(otherPerson in otherPersons){
 
 
 write.table(heights_in_data,file="misc_files/all_heights.txt",sep="\t",col.names=T,row.names=F,quote=F)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#2018-01-30 moving heights to separate file II, do it but with all takes (i.e. include log files if possible)
+rm(list=ls())
+otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+heights_in_data<-data.frame(height=vector(),gheight=vector(),gender=vector(),stringsAsFactors=F)
+for(otherPerson in otherPersons){
+  if(!file.info(otherPerson)[["isdir"]])next
+  if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+  otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F,comment.char="",quote=""),silent=T)
+  if(class(otherPersonPdata)=="try-error")next
+  
+  log_file <- paste0(otherPerson,"/user_log_file.txt")
+
+  if(file.exists(log_file)){
+    l1<-readLines(log_file)
+    l2<-grep("guessMyHeight",l1,value=T)
+    #oh it's not saved. Doh!
+  }
+}
