@@ -14,10 +14,10 @@ for(uniqueID in uniqueIDs){
   if(class(pData)=="try-error")next
   if(!all(c("protect_from_deletion","first_timeStamp")%in%colnames(pData)))next
 
-  f1<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip",sep="")
+  f1<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".simple_format.zip",sep="")
   f2<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip",sep="")
   f3<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip",sep="")
-  f4<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip",sep="")
+  f4<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".simple_format.zip",sep="")
   f5<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".input_data.zip",sep="")
   f6<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,"_data.json",sep="")
   
@@ -33,7 +33,7 @@ for(uniqueID in uniqueIDs){
     
     #always delete download links at over-time (too easy to hack otherwise)
     if("link" %in% routinely_delete_this){
-      # f1<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip",sep="")
+      # f1<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".simple_format.zip",sep="")
       # f2<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip",sep="")
       
       if(file.exists(f1))unlink(f1)

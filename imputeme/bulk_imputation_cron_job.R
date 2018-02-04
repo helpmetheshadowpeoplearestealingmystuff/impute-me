@@ -166,7 +166,7 @@ for(uniqueID in uniqueIDs){
   
   #check if all is ok
   if(!file.exists(paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip")))stop(paste("Didn't find gen file for",uniqueID))
-  if(!file.exists(paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip")))stop(paste("Didn't find 23andme file file for",uniqueID))
+  if(!file.exists(paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".simple_format.zip")))stop(paste("Didn't find simple_format file for",uniqueID))
   
 
   #Run the genotype extraction routine
@@ -188,7 +188,7 @@ for(uniqueID in uniqueIDs){
 
   #making a link out to where the data can be retrieved	(different on hub and node)
   if(serverRole== "Node"){
-    cmd6 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip /home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip'",sep="")
+    cmd6 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".simple_format.zip /home/ubuntu/srv/impute-me/www/",uniqueID,".simple_format.zip'",sep="")
     system(cmd6)
     
     cmd7 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip /home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip'",sep="")
@@ -200,8 +200,8 @@ for(uniqueID in uniqueIDs){
     
   }else if(serverRole== "Hub"){
     file.symlink(
-      from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".23andme.zip",sep=""),
-      to=paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".23andme.zip",sep="")
+      from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".simple_format.zip",sep=""),
+      to=paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".simple_format.zip",sep="")
     )
     file.symlink(
       from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip",sep=""),
@@ -218,11 +218,11 @@ for(uniqueID in uniqueIDs){
 
   print("Getting IP and sending mail")
   ip<-"https://www.impute.me"
-  location_23andme <- paste(ip,"/www/",uniqueID,".23andme.zip",sep="")
+  location_simple <- paste(ip,"/www/",uniqueID,".simple_format.zip",sep="")
   location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
   location_json <- paste(ip,"/www/",uniqueID,"_data.json",sep="")
   
-  message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br><a href=",location_23andme,">",location_23andme,"</a><br><br>You can also go to <a href='www.impute.me'>www.impute.me</a> and explore the current analysis-modules using this log-in ID: <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain probabilistic information on genotype calls and calculated phenotype information, respectively.<br></HTML>",sep="")
+  message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br><a href=",location_simple,">",location_simple,"</a><br><br>You can also go to <a href='www.impute.me'>www.impute.me</a> and explore the current analysis-modules using this log-in ID: <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain probabilistic information on genotype calls and calculated phenotype information, respectively.<br></HTML>",sep="")
   
   
   

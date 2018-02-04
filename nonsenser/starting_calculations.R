@@ -61,7 +61,7 @@ rs188945759     22      16050984        CC
 ./annotate_variation.pl -downdb 1000g2015aug humandb -buildver hg19
 
 
-awk '{ print $2 "\t" $3 "\t" $3 "\t" substr($4,1,1) "\t" substr($4,2,2) "\t" $1}' id_3700776I4_chr22.23andme.txt  > test_out.txt
+awk '{ print $2 "\t" $3 "\t" $3 "\t" substr($4,1,1) "\t" substr($4,2,2) "\t" $1}' id_3700776I4_chr22.simple_format.txt  > test_out.txt
 
 ./annotate_variation.pl -filter -dbtype ALL.sites.2015_08 -buildver hg19 -out ex1 ~/2015-11-20_temp_nonsenser/test_out.txt humandb/
 	
@@ -97,7 +97,7 @@ humandb=~/downloads/annovar/humandb/
 	for i in {22..1}
 do
 echo $i
-awk '{ print $2 "\t" $3 "\t" $3 "\t" substr($4,1,1) "\t" substr($4,2,2) "\t" $1}' id_3700776I4_chr$i.23andme.txt  > out_chr$i.txt
+awk '{ print $2 "\t" $3 "\t" $3 "\t" substr($4,1,1) "\t" substr($4,2,2) "\t" $1}' id_3700776I4_chr$i.simple_format.txt  > out_chr$i.txt
 $table_annovar out_chr$i.txt $humandb -protocol dbnsfp30a -operation f -build hg19 -nastring . -otherinfo
 awk '{if($6 != ".") print}' out_chr$i.txt.hg19_multianno.txt  > out_short_chr$i.txt
 done
@@ -167,7 +167,7 @@ humandb=~/downloads/annovar/humandb/
 for i in {22..1}
 do
 echo $i
-awk '{ print $2 "\t" $3 "\t" $3 "\t" substr($4,1,1) "\t" substr($4,2,2) "\t" $1}' id_57n662948_chr$i.23andme.txt  > out_chr$i.txt
+awk '{ print $2 "\t" $3 "\t" $3 "\t" substr($4,1,1) "\t" substr($4,2,2) "\t" $1}' id_57n662948_chr$i.simple_format.txt  > out_chr$i.txt
 $table_annovar out_chr$i.txt $humandb -protocol dbnsfp30a -operation f -build hg19 -nastring . -otherinfo
 awk '{if($6 != ".") print}' out_chr$i.txt.hg19_multianno.txt  > out_short_chr$i.txt
 done

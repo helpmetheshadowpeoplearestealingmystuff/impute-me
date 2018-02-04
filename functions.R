@@ -613,7 +613,7 @@ summarize_imputation<-function(
     }
     
     #remove NN
-    cmd12 <- paste("awk '{ if($4 != \"NN\") print}' step_10_chr",chr,".txt  >", sub("\\.gen$","",genFile),".23andme.txt",sep="")
+    cmd12 <- paste("awk '{ if($4 != \"NN\") print}' step_10_chr",chr,".txt  >", sub("\\.gen$","",genFile),".simple_format.txt",sep="")
     system(cmd12)
     
     
@@ -631,11 +631,11 @@ summarize_imputation<-function(
   prepDestinationDir<-paste(destinationDir,"/",uniqueID,sep="")
   if(!file.exists(prepDestinationDir))dir.create(prepDestinationDir)
   
-  #zipping and moving 23andme files
-  zipFile23andme<-paste(runDir,paste(uniqueID,".23andme.zip",sep=""),sep="/")
-  twentythreeandmeFiles<-paste(uniqueID,"_chr",chromosomes,".23andme.txt",sep="")
-  zip(zipFile23andme, twentythreeandmeFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-  file.rename(zipFile23andme, paste(prepDestinationDir,basename(zipFile23andme),sep="/"))
+  #zipping and moving simple_format files
+  zipFile_simpleformat<-paste(runDir,paste(uniqueID,".simple_format.zip",sep=""),sep="/")
+  twentythreeandmeFiles<-paste(uniqueID,"_chr",chromosomes,".simple_format.txt",sep="")
+  zip(zipFile_simpleformat, twentythreeandmeFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+  file.rename(zipFile_simpleformat, paste(prepDestinationDir,basename(zipFile_simpleformat),sep="/"))
   unlink(list.files(runDir,pattern="23andme",full.names=T))
   
   #zipping gen files
@@ -678,7 +678,7 @@ summarize_imputation<-function(
   
   #return paths
   returnPaths<-c(
-    paste(prepDestinationDir,basename(zipFile23andme),sep="/"),
+    paste(prepDestinationDir,basename(zipFile_simpleformat),sep="/"),
     paste(prepDestinationDir,basename(zipFileGen),sep="/")
   )
   names(returnPaths)<-c("23andme","gen")
