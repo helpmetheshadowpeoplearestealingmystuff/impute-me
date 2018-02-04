@@ -663,6 +663,8 @@ rsync -avm --include='user_log_file.txt' -f 'hide,! */' /home/ubuntu/data/ ubunt
 
 
 #2018-02-04 rename .simple_format. to .simple_format.
+
+
 uniqueIDs<-list.files("/home/ubuntu/data",full.names=F)
 
 for(uniqueID in uniqueIDs){
@@ -671,7 +673,7 @@ for(uniqueID in uniqueIDs){
   if(file.exists(old_name)){
         
     print(paste("rename from",old_name,"to",new_name))
-    # file.rename(old_name,new_name)
+    file.rename(old_name,new_name)
     
     #check links
     old_link_name<-paste0("/home/ubuntu/srv/impute-me/www/",uniqueID,".simple_format.zip")
@@ -681,9 +683,9 @@ for(uniqueID in uniqueIDs){
       print(paste("link from",old_link_name,"to",new_name))
       print(paste("link from",new_link_name,"to",new_name))
       
-      # unlink(old_link_name)
-      # file.symlink(old_link_name, new_name)
-      # file.symlink(new_link_name, new_name)
+      unlink(old_link_name)
+      file.symlink(old_link_name, new_name)
+      file.symlink(new_link_name, new_name)
     }
     
   }
