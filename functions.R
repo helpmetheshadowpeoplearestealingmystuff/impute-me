@@ -1629,7 +1629,6 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
   
   for(uniqueID in uniqueIDs){
     outputList <- list()
-    outputList[["current_date_stamp"]] <- as.character(format(Sys.time(),"%Y-%m-%d_%H-%M-%S"))
     #importing standard pData stuff
     pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
     pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F),silent=T)
@@ -1646,6 +1645,8 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
       print(paste("uniqueID",uniqueID,"was skipped due to inavailability of cachedData file"))
       next
     }
+    outputList[["current_timeStamp"]] <- as.character(format(Sys.time(),"%Y-%m-%d_%H-%M-%S"))
+    outputList[["documentation_url"]] <- "https://github.com/lassefolkersen/impute-me"
     
     
     #get basic stuff
