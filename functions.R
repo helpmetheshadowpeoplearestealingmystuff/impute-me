@@ -1647,8 +1647,6 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
       print(paste("uniqueID",uniqueID,"was skipped due to inavailability of cachedData file"))
       next
     }
-    outputList[["current_timeStamp"]] <- as.character(format(Sys.time(),"%Y-%m-%d_%H-%M-%S"))
-    outputList[["documentation_url"]] <- "https://github.com/lassefolkersen/impute-me"
     
     
     #get basic stuff
@@ -1656,6 +1654,9 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
       if(!imp %in%colnames(pData))stop(paste("pData lacked this column:",imp))  
       outputList[[imp]] <-pData[1,imp]
     }
+    outputList[["current_timeStamp"]] <- as.character(format(Sys.time(),"%Y-%m-%d_%H-%M-%S"))
+    outputList[["documentation_url"]] <- "https://github.com/lassefolkersen/impute-me"
+    
     names(outputList)[names(outputList)%in%"filename"] <- "original_filename"
     names(outputList)[names(outputList)%in%"email"] <- "original_submission_email"
     
