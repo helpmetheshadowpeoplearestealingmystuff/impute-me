@@ -173,3 +173,108 @@ for(otherPerson in otherPersons){
 
 
 plot(new_g_opinions,previous_g_opinions)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#2018-03-15 moving opinions to separate file (it takes way tooo long to iterate through all the users now)
+rm(list=ls())
+otherPersons<-list.files("/home/ubuntu/data/",full.names=F)
+
+opinions_in_data<-data.frame(uniqueID=vector(),g_opinion=vector(),real_opinion=vector(),real_age=vector(),gender=vector(),source=vector(),datestamp=vector(),stringsAsFactors=F)
+
+
+for(uniqueID in otherPersons){
+  data_folder <- paste0("/home/ubuntu/data/",uniqueID)
+  if(!file.info(data_folder)[["isdir"]])next
+  if(!file.exists(paste(data_folder,"pData.txt",sep="/")))next
+
+  otherPersonPdata<-try(read.table(paste(data_folder,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F,comment.char="",quote=""),silent=T)
+  if(class(otherPersonPdata)=="try-error")next
+  if(!all(c("g_opinion","real_opinion","real_age","gender")%in%colnames(otherPersonPdata)))next
+
+  d<-otherPersonPdata[1,c("uniqueID","g_opinion","real_opinion","real_age","gender")]
+  d[1,"source"] <- "pData"
+  d[1,"datestamp"] <- NA
+  
+  log_file <- paste0(data_folder,"/user_log_file.txt")
+  
+  if(file.exists(log_file) & uniqueID != "id_613z86871"){
+    
+    l1<-readLines(log_file)
+    l2<-grep("opinions",l1,value=T)
+
+    #general conclusions of this check - all the n=1 log entries are the same as in pData. Good
+    if(length(l2)==0){
+      next
+    
+    }else if(length(l2)==1){
+      log_val <- as.numeric(strsplit(l2,"\t")[[1]][7])
+      if(is.na(log_val)){
+        # print(uniqueID)
+        next
+      }
+      if(log_val != d[1,"real_opinion"]){
+        stop(uniqueID)
+      }
+      
+      d[1,"datestamp"]<-strsplit(l2,"\t")[[1]][1]
+      
+      
+    }else{
+      
+      log_real_opinions <- as.numeric(sapply(l2,function(x){strsplit(x,"\t")[[1]][7]}))
+      log_real_age <- as.numeric(sapply(l2,function(x){strsplit(x,"\t")[[1]][6]}))
+      log_g_opinions <- as.numeric(sapply(l2,function(x){strsplit(x,"\t")[[1]][4]}))
+      time_stamps <- sapply(l2,function(x){strsplit(x,"\t")[[1]][1]})
+     
+      
+      d<-data.frame(
+        uniqueID=uniqueID,
+        g_opinion=log_g_opinions,
+        real_opinion=log_real_opinions,
+        real_age=log_real_age,
+        gender=otherPersonPdata[1,c("gender")],
+        source="log",
+        datestamp=time_stamps,
+        stringsAsFactors=F)
+      
+    }
+    
+    rownames(d)<-NULL
+    
+    opinions_in_data<-rbind(opinions_in_data,d)
+    
+    
+  }
+  
+  
+}
+
+
+
+write.table(opinions_in_data,file="misc_files/all_opinions.txt",sep="\t",col.names=T,row.names=F,quote=F)

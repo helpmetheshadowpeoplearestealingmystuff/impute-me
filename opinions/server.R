@@ -68,20 +68,39 @@ shinyServer(function(input, output) {
 		
 		
 		
-		
-		
-		#get all the other persons in the list
-		otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
-		opinions_in_data<-data.frame(real_opinion=vector(),g_opinion=vector(),gender=vector(),real_age=vector(),stringsAsFactors=F)
-		for(otherPerson in otherPersons){
-		  if(!file.info(otherPerson)[["isdir"]])next
-		  if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-		  otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F,comment.char = "",quote=""),silent=T)
-		  if(class(otherPersonPdata)=="try-error")next
-		  if(!all(c("uniqueID","real_opinion","g_opinion","gender","real_age")%in%colnames(otherPersonPdata)))next
-		  opinions_in_data<-rbind(opinions_in_data,otherPersonPdata[1,c("uniqueID","real_opinion","g_opinion","gender","real_age")])
+		#also store this in the all_opinions_file file (for faster loading)
+		line<-paste(c(uniqueID,GRS_beta,real_opinion,real_age,gender,"interactive",format(Sys.time(),"%Y-%m-%d-%H-%M-%S")),collapse="\t")
+		all_opinions_file<-"/home/ubuntu/misc_files/all_opinions.txt"
+		if(!is.na(GRS_beta) & !is.na(real_age) & !is.na(real_opinion) & uniqueID != "id_613z86871"){ #only save if height is given and it is not the test user
+		  
+		  write(line,file=all_opinions_file,append=TRUE)  
 		}
-		if(!uniqueID%in%opinions_in_data[,"uniqueID"])stop("There was a problem with the registered pData")
+		
+		
+		
+		
+		
+		#load database for comparison
+		#this is a file that contains the GWAS opinions
+		all_opinions_file<-"/home/ubuntu/misc_files/all_opinions.txt"
+		opinions_in_data<-read.table(all_opinions_file,sep="\t",stringsAsFactors=F,header=T)
+		opinions_in_data<-opinions_in_data[order(opinions_in_data[,"datestamp"],decreasing = T),]
+		#use latest only 
+		opinions_in_data<-opinions_in_data[!duplicated(opinions_in_data[,"uniqueID"]),]
+		
+		
+		# #get all the other persons in the list
+		# otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
+		# opinions_in_data<-data.frame(real_opinion=vector(),g_opinion=vector(),gender=vector(),real_age=vector(),stringsAsFactors=F)
+		# for(otherPerson in otherPersons){
+		#   if(!file.info(otherPerson)[["isdir"]])next
+		#   if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
+		#   otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F,comment.char = "",quote=""),silent=T)
+		#   if(class(otherPersonPdata)=="try-error")next
+		#   if(!all(c("uniqueID","real_opinion","g_opinion","gender","real_age")%in%colnames(otherPersonPdata)))next
+		#   opinions_in_data<-rbind(opinions_in_data,otherPersonPdata[1,c("uniqueID","real_opinion","g_opinion","gender","real_age")])
+		# }
+		# if(!uniqueID%in%opinions_in_data[,"uniqueID"])stop("There was a problem with the registered pData")
 		
 		
 		
