@@ -23,7 +23,7 @@ shinyServer(function(input, output) {
 	  if(input$goButton == 0){
 	    return(NULL)
 	  }else if(input$goButton > 1){
-	    stop("Please only run algorithm once - or else reload web-page")
+	    stop(safeError("Please only run algorithm once - or else reload web-page"))
 	  }else{
 	    
 		#initial UI data gathering and user-check
