@@ -63,7 +63,7 @@ shinyUI(bootstrapPage(
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	
 
-  selectInput("trait_all", "Traits:", choices = choices ),
+  selectInput("trait", "Traits:", choices = choices ),
 	
 	checkboxInput("advanced", label ="Advanced options", value = FALSE),
 	conditionalPanel(

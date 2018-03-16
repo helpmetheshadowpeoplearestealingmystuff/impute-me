@@ -37,7 +37,7 @@ shinyServer(function(input, output) {
 	get_data <- reactive({
 		
 		#initial UI data gathering and user-check
-		study_id<-input[[paste0("trait_",input$trait_group)]]
+		study_id<-input@trait
 		
 		uniqueID<-gsub(" ","",input$uniqueID)
 		ethnicity_group<-input$ethnicity_group
@@ -61,7 +61,7 @@ shinyServer(function(input, output) {
 		SNPs_to_analyze<-SNPs_to_analyze_all[SNPs_to_analyze_all[,"study_id"]%in%study_id ,]
 		
 		pmid <- unique(SNPs_to_analyze[,"PUBMEDID"])
-		trait <- study_id
+		trait <- tolower(gsub("_"," ",sub("_[0-9].+$","",study_id)))
 		
 		
 		
@@ -338,10 +338,10 @@ shinyServer(function(input, output) {
 			}
 			
 			
-			keep<-c("SNP","REGION","genotype","Risk/non-risk Allele","personal_score","score_diff"
+			keep<-c("SNP","genotype","Risk/non-risk Allele","personal_score","score_diff"
 ,"effect_size","P.VALUE","Major/minor Allele","minor_allele_freq","Reported Gene")
 			SNPs_to_analyze<-SNPs_to_analyze[,keep]
-			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
+			colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
 			
 			return(SNPs_to_analyze)
 		}
