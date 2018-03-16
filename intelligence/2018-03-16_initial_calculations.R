@@ -197,21 +197,6 @@ for(snp in rownames(d)){
     }
     data[w,col]<-f
   }
-  # data[w,"effect_allele"] <- "?"
-  # data[w,"non_effect_allele"] <- "?"
 }
 
 write.table(data,file="intelligence/SNPs_to_analyze.txt",row.names=F,col.names=T,quote=F,sep="\t")
-
-
-# 
-# #adding the all_gwas
-# rm(list=ls())
-# load("intelligence/2018-03-16_semi_curated_version_gwas_central.rdata")
-# d1<-data[,c("SNP","chr_name","effect_allele","non_effect_allele")]
-# rownames(d1)<-d1[,"SNP"]
-# write.table(d1,file="intelligence/SNPs_to_analyze.txt",row.names=F,col.names=T,quote=F,sep="\t")
-# 
-
-
-
