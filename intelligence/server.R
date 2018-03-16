@@ -37,7 +37,7 @@ shinyServer(function(input, output) {
 	get_data <- reactive({
 		
 		#initial UI data gathering and user-check
-		study_id<-input@trait
+		study_id<-input$trait
 		
 		uniqueID<-gsub(" ","",input$uniqueID)
 		ethnicity_group<-input$ethnicity_group
