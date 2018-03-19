@@ -18,7 +18,7 @@ export_function<-function(uniqueID){
   
   #getting gender
   pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
-  gender<-read.table(pDataFile,header=T,stringsAsFactors=F)[1,"gender"]
+  gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
   
   
   #getting the current best predictor SNPs

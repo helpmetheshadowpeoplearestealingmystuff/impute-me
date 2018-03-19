@@ -1633,7 +1633,7 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
     outputList <- list()
     #importing standard pData stuff
     pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
-    pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F),silent=T)
+    pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"),silent=T)
     if(class(pData)=="try-error"){
       print(paste("uniqueID",uniqueID,"was skipped due to inavailability of pData file"))
       next
@@ -1670,7 +1670,7 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
       ethnicity<-ethnicity[["guessed_super_pop"]]
     }
     pDataFile <- paste0("/home/ubuntu/data/",uniqueID,"/pData.txt")
-    pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F),silent=T)
+    pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"),silent=T)
     if(class(pData)!="try-error"){
       pData[1,"ethnicity"] <- ethnicity
       write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
