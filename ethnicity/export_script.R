@@ -28,6 +28,15 @@ export_function<-function(uniqueID){
   ethnicity_snps[,"alt_count"]<-apply(ethnicity_snps,1,get_alt_count)
   
   
+  
+  #get missing SNP counts
+  found <- sum(!is.na(ethnicity_snps[,"genotype"]))
+  QC_conclusion<-paste("Based on",found,"of",nrow(ethnicity_snps),"pre-computed ethnicity SNPs.")
+  if(found < 1000){
+    paste(QC_conclusion,"This is a low number and may be a serious problem for the ancestry call.")
+  }
+  
+  
   #quick-calculate the PCA metrics for this person
   you<-data.frame(pop="YOU", super_pop="YOU", gender=NA,stringsAsFactors = F)
   for(pc in 1:5){
@@ -63,7 +72,7 @@ export_function<-function(uniqueID){
   output[["PCA_coordinates"]][["PC1"]] <- pca[y,"pos_PC1"]
   output[["PCA_coordinates"]][["PC2"]] <- pca[y,"pos_PC2"]
   output[["PCA_coordinates"]][["PC3"]] <- pca[y,"pos_PC3"]
-  
+  output[["SNP_count"]]<-QC_conclusion
   
   return(output)  
 }
