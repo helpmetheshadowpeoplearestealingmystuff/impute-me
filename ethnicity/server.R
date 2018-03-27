@@ -93,6 +93,14 @@ shinyServer(function(input, output){
     ethnicity_snps[,"alt_count"]<-apply(ethnicity_snps,1,get_alt_count)
     
     
+    #get missing SNP counts
+    found <- sum(!is.na(ethnicity_snps[,"genotype"]))
+    if(found < 1500){
+      stop(safeError(paste("Only found",found,"of",nrow(ethnicity_snps),"relevant ethnicity SNPs for this sample. This could indicate a problem with the data input. It is not advised to base ethnicity calculations on this data.")))
+    }
+    
+    
+    
     #quick-calculate the PCA metrics for this person
     you<-data.frame(pop="YOU", super_pop="YOU", gender=NA,stringsAsFactors = F)
     for(pc in 1:5){

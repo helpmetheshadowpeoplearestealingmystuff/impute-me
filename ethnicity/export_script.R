@@ -32,9 +32,10 @@ export_function<-function(uniqueID){
   #get missing SNP counts
   found <- sum(!is.na(ethnicity_snps[,"genotype"]))
   QC_conclusion<-paste("Based on",found,"of",nrow(ethnicity_snps),"pre-computed ethnicity SNPs.")
-  if(found < 1000){
-    paste(QC_conclusion,"This is a low number and may be a serious problem for the ancestry call.")
+  if(found < 1500){
+    QC_conclusion<-paste(QC_conclusion,"This is a low number and may be a serious problem for the ancestry call.")
   }
+  
   
   
   #quick-calculate the PCA metrics for this person
@@ -55,8 +56,6 @@ export_function<-function(uniqueID){
   
   
   
-  # output[["pca"]]<- pca #no need to save this one
-  
   
   #calculate closest superpopulation (just use geometric distance. A little low tech but should be ok for sure cases)
   y<-which(pca[,"pop"]%in%"YOU")
@@ -64,6 +63,7 @@ export_function<-function(uniqueID){
   pca<-pca[order(pca[,"distance"]),]
   guessed_super_pop<-unique(pca[2:6,"super_pop"])
   if(length(guessed_super_pop)!=1)guessed_super_pop<-NA #if there's more than one superpop among closest 5 - then we don't want to guess
+  if(found < 1000)guessed_super_pop<-NA #also don't guess if too many SNPs were missing
   output[["guessed_super_pop"]]<- guessed_super_pop
 
   
