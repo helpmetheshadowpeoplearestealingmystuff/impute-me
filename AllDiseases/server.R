@@ -100,7 +100,7 @@ shinyServer(function(input, output) {
 		}
 		DATE<-unique(SNPs_to_analyze[,"DATE"])
 		if(length(DATE)!=1)stop("Problem with DATE length")
-		textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a href='http://",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",trait,".")
+		textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a target='_blank' href='http://",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",trait,".")
 		textToReturn <- paste0(textToReturn," This study reports a total sample size of ",sampleSize,", as entered on date ",DATE,".")
 		
 		
