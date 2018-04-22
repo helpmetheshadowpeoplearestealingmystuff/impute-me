@@ -1918,11 +1918,34 @@ run_bulk_imputation<-function(
     #handling nonbiallelic (just excluding them)
     if(out1_a==3){
       missnp<-read.table(paste0("step_2m_chr",chr,".missnp"),stringsAsFactors = F)[,1]
-      if(length(missnp) > 500) stop("Too many non-biallelic SNPs. This must be investigated")
+      if(length(missnp) > 500) {
+        cat(paste("\n\nThe missnp>500 error was triggered. Outputting debug info\n\n"))
+        debug_info<-list()
+        for(uniqueID in uniqueIDs){
+          cmd1_b<-paste0(plink," --bfile step_2_",uniqueID,"_chr",chr," --recode --out step_2_",uniqueID,"_chr",chr,"_missnp_hunt --extract step_2m_chr",chr,".missnp")
+          system(cmd1_b)
+          debug_ped<-readLines(paste0("step_2_",uniqueID,"_chr",chr,"_missnp_hunt.ped"))
+          debug_gt<-strsplit(debug_ped," ")[[1]]
+          debug_gt<-debug_gt[7:length(debug_gt)]
+          debug_df<-data.frame(A1=debug_gt[c(T,F)], A2=debug_gt[c(F,T)])
+          debug_df[,"snp"]<-read.table(paste0("step_2_",uniqueID,"_chr",chr,"_missnp_hunt.map"))[,2]
+          debug_df[,"uniqueID"] <- uniqueID
+          debug_info[[uniqueID]]<-debug_df
+        }
+        debug_all<-do.call(rbind,debug_info)
+        for(msnp in sample(missnp,5)){
+          s<-debug_all[debug_all[,"snp"]%in%msnp,]
+          rownames(s)<-NULL
+          print(msnp)
+          print(s)
+        }
+        stop("Too many non-biallelic SNPs. This must be investigated. Check above debugging info")
+          
+      }
       for(uniqueID in uniqueIDs){
         #Go back to the previous files from previous step and take them, now excluding triallelics.
-        cmd1_b<-paste0(plink," --bfile step_2_",uniqueID,"_chr",chr," --make-bed --out step_2_",uniqueID,"_chr",chr," --exclude step_2m_chr",chr,".missnp")
-        system(cmd1_b)
+        cmd1_c<-paste0(plink," --bfile step_2_",uniqueID,"_chr",chr," --make-bed --out step_2_",uniqueID,"_chr",chr," --exclude step_2m_chr",chr,".missnp")
+        system(cmd1_c)
       }
       #then retry merge
       cmd1_a <- paste0(plink," --bfile ",merge_files[1]," --merge-list step_2_merge_list.txt --recode --out step_2m_chr",chr)
