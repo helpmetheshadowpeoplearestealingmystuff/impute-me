@@ -1696,11 +1696,20 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
       }
     }
     
-    JSON<-toJSON(outputList)
     
     filename <- paste0("/home/ubuntu/data/",uniqueID,"/",paste(uniqueID,"data.json",sep="_"))
     
     
+    #check if there exists previous json file, with module data that is not re-run.
+    #if so, include this.
+    if(file.exists(filename)){
+      outputList_previous<-fromJSON(filename)
+      previous_unique <- outputList_previous[!names(outputList_previous) %in% names(outputList)]
+      outputList<-c(outputList,previous_unique)
+    }
+    
+    #save new JSON
+    JSON<-toJSON(outputList)
     f<-file(filename,"w")
     writeLines(JSON,f)
     close(f)
