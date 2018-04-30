@@ -63,15 +63,15 @@ export_function<-function(uniqueID){
   pca<-pca[order(pca[,"distance"]),]
   guessed_super_pop<-unique(pca[2:6,"super_pop"])
   if(length(guessed_super_pop)!=1)guessed_super_pop<-NA #if there's more than one superpop among closest 5 - then we don't want to guess
-  if(found < 1000)guessed_super_pop<-NA #also don't guess if too many SNPs were missing
+  if(found < 1500)guessed_super_pop<-NA #also don't guess if too many SNPs were missing
   output[["guessed_super_pop"]]<- guessed_super_pop
 
   
   #adding in some coordinates to the JSON
   output[["PCA_coordinates"]] <- list()
-  output[["PCA_coordinates"]][["PC1"]] <- pca[y,"pos_PC1"]
-  output[["PCA_coordinates"]][["PC2"]] <- pca[y,"pos_PC2"]
-  output[["PCA_coordinates"]][["PC3"]] <- pca[y,"pos_PC3"]
+  output[["PCA_coordinates"]][["PC1"]] <- pca[pca[,"pop"]%in%"YOU","pos_PC1"]
+  output[["PCA_coordinates"]][["PC2"]] <- pca[pca[,"pop"]%in%"YOU","pos_PC2"]
+  output[["PCA_coordinates"]][["PC3"]] <- pca[pca[,"pop"]%in%"YOU","pos_PC3"]
   output[["SNP_count"]]<-QC_conclusion
   
   return(output)  
