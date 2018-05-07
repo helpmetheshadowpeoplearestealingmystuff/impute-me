@@ -23,7 +23,7 @@ for(uniqueID in uniqueIDs){
   
   
   if(!any(file.exists(c(f1,f2,f3,f4,f5,f6)))){
-    print(paste("Skipping",uniqueID,"because all have already been deleted"))
+    # print(paste("Skipping",uniqueID,"because all have already been deleted"))
     next
   }
   
