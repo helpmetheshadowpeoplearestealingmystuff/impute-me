@@ -41,8 +41,8 @@ for(uniqueID in uniqueIDs){
       if(file.exists(f6))unlink(f6)
     }
     
-    #then check if user is protected from deletion or not   
-    if(!pData[1,"protect_from_deletion"]){
+    #then check if user is protected from deletion or not   | TRUE
+    if(!pData[1,"protect_from_deletion"] | TRUE){
       print(paste("Deleting all",uniqueID,"because it is",round(timedif),"days old, and not protected from deletion"))	
       if("data" %in% routinely_delete_this){
         if(file.exists(f1))unlink(f1)
