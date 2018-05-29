@@ -1014,7 +1014,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
   
   
   #getting the AllDiseases + ukbiobank SNPs if possible
-  load("/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_all_gwas_snps.rdata")
+  load("/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_all_gwas_snps.rdata")
   e1<-gwas_snps
   load("/home/ubuntu/srv/impute-me/ukbiobank/2017-09-28_all_ukbiobank_snps.rdata")
   e2<-gwas_snps
