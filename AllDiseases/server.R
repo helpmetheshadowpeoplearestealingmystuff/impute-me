@@ -35,7 +35,12 @@ shinyServer(function(input, output) {
 	get_data <- reactive({
 		
 		#initial UI data gathering and user-check
-		study_id<-input[[paste0("trait_",input$trait_group)]]
+	  if(input$only_show_newest){
+	    ui_selector <- paste0("trait_",input$trait_group,"_newest")  
+	  }else{
+	    ui_selector <- paste0("trait_",input$trait_group)
+	  }
+	  study_id<-input[[ui_selector]]
 		
 		uniqueID<-gsub(" ","",input$uniqueID)
 		ethnicity_group<-input$ethnicity_group

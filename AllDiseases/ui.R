@@ -54,21 +54,30 @@ names(selections_other)<-traits[traits[,"other"],"niceName"]
 
 selections_all_newest<-traits[traits[,"most_recent"],"study_id"]
 names(selections_all_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"most_recent"],"niceName"])
+# names(selections_all_newest)<-traits[traits[,"most_recent"],"niceName"]
 
 selections_disease_newest<-traits[traits[,"disease"] & traits[,"most_recent"],"study_id"]
 names(selections_disease_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"disease"] & traits[,"most_recent"],"niceName"])
+# names(selections_disease_newest)<-traits[traits[,"disease"] & traits[,"most_recent"],"niceName"]
+
 
 selections_biometrics_newest<-traits[traits[,"biometrics"] & traits[,"most_recent"],"study_id"]
 names(selections_biometrics_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"biometrics"] & traits[,"most_recent"],"niceName"])
+# names(selections_biometrics_newest)<-traits[traits[,"biometrics"] & traits[,"most_recent"],"niceName"]
+
 
 selections_biomarker_newest<-traits[traits[,"biomarker"] & traits[,"most_recent"],"study_id"]
 names(selections_biomarker_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"biomarker"] & traits[,"most_recent"],"niceName"])
+# names(selections_biomarker_newest)<-traits[traits[,"biomarker"] & traits[,"most_recent"],"niceName"]
 
 selections_response_newest<-traits[traits[,"response"] & traits[,"most_recent"],"study_id"]
 names(selections_response_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"response"] & traits[,"most_recent"],"niceName"])
+# names(selections_response_newest)<-traits[traits[,"response"] & traits[,"most_recent"],"niceName"]
+
 
 selections_other_newest<-traits[traits[,"other"] & traits[,"most_recent"],"study_id"]
 names(selections_other_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"other"] & traits[,"most_recent"],"niceName"])
+# names(selections_other_newest)<-traits[traits[,"other"] & traits[,"most_recent"],"niceName"]
 
 
 
@@ -110,27 +119,27 @@ shinyUI(bootstrapPage(
 	
 	conditionalPanel(
 	  condition = "input.trait_group == 'all' & input.only_show_newest",
-	  selectInput("trait_all", "Traits:", choices = selections_all_newest)
+	  selectInput("trait_all_newest", "Traits:", choices = selections_all_newest)
 	),
 	conditionalPanel(
 	  condition = "input.trait_group == 'disease' & input.only_show_newest",
-	  selectInput("trait_disease", "Traits:", choices = selections_disease_newest)
+	  selectInput("trait_disease_newest", "Traits:", choices = selections_disease_newest)
 	),
 	conditionalPanel(
 	  condition = "input.trait_group == 'biometrics' & input.only_show_newest",
-	  selectInput("trait_biometrics", "Traits:", choices = selections_biometrics_newest)
+	  selectInput("trait_biometrics_newest", "Traits:", choices = selections_biometrics_newest)
 	),
 	conditionalPanel(
 	  condition = "input.trait_group == 'biomarker' & input.only_show_newest",
-	  selectInput("trait_biomarker", "Traits:", choices = selections_biomarker_newest)
+	  selectInput("trait_biomarker_newest", "Traits:", choices = selections_biomarker_newest)
 	),
 	conditionalPanel(
 	  condition = "input.trait_group == 'response' & input.only_show_newest",
-	  selectInput("trait_response", "Traits:", choices = selections_response_newest)
+	  selectInput("trait_response_newest", "Traits:", choices = selections_response_newest)
 	),
 	conditionalPanel(
 	  condition = "input.trait_group == 'other' & input.only_show_newest",
-	  selectInput("trait_other", "Traits:", choices = selections_other_newest)
+	  selectInput("trait_other_newest", "Traits:", choices = selections_other_newest)
 	),
 	
 	
