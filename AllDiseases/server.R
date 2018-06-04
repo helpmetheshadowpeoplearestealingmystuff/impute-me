@@ -2,8 +2,8 @@ library("shiny")
 
 source("/home/ubuntu/srv/impute-me/functions.R")
 dataFolder<-"/home/ubuntu/data/"
-snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata"
-trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_trait_overoverview.rdata"
+snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_semi_curated_version_gwas_central.rdata"
+trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_trait_overoverview.rdata"
 
 
 #testing

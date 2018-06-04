@@ -3,8 +3,8 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 
 export_function<-function(uniqueID){
   # dataFolder<-"/home/ubuntu/data/"
-  snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata"
-  trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2017-02-21_trait_overoverview.rdata"
+  snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_semi_curated_version_gwas_central.rdata"
+  trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_trait_overoverview.rdata"
   
   #testing
   #preload
@@ -18,8 +18,8 @@ export_function<-function(uniqueID){
   
   output<-list()
   output[["documentation"]] <- list()
-  output[["documentation"]][["trait_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/f205df9f8a11f04cb424b5f0726b9a6a32053824/AllDiseases/2017-02-21_trait_overoverview.rdata"
-  output[["documentation"]][["snp_file"]] <- "https://github.com/lassefolkersen/impute-me/blob/f205df9f8a11f04cb424b5f0726b9a6a32053824/AllDiseases/2017-02-21_semi_curated_version_gwas_central.rdata"
+  output[["documentation"]][["trait_overview"]] <- "https://github.com/lassefolkersen/impute-me/AllDiseases/2018-05-31_trait_overoverview.rdata"
+  output[["documentation"]][["snp_file"]] <- "https://github.com/lassefolkersen/impute-me/AllDiseases/2018-05-31_semi_curated_version_gwas_central.rdata"
   
   
   #get ethnicity parameter
@@ -47,7 +47,7 @@ export_function<-function(uniqueID){
     if(ethnicity %in% c("EAS","AMR","AFR","EUR","SAS")){
       SNPs_requested[,"minor_allele_freq"]<-SNPs_requested[,paste0(ethnicity,"_AF")]
     }
-
+    
     #calculate GRS
     snp_data<-SNPs_requested
     snp_data[,"genotype"] <- genotypes[rownames(snp_data),"genotype"]
