@@ -71,7 +71,7 @@ rs116843064	28223407		coronary heart disease	Statin	19	G	A	1.16			0.00938498	A	G
 rs1122608	28223407		coronary heart disease	Statin	19	G	T	1.1			0.138179	T	G	Natarajan 2017	19p13.2	LDLR	G/T
 rs445925	28223407		coronary heart disease	Statin	19	G	A	1.13			0.14976	A	G	Natarajan 2017	19q13.32	APOE-APOC1	G/A/C
 rs2075650	28223407		coronary heart disease	Statin	19	G	A	1.11			0.119409	G	A	Natarajan 2017	19q13.32	APOE-APOC1	A/G
-rs12979860	19684573	European;African-Americans	hepatitis C virus (HCV)	peginterferon-alpha-2b or -alpha-2a combined with ribavirin	19	C	T	NA	better treatment response		0.355831	T	C	Prior project research			C/T
+rs12979860	19684573	European;African-Americans	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	C	T	NA	better treatment response		0.355831	T	C	Prior project research			C/T
 rs8099917	19749758	Australian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	1.98	no response	OR	0.13119	G	T	Prior project research			T/G
 rs12980275	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	A	17.7	no response	OR	0.323283	G	A	Prior project research			A/G
 rs8099917	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	27.1	no response	OR	0.13119	G	T	Prior project research			T/G
@@ -130,8 +130,8 @@ rs2514036	28353407	Finnish	hypertension	atenolol	11	G	A	NA	higher response		0.19
 rs3814995	28353407	Finnish	hypertension	losartan	19	A	G	NA	higher response		0.291933	T		Prior project research			C/G/T
 rs12794714	28296915	Thai	hepatitis B virus (HBV)	pegylated interferon	11	T	C	4.53	good response	OR	0.349241	A		Prior project research			G/A
 rs17047200	28163062	Japanese	hepatitis C virus (HCV)	interferon	4	T	A	2.37	a risk for hepatocellular carcinoma	OR	0.163339	T	A	Prior project research			A/T
-rs10995	28115488		hypertension	thiazide diuretics	19	G	A	NA	better blood pressure response		0.217053	G	A	Prior project research			G/A
-rs10156	28115488		hypertension	thiazide diuretics	19	T	C	NA	better blood pressure response		0.216853	T	C	Prior project research			T/C
+rs10995	28115488		hypertension	thiazide	19	G	A	NA	better blood pressure response		0.217053	G	A	Prior project research			G/A
+rs10156	28115488		hypertension	thiazide	19	T	C	NA	better blood pressure response		0.216853	T	C	Prior project research			T/C
 rs12913988	27981573	Chinese	coronary heart disease	clopidogrel	15	C	T	1.876	higher risk of major adverse cardiac events	OR	0.391973	G		Prior project research			G/A
 rs12456693	27981573	Chinese	coronary heart disease	clopidogrel	18	C	T	0.654	higher risk of major adverse cardiac events	OR	0.182708	T	C	Prior project research			C/T
 rs2254638	27981573	Chinese	coronary heart disease	clopidogrel	21	T	C	1.428	higher risk of major adverse cardiac events	OR	0.251198	A		Prior project research			A/G

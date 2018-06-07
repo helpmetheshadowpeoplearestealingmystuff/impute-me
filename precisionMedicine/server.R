@@ -104,6 +104,13 @@ shinyServer(function(input, output) {
       per_study[study,"drug"] <- unique(d2[,"drug"])
       per_study[study,"study"] <- paste0("<u><a href='https://www.ncbi.nlm.nih.gov/pubmed/",study,"'>Study-link</a></u>")
       
+      
+      #handling duplicated SNPs
+      if(any(duplicated(d2[,"SNP"]))){
+        d2<-d2[!duplicated(d2[,"SNP"]),]
+        #suggestion for future: add in a note in the return text that we have removed the duplicates?
+      }
+      
       rownames(d2)<-d2[,"SNP"]
       d3<-try(get_GRS_2(d2, mean_scale=T, unit_variance=T, verbose=T))
       if(class(d3)=="try-error"){
@@ -113,14 +120,15 @@ shinyServer(function(input, output) {
       }else{
         population_sum_sd<-sqrt(sum(d3[,"population_score_sd"]^2,na.rm=T))
         if(population_sum_sd == 0){
-          GRS <-NA
-          percentage<-NA
+          per_study[study,"Z-score"] <- "Not calculated"
+          per_study[study,"Percentage"] <- "Not calculated"
         }else{
           GRS <-sum(d3[,"score_diff"],na.rm=T) / population_sum_sd
           percentage<-floor(pnorm(GRS,mean=0,sd=1)*100)
+          per_study[study,"Z-score"] <- signif(GRS,2)
+          per_study[study,"Percentage"] <- signif(percentage,2)
+          
         }
-        per_study[study,"Z-score"] <- signif(GRS,2)
-        per_study[study,"Percentage"] <- signif(percentage,2)
         
       }
       
