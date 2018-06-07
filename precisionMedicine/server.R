@@ -112,9 +112,13 @@ shinyServer(function(input, output) {
         
       }else{
         population_sum_sd<-sqrt(sum(d3[,"population_score_sd"]^2,na.rm=T))
-        if(population_sum_sd == 0)stop(safeError("It was not possible to calculate polygenic summarize scores for this trait. Single-SNP analysis is given in table below."))
-        GRS <-sum(d3[,"score_diff"],na.rm=T) / population_sum_sd
-        percentage<-floor(pnorm(GRS,mean=0,sd=1)*100)
+        if(population_sum_sd == 0){
+          GRS <-NA
+          percentage<-NA
+        }else{
+          GRS <-sum(d3[,"score_diff"],na.rm=T) / population_sum_sd
+          percentage<-floor(pnorm(GRS,mean=0,sd=1)*100)
+        }
         per_study[study,"Z-score"] <- signif(GRS,2)
         per_study[study,"Percentage"] <- signif(percentage,2)
         

@@ -36,7 +36,7 @@ shinyUI(bootstrapPage(
 
 	
 	h2("Precision-medicine SNP calculations"),
-	HTML("This is a test of a systematic approach to precision medicine SNPs. It shows the calculations that takes place for a number of drug response predictions, but on a per-drug level and on a per-SNP level, corresponding to the first and the second table. The first table summarizes per-drug calculation whenever possible, but since the data-curation is still ongoing this is not always possible. Ultimately the idea of these calculations is that they will be included in a more direct user-friendly output.<br><br>"),
+	HTML("This is a test of a systematic approach to precision medicine SNPs. It shows the calculations that takes place for a number of drug response predictions, both on a per-drug level and on a per-SNP level, corresponding to the first and the second table. The first table summarizes per-drug calculation whenever possible. If possible, a <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-score</a></u> is calculated in the same way as also described in the GWAS module. If not, a summary value of 'NA' is given. In that case it is necessary to look at the second table for comments on the individual SNPs from the input studies.<br><br>"),
 	tableOutput("table1"),
 	
 	

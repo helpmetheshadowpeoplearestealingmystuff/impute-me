@@ -71,183 +71,182 @@ rs116843064	28223407		coronary heart disease	Statin	19	G	A	1.16			0.00938498	A	G
 rs1122608	28223407		coronary heart disease	Statin	19	G	T	1.1			0.138179	T	G	Natarajan 2017	19p13.2	LDLR	G/T
 rs445925	28223407		coronary heart disease	Statin	19	G	A	1.13			0.14976	A	G	Natarajan 2017	19q13.32	APOE-APOC1	G/A/C
 rs2075650	28223407		coronary heart disease	Statin	19	G	A	1.11			0.119409	G	A	Natarajan 2017	19q13.32	APOE-APOC1	A/G
-rs12979860	19684573	European;African-Americans	hepatitis C virus (HCV)	peginterferon-alpha-2b or -alpha-2a combined with ribavirin	19	C	T	NA	better treatment response		0.355831	T		Lili-research			C/T
-rs8099917	19749758	Australian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	1.98	no response	OR	0.13119	G		Lili-research			T/G
-rs12980275	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	A	17.7	no response	OR	0.323283	G		Lili-research			A/G
-rs8099917	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	27.1	no response	OR	0.13119	G		Lili-research			T/G
-rs8105790	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	C	T	25.7	no response	OR	0.172724	C		Lili-research			T/C
-rs11881222	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	A	25.6	no response	OR	0.251198	G		Lili-research			A/G
-rs8103142	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	C	T	26.6	no response	OR	0.365415	C		Lili-research			T/C
-rs28416813	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	C	22.3	no response	OR	0.352835	G		Lili-research			C/G
-rs4803219	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	T	C	23.3	no response	OR	0.235823	T		Lili-research			C/T
-rs7248668	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	A	G	24.7	no response	OR	0.130791	A		Lili-research			G/A
-rs17109204	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	T	10.1334	better response	OR	0.091254	C		Lili-research			T/C
-rs2025445	19706858	Amish	acute coronary syndromes	clopidogrel	10	A	G	5.56405	better response	OR	0.244209	G		Lili-research			A/G
-rs1326837	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	6.35312	better response	OR	0.352436	C		Lili-research			T/C
-rs12777823	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	8.14925	better response	OR	0.245407	A		Lili-research			G/A
-rs717238	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	8.030021	better response	OR	0.228834	T		Lili-research			C/T
-rs2860838	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	C	8.192431	better response	OR	0.233027	G		Lili-research			C/G
-rs2860903	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	8.24412	better response	OR	0.21266	C		Lili-research			T/C
-rs9332105	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	G	7.429776	better response	OR	0.178315	C		Lili-research			G/C
-rs9332113	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	G	7.266465	better response	OR	0.175919	C		Lili-research			G/C
-rs12572351	19706858	Amish	acute coronary syndromes	clopidogrel	10	A	G	7.158826	better response	OR	0.179113	A		Lili-research			G/A
-rs10509679	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	7.38364	better response	OR	0.179113	A		Lili-research			G/A
-rs1934951	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	7.624059	better response	OR	0.29972	T		Lili-research			C/T
-rs1934980	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	5.20992	better response	OR	0.245208	G		Lili-research			A/G
-rs10871454	18535201	NA	NA	warfarin	16	NA	NA	NA	NA		0.356629	T		Lili-research			C/T
-rs9923231	19300499	Swede	NA	warfarin	16	T	C	0.97	sensitivity	OR	0.355631	T		Lili-research			C/A/G/T
-rs1057910	19300499	Swede	NA	warfarin	10	C	A	1.11	sensitivity	OR	0.0485224	C		Lili-research			A/C
-rs1799853	19300499	Swede	NA	warfarin	10	T	C	0.54	sensitivity	OR	0.0479233	T		Lili-research			C/T
-rs2108622	19300499	Swede	NA	warfarin	19	T	C	0.21	no sensitivity	OR	0.236821	T		Lili-research			C/T
-rs10871454	19578179	Caucasian	NA	acenocoumarol	16	NA	NA	5.2	NA	OR	0.356629	T		Lili-research			C/T
-rs4086116	19578179	Caucasian	NA	acenocoumarol	10	NA	NA	2.9	NA	OR	0.163938	T		Lili-research			C/T
-rs2108622	19578179	Caucasian	NA	acenocoumarol	19	NA	NA	NA	NA	OR	0.236821	T		Lili-research			C/T
-rs11045879	19901119	NA	acute lymphoblastic leukemia	methotrexate	12	T	C	NA	higher clearance		0.219249	C		Lili-research			T/C
-rs4149081	19901119	NA	NA	methotrexate	12	G	A	NA	higher clearance		0.21885	A		Lili-research			G/A
-rs317689	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.223642	G		Lili-research			G/A
-rs315135	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.0491214	G		Lili-research			A/G
-rs7297610	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.115815	T		Lili-research			C/T
-rs10509373	22180457	Japanese	breast cancer	tamoxifen	10	C	T	4.51	Higher clearance	HR	0.183906	C		Lili-research			T/C
-rs4363657	18650507	British	NA	statin	12	C	T	4.3	increased risk of myopathy	OR	0.214856	C		Lili-research			T/C
-rs4149056	18650507	British	NA	statin	12	C	T	4.5	increased risk of myopathy	OR	0.0876597	C		Lili-research			T/C
-rs11697186	21659334	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	T	A	4.5	higher risk of developing thrombocytopenia	OR	0.0992412	T		Lili-research			A/C/T
-rs6139030	21659334	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	T	3.9	higher risk of developing thrombocytopenia	OR	0.109824	C		Lili-research			T/C
-rs9274407	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	T	A	3.1	increased risk of drug-induced liver injury	OR	0.240615	A		Lili-research			A/T
-rs3135388	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	T	C	2.8	increased risk of drug-induced liver injury	OR	0.0429313	A		Lili-research			A/G
-rs2523822	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	NA	NA	2.3	increased risk of drug-induced liver injury	OR	0.250799	G		Lili-research			A/G
-rs11045879	21387541	Spanish	acute lymphoblastic leukemia	methotrexate	12	T	C	1	higher clearance	OR	0.219249	C		Lili-research			T/C
-rs4149081	21387541	Spanish	acute lymphoblastic leukemia	methotrexate	12	G	A	1	higher clearance	OR	0.21885	A		Lili-research			G/A
-rs1127354	20547162	NA	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	A	C	0.02	lower risk of hemolytic anemia	OR	0.0894569	A		Lili-research			C/A/G
-rs7270101	20547162	NA	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	A	0.38	lower risk of hemolytic anemia	OR	0.0591054	C		Lili-research			A/C
-rs1127354	20173735	European-Americans	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	A	C	NA	lower risk of hemolytic anemia		0.0894569	A		Lili-research			C/A/G
-rs7270101	20173735	European-Americans	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	A	NA	lower risk of hemolytic anemia		0.0591054	C		Lili-research			A/C
-rs1934951	18594024	NA	multiple myeloma	bisphosphonate	10	T	C	12.75	higher risk of osteonecrosis of the jaw development	OR	0.29972	T		Lili-research			C/T
-rs80191572	28569182		multiple sclerosis	Copaxone	11	A	G	0.5	higher response	OR	0.0305511	G		Lili-research			A/G
-rs28724893	28569182		multiple sclerosis	Copaxone	6	G	A	0.59	higher response	OR	0.42492	T		Lili-research			T/C
-rs1789084	28569182		multiple sclerosis	Copaxone	18	G	A	0.54	higher response	OR	0.381989	A		Lili-research			G/A
-rs139890339	28569182		multiple sclerosis	Copaxone	2	G	A	0.23	higher response	OR	0.00698882	T		Lili-research			C/T
-rs2514036	28353407	Finnish	hypertension	atenolol	11	G	A	NA	higher response		0.196885	C		Lili-research			C/T
-rs3814995	28353407	Finnish	hypertension	losartan	19	A	G	NA	higher response		0.291933	T		Lili-research			C/G/T
-rs12794714	28296915	Thai	hepatitis B virus (HBV)	pegylated interferon	11	T	C	4.53	good response	OR	0.349241	A		Lili-research			G/A
-rs17047200	28163062	Japanese	hepatitis C virus (HCV)	interferon	4	T	A	2.37	a risk for hepatocellular carcinoma	OR	0.163339	T		Lili-research			A/T
-rs10995	28115488		hypertension	thiazide diuretics	19	G	A	NA	better blood pressure response		0.217053	G		Lili-research			G/A
-rs10156	28115488		hypertension	thiazide diuretics	19	T	C	NA	better blood pressure response		0.216853	T		Lili-research			T/C
-rs12913988	27981573	Chinese	coronary heart disease	clopidogrel	15	C	T	1.876	higher risk of major adverse cardiac events	OR	0.391973	G		Lili-research			G/A
-rs12456693	27981573	Chinese	coronary heart disease	clopidogrel	18	C	T	0.654	higher risk of major adverse cardiac events	OR	0.182708	T		Lili-research			C/T
-rs2254638	27981573	Chinese	coronary heart disease	clopidogrel	21	T	C	1.428	higher risk of major adverse cardiac events	OR	0.251198	A		Lili-research			A/G
-rs7412	27943270	Swedish	NA	statin	19	T	C	NA	better response		0.0750799	T		Lili-research			C/T
-rs4420638	27943270	Swedish	NA	statin	19	G	A	NA	better response		0.150958	G		Lili-research			A/G
-rs2002042	27943270	Swedish	NA	statin	10	T	C	NA	better response		0.28095	T		Lili-research			C/T
-rs646776	27943270	Swedish	NA	statin	1	C	T	NA	better response		0.238419	C		Lili-research			C/T
-rs6701290	27129929	Japanese	psoriasis	anti-TNF	1	A	G	9.659	good response	OR	0.175519	G		Lili-research			G/A
-rs3784240	27129929	Japanese	psoriasis	anti-TNF	14	G	A	9.714	good response	OR	0.0860623	A		Lili-research			G/A/C
-rs2390256	27129929	Japanese	psoriasis	anti-TNF	7	G	A	10	good response	OR	0.406749	T		Lili-research			C/T
-rs2219538	27129929	Japanese	psoriasis	anti-TNF	4	G	A	13.75	good response	OR	0.241813	A		Lili-research			G/A
-rs10515637	27129929	Japanese	psoriasis	anti-TNF	5	A	G	13.75	good response	OR	0.214856	G		Lili-research			A/G
-rs10823825	27129929	Japanese	psoriasis	anti-TNF	10	A	G	9.442	good response	OR	0.26278	C		Lili-research			T/C
-rs1927159	27129929	Japanese	psoriasis	anti-TNF	10	C	A	0.0625	good response	OR	0.33766	A		Lili-research			A/C
-rs7820834	27129929	Japanese	psoriasis	anti-TNF	8	G	A	7.857	good response	OR	0.465256	C		Lili-research			T/C
-rs553668	27129929	Japanese	psoriasis	anti-TNF	10	G	A	0.1019	good response	OR	0.329473	A		Lili-research			A/G
-rs4867965	27129929	Japanese	psoriasis	anti-TNF	5	A	C	8.148	good response	OR	0.332268	A		Lili-research			A/C
-rs8192675	27500523	European ancestry	type 2 diabetes	metformin	3	C	T	0.127	higher response	OR	0.41234	C		Lili-research			T/C
-rs17180299	27010727	Han Chinese 	heroin-Dependency	methadone	9	G	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.0453275	G		Lili-research			A/G
-rs970905	27010727	Han Chinese 	heroin-Dependency	methadone	9	C	T	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.405351	C		Lili-research			C/T
-rs12000653	27010727	Han Chinese 	heroin-Dependency	methadone	9	G	T	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.176717	T		Lili-research			G/C/T
-rs11138610	27010727	Han Chinese 	heroin-Dependency	methadone	9	C	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.292532	A		Lili-research			A/C
-rs72744905	27010727	Han Chinese 	heroin-Dependency	methadone	9	G	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.129193	A		Lili-research			G/A
-rs10115245	27010727	Han Chinese 	heroin-Dependency	methadone	9	T	C	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.327875	T		Lili-research			T/C
-rs62572435	27010727	Han Chinese 	heroin-Dependency	methadone	9	T	C	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.0561102	T		Lili-research			C/T
-rs1572144	27010727	Han Chinese 	heroin-Dependency	methadone	9	C	A	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.419329	C		Lili-research			C/A
-rs1333935	27010727	Han Chinese 	heroin-Dependency	methadone	9	G	A	0.5973	a higher plasma concentration of R-methadone	slope estimate	0.24381	A		Lili-research			A/G
-rs1333934	27010727	Han Chinese 	heroin-Dependency	methadone	9	C	A	0.5973	a higher plasma concentration of R-methadone	slope estimate	0.367812	C		Lili-research			C/A
-rs4085128	27010727	Han Chinese 	heroin-Dependency	methadone	9	C	T	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.404353	T		Lili-research			T/C
-rs4877551	27010727	Han Chinese 	heroin-Dependency	methadone	9	C	T	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.48143	C		Lili-research			C/T
-rs4877552	27010727	Han Chinese 	heroin-Dependency	methadone	9	A	G	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.481629	A		Lili-research			A/G
-rs4756776	27010727	Han Chinese 	heroin-Dependency	methadone	11	T	A	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.327875	G		Lili-research			T/A/C/G
-rs4757240	27010727	Han Chinese 	heroin-Dependency	methadone	11	T	G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.49361	T		Lili-research			G/A/T
-rs4756779	27010727	Han Chinese 	heroin-Dependency	methadone	11	A	G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.126398	G		Lili-research			A/G
-rs4757242	27010727	Han Chinese 	heroin-Dependency	methadone	11	T	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.121406	A		Lili-research			A/T
-rs7936301	27010727	Han Chinese 	heroin-Dependency	methadone	11	C	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.353435	C		Lili-research			A/C
-rs60857987	27010727	Han Chinese 	heroin-Dependency	methadone	16	T	C	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.119409	C		Lili-research			T/C
-rs713547	27010727	Han Chinese 	heroin-Dependency	methadone	16	C	T	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.228435	T		Lili-research			C/T
-rs705912	27010727	Han Chinese 	heroin-Dependency	methadone	16	A	G	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.336462	A		Lili-research			A/G
-rs4787995	27010727	Han Chinese 	heroin-Dependency	methadone	16	C	T	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.276558	T		Lili-research			C/T
-rs8182215	27010727	Han Chinese 	heroin-Dependency	methadone	16	T	C	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.129792	C		Lili-research			T/C
-rs60857987	27010727	Han Chinese 	heroin-Dependency	methadone	16	T	C	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.119409	C		Lili-research			T/C
-rs713547	27010727	Han Chinese 	heroin-Dependency	methadone	16	C	T	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.228435	T		Lili-research			C/T
-rs705912	27010727	Han Chinese 	heroin-Dependency	methadone	16	G	A	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.336462	A		Lili-research			A/G
-rs4787995	27010727	Han Chinese 	heroin-Dependency	methadone	16	C	T	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.276558	T		Lili-research			C/T
-rs8182215	27010727	Han Chinese 	heroin-Dependency	methadone	16	T	C	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.129792	C		Lili-research			T/C
-rs60857987	27010727	Han Chinese 	heroin-Dependency	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.119409	C		Lili-research			T/C
-rs713547	27010727	Han Chinese 	heroin-Dependency	methadone	16	C	T	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.228435	T		Lili-research			C/T
-rs705912	27010727	Han Chinese 	heroin-Dependency	methadone	16	G	A	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.336462	A		Lili-research			A/G
-rs4787995	27010727	Han Chinese 	heroin-Dependency	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.276558	T		Lili-research			C/T
-rs8182215	27010727	Han Chinese 	heroin-Dependency	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.129792	C		Lili-research			T/C
-rs772972	27010727	Han Chinese 	heroin-Dependency	methadone	16	T	C	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.428315	T		Lili-research			C/T
-rs772973	27010727	Han Chinese 	heroin-Dependency	methadone	16	G	A	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.283347	A		Lili-research			G/A/C
-rs11639671	27010727	Han Chinese 	heroin-Dependency	methadone	16	C	T	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.441494	C		Lili-research			T/C
-rs772972	27010727	Han Chinese 	heroin-Dependency	methadone	16	T	C	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.428315	T		Lili-research			C/T
-rs772973	27010727	Han Chinese 	heroin-Dependency	methadone	16	A	G	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.283347	A		Lili-research			G/A/C
-rs11639671	27010727	Han Chinese 	heroin-Dependency	methadone	16	C	T	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.441494	C		Lili-research			T/C
-rs12461727	27010727	Han Chinese 	heroin-Dependency	methadone	19	A	G	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.147364	A		Lili-research			G/A
-rs73038469	27010727	Han Chinese 	heroin-Dependency	methadone	19	G	A	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.350639	A		Lili-research			G/A
-rs4803406	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	T	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.124201	T		Lili-research			C/T
-rs8110485	27010727	Han Chinese 	heroin-Dependency	methadone	19	G	A	0.4196	a lower plasma concentration of S-methadone	slope estimate	0.221246	G		Lili-research			A/G
-rs4124633	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	C	0.4196	a higher plasma concentration of S-methadone	slope estimate	0.216054	C		Lili-research			T/C
-rs4560022	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	T	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.239217	C		Lili-research			T/C
-rs3889806	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.207867	T		Lili-research			T/C
-rs4803410	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.139776	C		Lili-research			T/C
-rs1017384	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	A	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.333067	A		Lili-research			C/A
-rs7251950	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	T	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.305511	T		Lili-research			C/T
-rs1808682	27010727	Han Chinese 	heroin-Dependency	methadone	19	G	A	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.171925	A		Lili-research			G/A
-rs3760657	27010727	Han Chinese 	heroin-Dependency	methadone	19	A	G	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.122804	G		Lili-research			A/G
-rs2054675	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.325479	C		Lili-research			T/C
-rs4560022	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.239217	C		Lili-research			T/C
-rs3889806	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.207867	T		Lili-research			T/C
-rs4803410	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.139776	C		Lili-research			T/C
-rs1017384	27010727	Han Chinese 	heroin-Dependency	methadone	19	A	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.333067	A		Lili-research			C/A
-rs7251950	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.305511	T		Lili-research			C/T
-rs1808682	27010727	Han Chinese 	heroin-Dependency	methadone	19	G	A	0.417	a higher plasma concentration of S-methadone	slope estimate	0.171925	A		Lili-research			G/A
-rs3760657	27010727	Han Chinese 	heroin-Dependency	methadone	19	A	G	0.417	a higher plasma concentration of S-methadone	slope estimate	0.122804	G		Lili-research			A/G
-rs2054675	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.325479	C		Lili-research			T/C
-rs8100458	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.304313	C		Lili-research			T/C
-rs7250601	27010727	Han Chinese 	heroin-Dependency	methadone	19	A	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.321486	C		Lili-research			A/C/T
-rs7250991	27010727	Han Chinese 	heroin-Dependency	methadone	19	A	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.341653	C		Lili-research			A/C
-rs11882424	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.0523163	C		Lili-research			T/C
-rs8192719	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	T	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.316893	T		Lili-research			C/T
-rs10853744	27010727	Han Chinese 	heroin-Dependency	methadone	19	G	T	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.32508	T		Lili-research			G/T
-rs8100458	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.304313	C		Lili-research			T/C
-rs7250601	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	A	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.321486	C		Lili-research			A/C/T
-rs7250991	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	A	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.341653	C		Lili-research			A/C
-rs11882424	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.0523163	C		Lili-research			T/C
-rs8192719	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.316893	T		Lili-research			C/T
-rs10853744	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	G	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.32508	T		Lili-research			G/T
-rs61073883	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	T	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.201478	T		Lili-research			C/T
-rs1552222	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	A	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.19369	A		Lili-research			T/A
-rs7255904	27010727	Han Chinese 	heroin-Dependency	methadone	19	A	G	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.468251	G		Lili-research			G/A
-rs11666982	27010727	Han Chinese 	heroin-Dependency	methadone	19	G	T	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.366214	T		Lili-research			T/G
-rs61073883	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	T	0.426	a lower plasma concentration of S-methadone	slope estimate	0.201478	T		Lili-research			C/T
-rs1552222	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	A	0.426	a lower plasma concentration of S-methadone	slope estimate	0.19369	A		Lili-research			T/A
-rs7255904	27010727	Han Chinese 	heroin-Dependency	methadone	19	G	A	0.426	a lower plasma concentration of S-methadone	slope estimate	0.468251	G		Lili-research			G/A
-rs11666982	27010727	Han Chinese 	heroin-Dependency	methadone	19	T	G	0.426	a lower plasma concentration of S-methadone	slope estimate	0.366214	T		Lili-research			T/G
-rs17726861	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	G	0.343	a higher plasma concentration of S-methadone	slope estimate	0.289337	C		Lili-research			G/C
-rs7257703	27010727	Han Chinese 	heroin-Dependency	methadone	19	G	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.208267	A		Lili-research			A/G
-rs17726963	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.304513	C		Lili-research			A/C
-rs12982859	27010727	Han Chinese 	heroin-Dependency	methadone	19	G	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.145966	A		Lili-research			G/A
-rs17726861	27010727	Han Chinese 	heroin-Dependency	methadone	19	C	G	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.289337	C		Lili-research			G/C
-rs7257703	27010727	Han Chinese 	heroin-Dependency	methadone	19	A	G	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.208267	A		Lili-research			A/G
-rs17726963	27010727	Han Chinese 	heroin-Dependency	methadone	19	A	C	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.304513	C		Lili-research			A/C
-rs12982859	27010727	Han Chinese 	heroin-Dependency	methadone	19	G	A	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.145966	A		Lili-research			G/A
-rs2395029	18684101	Swiss	HIV	abacavir	6	G	T	NA	hypersensitivity		0.0333466	G		Lili-research			T/G
-rs1799971	18250251		alcohol dependence	naltrexone	6	G	A	5.75	greater response	OR	0.223442	G		Lili-research			A/G
-rs3745274	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	T	G	0.27	fewer treatment-related adverse events	OR	0.315695	T		Lili-research			G/A/T
-rs2279343	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	G	A	0.27	fewer treatment-related adverse events	OR	NA			Lili-research			A/G
-rs12979860	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	T	C	47.7	lower response	OR	0.355831	T		Lili-research			C/T
-rs8099917	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	10.78	lower response	OR	0.13119	G		Lili-research			T/G
-rs368234815	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	?G	TT	14.84	lower response	OR	NA			Lili-research			TT/G
-rs2231142	28678138		renal cell carcinoma	pazopanib	4	T	G	NA	drug toxicity		0.12	G	T	LF-research			
-rs2032582	28146011		bacterial infection	macrolides	7	C	A	NA	drug toxicity		0.33	A	C	LF-research			
-rs1045642	28146011		bacterial infection	macrolides	7	G	A	NA	drug toxicity		0.4	A	G	LF-research			
+rs12979860	19684573	European;African-Americans	hepatitis C virus (HCV)	peginterferon-alpha-2b or -alpha-2a combined with ribavirin	19	C	T	NA	better treatment response		0.355831	T	C	Prior project research			C/T
+rs8099917	19749758	Australian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	1.98	no response	OR	0.13119	G	T	Prior project research			T/G
+rs12980275	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	A	17.7	no response	OR	0.323283	G	A	Prior project research			A/G
+rs8099917	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	27.1	no response	OR	0.13119	G	T	Prior project research			T/G
+rs8105790	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	C	T	25.7	no response	OR	0.172724	C	T	Prior project research			T/C
+rs11881222	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	A	25.6	no response	OR	0.251198	G	A	Prior project research			A/G
+rs8103142	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	C	T	26.6	no response	OR	0.365415	C	T	Prior project research			T/C
+rs28416813	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	C	22.3	no response	OR	0.352835	G	C	Prior project research			C/G
+rs4803219	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	T	C	23.3	no response	OR	0.235823	T	C	Prior project research			C/T
+rs7248668	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	A	G	24.7	no response	OR	0.130791	A	G	Prior project research			G/A
+rs17109204	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	T	10.1334	better response	OR	0.091254	C	T	Prior project research			T/C
+rs2025445	19706858	Amish	acute coronary syndromes	clopidogrel	10	A	G	5.56405	better response	OR	0.244209	G	A	Prior project research			A/G
+rs1326837	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	6.35312	better response	OR	0.352436	C	T	Prior project research			T/C
+rs12777823	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	8.14925	better response	OR	0.245407	A	G	Prior project research			G/A
+rs717238	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	8.030021	better response	OR	0.228834	T	C	Prior project research			C/T
+rs2860838	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	C	8.192431	better response	OR	0.233027	G	C	Prior project research			C/G
+rs2860903	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	8.24412	better response	OR	0.21266	C	T	Prior project research			T/C
+rs9332105	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	G	7.429776	better response	OR	0.178315	C	G	Prior project research			G/C
+rs9332113	19706858	Amish	acute coronary syndromes	clopidogrel	10	C	G	7.266465	better response	OR	0.175919	C	G	Prior project research			G/C
+rs12572351	19706858	Amish	acute coronary syndromes	clopidogrel	10	A	G	7.158826	better response	OR	0.179113	A	G	Prior project research			G/A
+rs10509679	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	7.38364	better response	OR	0.179113	A	G	Prior project research			G/A
+rs1934951	19706858	Amish	acute coronary syndromes	clopidogrel	10	T	C	7.624059	better response	OR	0.29972	T	C	Prior project research			C/T
+rs1934980	19706858	Amish	acute coronary syndromes	clopidogrel	10	G	A	5.20992	better response	OR	0.245208	G	A	Prior project research			A/G
+rs10871454	18535201	NA	NA	warfarin	16	NA	NA	NA	NA		0.356629	T		Prior project research			C/T
+rs9923231	19300499	Swede	NA	warfarin	16	T	C	0.97	sensitivity	OR	0.355631	T	C	Prior project research			C/A/G/T
+rs1057910	19300499	Swede	NA	warfarin	10	C	A	1.11	sensitivity	OR	0.0485224	C	A	Prior project research			A/C
+rs1799853	19300499	Swede	NA	warfarin	10	T	C	0.54	sensitivity	OR	0.0479233	T	C	Prior project research			C/T
+rs2108622	19300499	Swede	NA	warfarin	19	T	C	0.21	no sensitivity	OR	0.236821	T	C	Prior project research			C/T
+rs10871454	19578179	Caucasian	NA	acenocoumarol	16	NA	NA	5.2	NA	OR	0.356629	T		Prior project research			C/T
+rs4086116	19578179	Caucasian	NA	acenocoumarol	10	NA	NA	2.9	NA	OR	0.163938	T		Prior project research			C/T
+rs2108622	19578179	Caucasian	NA	acenocoumarol	19	NA	NA	NA	NA	OR	0.236821	T		Prior project research			C/T
+rs11045879	19901119	NA	acute lymphoblastic leukemia	methotrexate	12	T	C	NA	higher clearance		0.219249	C	T	Prior project research			T/C
+rs4149081	19901119	NA	NA	methotrexate	12	G	A	NA	higher clearance		0.21885	A	G	Prior project research			G/A
+rs317689	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.223642	G		Prior project research			G/A
+rs315135	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.0491214	G		Prior project research			A/G
+rs7297610	18591461	NA	hypertension	thiazide	12	NA	NA	NA	NA		0.115815	T		Prior project research			C/T
+rs10509373	22180457	Japanese	breast cancer	tamoxifen	10	C	T	4.51	Higher clearance	HR	0.183906	C	T	Prior project research			T/C
+rs4363657	18650507	British	NA	statin	12	C	T	4.3	increased risk of myopathy	OR	0.214856	C	T	Prior project research			T/C
+rs4149056	18650507	British	NA	statin	12	C	T	4.5	increased risk of myopathy	OR	0.0876597	C	T	Prior project research			T/C
+rs11697186	21659334	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	T	A	4.5	higher risk of developing thrombocytopenia	OR	0.0992412	T	A	Prior project research			A/C/T
+rs6139030	21659334	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	T	3.9	higher risk of developing thrombocytopenia	OR	0.109824	C	T	Prior project research			T/C
+rs9274407	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	T	A	3.1	increased risk of drug-induced liver injury	OR	0.240615	A	T	Prior project research			A/T
+rs3135388	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	T	C	2.8	increased risk of drug-induced liver injury	OR	0.0429313	A		Prior project research			A/G
+rs2523822	21570397	White European and US	NA	Amoxicillin-clavulanate(AC)	6	NA	NA	2.3	increased risk of drug-induced liver injury	OR	0.250799	G		Prior project research			A/G
+rs11045879	21387541	Spanish	acute lymphoblastic leukemia	methotrexate	12	T	C	1	higher clearance	OR	0.219249	C	T	Prior project research			T/C
+rs4149081	21387541	Spanish	acute lymphoblastic leukemia	methotrexate	12	G	A	1	higher clearance	OR	0.21885	A	G	Prior project research			G/A
+rs1127354	20547162	NA	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	A	C	0.02	lower risk of hemolytic anemia	OR	0.0894569	A	C	Prior project research			C/A/G
+rs7270101	20547162	NA	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	A	0.38	lower risk of hemolytic anemia	OR	0.0591054	C	A	Prior project research			A/C
+rs1127354	20173735	European-Americans	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	A	C	NA	lower risk of hemolytic anemia		0.0894569	A	C	Prior project research			C/A/G
+rs7270101	20173735	European-Americans	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	20	C	A	NA	lower risk of hemolytic anemia		0.0591054	C	A	Prior project research			A/C
+rs1934951	18594024	NA	multiple myeloma	bisphosphonate	10	T	C	12.75	higher risk of osteonecrosis of the jaw development	OR	0.29972	T	C	Prior project research			C/T
+rs80191572	28569182		multiple sclerosis	Copaxone	11	A	G	0.5	higher response	OR	0.0305511	G	A	Prior project research			A/G
+rs28724893	28569182		multiple sclerosis	Copaxone	6	G	A	0.59	higher response	OR	0.42492	T		Prior project research			T/C
+rs1789084	28569182		multiple sclerosis	Copaxone	18	G	A	0.54	higher response	OR	0.381989	A	G	Prior project research			G/A
+rs139890339	28569182		multiple sclerosis	Copaxone	2	G	A	0.23	higher response	OR	0.00698882	T		Prior project research			C/T
+rs2514036	28353407	Finnish	hypertension	atenolol	11	G	A	NA	higher response		0.196885	C		Prior project research			C/T
+rs3814995	28353407	Finnish	hypertension	losartan	19	A	G	NA	higher response		0.291933	T		Prior project research			C/G/T
+rs12794714	28296915	Thai	hepatitis B virus (HBV)	pegylated interferon	11	T	C	4.53	good response	OR	0.349241	A		Prior project research			G/A
+rs17047200	28163062	Japanese	hepatitis C virus (HCV)	interferon	4	T	A	2.37	a risk for hepatocellular carcinoma	OR	0.163339	T	A	Prior project research			A/T
+rs10995	28115488		hypertension	thiazide diuretics	19	G	A	NA	better blood pressure response		0.217053	G	A	Prior project research			G/A
+rs10156	28115488		hypertension	thiazide diuretics	19	T	C	NA	better blood pressure response		0.216853	T	C	Prior project research			T/C
+rs12913988	27981573	Chinese	coronary heart disease	clopidogrel	15	C	T	1.876	higher risk of major adverse cardiac events	OR	0.391973	G		Prior project research			G/A
+rs12456693	27981573	Chinese	coronary heart disease	clopidogrel	18	C	T	0.654	higher risk of major adverse cardiac events	OR	0.182708	T	C	Prior project research			C/T
+rs2254638	27981573	Chinese	coronary heart disease	clopidogrel	21	T	C	1.428	higher risk of major adverse cardiac events	OR	0.251198	A		Prior project research			A/G
+rs7412	27943270	Swedish	NA	statin	19	T	C	NA	better response		0.0750799	T	C	Prior project research			C/T
+rs4420638	27943270	Swedish	NA	statin	19	G	A	NA	better response		0.150958	G	A	Prior project research			A/G
+rs2002042	27943270	Swedish	NA	statin	10	T	C	NA	better response		0.28095	T	C	Prior project research			C/T
+rs646776	27943270	Swedish	NA	statin	1	C	T	NA	better response		0.238419	C	T	Prior project research			C/T
+rs6701290	27129929	Japanese	psoriasis	anti-TNF	1	A	G	9.659	good response	OR	0.175519	G	A	Prior project research			G/A
+rs3784240	27129929	Japanese	psoriasis	anti-TNF	14	G	A	9.714	good response	OR	0.0860623	A	G	Prior project research			G/A/C
+rs2390256	27129929	Japanese	psoriasis	anti-TNF	7	G	A	10	good response	OR	0.406749	T		Prior project research			C/T
+rs2219538	27129929	Japanese	psoriasis	anti-TNF	4	G	A	13.75	good response	OR	0.241813	A	G	Prior project research			G/A
+rs10515637	27129929	Japanese	psoriasis	anti-TNF	5	A	G	13.75	good response	OR	0.214856	G	A	Prior project research			A/G
+rs10823825	27129929	Japanese	psoriasis	anti-TNF	10	A	G	9.442	good response	OR	0.26278	C		Prior project research			T/C
+rs1927159	27129929	Japanese	psoriasis	anti-TNF	10	C	A	0.0625	good response	OR	0.33766	A	C	Prior project research			A/C
+rs7820834	27129929	Japanese	psoriasis	anti-TNF	8	G	A	7.857	good response	OR	0.465256	C		Prior project research			T/C
+rs553668	27129929	Japanese	psoriasis	anti-TNF	10	G	A	0.1019	good response	OR	0.329473	A	G	Prior project research			A/G
+rs4867965	27129929	Japanese	psoriasis	anti-TNF	5	A	C	8.148	good response	OR	0.332268	A	C	Prior project research			A/C
+rs8192675	27500523	European ancestry	type 2 diabetes	metformin	3	C	T	0.127	higher response	OR	0.41234	C	T	Prior project research			T/C
+rs17180299	27010727	Han Chinese 	heroin-dependency	methadone	9	G	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.0453275	G	A	Prior project research			A/G
+rs970905	27010727	Han Chinese 	heroin-dependency	methadone	9	C	T	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.405351	C	T	Prior project research			C/T
+rs12000653	27010727	Han Chinese 	heroin-dependency	methadone	9	G	T	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.176717	T	G	Prior project research			G/C/T
+rs11138610	27010727	Han Chinese 	heroin-dependency	methadone	9	C	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.292532	A	C	Prior project research			A/C
+rs72744905	27010727	Han Chinese 	heroin-dependency	methadone	9	G	A	0.7244	a higher plasma concentration of R-methadone	slope estimate	0.129193	A	G	Prior project research			G/A
+rs10115245	27010727	Han Chinese 	heroin-dependency	methadone	9	T	C	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.327875	T	C	Prior project research			T/C
+rs62572435	27010727	Han Chinese 	heroin-dependency	methadone	9	T	C	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.0561102	T	C	Prior project research			C/T
+rs1572144	27010727	Han Chinese 	heroin-dependency	methadone	9	C	A	0.6044	a higher plasma concentration of R-methadone	slope estimate	0.419329	C	A	Prior project research			C/A
+rs1333935	27010727	Han Chinese 	heroin-dependency	methadone	9	G	A	0.5973	a higher plasma concentration of R-methadone	slope estimate	0.24381	A	G	Prior project research			A/G
+rs1333934	27010727	Han Chinese 	heroin-dependency	methadone	9	C	A	0.5973	a higher plasma concentration of R-methadone	slope estimate	0.367812	C	A	Prior project research			C/A
+rs4085128	27010727	Han Chinese 	heroin-dependency	methadone	9	C	T	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.404353	T	C	Prior project research			T/C
+rs4877551	27010727	Han Chinese 	heroin-dependency	methadone	9	C	T	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.48143	C	T	Prior project research			C/T
+rs4877552	27010727	Han Chinese 	heroin-dependency	methadone	9	A	G	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.481629	A	G	Prior project research			A/G
+rs4756776	27010727	Han Chinese 	heroin-dependency	methadone	11	T	A	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.327875	G		Prior project research			T/A/C/G
+rs4757240	27010727	Han Chinese 	heroin-dependency	methadone	11	T	G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.49361	T	G	Prior project research			G/A/T
+rs4756779	27010727	Han Chinese 	heroin-dependency	methadone	11	A	G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.126398	G	A	Prior project research			A/G
+rs4757242	27010727	Han Chinese 	heroin-dependency	methadone	11	T	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.121406	A	T	Prior project research			A/T
+rs7936301	27010727	Han Chinese 	heroin-dependency	methadone	11	C	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.353435	C	A	Prior project research			A/C
+rs60857987	27010727	Han Chinese 	heroin-dependency	methadone	16	T	C	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.119409	C	T	Prior project research			T/C
+rs713547	27010727	Han Chinese 	heroin-dependency	methadone	16	C	T	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.228435	T	C	Prior project research			C/T
+rs705912	27010727	Han Chinese 	heroin-dependency	methadone	16	A	G	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.336462	A	G	Prior project research			A/G
+rs4787995	27010727	Han Chinese 	heroin-dependency	methadone	16	C	T	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.276558	T	C	Prior project research			C/T
+rs8182215	27010727	Han Chinese 	heroin-dependency	methadone	16	T	C	0.2477	a higher plasma concentration of S-methadone	slope estimate	0.129792	C	T	Prior project research			T/C
+rs60857987	27010727	Han Chinese 	heroin-dependency	methadone	16	T	C	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.119409	C	T	Prior project research			T/C
+rs713547	27010727	Han Chinese 	heroin-dependency	methadone	16	C	T	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.228435	T	C	Prior project research			C/T
+rs705912	27010727	Han Chinese 	heroin-dependency	methadone	16	G	A	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.336462	A	G	Prior project research			A/G
+rs4787995	27010727	Han Chinese 	heroin-dependency	methadone	16	C	T	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.276558	T	C	Prior project research			C/T
+rs8182215	27010727	Han Chinese 	heroin-dependency	methadone	16	T	C	0.3671	a higher plasma concentration of S-methadone	slope estimate	0.129792	C	T	Prior project research			T/C
+rs60857987	27010727	Han Chinese 	heroin-dependency	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.119409	C	T	Prior project research			T/C
+rs713547	27010727	Han Chinese 	heroin-dependency	methadone	16	C	T	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.228435	T	C	Prior project research			C/T
+rs705912	27010727	Han Chinese 	heroin-dependency	methadone	16	G	A	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.336462	A	G	Prior project research			A/G
+rs4787995	27010727	Han Chinese 	heroin-dependency	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.276558	T	C	Prior project research			C/T
+rs8182215	27010727	Han Chinese 	heroin-dependency	methadone	16	T	C	0.2968	a lower plasma concentration of S-methadone	slope estimate	0.129792	C	T	Prior project research			T/C
+rs772972	27010727	Han Chinese 	heroin-dependency	methadone	16	T	C	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.428315	T	C	Prior project research			C/T
+rs772973	27010727	Han Chinese 	heroin-dependency	methadone	16	G	A	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.283347	A	G	Prior project research			G/A/C
+rs11639671	27010727	Han Chinese 	heroin-dependency	methadone	16	C	T	0.3947	a higher plasma concentration of S-methadone	slope estimate	0.441494	C	T	Prior project research			T/C
+rs772972	27010727	Han Chinese 	heroin-dependency	methadone	16	T	C	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.428315	T	C	Prior project research			C/T
+rs772973	27010727	Han Chinese 	heroin-dependency	methadone	16	A	G	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.283347	A	G	Prior project research			G/A/C
+rs11639671	27010727	Han Chinese 	heroin-dependency	methadone	16	C	T	0.2284	a lower plasma concentration of S-methadone	slope estimate	0.441494	C	T	Prior project research			T/C
+rs12461727	27010727	Han Chinese 	heroin-dependency	methadone	19	A	G	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.147364	A	G	Prior project research			G/A
+rs73038469	27010727	Han Chinese 	heroin-dependency	methadone	19	G	A	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.350639	A	G	Prior project research			G/A
+rs4803406	27010727	Han Chinese 	heroin-dependency	methadone	19	C	T	0.3331	a lower plasma concentration of S-methadone	slope estimate	0.124201	T	C	Prior project research			C/T
+rs8110485	27010727	Han Chinese 	heroin-dependency	methadone	19	G	A	0.4196	a lower plasma concentration of S-methadone	slope estimate	0.221246	G	A	Prior project research			A/G
+rs4124633	27010727	Han Chinese 	heroin-dependency	methadone	19	T	C	0.4196	a higher plasma concentration of S-methadone	slope estimate	0.216054	C	T	Prior project research			T/C
+rs4560022	27010727	Han Chinese 	heroin-dependency	methadone	19	C	T	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.239217	C	T	Prior project research			T/C
+rs3889806	27010727	Han Chinese 	heroin-dependency	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.207867	T	C	Prior project research			T/C
+rs4803410	27010727	Han Chinese 	heroin-dependency	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.139776	C	T	Prior project research			T/C
+rs1017384	27010727	Han Chinese 	heroin-dependency	methadone	19	C	A	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.333067	A	C	Prior project research			C/A
+rs7251950	27010727	Han Chinese 	heroin-dependency	methadone	19	C	T	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.305511	T	C	Prior project research			C/T
+rs1808682	27010727	Han Chinese 	heroin-dependency	methadone	19	G	A	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.171925	A	G	Prior project research			G/A
+rs3760657	27010727	Han Chinese 	heroin-dependency	methadone	19	A	G	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.122804	G	A	Prior project research			A/G
+rs2054675	27010727	Han Chinese 	heroin-dependency	methadone	19	T	C	0.4247	a lower plasma concentration of S-methadone	slope estimate	0.325479	C	T	Prior project research			T/C
+rs4560022	27010727	Han Chinese 	heroin-dependency	methadone	19	T	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.239217	C	T	Prior project research			T/C
+rs3889806	27010727	Han Chinese 	heroin-dependency	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.207867	T	C	Prior project research			T/C
+rs4803410	27010727	Han Chinese 	heroin-dependency	methadone	19	T	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.139776	C	T	Prior project research			T/C
+rs1017384	27010727	Han Chinese 	heroin-dependency	methadone	19	A	C	0.417	a higher plasma concentration of S-methadone	slope estimate	0.333067	A	C	Prior project research			C/A
+rs7251950	27010727	Han Chinese 	heroin-dependency	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.305511	T	C	Prior project research			C/T
+rs1808682	27010727	Han Chinese 	heroin-dependency	methadone	19	G	A	0.417	a higher plasma concentration of S-methadone	slope estimate	0.171925	A	G	Prior project research			G/A
+rs3760657	27010727	Han Chinese 	heroin-dependency	methadone	19	A	G	0.417	a higher plasma concentration of S-methadone	slope estimate	0.122804	G	A	Prior project research			A/G
+rs2054675	27010727	Han Chinese 	heroin-dependency	methadone	19	C	T	0.417	a higher plasma concentration of S-methadone	slope estimate	0.325479	C	T	Prior project research			T/C
+rs8100458	27010727	Han Chinese 	heroin-dependency	methadone	19	T	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.304313	C	T	Prior project research			T/C
+rs7250601	27010727	Han Chinese 	heroin-dependency	methadone	19	A	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.321486	C	A	Prior project research			A/C/T
+rs7250991	27010727	Han Chinese 	heroin-dependency	methadone	19	A	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.341653	C	A	Prior project research			A/C
+rs11882424	27010727	Han Chinese 	heroin-dependency	methadone	19	T	C	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.0523163	C	T	Prior project research			T/C
+rs8192719	27010727	Han Chinese 	heroin-dependency	methadone	19	C	T	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.316893	T	C	Prior project research			C/T
+rs10853744	27010727	Han Chinese 	heroin-dependency	methadone	19	G	T	0.4087	a lower plasma concentration of S-methadone	slope estimate	0.32508	T	G	Prior project research			G/T
+rs8100458	27010727	Han Chinese 	heroin-dependency	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.304313	C	T	Prior project research			T/C
+rs7250601	27010727	Han Chinese 	heroin-dependency	methadone	19	C	A	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.321486	C	A	Prior project research			A/C/T
+rs7250991	27010727	Han Chinese 	heroin-dependency	methadone	19	C	A	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.341653	C	A	Prior project research			A/C
+rs11882424	27010727	Han Chinese 	heroin-dependency	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.0523163	C	T	Prior project research			T/C
+rs8192719	27010727	Han Chinese 	heroin-dependency	methadone	19	T	C	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.316893	T	C	Prior project research			C/T
+rs10853744	27010727	Han Chinese 	heroin-dependency	methadone	19	T	G	0.5059	a higher plasma concentration of S-methadone	slope estimate	0.32508	T	G	Prior project research			G/T
+rs61073883	27010727	Han Chinese 	heroin-dependency	methadone	19	C	T	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.201478	T	C	Prior project research			C/T
+rs1552222	27010727	Han Chinese 	heroin-dependency	methadone	19	T	A	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.19369	A	T	Prior project research			T/A
+rs7255904	27010727	Han Chinese 	heroin-dependency	methadone	19	A	G	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.468251	G	A	Prior project research			G/A
+rs11666982	27010727	Han Chinese 	heroin-dependency	methadone	19	G	T	0.3411	a higher plasma concentration of S-methadone	slope estimate	0.366214	T	G	Prior project research			T/G
+rs61073883	27010727	Han Chinese 	heroin-dependency	methadone	19	C	T	0.426	a lower plasma concentration of S-methadone	slope estimate	0.201478	T	C	Prior project research			C/T
+rs1552222	27010727	Han Chinese 	heroin-dependency	methadone	19	T	A	0.426	a lower plasma concentration of S-methadone	slope estimate	0.19369	A	T	Prior project research			T/A
+rs7255904	27010727	Han Chinese 	heroin-dependency	methadone	19	G	A	0.426	a lower plasma concentration of S-methadone	slope estimate	0.468251	G	A	Prior project research			G/A
+rs11666982	27010727	Han Chinese 	heroin-dependency	methadone	19	T	G	0.426	a lower plasma concentration of S-methadone	slope estimate	0.366214	T	G	Prior project research			T/G
+rs17726861	27010727	Han Chinese 	heroin-dependency	methadone	19	C	G	0.343	a higher plasma concentration of S-methadone	slope estimate	0.289337	C	G	Prior project research			G/C
+rs7257703	27010727	Han Chinese 	heroin-dependency	methadone	19	G	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.208267	A	G	Prior project research			A/G
+rs17726963	27010727	Han Chinese 	heroin-dependency	methadone	19	C	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.304513	C	A	Prior project research			A/C
+rs12982859	27010727	Han Chinese 	heroin-dependency	methadone	19	G	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.145966	A	G	Prior project research			G/A
+rs17726861	27010727	Han Chinese 	heroin-dependency	methadone	19	C	G	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.289337	C	G	Prior project research			G/C
+rs7257703	27010727	Han Chinese 	heroin-dependency	methadone	19	A	G	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.208267	A	G	Prior project research			A/G
+rs17726963	27010727	Han Chinese 	heroin-dependency	methadone	19	A	C	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.304513	C	A	Prior project research			A/C
+rs12982859	27010727	Han Chinese 	heroin-dependency	methadone	19	G	A	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.145966	A	G	Prior project research			G/A
+rs2395029	18684101	Swiss	HIV	abacavir	6	G	T	NA	hypersensitivity		0.0333466	G	T	Prior project research			T/G
+rs3745274	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	T	G	0.27	fewer treatment-related adverse events	OR	0.315695	T	G	Prior project research			G/A/T
+rs2279343	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	G	A	0.27	fewer treatment-related adverse events	OR	NA			Prior project research			A/G
+rs12979860	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	T	C	47.7	lower response	OR	0.355831	T	C	Prior project research			C/T
+rs8099917	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	10.78	lower response	OR	0.13119	G	T	Prior project research			T/G
+rs368234815	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	?G	TT	14.84	lower response	OR	NA			Prior project research			TT/G
+rs2231142	28678138		renal cell carcinoma	pazopanib	4	T	G	NA	drug toxicity		0.12	G	T	LF test-research (single SNP handling)			
+rs2032582	28146011		bacterial infection	macrolides	7	C	A	NA	drug toxicity		0.33	A	C	LF test-research (single SNP handling)			
+rs1045642	28146011		bacterial infection	macrolides	7	G	A	NA	drug toxicity		0.4	A	G	LF test-research (single SNP handling)			
 rs3130284	25987655	NA	acute lymphoblastic leukemia	asparaginase	6	C	T	1.464	better response		0.155551	C	T	Imported from GWAS data study asparaginase_hypersensitivity_in_acute_lymphoblastic_leukemia_25987655	6p21.32	AGPAT1	T/C
 rs6021191	25987655	NA	acute lymphoblastic leukemia	asparaginase	20	T	A	3.109	better response		0.0782748	T	A	Imported from GWAS data study asparaginase_hypersensitivity_in_acute_lymphoblastic_leukemia_25987655	20q13.2	NFATC2	A/T
 rs7865267	25987655	NA	acute lymphoblastic leukemia	asparaginase	9	T	C	2.012	better response		0.233826	T	C	Imported from GWAS data study asparaginase_hypersensitivity_in_acute_lymphoblastic_leukemia_25987655	9q34.3	CACNA1B	C/T
