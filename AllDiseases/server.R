@@ -150,7 +150,7 @@ shinyServer(function(input, output) {
 		SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
 		SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T, verbose=T)
 		population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
-		if(population_sum_sd == 0)stop(safeErrror("For some reason we couldn't analyse this particular trait from your genomic data."))
+		if(population_sum_sd == 0)stop(safeError("For some reason we couldn't analyse this particular trait from your genomic data."))
 		
 		GRS <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
 		
