@@ -17,7 +17,7 @@ initialize('sti',TRUE)
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
-	titlePanel("Pharmacogenetics"),
+	titlePanel("Drug Response"),
 	beginPage(),
 	beginPanel('1/3'),
 	HTML("To run analysis input your user-id, or use the test-value of id_613z86871:<br><br>"),

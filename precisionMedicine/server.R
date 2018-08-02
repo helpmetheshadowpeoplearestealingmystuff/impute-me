@@ -70,9 +70,9 @@ shinyServer(function(input, output) {
   
     
     #write the query to the log file
-    log_function<-function(uniqueID){
+    log_function<-function(uniqueID,disease,drug){
       user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
-      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"drug_response",uniqueID)
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"drug_response",uniqueID,disease,drug)
       m<-paste(m,collapse="\t")
       if(file.exists(user_log_file)){
         write(m,file=user_log_file,append=TRUE)
@@ -80,7 +80,7 @@ shinyServer(function(input, output) {
         write(m,file=user_log_file,append=FALSE)
       }
     }
-    try(log_function(uniqueID))
+    try(log_function(uniqueID,disease,drug))
     
     
     

@@ -1,76 +1,76 @@
 SNP	PMID	ethnicity	disease	drug	chr_name	effect_allele	non_effect_allele	effect_size	effect_direction	effect_measure	minor_allele_freq	minor_allele	major_allele	Comment	locus	gene	ensembl_alleles
-rs4363657	22189199		coronary heart disease	Statin	12	C	T	NA	C alleles are claimed to have worse response to statin		0.214856	C	T	A boston based company working with heart diagnostics, sells this test to determine statin response	12p12.1		T/C
+rs4363657	22189199		coronary heart disease	statin	12	C	T	NA	C alleles are claimed to have worse response to statin		0.214856	C	T	A boston based company working with heart diagnostics, sells this test to determine statin response	12p12.1		T/C
 rs2395029	18684101		HIV	abacavir	6	G	T	NA	T-allele carriers have worse response		0.0333466	G	T	Note, that the studies supporting this are specifically only valid for caucasian ethnicities. Several other ethnicities are much more likely to have a T-allele, without problems.	6p21.33		T/G
 rs1799971	18250251		alcohol dependence	naltrexone	6	G	A	NA	The minor allele (G) had a better effect		0.223442	G	A	Asn40 is the major allele, and Asp40 is the minor allele. Asp40 (minor) had good outcome and should be effect	6q25.2		A/G
 rs3745274	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	G	T	NA	The minor allele (T) has a worse response		0.315695	T	G	The CYP2B6 c.516G.T polymorphism variant from Johnson 2013. 	19q13.2		G/A/T
 rs2279343	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	T	G	NA	The minor allele (G) has a worse response		NA		?	The CYP2B6 c.785A.G polymorphism variant from Johnson 2013	19q13.2		A/G
-rs602633	28223407		coronary heart disease	Statin	1	G	T	1.12			0.351837	T	G	Natarajan 2017	1p13.3	SORT1	T/G
-rs17114036	28223407		coronary heart disease	Statin	1	A	G	1.11			0.091254	G	A	Natarajan 2017	1p32.2	PPAP2B	A/G
-rs11206510	28223407		coronary heart disease	Statin	1	T	C	1.06			0.101837	C	T	Natarajan 2017	1p32.3	PCSK9	T/C
-rs4845625	28223407		coronary heart disease	Statin	1	T	C	1.06			0.441693	T	C	Natarajan 2017	1q21.3	IL6R	T/C
-rs17464857	28223407		coronary heart disease	Statin	1	T	G	1.05			0.0784744	G	T	Natarajan 2017	1q41	MIA3	T/G
-rs9982601	28223407		coronary heart disease	Statin	21	T	C	1.13			0.110024	T	C	Natarajan 2017	21q22.11	KCNE2	C/T
-rs180803	28223407		coronary heart disease	Statin	22	G	T	1.02			0.0820687	T	G	Natarajan 2017	22q11.23	POM121L9P-ADORA22B	G/T
-rs1561198	28223407		coronary heart disease	Statin	2	T	C	1.06			0.488419	T	C	Natarajan 2017	2p11.2	VAMP5-VAMP8-GGCX	C/T
-rs6544713	28223407		coronary heart disease	Statin	2	T	C	1.06			0.167532	T	C	Natarajan 2017	2p21	ABCG5-ABCG8	T/C
-rs515135	28223407		coronary heart disease	Statin	2	C	T	1.07			0.249401	T	C	Natarajan 2017	2p24.1	APOB	T/C
-rs2252641	28223407		coronary heart disease	Statin	2	?	?	1.06			0.307109	T	C	Natarajan 2017	2q22.3	ZEB2-AC074093.1	T/C/G
-rs6725887	28223407		coronary heart disease	Statin	2	C	T	1.12			0.0469249	C	T	Natarajan 2017	2q33.2	WDR12-NBEAL	T/C
-rs1801251	28223407		coronary heart disease	Statin	2	A	G	1.05			0.360024	A	G	Natarajan 2017	2q37.1	KCNJ13-GIGYF2	G/A
-rs9818870	28223407		coronary heart disease	Statin	3	T	C	1.07			0.0878594	T	C	Natarajan 2017	3q22.3	MRAS	C/A/T
-rs17087335	28223407		coronary heart disease	Statin	4	T	G	1.06			0.239018	T	G	Natarajan 2017	4q12	REST-NOA1	G/T
-rs1878406	28223407		coronary heart disease	Statin	4	A	?	1.1			0.182907	T	?	Natarajan 2017	4q31.22	EDNRA	C/A/G/T
-rs7692387	28223407		coronary heart disease	Statin	4	G	A	1.08			0.16254	A	G	Natarajan 2017	4q32.1	GUCY1A3	G/A
-rs273909	28223407		coronary heart disease	Statin	5	G	A	1.07			0.0922524	G	A	Natarajan 2017	5q31.1	SLC22A4-SLC22A5	A/G
-rs10947789	28223407		coronary heart disease	Statin	6	T	C	1.07			0.167332	C	T	Natarajan 2017	6p21.2	KCNK5	T/C
-rs12205331	28223407		coronary heart disease	Statin	6	C	T	1.04			0.077476	T	C	Natarajan 2017	6p21.31	ANKS1A	C/T
-rs3130683	28223407		coronary heart disease	Statin	6	T	C	1.09			0.0353434	C	T	Natarajan 2017	6p21.33	C2	C/T
-rs9369640	28223407		coronary heart disease	Statin	6	A	C	1.09			0.357428	C	A	Natarajan 2017	6p24.1	PHACTR1	C/A/G
-rs12190287	28223407		coronary heart disease	Statin	6	C	G	1.07			0.338059	G	C	Natarajan 2017	6q23.2	TCF21	C/G/T
-rs3798220	28223407		coronary heart disease	Statin	6	C	T	1.28			0.0513179	C	T	Natarajan 2017	6q25.3	LPA	T/C
-rs2048327	28223407		coronary heart disease	Statin	6	C	T	1.06			0.291334	C	T	Natarajan 2017	6q25.3	LPA	T/C
-rs4252120	28223407		coronary heart disease	Statin	6	T	C	1.07			0.139976	C	T	Natarajan 2017	6q26	PLG	T/C
-rs2023938	28223407		coronary heart disease	Statin	7	C	T	1.08			0.107228	C	T	Natarajan 2017	7p21.1	HDAC9	T/C
-rs12539895	28223407		coronary heart disease	Statin	7	A	C	1.08			0.123602	A	C	Natarajan 2017	7q22.3	NA	C/A
-rs11556924	28223407		coronary heart disease	Statin	7	C	T	1.09			0.155751	T	C	Natarajan 2017	7q32.2	ZC3HC1	C/T
-rs3918226	28223407		coronary heart disease	Statin	7	T	C	1.14			0.0289537	T	C	Natarajan 2017	7q36.1	NOS3	C/T
-rs264	28223407		coronary heart disease	Statin	8	G	A	1.11			0.160144	A	G	Natarajan 2017	8p21.3	LPL	G/A
-rs2954029	28223407		coronary heart disease	Statin	8	A	T	1.06			0.404952	T	A	Natarajan 2017	8q24.13	TRIB1	A/T
-rs1333049	28223407		coronary heart disease	Statin	9	?	?	1.21			0.418131	C	G	Natarajan 2017	9p21.3	CDKN2A	G/C
-rs3217992	28223407		coronary heart disease	Statin	9	T	C	1.16			0.348243	T	C	Natarajan 2017	9p21.3	CDKN2A	C/T
-rs111245230	28223407		coronary heart disease	Statin	9	C	T	1.14			0.0159744	C	T	Natarajan 2017	9q31.3	SVEP1	T/C
-rs579459	28223407		coronary heart disease	Statin	9	C	T	1.07			0.161342	C	T	Natarajan 2017	9q34.2	ABO	C/T
-rs2505083	28223407		coronary heart disease	Statin	10	C	T	1.06			0.251597	C	T	Natarajan 2017	10p11.23	KIAA1462	T/C
-rs501120	28223407		coronary heart disease	Statin	10	T	C	1.07			0.332668	C	T	Natarajan 2017	10q11.21	CXCL12	T/C
-rs2047009	28223407		coronary heart disease	Statin	10	G	T	1.05			0.340056	G	T	Natarajan 2017	10q11.21	CXCL12	T/G
-rs2246833	28223407		coronary heart disease	Statin	10	T	C	1.06			0.42492	T	C	Natarajan 2017	10q23.31	LIPA	C/T
-rs11203042	28223407		coronary heart disease	Statin	10	T	C	1.04			0.433307	T	C	Natarajan 2017	10q23.31	LIPA	T/C
-rs12413409	28223407		coronary heart disease	Statin	10	G	A	1.1			0.15655	A	G	Natarajan 2017	10q24.32	CYP17A1	G/A
-rs11042937	28223407		coronary heart disease	Statin	11	T	G	1.04			0.316693	G	T	Natarajan 2017	11p15.3	NA	G/T
-rs10840293	28223407		coronary heart disease	Statin	11	A	G	1.06			0.472244	A	G	Natarajan 2017	11p15.4	SWAP70	G/A
-rs974819	28223407		coronary heart disease	Statin	11	T	C	1.07			0.413139	T	C	Natarajan 2017	11q22.3	PDGF	T/C
-rs9326246	28223407		coronary heart disease	Statin	11	C	G	1.09			0.125599	C	G	Natarajan 2017	11q23.3	APOA5-APOA1	C/G
-rs11172113	28223407		coronary heart disease	Statin	12	C	T	1.06			0.389377	C	T	Natarajan 2017	12p13.3	LRP1	T/C
-rs11057830	28223407		coronary heart disease	Statin	12	A	G	1.08			0.139177	A	G	Natarajan 2017	12p24.31	SCARB1	G/A
-rs3184504	28223407		coronary heart disease	Statin	12	T	C	1.07			0.147364	T	C	Natarajan 2017	12q24.12	SH2B3	T/C
-rs9319428	28223407		coronary heart disease	Statin	13	A	G	1.06			0.328674	A	G	Natarajan 2017	13q12.3	FLT1	G/A
-rs9515203	28223407		coronary heart disease	Statin	13	T	C	1.08			0.21885	C	T	Natarajan 2017	13q34	COL4A1	T/C
-rs4773144	28223407		coronary heart disease	Statin	13	G	A	1.07			0.398163	G	A	Natarajan 2017	13q34	COL4A1	A/G
-rs2895811	28223407		coronary heart disease	Statin	14	C	T	1.06			0.32488	C	T	Natarajan 2017	14q32.2	HHIPL1	T/C
-rs17293632	28223407		coronary heart disease	Statin	15	C	T	1.05			0.0992412	T	C	Natarajan 2017	15q22.33	SMAD3	C/T
-rs7173743	28223407		coronary heart disease	Statin	15	T	C	1.07			0.469649	C	T	Natarajan 2017	15q25.1	ADAMTS7	T/C
-rs8042271	28223407		coronary heart disease	Statin	15	G	A	1.1			0.305911	A	G	Natarajan 2017	15q26.1	MFGE8-ABHD2	G/A
-rs17514846	28223407		coronary heart disease	Statin	15	A	C	1.07			0.474641	A	C	Natarajan 2017	15q26.1	FURIN	C/A/G
-rs247616	28223407		coronary heart disease	Statin	16	C	T	1.05			0.267572	T	C	Natarajan 2017	16q13	CETP	C/T
-rs12936587	28223407		coronary heart disease	Statin	17	G	A	1.06			0.267971	A	G	Natarajan 2017	17p11.2	RASD1	G/A
-rs2281727	28223407		coronary heart disease	Statin	17	G	A	1.04			0.367812	G	A	Natarajan 2017	17p13.3	SMG6	A/G
-rs15563	28223407		coronary heart disease	Statin	17	?	?	1.04			0.422923	G	A	Natarajan 2017	17q21.32	UBE2Z	A/G
-rs8080784	28223407		coronary heart disease	Statin	17	C	T	1.06			0.195887	C	T	Natarajan 2017	17q23.2	BCAS3	T/C
-rs663129	28223407		coronary heart disease	Statin	18	A	G	1.06			0.250599	A	G	Natarajan 2017	18q21.32	PMAIP1-MC4R	G/A
-rs116843064	28223407		coronary heart disease	Statin	19	G	A	1.16			0.00938498	A	G	Natarajan 2017	19p13.2	ANGPTL4	G/A
-rs1122608	28223407		coronary heart disease	Statin	19	G	T	1.1			0.138179	T	G	Natarajan 2017	19p13.2	LDLR	G/T
-rs445925	28223407		coronary heart disease	Statin	19	G	A	1.13			0.14976	A	G	Natarajan 2017	19q13.32	APOE-APOC1	G/A/C
-rs2075650	28223407		coronary heart disease	Statin	19	G	A	1.11			0.119409	G	A	Natarajan 2017	19q13.32	APOE-APOC1	A/G
+rs602633	28223407		coronary heart disease	statin	1	G	T	1.12			0.351837	T	G	Natarajan 2017	1p13.3	SORT1	T/G
+rs17114036	28223407		coronary heart disease	statin	1	A	G	1.11			0.091254	G	A	Natarajan 2017	1p32.2	PPAP2B	A/G
+rs11206510	28223407		coronary heart disease	statin	1	T	C	1.06			0.101837	C	T	Natarajan 2017	1p32.3	PCSK9	T/C
+rs4845625	28223407		coronary heart disease	statin	1	T	C	1.06			0.441693	T	C	Natarajan 2017	1q21.3	IL6R	T/C
+rs17464857	28223407		coronary heart disease	statin	1	T	G	1.05			0.0784744	G	T	Natarajan 2017	1q41	MIA3	T/G
+rs9982601	28223407		coronary heart disease	statin	21	T	C	1.13			0.110024	T	C	Natarajan 2017	21q22.11	KCNE2	C/T
+rs180803	28223407		coronary heart disease	statin	22	G	T	1.02			0.0820687	T	G	Natarajan 2017	22q11.23	POM121L9P-ADORA22B	G/T
+rs1561198	28223407		coronary heart disease	statin	2	T	C	1.06			0.488419	T	C	Natarajan 2017	2p11.2	VAMP5-VAMP8-GGCX	C/T
+rs6544713	28223407		coronary heart disease	statin	2	T	C	1.06			0.167532	T	C	Natarajan 2017	2p21	ABCG5-ABCG8	T/C
+rs515135	28223407		coronary heart disease	statin	2	C	T	1.07			0.249401	T	C	Natarajan 2017	2p24.1	APOB	T/C
+rs2252641	28223407		coronary heart disease	statin	2	?	?	1.06			0.307109	T	C	Natarajan 2017	2q22.3	ZEB2-AC074093.1	T/C/G
+rs6725887	28223407		coronary heart disease	statin	2	C	T	1.12			0.0469249	C	T	Natarajan 2017	2q33.2	WDR12-NBEAL	T/C
+rs1801251	28223407		coronary heart disease	statin	2	A	G	1.05			0.360024	A	G	Natarajan 2017	2q37.1	KCNJ13-GIGYF2	G/A
+rs9818870	28223407		coronary heart disease	statin	3	T	C	1.07			0.0878594	T	C	Natarajan 2017	3q22.3	MRAS	C/A/T
+rs17087335	28223407		coronary heart disease	statin	4	T	G	1.06			0.239018	T	G	Natarajan 2017	4q12	REST-NOA1	G/T
+rs1878406	28223407		coronary heart disease	statin	4	A	?	1.1			0.182907	T	?	Natarajan 2017	4q31.22	EDNRA	C/A/G/T
+rs7692387	28223407		coronary heart disease	statin	4	G	A	1.08			0.16254	A	G	Natarajan 2017	4q32.1	GUCY1A3	G/A
+rs273909	28223407		coronary heart disease	statin	5	G	A	1.07			0.0922524	G	A	Natarajan 2017	5q31.1	SLC22A4-SLC22A5	A/G
+rs10947789	28223407		coronary heart disease	statin	6	T	C	1.07			0.167332	C	T	Natarajan 2017	6p21.2	KCNK5	T/C
+rs12205331	28223407		coronary heart disease	statin	6	C	T	1.04			0.077476	T	C	Natarajan 2017	6p21.31	ANKS1A	C/T
+rs3130683	28223407		coronary heart disease	statin	6	T	C	1.09			0.0353434	C	T	Natarajan 2017	6p21.33	C2	C/T
+rs9369640	28223407		coronary heart disease	statin	6	A	C	1.09			0.357428	C	A	Natarajan 2017	6p24.1	PHACTR1	C/A/G
+rs12190287	28223407		coronary heart disease	statin	6	C	G	1.07			0.338059	G	C	Natarajan 2017	6q23.2	TCF21	C/G/T
+rs3798220	28223407		coronary heart disease	statin	6	C	T	1.28			0.0513179	C	T	Natarajan 2017	6q25.3	LPA	T/C
+rs2048327	28223407		coronary heart disease	statin	6	C	T	1.06			0.291334	C	T	Natarajan 2017	6q25.3	LPA	T/C
+rs4252120	28223407		coronary heart disease	statin	6	T	C	1.07			0.139976	C	T	Natarajan 2017	6q26	PLG	T/C
+rs2023938	28223407		coronary heart disease	statin	7	C	T	1.08			0.107228	C	T	Natarajan 2017	7p21.1	HDAC9	T/C
+rs12539895	28223407		coronary heart disease	statin	7	A	C	1.08			0.123602	A	C	Natarajan 2017	7q22.3	NA	C/A
+rs11556924	28223407		coronary heart disease	statin	7	C	T	1.09			0.155751	T	C	Natarajan 2017	7q32.2	ZC3HC1	C/T
+rs3918226	28223407		coronary heart disease	statin	7	T	C	1.14			0.0289537	T	C	Natarajan 2017	7q36.1	NOS3	C/T
+rs264	28223407		coronary heart disease	statin	8	G	A	1.11			0.160144	A	G	Natarajan 2017	8p21.3	LPL	G/A
+rs2954029	28223407		coronary heart disease	statin	8	A	T	1.06			0.404952	T	A	Natarajan 2017	8q24.13	TRIB1	A/T
+rs1333049	28223407		coronary heart disease	statin	9	?	?	1.21			0.418131	C	G	Natarajan 2017	9p21.3	CDKN2A	G/C
+rs3217992	28223407		coronary heart disease	statin	9	T	C	1.16			0.348243	T	C	Natarajan 2017	9p21.3	CDKN2A	C/T
+rs111245230	28223407		coronary heart disease	statin	9	C	T	1.14			0.0159744	C	T	Natarajan 2017	9q31.3	SVEP1	T/C
+rs579459	28223407		coronary heart disease	statin	9	C	T	1.07			0.161342	C	T	Natarajan 2017	9q34.2	ABO	C/T
+rs2505083	28223407		coronary heart disease	statin	10	C	T	1.06			0.251597	C	T	Natarajan 2017	10p11.23	KIAA1462	T/C
+rs501120	28223407		coronary heart disease	statin	10	T	C	1.07			0.332668	C	T	Natarajan 2017	10q11.21	CXCL12	T/C
+rs2047009	28223407		coronary heart disease	statin	10	G	T	1.05			0.340056	G	T	Natarajan 2017	10q11.21	CXCL12	T/G
+rs2246833	28223407		coronary heart disease	statin	10	T	C	1.06			0.42492	T	C	Natarajan 2017	10q23.31	LIPA	C/T
+rs11203042	28223407		coronary heart disease	statin	10	T	C	1.04			0.433307	T	C	Natarajan 2017	10q23.31	LIPA	T/C
+rs12413409	28223407		coronary heart disease	statin	10	G	A	1.1			0.15655	A	G	Natarajan 2017	10q24.32	CYP17A1	G/A
+rs11042937	28223407		coronary heart disease	statin	11	T	G	1.04			0.316693	G	T	Natarajan 2017	11p15.3	NA	G/T
+rs10840293	28223407		coronary heart disease	statin	11	A	G	1.06			0.472244	A	G	Natarajan 2017	11p15.4	SWAP70	G/A
+rs974819	28223407		coronary heart disease	statin	11	T	C	1.07			0.413139	T	C	Natarajan 2017	11q22.3	PDGF	T/C
+rs9326246	28223407		coronary heart disease	statin	11	C	G	1.09			0.125599	C	G	Natarajan 2017	11q23.3	APOA5-APOA1	C/G
+rs11172113	28223407		coronary heart disease	statin	12	C	T	1.06			0.389377	C	T	Natarajan 2017	12p13.3	LRP1	T/C
+rs11057830	28223407		coronary heart disease	statin	12	A	G	1.08			0.139177	A	G	Natarajan 2017	12p24.31	SCARB1	G/A
+rs3184504	28223407		coronary heart disease	statin	12	T	C	1.07			0.147364	T	C	Natarajan 2017	12q24.12	SH2B3	T/C
+rs9319428	28223407		coronary heart disease	statin	13	A	G	1.06			0.328674	A	G	Natarajan 2017	13q12.3	FLT1	G/A
+rs9515203	28223407		coronary heart disease	statin	13	T	C	1.08			0.21885	C	T	Natarajan 2017	13q34	COL4A1	T/C
+rs4773144	28223407		coronary heart disease	statin	13	G	A	1.07			0.398163	G	A	Natarajan 2017	13q34	COL4A1	A/G
+rs2895811	28223407		coronary heart disease	statin	14	C	T	1.06			0.32488	C	T	Natarajan 2017	14q32.2	HHIPL1	T/C
+rs17293632	28223407		coronary heart disease	statin	15	C	T	1.05			0.0992412	T	C	Natarajan 2017	15q22.33	SMAD3	C/T
+rs7173743	28223407		coronary heart disease	statin	15	T	C	1.07			0.469649	C	T	Natarajan 2017	15q25.1	ADAMTS7	T/C
+rs8042271	28223407		coronary heart disease	statin	15	G	A	1.1			0.305911	A	G	Natarajan 2017	15q26.1	MFGE8-ABHD2	G/A
+rs17514846	28223407		coronary heart disease	statin	15	A	C	1.07			0.474641	A	C	Natarajan 2017	15q26.1	FURIN	C/A/G
+rs247616	28223407		coronary heart disease	statin	16	C	T	1.05			0.267572	T	C	Natarajan 2017	16q13	CETP	C/T
+rs12936587	28223407		coronary heart disease	statin	17	G	A	1.06			0.267971	A	G	Natarajan 2017	17p11.2	RASD1	G/A
+rs2281727	28223407		coronary heart disease	statin	17	G	A	1.04			0.367812	G	A	Natarajan 2017	17p13.3	SMG6	A/G
+rs15563	28223407		coronary heart disease	statin	17	?	?	1.04			0.422923	G	A	Natarajan 2017	17q21.32	UBE2Z	A/G
+rs8080784	28223407		coronary heart disease	statin	17	C	T	1.06			0.195887	C	T	Natarajan 2017	17q23.2	BCAS3	T/C
+rs663129	28223407		coronary heart disease	statin	18	A	G	1.06			0.250599	A	G	Natarajan 2017	18q21.32	PMAIP1-MC4R	G/A
+rs116843064	28223407		coronary heart disease	statin	19	G	A	1.16			0.00938498	A	G	Natarajan 2017	19p13.2	ANGPTL4	G/A
+rs1122608	28223407		coronary heart disease	statin	19	G	T	1.1			0.138179	T	G	Natarajan 2017	19p13.2	LDLR	G/T
+rs445925	28223407		coronary heart disease	statin	19	G	A	1.13			0.14976	A	G	Natarajan 2017	19q13.32	APOE-APOC1	G/A/C
+rs2075650	28223407		coronary heart disease	statin	19	G	A	1.11			0.119409	G	A	Natarajan 2017	19q13.32	APOE-APOC1	A/G
 rs12979860	19684573	European;African-Americans	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	C	T	NA	better treatment response		0.355831	T	C	Prior project research			C/T
 rs8099917	19749758	Australian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	T	1.98	no response	OR	0.13119	G	T	Prior project research			T/G
 rs12980275	19749757	Japanese	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	G	A	17.7	no response	OR	0.323283	G	A	Prior project research			A/G
@@ -238,7 +238,6 @@ rs17726861	27010727	Han Chinese 	heroin-dependency	methadone	19	C	G	0.3851	a low
 rs7257703	27010727	Han Chinese 	heroin-dependency	methadone	19	A	G	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.208267	A	G	Prior project research			A/G
 rs17726963	27010727	Han Chinese 	heroin-dependency	methadone	19	A	C	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.304513	C	A	Prior project research			A/C
 rs12982859	27010727	Han Chinese 	heroin-dependency	methadone	19	G	A	0.3851	a lower plasma concentration of S-methadone	slope estimate	0.145966	A	G	Prior project research			G/A
-rs2395029	18684101	Swiss	HIV	abacavir	6	G	T	NA	hypersensitivity		0.0333466	G	T	Prior project research			T/G
 rs3745274	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	T	G	0.27	fewer treatment-related adverse events	OR	0.315695	T	G	Prior project research			G/A/T
 rs2279343	24128861		chronic lymphocytic leukemia	fludarabine plus cyclophosphamide	19	G	A	0.27	fewer treatment-related adverse events	OR	NA			Prior project research			A/G
 rs12979860	26973228	Brazilian	hepatitis C virus (HCV)	PEG-IFN-alpha combined with ribavirin	19	T	C	47.7	lower response	OR	0.355831	T	C	Prior project research			C/T

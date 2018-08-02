@@ -9,7 +9,7 @@ shinyUI(bootstrapPage(
 	titlePanel("Rare diseases"),
 	beginPage(),
 	beginPanel('1/3'),
-	HTML("Users with 23andme data had a special 'inherited conditions' analysis tool. However, this was taken off-line leaving a more limited set of traits. In this module the original 'inherited conditions' are re-analysed. Additionally the module tries to translate the data for non-23andme customers, with the caveat that some of these SNPs are very rare and therefore hard to impute.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:<br><br>"),
+	HTML("This module analyses the 'inherited conditions' module from 23andme from 2016. These conditions were all rare, but strong genetic effects. Additionally the module tries to translate the data for non-23andme customers, with the caveat that because the SNPs are very rare they are often hard to impute.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:<br><br>"),
 	textInput(inputId="uniqueID", label = "", value = "id_XXXXXXXXX"),
 	actionButton("goButton","Run analysis"),
 	endPanel(),

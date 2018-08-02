@@ -49,7 +49,10 @@ export_function<-function(uniqueID){
   
   
   
-  output<-list(advice=m,all_findings=table)
+  output<-list(
+    advice=m,
+    diseases_of_interest=diseases_of_interest,
+    all_findings=table)
   
   return(output)
   
