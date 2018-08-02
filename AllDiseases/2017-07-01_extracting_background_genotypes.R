@@ -1,4 +1,4 @@
-
+rm(list=ls())
 source("/home/ubuntu/srv/impute-me/functions.R")
 
 library(jsonlite)
@@ -6,7 +6,7 @@ library(jsonlite)
 
 
 
-d0<-fromJSON("/home/ubuntu/data_here/id_613z86871/id_613z86871_data.json")
+d0<-fromJSON("/home/ubuntu/data/id_549981r10/id_549981r10_data.json")
 data<-data.frame(row.names=c("ethnicity",names(d0[["AllDiseases"]])))
 
 
@@ -16,6 +16,7 @@ for(folder in list.files("/home/ubuntu/data/",full.names=TRUE)){
   json_path<-paste0(folder,"/",uniqueID,"_data.json")
   if(!file.exists(json_path))next
   d1<-fromJSON(json_path)
+  d1[["AllDiseases"]][["documentation"]] <- NULL
   d2<-data.frame(trait=names(d1[["AllDiseases"]]),value=unlist(d1[["AllDiseases"]]),stringsAsFactors = F)
   data[,uniqueID]<-d2[rownames(data),"value"]
   ethnicity<-try(d1[["ethnicity"]][["guessed_super_pop"]],silent=F)
@@ -23,13 +24,13 @@ for(folder in list.files("/home/ubuntu/data/",full.names=TRUE)){
   data["ethnicity",uniqueID]<-ethnicity
   
 }
-save(data,file="2017-07-01_summary_stats_halfway_backup.rdata")
+save(data,file="2018-07-26_summary_stats_halfway_backup.rdata")
 
 
 
 
 rm(list=ls())
-load("../2017-07-01_summary_stats_halfway_backup.rdata")
+load("../2018-07-26_summary_stats_halfway_backup.rdata")
 
 
 
@@ -37,7 +38,7 @@ load("../2017-07-01_summary_stats_halfway_backup.rdata")
 dist<-table(t(data["ethnicity",])[,1])
 signif(dist/sum(dist),2)
 # AFR   AMR   EAS   EUR   SAS 
-# 0.019 0.100 0.038 0.820 0.016 
+# 0.021 0.094 0.042 0.820 0.024
 #Ok - pity, but seems like we can only really use global and EUR (more than 82% EUR users)
 
 for(scope in c("ALL",names(dist))){
@@ -52,7 +53,7 @@ for(scope in c("ALL",names(dist))){
   densities<-matrix(nrow=nrow(data)*2, ncol=n, dimnames=list(paste0(rep(rownames(data),each=2),c("_x","_y")),as.character(1:n)))
   
   
-  pdf(paste0("2017-07-01_histograms_of_grs_",scope,".pdf"),width=5,height=5)  
+  pdf(paste0("2018-07-26_histograms_of_grs_",scope,".pdf"),width=5,height=5)  
   for(trait in rownames(data_here)){
     print(trait)
     x<-as.numeric(t(data_here[trait,])[,1])
@@ -69,7 +70,7 @@ for(scope in c("ALL",names(dist))){
   }
   dev.off()
   
-  save(densities, file = paste0("2017-07-01_densities_",scope,".rdata"))
+  save(densities, file = paste0("2018-07-26_densities_",scope,".rdata"))
   
 }
 
