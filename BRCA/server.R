@@ -38,19 +38,24 @@ shinyServer(function(input, output) {
 		BRCA_table[BRCA_table[,"chr_name"]%in%13,"gene"]<-"BRCA2"
 		BRCA_table[BRCA_table[,"chr_name"]%in%17,"gene"]<-"BRCA1"
 		
+		
+		#handle 23andme special SNPs
+		special_snps <- c("i4000377","i4000378","i4000379")
 		BRCA_table["i4000377","gene"]<-"BRCA1"
 		BRCA_table["i4000378","gene"]<-"BRCA1"
 		BRCA_table["i4000379","gene"]<-"BRCA2"
-		
-		BRCA_table["i4000377","consequence_type_tv"]<-"Direct from 23andme"
-		BRCA_table["i4000378","consequence_type_tv"]<-"Direct from 23andme"
-		BRCA_table["i4000379","consequence_type_tv"]<-"Direct from 23andme"
+		BRCA_table[special_snps,"consequence_type_tv"]<-"Direct from 23andme"
 		
 		
 		#get genotypes 
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=BRCA_table)
 		BRCA_table[,"Your genotype"]<-genotypes[rownames(BRCA_table),]
 
+		
+		#check if the 23andme-ones are - reported insted of D reported
+		if(length(grep("-",BRCA_table[special_snps,"Your genotype"]))>0){
+		  BRCA_table[special_snps,"Your genotype"] <- gsub("-","D",BRCA_table[special_snps,"Your genotype"])
+		}
 		
 		#remove non measured if needed
 		if(!show_non_measured){
