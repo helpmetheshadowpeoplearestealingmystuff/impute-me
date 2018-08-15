@@ -253,8 +253,22 @@ shinyServer(function(input, output) {
     if(is.null(o) | input$goButton == 0 | is.null(input$focus_node)){
       return(NULL)
     }
-    
     focus_node <- input$focus_node
+    
+    #write the score to the log file
+    log_function<-function(uniqueID,focus_node){
+      user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"diseaseNetworks",uniqueID,focus_node)
+      m<-paste(m,collapse="\t")
+      if(file.exists(user_log_file)){
+        write(m,file=user_log_file,append=TRUE)
+      }else{
+        write(m,file=user_log_file,append=FALSE)
+      }
+    }
+    try(log_function(uniqueID,focus_node))
+    
+    
     
     o1<-o[["link_all"]]
     
@@ -294,18 +308,7 @@ shinyServer(function(input, output) {
     colnames(o1)<-names(select)
     
     
-    #write the score to the log file
-    log_function<-function(uniqueID,focus_node){
-      user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
-      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"diseaseNetworks",uniqueID,focus_node)
-      m<-paste(m,collapse="\t")
-      if(file.exists(user_log_file)){
-        write(m,file=user_log_file,append=TRUE)
-      }else{
-        write(m,file=user_log_file,append=FALSE)
-      }
-    }
-    try(log_function(uniqueID,focus_node))
+
     
     
     
