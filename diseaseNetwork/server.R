@@ -51,25 +51,69 @@ shinyServer(function(input, output) {
     
     
     
-    #get the Z-scores compiled with the ICD-code+GWAS file
-    for(i in 1:nrow(link_all)){  
-      module <- link_all[i,"module"]
-      gwas_code <- link_all[i,"gwas_code"]
+    #Merge the person specific Z-scores with the link_all file
+    scores <- link_all
+    scores[,"initials-date"] <- NULL
+    for(i in 1:nrow(scores)){  
+      module <- scores[i,"module"]
+      study_code <- scores[i,"study_code"]
       d1 <- d[[module]]
-      if(gwas_code %in% names(d1)){
-        link_all[i,"score"]<-d1[[gwas_code]]
-      }else{
-        link_all[i,"score"]<-NA
+      
+      #skipping term 1: must have the module
+      if(!module %in% names(d) ) next
+      
+      #skipping term 2: must have the module entry (except for rareDiseases)
+      if(!study_code %in% names(d1) & module != "rareDiseases") next
+      
+      
+      #then define JSON extraction logic for all modules: first a skipping term 3 parameter, i.e. for missing json info, then the   
+      #extraction part. It's easiest for the AllDiseases module because it was designed for this. But not difficult for others.
+      if(module == "AllDiseases"){
+        scores[i,"score"]<-d1[[study_code]]
+        
+      }else if(module == "precisionMedicine"){
+        if(!all(c("z_score","drug","disease") %in% names(d1[[study_code]])))next
+        scores[i,"score"]<-d1[[study_code]][["z_score"]]
+        scores[i,"study_code"] <-paste0(d1[[study_code]][["disease"]]," and ",d1[[study_code]][["drug"]]," (PMID ",study_code,")")
+        
+      }else if(module == "ukbiobank"){
+        if(!all(c("trait","GRS") %in% names(d1[[study_code]])))next
+        scores[i,"score"]<-d1[[study_code]][["GRS"]]
+        scores[i,"study_code"] <-d1[[study_code]][["trait"]]
+        
+      }else if(module == "rareDiseases"){
+        if(!"diseases_of_interest" %in% names(d1))next
+        if(study_code %in% d1[["diseases_of_interest"]]){
+          scores[i,"score"] <- 1
+        }
       }
     }
     
     
-    #remove all rows with no z-score.
-    link_all <- link_all[!is.na(link_all[,"score"]),]
+    #specifically insert the BRCA risk (too complicated to put within the flow above)
+    dangerous <- c("i4000377","i4000378","i4000379","rs80359065")
+    if("BRCA" %in% names(d)){
+      if("differing_snps" %in% names(d[["BRCA"]])){
+        if(length(d[["BRCA"]][["differing_snps"]]) > 0){
+          if(any(d[["BRCA"]][["differing_snps"]] %in% dangerous)){
+            o <- data.frame(
+              ICD_code="Feeling fine",
+              study_code="Breast Cancer",
+              module="BRCA",
+              score =1,
+              stringsAsFactors = F
+            )
+            scores <- rbind(scores,o)
+          }
+        }
+      }
+    }
     
-    #remove all copies of the same ICD-code in the rows of the file, by discriminating against the lowest Z-scores
-    link_all <- link_all[order(link_all[,"score"]),]
-    link_all <- link_all[!duplicated(link_all[,"ICD_code"]),]
+    
+    
+    #remove all rows with no z-score.
+    scores <- scores[!is.na(scores[,"score"]),]
+    
     
     
     
@@ -100,21 +144,20 @@ shinyServer(function(input, output) {
     
     
     #getting per-GWAS number
-    link_all[,"score_group"]<-cut(link_all[,"score"],breaks=bins)
-    link_all[,"score_number"]<-as.numeric(link_all[,"score_group"])
-    link_all[,"colour"]<-pal[link_all[,"score_number"]]
+    scores[,"score_group"]<-cut(scores[,"score"],breaks=bins)
+    scores[,"score_number"]<-as.numeric(scores[,"score_group"])
+    scores[,"colour"]<-pal[scores[,"score_number"]]
     
     
-    #getting strongest colours per ICD-10 code (removing duplicates)
-    #ICD_link <-data.frame(ICD_code=unique(link[,"ICD_code"]))
-    ICD_link<-link_all[order(link_all[,"score_number"],decreasing=T),] #sorts based on score - highest first
+    #Create another data.frame with only one entry per ICD-10 code - having the strongest colours per ICD-10 code (removing duplicates)
+    ICD_link<-scores[order(scores[,"score_number"],decreasing=T),] #sorts based on score - highest first
     ICD_link <- ICD_link[!duplicated(ICD_link[,"ICD_code"]),]
     rownames(ICD_link) <- ICD_link[,"ICD_code"] #Assign row names after ICD-code
-    ICD_link[,"score_group"]<-ICD_link[,"score_number"]<-ICD_link[,"gwas_code"]<-ICD_link[,"module"] <- NULL # removes scoregroup and scorenumber columns
+    ICD_link[,"score_group"]<-ICD_link[,"score_number"]<-ICD_link[,"study_code"]<-ICD_link[,"module"] <- NULL # removes scoregroup and scorenumber columns
     colnames(ICD_link)[colnames(ICD_link)%in%"score"]<-"max_score"
     
     o<-list(
-      link_all=link_all,
+      scores=scores,
       ICD_link=ICD_link
     )
     return(o)
@@ -137,8 +180,6 @@ shinyServer(function(input, output) {
     
     
     #first cut the igraph to show all within any distance (include small)
-    
-    
     i1 <- which(vertex_attr(e)[["name"]]%in%focus_node) #convert name to vertex number
     a1<-t(distances(e,v=i1,mode="out")) #tells the distance of every node from focus_node (out)
     a2<-t(distances(e,v=i1,mode="in")) #tells distance (in)
@@ -270,47 +311,57 @@ shinyServer(function(input, output) {
     
     
     
-    o1<-o[["link_all"]]
+    o1<-o[["scores"]]
     
     o1<- o1[o1[,"ICD_code"] %in% focus_node,]
     
     if(nrow(o1)==0)return(NULL)
     
-    #calculate percentage    
-    # o1[,"percentage"] <- round(pnorm(o1[,"score"])*100)
-    # o1[o1[,"percentage"]==100,"percentage"]<-99
-    # o1[,"percentage"]<-paste0(o1[,"percentage"],"%")
     
-    
-    #rename genetics study
-    w <- which(o1[,"module"]%in%"AllDiseases")
-    n <- o1[w,"gwas_code"]
+    #rename genetics study (only in AllDiseases module)
+    w1 <- which(o1[,"module"]%in%"AllDiseases")
+    n <- o1[w1,"study_code"]
     n <- sub("([0-9]+)$","(PMID \\1)",gsub("_"," ",n)) #remove underscore and add PMID
-    n <- paste(toupper(substring(n, 1,1)), substring(n, 2),sep="", collapse=" ") #capitalize first letter
-    o1[w,"gwas_code"] <- n #re-insert
+    for(i in 1:length(n)){
+      n[i] <- paste(toupper(substring(n[i], 1,1)), substring(n[i], 2),sep="", collapse=" ") #capitalize first letter  
+    }
+    o1[w1,"study_code"] <- n #re-insert
     
     
-    # Translate module names
-    niceNames <- c("GWAS calculator","Drug response")
-    names(niceNames) <- c("AllDiseases","precisionMedicine")
-    o1[,"module"] <- niceNames[o1[,"module"]]
 
     #insert disease name
     o1[,"disease"]<- paste0(V(e)[o1[,"ICD_code"]]$niceName," (",o1[,"ICD_code"],")")
     
+    #remove disease code if found in "Feeling fine" (doesn't make sense there)
+    o1[o1[,"disease"]%in%"Feeling fine (Feeling fine)","disease"] <- ""
+    
+    
+    #remove Z-score if found in BRCA or rareDiseases (doesn't make sense there)
+    w2 <- which(o1[,"module"]%in%c("rareDiseases","BRCA"))
+    o1[w2,"score"] <- "+"
+    
+    # Translate module names
+    niceNames <- c("GWAS calculator","Drug response","UK-biobank","Rare Diseases","BRCA")
+    names(niceNames) <- c("AllDiseases","precisionMedicine","ukbiobank","rareDiseases","BRCA")
+    o1[,"module"] <- niceNames[o1[,"module"]]
+    
     
     #rename and re-order columns
-    select <- c("disease","gwas_code","module","score")
+    select <- c("disease","study_code","module","score")
     names(select) <- c("Disease (code)","Genetic study","Further details in this Module","Z-score")
     if(!all(select%in%colnames(o1)))stop("Not all columns found")
     
-    o1 <- o1[,select]
-    colnames(o1)<-names(select)
     
     
 
     
     
+    
+    
+    
+    o1 <- o1[,select]
+    colnames(o1)<-names(select)
+
     
     return(o1)
   })
@@ -339,5 +390,11 @@ This is the purpose of the Disease Network module. By forcing browsing into a pr
   
 
 })
+
+
+
+
+
+
 
 
