@@ -31,6 +31,8 @@ for(uniqueID in uniqueIDs){
   timedif<-difftime(Sys.time(),start, units="days")
   if(timedif > keeping_time){
     
+    pData[,"email"]<-NULL
+    
     #always delete download links at over-time (too easy to hack otherwise)
     if("link" %in% routinely_delete_this){
       # f1<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".simple_format.zip",sep="")
