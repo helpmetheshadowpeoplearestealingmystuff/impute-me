@@ -320,8 +320,9 @@ shinyServer(function(input, output) {
 			
 			
 			
-			#rounding MAF
+			#rounding MAF and effect_size
 			SNPs_to_analyze[,"minor_allele_freq"] <- signif(SNPs_to_analyze[,"minor_allele_freq"], 2)
+			SNPs_to_analyze[,"effect_size"] <- signif(SNPs_to_analyze[,"effect_size"], 3)
 			
 			#removing duplicate GRS
 			# SNPs_to_analyze[duplicated(SNPs_to_analyze[,"SNP"]),"GRS"]<-""
