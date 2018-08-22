@@ -26,33 +26,33 @@ On each completed analysis-run an email is sent with the user's uniqueID. This u
 
 
 
-Each specific module function is documented by their UI-provided description. The general setup requires the input of a uniqueID, which links to the user's data. For manyof the modules, the calculations are trivial. For example this could be the reporting of presence and/or absence of a specific genotype. For others, we rely heavily on polygenic risk scores. Three approaches to polygenic risk scores are implemented in the function [get_GRS_2](https://github.com/lassefolkersen/impute-me/blob/5901cb626d0e50a01106d74c48540a41100974a6/functions.R#L1287). Since it is an over-arching concept, the different types of risk score calculations are explained here:
+Each specific module function is documented by their UI-provided description. The general setup requires the input of a uniqueID, which links to the user's data. For man yof the modules, the calculations are trivial. For example this could be the reporting of presence and/or absence of a specific genotype. For others, we rely heavily on polygenic risk scores. Three approaches to polygenic risk scores are implemented in the function [get_GRS_2](https://github.com/lassefolkersen/impute-me/blob/5901cb626d0e50a01106d74c48540a41100974a6/functions.R#L1287). Since it is an over-arching concept, the different types of risk score calculations are explained here:
 
 
 **Basic count score**. Basically just counting the effect alleles. This is the most simple setup of polygenic risk scores. It is intuitive to understand - the more risk alleles, the higher the score. The main drawback is that it doesn't distinguish SNPs with large and small effects.
 
-Count-score =  Σ Effect-allele-count<sub>snp</sub>
+Count-score =  Σ Effect-allele-count<sub>snp</sub> (1)
 
 
 **Weighted-score**. A score that is weighted by the effect size of each SNP. This has the added benefit of weighting SNPs with large effect sizes more than SNPs with small effect sizes. Note that _beta_ is changed for _log(OR)_ as applicable for binary traits. The only draw-back of this score type is that it is on an arbitrary scale and does little to inform about risk compared to the rest of the population.
 
-Weighted-score =  Σ Beta<sub>snp</sub> * Effect-allele-count<sub>snp</sub>
+Weighted-score =  Σ Beta<sub>snp</sub> * Effect-allele-count<sub>snp</sub> (2)
 
 
 **Z-score**. A score that is given in standard-deviations above or below the average risk-score for that population. This specific implementation of the Z-score is [found here](https://github.com/lassefolkersen/impute-me/blob/5901cb626d0e50a01106d74c48540a41100974a6/functions.R#L1387-L1404). The _frequency<sub>snp</sub>_ is obtained from 1000 genomes data for the relevant super-population. _Effect-allele-count_ and _Beta_ is used as in previous scores. The _Standard-deviation<sub>population</sub>_ is calculated according to [this code](https://github.com/lassefolkersen/impute-me/blob/5901cb626d0e50a01106d74c48540a41100974a6/functions.R#L1396-L1404). In many of the modules an extra step is added where the Z-score is converted to percentage of population with lower score. This is done with the standard [pnorm](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Normal.html) function, i.e. we assume everything is normally distributed. To check the validity of this assumption, some modules have an option to compare to [real distributions](https://www.impute.me/AllDiseases/).
 
-Population-score<sub>snp</sub> = frequency<sub>snp</sub> * 2 * beta<sub>snp</sub>
+Population-score<sub>snp</sub> = frequency<sub>snp</sub> * 2 * beta<sub>snp</sub> (3)
 
-Zero-centered-score =  Σ Beta<sub>snp</sub> * Effect-allele-count<sub>snp</sub> - Population-score<sub>snp</sub>
+Zero-centered-score =  Σ Beta<sub>snp</sub> * Effect-allele-count<sub>snp</sub> - Population-score<sub>snp</sub> (4)
 
-Z-score = Zero-centered-score / Standard-deviation<sub>population</sub>
+Z-score = Zero-centered-score / Standard-deviation<sub>population</sub> (5)
 
 
 
 These scores are freely used as described in each module. For further understanding of each module, the source code is provided here. Each module consists of a ui.R and a server.R file. The details of such setup of this can be found in the <a href='http://shiny.rstudio.com/'>R/Shiny</a> documentation. Shiny is the interface language that have been used to create these modules. A template module which contains the very minimal configuration is found in the ['template'](https://github.com/lassefolkersen/impute-me/tree/master/template) folder.
 
 
-## Part 1: Imputation algorithm description
+## Part 3: Imputation algorithm description
 
 
 After upload of data, a central aspect of the analysis engine is the performance of an imputation-process. The purpose of this process is to 'fill in the blanks', meaning to provide educated guesses of missing SNPs. Imputation allows the analysis modules to connect to the latest research as provided by the modules. Unlike the two previous sections, it is not at all necessary to understand these aspects of the impute.me algorithm. They are provided here for reference:
