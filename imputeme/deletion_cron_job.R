@@ -1,7 +1,7 @@
 
 # sudo crontab -u shiny -e
 # 00 20 * * * Rscript /home/ubuntu/srv/impute-me/imputeme/deletion_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-delete-cron.log 2>&1
-
+library(jsonlite)
 source("/home/ubuntu/srv/impute-me/functions.R")
 
 uniqueIDs<-list.files("/home/ubuntu/data")
@@ -10,7 +10,8 @@ uniqueIDs<-list.files("/home/ubuntu/data")
 keeping_time<-14
 
 for(uniqueID in uniqueIDs){
-  pData<-try(read.table(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),sep="\t",header=T,stringsAsFactors=F))
+  pdata_path<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+  pData<-try(read.table(pdata_path,sep="\t",header=T,stringsAsFactors=F))
   if(class(pData)=="try-error")next
   if(!all(c("protect_from_deletion","first_timeStamp")%in%colnames(pData)))next
 
@@ -30,8 +31,24 @@ for(uniqueID in uniqueIDs){
   start<-strptime(pData[1,"first_timeStamp"],"%Y-%m-%d-%H-%M")
   timedif<-difftime(Sys.time(),start, units="days")
   if(timedif > keeping_time){
-    
+
+    #modify pdata to not save personally identifiable information    
     pData[,"email"]<-NULL
+    pData[,"filename"]<-NULL
+    write.table(pdata,file=pdata_path,sep="\t",col.names=T,row.names=F,quote=F)
+    
+    
+    #modify json to not save personally identifiable information
+    json_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
+    d0<-fromJSON(json_path)
+    d0[["original_filename"]] <- NULL
+    d0[["original_submission_email"]] <- NULL
+    d1<-toJSON(d0)
+    f<-file(json_path,"w")
+    writeLines(d1,f)
+    close(f)
+    
+    
     
     #always delete download links at over-time (too easy to hack otherwise)
     if("link" %in% routinely_delete_this){
