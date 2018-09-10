@@ -71,7 +71,7 @@ shinyServer(function(input, output) {
       if(module == "AllDiseases"){
         scores[i,"score"]<-d1[[study_code]]
         
-      }else if(module == "precisionMedicine"){
+      }else if(module == "drugResponse"){
         if(!all(c("z_score","drug","disease") %in% names(d1[[study_code]])))next
         scores[i,"score"]<-d1[[study_code]][["z_score"]]
         scores[i,"study_code"] <-paste0(d1[[study_code]][["disease"]]," and ",d1[[study_code]][["drug"]]," (PMID ",study_code,")")
@@ -84,7 +84,7 @@ shinyServer(function(input, output) {
       }else if(module == "rareDiseases"){
         if(!"diseases_of_interest" %in% names(d1))next
         if(study_code %in% d1[["diseases_of_interest"]]){
-          scores[i,"score"] <- 1
+          scores[i,"score"] <- 2
         }
       }
     }
@@ -100,7 +100,7 @@ shinyServer(function(input, output) {
               ICD_code="Feeling fine",
               study_code="Breast Cancer",
               module="BRCA",
-              score =1,
+              score =2,
               stringsAsFactors = F
             )
             scores <- rbind(scores,o)
@@ -122,8 +122,8 @@ shinyServer(function(input, output) {
     high_score <- "red"
     low_score <- "green"
     length_out <- 20
-    max_z_score <- 2
-    min_z_score <- -2
+    max_z_score <- 3
+    min_z_score <- -3
     
     
     
@@ -342,7 +342,7 @@ shinyServer(function(input, output) {
     
     # Translate module names
     niceNames <- c("GWAS calculator","Drug response","UK-biobank","Rare Diseases","BRCA")
-    names(niceNames) <- c("AllDiseases","precisionMedicine","ukbiobank","rareDiseases","BRCA")
+    names(niceNames) <- c("AllDiseases","drugResponse","ukbiobank","rareDiseases","BRCA")
     o1[,"module"] <- niceNames[o1[,"module"]]
     
     
