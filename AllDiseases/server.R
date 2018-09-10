@@ -188,7 +188,7 @@ shinyServer(function(input, output) {
 			          
 		          <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections. In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
 		          
-		          <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Disease-network module</a></u> under development - based on this info, but without having to scroll through all entries</small>")		
+		          <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Precision-medicine module</a></u> under development - based on this info, but without having to scroll through all entries</small>")		
 		
 		
 		#add in the (damn) duplicates
