@@ -7,11 +7,11 @@ shinyUI(bootstrapPage(
 	titlePanel("Contact"),
 	beginPage(),
 	HTML(	"
-Genetics lead: <u><a href='http://orcid.org/0000-0003-0708-9530'>Lasse Folkersen</a></u>.<br>
+<b>Genetics lead:</b> <u><a href='http://orcid.org/0000-0003-0708-9530'>Lasse Folkersen</a></u>.<br>
 				
-Design and interface lead: <u><a href='https://github.com/SDelport?tab=repositories'>Stefan Delport</a></u>.<br>
-HTTPS-security: <u><a href='https://xarentek.com'>Andrew Maris.</a></u><br>
-<br>
+<b>Interface-design:</b> <u><a href='https://github.com/SDelport?tab=repositories'>Stefan Delport</a></u>.<br>
+<b>HTTPS-security:</b> <u><a href='https://xarentek.com'>Andrew Maris.</a></u><br>
+<b>Student-help:</b> Li Zhang (CAS, China), Vincent Frederik Dahl (DTU, Denmark), Christian Højte Sørensen (DTU, Denmark) <br>
 <br><br>
 
 Impute.me is a non-profit genetics analysis site run by independent academics since August 2015. Our design goal is to provide analysis at the cutting edge of what is currently known and possible in genetics research. We try to provide this information in a manner that is as user-friendly as possible, but we are aware that it may be difficult to digest concepts such as <i>polygenic risk scores</i> and <i>imputation confidence</i>. Their difficulty level does not make them less crucial in genetic understanding. Few traits are governed by only a single gene or SNP.
