@@ -18,7 +18,7 @@ Impute.me is a non-profit genetics analysis site run by independent academics si
 <br>
 <br>
 
-A main part of the ongoing work is the creation of a guidebook for personal genome analysis. This will provide more in-depth explanation for many of the concepts involved. Further updates on this, will be announced on <u><a href='https://twitter.com/lassefolkersen'>twitter</a></u>. While this is underway, we refer to the open-source <u><a href='https://github.com/lassefolkersen/impute-me'>code repository</a></u> for the site. Some aspects there may be fairly technical, but at least it provides a full, reproducible and auditable insight into how genetics analysis is done.
+A main part of the ongoing work is the creation of <u><a href='https://www.amazon.com/Understand-Your-DNA-Folkersen-Lasse/dp/9813273259'>a guidebook for personal genome analysis</a></u>. This will provide more in-depth explanation for many of the concepts involved. Further updates on this, will be announced on <u><a href='https://twitter.com/lassefolkersen'>twitter</a></u>. While this is underway, we refer to the open-source <u><a href='https://github.com/lassefolkersen/impute-me'>code repository</a></u> for the site. Some aspects there may be fairly technical, but at least it provides a full, reproducible and auditable insight into how genetics analysis is done.
 <br>
 <br>
 Finally, we welcome suggestions for other analysis types, particularly if you can program them yourself - the system is highly modular and can easily be extended even with just a limited knowledge of R-programming and genetics.<br>

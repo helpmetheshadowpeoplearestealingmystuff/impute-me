@@ -8,7 +8,7 @@ library("visNetwork")
 #for real run
 source("/home/ubuntu/srv/impute-me/functions.R")
 load("/home/ubuntu/srv/impute-me/diseaseNetwork/2018-02-21_igraph_object.rdata")
-link_file<-"/home/ubuntu/srv/impute-me/diseaseNetwork/2018-07-25_link_file.xlsx"
+link_file<-"/home/ubuntu/srv/impute-me/diseaseNetwork/2018-09-18_link_file.xlsx"
 link_all<-read.xlsx(link_file)  
 
 
@@ -253,7 +253,9 @@ shinyServer(function(input, output) {
       V(e1)$y <- y
       
       
-    }else{ #
+    }else if(length(V(e1))<=2){ #because the tree one fails apparently
+      layout <- "layout_nicely"
+    }else{
       layout <- "layout_as_tree"
     }
     
