@@ -38,7 +38,6 @@ Each specific module function is documented by their UI-provided description. Th
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Weighted-score =  Σ Beta<sub>snp</sub> * Effect-allele-count<sub>snp</sub> (2)
 
-This score is identical to the [plink 1.9 score](https://www.cog-genomics.org/plink/1.9/score) with the mean-imputation switch on.
 
 **Z-score**. A score that is given in standard-deviations above or below the average risk-score for that population. This specific implementation of the Z-score is [found here](https://github.com/lassefolkersen/impute-me/blob/5901cb626d0e50a01106d74c48540a41100974a6/functions.R#L1387-L1404). The _frequency<sub>snp</sub>_ is obtained from 1000 genomes data for the relevant super-population. _Effect-allele-count_ and _Beta_ is used as in previous scores. The _Standard-deviation<sub>population</sub>_ is calculated according to [this code](https://github.com/lassefolkersen/impute-me/blob/5901cb626d0e50a01106d74c48540a41100974a6/functions.R#L1396-L1404). In many of the modules an extra step is added where the Z-score is converted to percentage of population with lower score. This is done with the standard [pnorm](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Normal.html) function, i.e. we assume everything is normally distributed. To check the validity of this assumption, some modules have an option to compare to [real distributions](https://www.impute.me/AllDiseases/).
 
@@ -50,7 +49,7 @@ This score is identical to the [plink 1.9 score](https://www.cog-genomics.org/pl
 
 
 
-These scores are freely used as described in each module. For further understanding of each module, the source code is provided here. When available the score is calculated based on e.g. [LDpred info](https://github.com/lassefolkersen/impute-me/tree/master/LDpredMDD), although more often it is based on top-significant (pruned) hits out of necessity. 
+These scores are freely used as described in each module. For further understanding of each module, the source code is provided [here ](https://github.com/lassefolkersen/impute-me/blob/82c1cd3415e4abe3fce7aa756a1afe297f9b363e/functions.R#L1305-L1465) (illustrated [example](2018-09-20_prs_explanatory_slides.pdf)). When available the score is calculated based on e.g. [LDpred info](https://github.com/lassefolkersen/impute-me/tree/master/LDpredMDD), although more often it is based on top-significant (pruned) hits out of necessity. 
 
 Each module consists of a ui.R and a server.R file. The details of such setup of this can be found in the <a href='http://shiny.rstudio.com/'>R/Shiny</a> documentation. Shiny is the interface language that have been used to create these modules. A template module which contains the very minimal configuration is found in the ['template'](https://github.com/lassefolkersen/impute-me/tree/master/template) folder.
 
