@@ -288,8 +288,11 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   }else{
     queue_message<-""
   }
-  message_end <-paste0(" The service is non-profit, but because of heavy computing-requirements for the imputation analysis it is not free to run. We therefore strongly encourage you to pay a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>, suggested 5 USD). Also, if you do this and put your unique ID, (<i>",uniqueID,"</i>) as payment-message, you'll be moved to priority queue. Either way, once the analysis is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using this uniqueID.<br></HTML> ")
-  message <- paste0(message_start,queue_message,message_end)
+  message_end1 <- paste0(" The service is non-profit, but because of heavy computing-requirements for the imputation analysis it is not free to run. We therefore strongly encourage you to pay a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>, suggested 5 USD). Also, if you do this and put your unique ID, (<i>",uniqueID,"</i>) as payment-message, you'll be moved to priority queue. Either way, once the analysis is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using this uniqueID.<br><br> ")
+  
+  message_end2 <- paste0("If you have any further questions, please refer to the book <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br></HTML>")
+  
+  message <- paste0(message_start,queue_message,message_end1,message_end2)
   mailingResult<-try(send.mail(from = email_address,
                                to = email,
                                bcc="lassefolkersen@gmail.com",
@@ -946,7 +949,7 @@ get_GRS<-function(genotypes, betas){
 
 crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
   #A function that will crawl all data directories to extract all currently worked on SNPs
-  
+  library(shiny)
   if(is.null(uniqueIDs)){
     uniqueIDs<-list.files("/home/ubuntu/data/")
   }else{
@@ -1530,6 +1533,7 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
     u1<-user_log[user_log[,"modules"]%in%module,]
     #omit the special-users (e.g. myself)
     u1<-u1[!u1[,"uniqueIDs"]%in%special_ids,]
+    if(nrow(u1)==0)next
     
     #get cum-count
     u1[,"count"]<-1:nrow(u1)
@@ -1705,7 +1709,11 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
     if(file.exists(filename)){
       outputList_previous<-fromJSON(filename)
       previous_unique <- outputList_previous[!names(outputList_previous) %in% names(outputList)]
-      outputList<-c(outputList,previous_unique)
+      if(length(previous_unique)>0){
+        print(paste("Inserting",length(previous_unique),"modules from existing json:",paste(names(previous_unique),collapse=", ")))
+        outputList<-c(outputList,previous_unique)  
+      }
+      
     }
     
     #save new JSON
