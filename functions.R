@@ -292,7 +292,6 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   message <- paste0(message_start,queue_message,message_end)
   mailingResult<-try(send.mail(from = email_address,
                                to = email,
-                               bcc="lassefolkersen@gmail.com",
                                subject = "Imputation is queued",
                                body = message,
                                html=T,
