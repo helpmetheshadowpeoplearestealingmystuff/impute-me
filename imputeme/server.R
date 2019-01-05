@@ -9,43 +9,53 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 
+
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
-	
-	
-	
-	# output$text1 <- renderText({ 
-		# paste("Currently selected file is\n",input$largeFile[["name"]],"(size",round(input$largeFile[["size"]]/1000000),"MB)")
-	# })
-	
-	
-	output$text2 <- renderText({ 
-		# Take a dependency on input$goButton
-		
-		if(input$goButton == 0){
-			return("")
-		}else if(input$goButton == 1) {
-			return("")
-		}else{
-			stop(safeError("Please don't try to submit the job more than once. Re-load the page, re-upload and then only press 'start imputation' once."))
-		}
-		
-	})
-	
-	
-	
-	output$text3 <- renderText({ 
-		# Take a dependency on input$goButton
-		if(input$goButton == 1){
-			path <- isolate(input$largeFile[["datapath"]])
-			email <- isolate(input$email)
-			protect_from_deletion <- !isolate(input$delete2weeks)
-			filename <- isolate(input$largeFile[["name"]])
-			if(is.null(path))return("No file selected")
-			out<-prepare_23andme_genome(path,email,filename, protect_from_deletion)
-			return(out)
-		}
-	})
+  
+  output$text <- renderText({ 
+    #preparing progress tracker      
+    progress <- shiny::Progress$new()
+    on.exit(progress$close())
+    progress$set(message = "", value = 0)
+    updateProgress <- function(value = NULL, detail = NULL, max=NULL) {
+      if(is.null(max))max <- 50
+      if (is.null(value)) {
+        value <- progress$getValue()
+        value <- value + 1/max
+      }
+      progress$set(value = value, detail = detail)
+    }
+    
+    
+    
+    
+    # Take a dependency on input$goButton
+    if(input$goButton > 1){
+      path <- isolate(input$largeFile[["datapath"]])
+      email <- isolate(input$email)
+      protect_from_deletion <- FALSE
+      filename <- isolate(input$largeFile[["name"]])
+      
+      if(is.null(path))return("No file ready - make sure the upload tracker says 'upload completed' before clicking go")
+      
+      
+      
+      
+      
+      
+      #executing prepare function
+      out <- prepare_individual_genome(
+        path=path,
+        email=email,
+        filename=filename, 
+        updateProgress = updateProgress,
+        protect_from_deletion=protect_from_deletion
+      )
+      return(out)
+      
+    }
+  })
 })
 
 

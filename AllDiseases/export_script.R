@@ -55,8 +55,9 @@ export_function<-function(uniqueID){
     population_sum_sd<-sqrt(sum(snp_data[,"population_score_sd"]^2,na.rm=T))
     GRS_beta <-sum(snp_data[,"score_diff"],na.rm=T) / population_sum_sd
     
-    
-    output[[study_id]]<- GRS_beta
+    output[[study_id]] <- list()
+    output[[study_id]][["GRS"]]<- GRS_beta
+    output[[study_id]][["trait"]]<- NA
            
            
   }

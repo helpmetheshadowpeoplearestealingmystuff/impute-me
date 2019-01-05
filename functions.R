@@ -28,7 +28,7 @@ if(!is.character(paypal))stop("paypal not character")
 if(length(paypal)!=1)stop("paypal not length 1")
 
 
-prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
+prepare_individual_genome<-function(path, email, filename, updateProgress, protect_from_deletion){
   library(tools)
   
   if(class(path)!="character")stop(paste("path must be character, not",class(path)))
@@ -37,29 +37,15 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   
   if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
   if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
-  
-  
-  #instead of pulling errors, just fix it yourself (observed some users got confused already)
+  #instead of pulling errors on filenames, just fix it yourself (observed some users got confused already)
   filename<-gsub("\\ ","_",filename)
   filename<-gsub("[\\$\\&\\+\\,\\:\\;\\=\\?\\@\\#\\\"\\\']","",filename)
   
-  
-  # if(length(grep(" ",filename))>0){
-  #   m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"blank_space",email,filename)
-  #   m<-paste(m,collapse="\t")
-  #   write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)
-  #   stop(safeError("Please don't have any blank spaces in the filename of the uploaded files."))
-  #   
-  # }
-  # if(length(grep("[\\$\\&\\+\\,\\:\\;\\=\\?\\@\\#\\\"\\\']",filename))>0){
-  #   m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"special_character",email,filename)
-  #   m<-paste(m,collapse="\t")
-  #   write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)
-  #   stop(safeError("Please don't have any special characters in the filename of the uploaded files."))
-  # }
-  
   if(class(protect_from_deletion)!="logical")stop(paste("protect_from_deletion must be logical, not",class(protect_from_deletion)))
   if(length(protect_from_deletion)!=1)stop(paste("protect_from_deletion must be lengh 1, not",length(protect_from_deletion)))
+  
+  if(class(updateProgress)!="function")stop(paste("updateProgress must be function, not",class(updateProgress)))
+  
   
   if(class(email)!="character")stop(paste("email must be character, not",class(email)))
   if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
@@ -67,14 +53,9 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     stop(safeError(paste("a real email adress is needed:",email)))
   }
   
-  acceptedMails<-read.table("/home/ubuntu/misc_files/accepted_emails.txt",stringsAsFactors=F)[,1]
-  if(!email%in%acceptedMails & FALSE){ #changed to always accept submission for now
-    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,path)
-    m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
-    stop(safeError("At the current stage, the project is only open to backers. Please visit our kickstarter page at: http://kck.st/1VlrTlf - sorry for the inconvenience. Going forward the plan is to run on a more voluntary pricing basis, always as non-profit (see terms-of-use). No data was saved."))
-  }
   
+  #updating progress
+  updateProgress(detail = "Check mail, check queue, check md5sum",value=1,max=4)
   
   
   #check for too many ongoing imputations
@@ -109,7 +90,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   }
   
   
-  #create imputation folder and output data folder
+  #create imputation folder and output data folder. Also checks for pre-existing uniqueIDs and stops if so (never happened though)
   print("create imputation folder and output data folder")
   if(uniqueID%in%list.files("/home/ubuntu/data/")){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
@@ -124,7 +105,9 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   homeFolder<-paste("/home/ubuntu/imputations/",homeFolderShort,"/",sep="")
   write.table("Job is not ready yet",file="job_status.txt",col.names=F,row.names=F,quote=F)
   # 	
-  
+
+
+    
   #unzipping (or not) and moving to new place
   print("#unzipping (or not) and moving to new place")
   newTempPath <- paste(homeFolder,paste(uniqueID,"_raw_data",sep=""),sep="/")
@@ -155,17 +138,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   print("checking if it is a consistent file")
   testRead<-try(read.table(path,nrow=10,stringsAsFactors=F))
   if(class(testRead)=="try-error"){
-    #Getting a slightly more informative error message for the submission log
-    # testRead2<-try(readLines(path,n=5))
-    # if(class(testRead2)=="try-error"){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"general_data_file_problem",email,uniqueID)
-    # }else{
-    # first_five_lines<-paste(testRead2,collapse=" // ")
-    # if(nchar(first_five_lines)> 200){
-    # first_five_lines <- substr(first_five_lines,1,199)
-    # }
-    # m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"general_data_file_problem",email,uniqueID,first_five_lines)
-    # }
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)	
     unlink(homeFolder,recursive=T)
@@ -173,15 +146,8 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   }
   
   
-  #Checking if it as a Genes for Good file (have to reject those, since it's different genome built)
-  # if(length(grep("genes for good",tolower(readLines(path,n=2))))>0){
-  #   m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"genes_for_good_error",email,uniqueID)
-  #   m<-paste(m,collapse="\t")
-  #   write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
-  #   unlink(homeFolder,recursive=T)
-  #   stop(safeError(paste0("Your file seemed to be from Genes for Good. At the moment we can't accept data from Genes for Good because it is made in a different genomic version than other direct-to-consumer data. If you know how to translate to GRCH37-built yourself, you may remove the 'Genes for Good' line in the header and try to resubmit. Otherwise - we are working on a solution.")))
-  #   
-  # }
+  #updating progress
+  updateProgress(detail = "Consistency checks",value=2,max=4)
   
   
   #checking if there is at least 10k lines (otherwise imputation wouldn't be possible anyway)
@@ -199,7 +165,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   if(ncol(testRead)==5){
     #This could be an ancestry.com file. Check that first
     testRead2<-read.table(path,nrow=10,stringsAsFactors=F,header=T)
-    if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs"){
+    if(unique(sub("[0-9]+$","",testRead2[,1])[1])!="rs"){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ancestry_problem",email,uniqueID)
       m<-paste(m,collapse="\t")
       write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)	
@@ -234,7 +200,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
     unlink(homeFolder,recursive=T)
     stop(safeError("Your file didn't have 4 columns (or 5 for ancestry.com data). If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection."))
   }
-  if(unique(sub("[0-9]+$","",testRead2[,1]))!="rs"){
+  if(unique(sub("[0-9]+$","",testRead2[,1])[1])!="rs"){
     unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=T)
     unlink(homeFolder,recursive=T)
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"test_read_no_rs_id",email,uniqueID)
@@ -250,7 +216,9 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   ##checking if this job has not actually been run before
   print("checking if this job has not actually been run before")
   this_person_md5sum <- md5sum(path)
-  all_md5sums<-read.table("/home/ubuntu/misc_files/md5sums.txt",sep="\t",stringsAsFactors = F)[,1]
+  all_md5sums_path<-"/home/ubuntu/misc_files/md5sums.txt"
+  if(!file.exists(all_md5sums_path))stop(safeError("Configuration error: md5sums-path not found"))
+  all_md5sums<-read.table(all_md5sums_path,sep="\t",stringsAsFactors = F)[,1]
   if(this_person_md5sum %in% all_md5sums){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
     m<-paste(m,collapse="\t")
@@ -261,15 +229,24 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   write(this_person_md5sum,file="/home/ubuntu/misc_files/md5sums.txt",append=TRUE)			
   
   
-  
+  #finalizing: 
+  #1) saving the small job_status.txt that just shows a status for the node/hub setup to read quickly over ssh
+  #2) saving the variables.rdata which is a file of processing-specific parameters that is needed in first process, but afterwards deleted
   print("Finalize")
-  save(uniqueID,email,filename,protect_from_deletion,file=paste(homeFolder,"variables.rdata",sep=""))
+  imputemany_upload <- FALSE
+  should_be_imputed <- TRUE
+  upload_time<-format(Sys.time(),"%Y-%m-%d-%H-%M-%S")
+  save(uniqueID,email,filename,protect_from_deletion,imputemany_upload,should_be_imputed,upload_time,file=paste(homeFolder,"variables.rdata",sep=""))
   unlink("job_status.txt")
   write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
   
   
+  #updating progress
+  updateProgress(detail = "Unzipping, sending receipt mail",value=3,max=4)
   
-  #New 2017-04-11 send off a mail as a receipt of data (many people asked for this)
+    
+  
+  #Send off a mail as a receipt of data
   library("mailR")
   library("rJava")
   queue_length <- length(list.files("/home/ubuntu/imputations/"))
@@ -290,7 +267,7 @@ prepare_23andme_genome<-function(path, email, filename, protect_from_deletion){
   }
   message_end1 <- paste0(" The service is non-profit, but because of heavy computing-requirements for the imputation analysis it is not free to run. We therefore strongly encourage you to pay a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>, suggested 5 USD). Also, if you do this and put your unique ID, (<i>",uniqueID,"</i>) as payment-message, you'll be moved to priority queue. Either way, once the analysis is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using this uniqueID.<br><br> ")
   
-  message_end2 <- paste0("If you have any further questions, please refer to the book <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br></HTML>")
+  message_end2 <- paste0("In the meantime, may we recommend the book <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br></HTML>")
   
   message <- paste0(message_start,queue_message,message_end1,message_end2)
   mailingResult<-try(send.mail(from = email_address,
@@ -357,10 +334,12 @@ run_imputation<-function(
   if(length(sample_ref)!=1)stop(paste("sample_ref must be lengh 1, not",length(sample_ref)))
   if(!file.exists(sample_ref))stop(paste("Did not find sample_ref at path:",sample_ref))
   
+  
   #need to always check if the genes_for_good_cleaner should be run
   if(length(grep("genes for good",tolower(readLines(rawdata,n=5)))>0)){
     genes_for_good_cleaner(uniqueID,runDir)
   }
+  
   
   
   #Load data using plink 1.9
@@ -496,7 +475,7 @@ run_imputation<-function(
 summarize_imputation<-function(
   runDir,
   uniqueID,
-  destinationDir,
+  destinationDir="/home/ubuntu/data",
   gtools="/home/ubuntu/impute_dir/gtool",
   plink="/home/ubuntu/impute_dir/plink-1.07-x86_64/plink" #note, as of 2015-08-31 this must be plink 1.07, otherwise we get a bug
 ){
@@ -525,6 +504,8 @@ summarize_imputation<-function(
   if(file.exists(paste0(destinationDir,"/",uniqueID))){
     if(length(list.files(paste0(destinationDir,"/",uniqueID)))>0){
       stop(paste0("The destinationDir '",paste0(destinationDir,"/",uniqueID),"' already exists and has files in it. This is a major unforeseen error")  )
+    }else{
+      dir.create(paste0(destinationDir,"/",uniqueID))
     }
     
   }
@@ -552,15 +533,15 @@ summarize_imputation<-function(
   genFiles<-paste(uniqueID,"_chr",chromosomes,".gen",sep="")
   if(length(genFiles)==0)stop("Didn't find a single gen-file")
   
-  #running a conversion first to plink then to 23andme	
+  #running a conversion first to plink then to 23andme/simple-format
   for(genFile in genFiles){
     
     chr <- sub("\\.gen$","",sub("^.+_chr","",genFile))
     print(paste("Simplifying in chromosome",chr))
     sampleFile<-paste("step_4_chr",chr,".sample",sep="")
     
-    #make list of non-indels
-    cmd2<-paste("awk -F' ' '{ if ((length($4) > 1 ) || (length($5) > 1 )) print $2 }'",genFile,">",paste("step_8_chr",chr,"_snps_to_exclude",sep=""))
+    #make list of indels
+    cmd2<-paste("awk -F' ' '{ if ((length($4) > 1 ) || (length($5) > 1 ) || $4 == \"-\" || $5 == \"-\") print $2 }'",genFile,">",paste("step_8_chr",chr,"_snps_to_exclude",sep=""))
     system(cmd2)
     
     #exclude indels
@@ -593,7 +574,7 @@ summarize_imputation<-function(
       size<-0	
     }
     
-    #	arbitraly re-run if it's less than 100 bytes (fair to assume something was wrong then)
+    #	re-run if it's less than 100 bytes (fair to assume something was wrong then)
     if(size<100 ){
       print(paste("retrying step 8-9 command for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
       cmd7 <- paste("split --verbose --lines 5000000 step_8_chr",chr,".gen step_8_extra_chr",chr,".gen",sep="")
@@ -615,10 +596,15 @@ summarize_imputation<-function(
     }
     
     #remove NN
-    cmd12 <- paste("awk '{ if($4 != \"NN\") print}' step_10_chr",chr,".txt  >", sub("\\.gen$","",genFile),".simple_format.txt",sep="")
+    cmd12 <- paste("awk '{ if($4 != \"NN\") print}' step_10_chr",chr,".txt  > step_11_chr",chr,".txt",sep="")
     system(cmd12)
+
     
+    #remove duplicates
+    cmd13 <- paste("awk -F',' '!seen[$1]++' step_11_chr",chr,".txt > ", sub("\\.gen$","",genFile),".simple_format.txt",sep="")
+    system(cmd13)
     
+
     #removing some temporary files
     unlink(list.files(runDir,pattern=paste0("^step_8_chr",chr),full.names=T))
     unlink(list.files(runDir,pattern=paste0("^step_9_chr",chr),full.names=T))
@@ -656,12 +642,15 @@ summarize_imputation<-function(
   
   #creating the pData file
   load(paste0(runDir,"/variables.rdata"))
+  if(!exists("should_be_imputed")) should_be_imputed  <- NA
+  if(!exists("imputemany_upload")) imputemany_upload  <- NA
+  if(!exists("upload_time")) upload_time <- NA
   timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
   md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
   gender<-system(paste("cut --delimiter=' ' -f 6 ",runDir,"/step_4_chr22.sample",sep=""),intern=T)[3]
   f<-file(paste0(prepDestinationDir,"/pData.txt"),"w")
-  writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion"),collapse="\t"),f)
-  writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,protect_from_deletion),collapse="\t"),f)
+  writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion","should_be_imputed","imputemany_upload","upload_time"),collapse="\t"),f)
+  writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,protect_from_deletion,should_be_imputed,imputemany_upload,upload_time),collapse="\t"),f)
   close(f)
   #determine if it is a bulk or single imputation
   crontabs<-grep("^#",system("crontab -l",intern=T),invert = T,value=T)
@@ -1805,14 +1794,6 @@ re_check_md5sums<-function(){
 
 
 
-# runDir<-"/home/ubuntu/bulk_imputations/2017-09-21-15-59-21_bulk"
-# set.seed(42)
-# rawdata_files<-sample(list.files("~/imputations",full.names=T),10)
-# rawdata_files<-paste0(rawdata_files,"/",sub("^.+folder_","",rawdata_files),"_raw_data.txt")
-# shapeit="/home/ubuntu/impute_dir/bin/shapeit"
-# plink="/home/ubuntu/impute_dir/plink"
-# impute2="/home/ubuntu/impute_dir/impute_v2.3.2_x86_64_static/impute2"
-# sample_ref="/home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3.sample"
 
 
 
@@ -1911,7 +1892,7 @@ run_bulk_imputation<-function(
     merge_df<-merge_df[2:nrow(merge_df),]
     write.table(merge_df,file="step_2_merge_list.txt",sep="\t",quote=F,row.names=F,col.names=F)
     
-
+    
     #check that all files are there
     missing <- vector()
     for(i in 1:nrow(merge_df)){
@@ -1956,7 +1937,7 @@ run_bulk_imputation<-function(
           print(s)
         }
         stop("Too many non-biallelic SNPs. This must be investigated. Check above debugging info")
-          
+        
       }
       for(uniqueID in uniqueIDs){
         #Go back to the previous files from previous step and take them, now excluding triallelics.
@@ -2275,7 +2256,7 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
     system(cmd_special_3,intern=F)
     map_file<-map_file2
     if(!file.exists(map_file)){stop("Didn't find map file")}
-    }
+  }
   map<-read.table(map_file,sep='\t',stringsAsFactors=F,comment.char = "")
   map<-map[!duplicated(map[,2]),]
   rownames(map) <- map[,2]
@@ -2364,13 +2345,13 @@ reset_runs_from_node<-function(uniqueIDs,check_is_running=T){
   }
   unlink(paste0("~/imputations/",imp_to_delete),recursive=T)  
   
-  bulk_to_delete<-list.files("~/bulk_imputations/")
+  bulk_to_delete<-list.files("~/imputemany_data/")
   if(length(bulk_to_delete)==1){
-    print("Also deleting one folder in ~/bulk_imputations")
+    print("Also deleting one folder in ~/imputemany_data")
   }else{
     print(paste("Deleting",length(bulk_to_delete),"folders in ~/bulk_imputations:",paste(bulk_to_delete,collapse=", ")))
   }
-  unlink(paste0("~/bulk_imputations/",bulk_to_delete),recursive=T)  
+  unlink(paste0("~/imputemany_data/",bulk_to_delete),recursive=T)  
   
   print(paste("Setting Job ready tag for",length(uniqueIDs),"uniqueIDs on hub at:",hubAddress))
   for(uniqueID in uniqueIDs){
@@ -2379,3 +2360,462 @@ reset_runs_from_node<-function(uniqueIDs,check_is_running=T){
   }
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+prepare_imputemany_genome<-function(path, email, filename, protect_from_deletion,updateProgress,should_be_imputed){
+  library(tools)
+  
+  if(class(path)!="character")stop(paste("path must be character, not",class(path)))
+  if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
+  if(!file.exists(path))stop(paste("Did not find file at path:",path))
+  
+  if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
+  if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
+  
+  if(class(protect_from_deletion)!="logical")stop(paste("protect_from_deletion must be logical, not",class(protect_from_deletion)))
+  if(length(protect_from_deletion)!=1)stop(paste("protect_from_deletion must be lengh 1, not",length(protect_from_deletion)))
+  
+  if(class(email)!="character")stop(paste("email must be character, not",class(email)))
+  if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
+  if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
+    stop(safeError(paste("a real email adress is needed:",email)))
+  }
+  
+  if(class(updateProgress)!="function")stop(paste("updateProgress must be function, not",class(updateProgress)))
+  
+  if(class(should_be_imputed)!="logical")stop(paste("should_be_imputed must be logical, not",class(should_be_imputed)))
+  if(length(should_be_imputed)!=1)stop(paste("should_be_imputed must be lengh 1, not",length(should_be_imputed)))
+  
+  
+  
+  
+  #check if mail adress is in positive list for bulk upload  
+  acceptedMails_path<-"/home/ubuntu/misc_files/accepted_emails.txt"
+  if(!file.exists(acceptedMails_path))stop(safeError("Configuration error: Email accepted-emails list not found"))
+  acceptedMails<-read.table(acceptedMails_path,stringsAsFactors=F,header=T)
+  if(!email%in%acceptedMails[,"email"]){ #bulk-upload must adhere to upload criteria
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,path)
+    m<-paste(m,collapse="\t")
+    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    stop(safeError("Email was not in the accepted-emails list"))
+  }
+  if(should_be_imputed){
+    imputeok <- acceptedMails[acceptedMails[,"email"]%in%email,"imputeok"]
+    if(!imputeok)stop(safeError("Email was not in the accepted-emails list for impute-ok"))
+  }
+  
+  #set upload time
+  upload_time<-format(Sys.time(),"%Y-%m-%d-%H-%M-%S")
+  
+  
+  
+  
+  #check for too many ongoing imputations
+  print("check for too many ongoing imputations")
+  s<-list.files("/home/ubuntu/imputations/")
+  if(length(grep("^imputation_folder",s)) >= maxImputationsInQueue){
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
+    m<-paste(m,collapse="\t")
+    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    
+    stop(safeError(paste("More than",maxImputationsInQueue,"imputations are already in progress. Cannot start a new one. Limited server capacity was the reason for our kickstarter campaign. Supporters were first in line: kck.st/1VlrTlf")))
+  }
+  
+  
+  ##checking if this job has not actually been run before
+  print("checking if this job has not actually been run before")
+  this_person_md5sum <- md5sum(path)
+  all_md5sums_path<-"/home/ubuntu/misc_files/md5sums.txt"
+  if(!file.exists(all_md5sums_path))stop(safeError("Configuration error: md5sums-path not found"))
+  all_md5sums<-read.table(all_md5sums_path,sep="\t",stringsAsFactors = F)[,1]
+  if(this_person_md5sum %in% all_md5sums){
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
+    m<-paste(m,collapse="\t")
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
+    stop(safeError("This file was already analyzed by the system. Write an email if you wish to clear this flag (or make a small change in your file so it doesn't have the same md5sum)."))
+  }
+  write(this_person_md5sum,file="/home/ubuntu/misc_files/md5sums.txt",append=TRUE)			
+  
+  
+  #check if it should be moved to the non-impute server:
+  if(should_be_imputed){
+    
+    
+    #unpacking
+    if(!file.exists("/home/ubuntu/imputemany_data/"))dir.create("/home/ubuntu/imputemany_data/")
+    newUnzippedPath <- paste0("/home/ubuntu/imputemany_data/",upload_time,"_input.txt")
+    gunzipResults<-unzip(path,exdir="/home/ubuntu/imputemany_data/")
+    gunzipResults<-grep("_MACOSX",gunzipResults,invert=T,value=T)
+    if(length(gunzipResults)==1){ #then its a zip file
+      file.rename(gunzipResults, newUnzippedPath)		
+    }else if(length(gunzipResults)>1){
+      stop(safeError("Don't submit zip files with more than one file in"))
+    }else{ #then it's probably not
+      #check if it is a gz file
+      filetype<-system(paste("file ", path),intern=T)
+      if(length(grep("gzip compressed",filetype))==1){
+        stop(safeError("Don't submit gz-files. Only uncompressed text or zip-files. If you already know what a gz file is, this should be easy for you. Please format as tab separated text files."))
+      }else{
+        #otherwise just rename
+        file.rename(path, newUnzippedPath)		
+      }
+    }
+    path <- newUnzippedPath
+    
+    #updating progress
+    updateProgress(detail = "Check mail, check queue, check md5sum")
+    
+    
+    
+    
+    #checking if it is a consistent file
+    print("checking if it is a consistent file")
+    testRead<-try(read.table(path,nrow=10,stringsAsFactors=F,sep="\t"))
+    if(class(testRead)=="try-error"){
+      stop(safeError("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
+    }
+    
+    
+    
+    
+    #reading and checking
+    print("checking if it is a consistent file")
+    d<-try(read.table(path,stringsAsFactors=F,header=T,sep="\t"))
+    
+    if(class(d)=="try-error"){
+      stop(safeError(paste("Problem with reading data. This was the error:",d)))
+    }
+    
+    updateProgress(detail = "Check test-reads")
+    
+    
+    #check header
+    if(!all(colnames(d)[1:3] == c("RsID","Chr","Position")))stop(safeError("First three column headers must be RsID, Chr, and Position"))
+    
+    #check sample names
+    sampleNames<-colnames(d)[4:ncol(d)]
+    if(length(sampleNames)<2)stop(safeError("Have to upload at least data with two samples"))
+    
+    #removing theempty ones RsIDs (have happened in several upload types)
+    d<-d[d[,"RsID"] != "" & d[,"RsID"] != ".",]
+    
+    
+    
+    
+    updateProgress(detail = "Check sample splits")
+    
+    
+    
+    #split the , separated
+    splitLines <- grep(",",d[,"RsID"])
+    if(length(splitLines)>0){
+      print("have to split ,")  
+      
+      d0 <- d[0,]
+      for(splitLine in splitLines){
+        snps<-gsub(" ","",unlist(strsplit(d[splitLine,"RsID"],",")[[1]]))
+        for(snp in snps){
+          d0<-rbind(d0, d[splitLine,])
+          d0[nrow(d0),"RsID"] <- snp
+        }
+      }
+      d<-rbind(d[grep(",",d[,"RsID"],invert=T),],d0)
+    }
+    
+    
+    
+    #check duplicate
+    if(any(duplicated(d[,"RsID"]))){
+      m<-unique(d[duplicated(d[,"RsID"]),"RsID"])
+      if(length(m)>10)m<-c(m[1:10],"...")
+      print(paste("Some SNPs were duplicated:",paste(m,collapse=", "),"Note if you want an automatic removal of duplicated SNP, just say, keep first occurence - then it's very easy to implement. Could be sharpened."))
+      #But for now, just dump them
+      d<-d[!duplicated(d[,"RsID"]),]
+      updateProgress(detail = "Remove duplicate SNPs")
+    }
+    
+    
+    
+    
+    #check pos chr and sort
+    expect_alphabetical<-c('1','10','11','12','13','14','15','16','17','18','19','2','20','21','22','3','4','5','6','7','8','9','MT','X','XY','Y')
+    wanted_alphabetical<-c('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','X','Y','XY','MT')
+    if(all(sort(unique(d[,"Chr"])) != wanted_alphabetical)){
+      if(all(sort(unique(d[,"Chr"])) != expect_alphabetical)){
+        stop(safeError(paste("Chromosomes were not all as expected. Expect all these to be present:",paste(expect_alphabetical,collapse=", "))))
+      }
+    }
+    if(class(d[,"Position"])!="integer")stop(safeError(paste("Position expect to be only integers")))
+    d<-d[order(factor(d[,"Chr"],levels=wanted_alphabetical),d[,"Position"]),]
+    
+    
+    
+    
+    # Create uniqueID for each sample
+    for(sampleName in sampleNames){
+      uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
+      numberOfLetters<-sample(c(1,1,2,3),1)
+      if(numberOfLetters>0){
+        positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
+        l<-c(LETTERS,letters)
+        l<-l[!l%in%c("o","O")] #I hate it when O is in
+        for(x in positionsToInsertLetter){
+          substr(uniqueID,x,x)<-sample(l,1)
+        }
+      }
+      print(paste("created uniqueID for",sampleName,"which is now called",uniqueID))
+      names(sampleNames)[sampleNames%in%sampleName] <- uniqueID
+      
+      #check that the ID doesn't already exists (never happened though)
+      if(uniqueID%in%list.files("/home/ubuntu/data/")){
+        m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
+        m<-paste(m,collapse="\t")
+        write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
+        stop(safeError("Problem with unique ID generation. Please re-load and try again."))
+      }
+      
+    }
+    
+    #check and export each sample
+    for(uniqueID in names(sampleNames)){
+      sampleName <- sampleNames[uniqueID]
+      
+      #updating progress
+      text <- paste0("Sample: ",sampleName," - ",which(names(sampleNames)%in%uniqueID)," of ",length(sampleNames))
+      updateProgress(detail = text,max=length(sampleNames))
+      
+      
+      #create imputation folder and output data folder
+      print(paste("create imputation folder and output data folder for",uniqueID,"sample",sampleName))
+      if(uniqueID%in%list.files("/home/ubuntu/data/")){
+        m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
+        m<-paste(m,collapse="\t")
+        write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)
+        stop(safeError("Problem with unique ID generation. Please re-load and try again."))
+      }
+      
+      homeFolder<-paste("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/",sep="")
+      dir.create(homeFolder)
+      write.table("Job is not ready yet",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
+      
+      #check all is double digit
+      if(length(unique(nchar(d[,sampleName])))!=1)stop(safeError(paste("All genotypes must be of two characters. This was not the case for",sampleName)))
+      
+      
+      #export
+      o<-data.frame(rsid=d[,"RsID"],chromosome=d[,"Chr"],position=d[,"Position"],genotype=d[,sampleName],stringsAsFactors=F)
+      fileout_name <- paste0(homeFolder,uniqueID,"_raw_data.txt" )
+      write.table(o,file=fileout_name, row.names=F,col.names=F, quote=F, sep ="\t")
+      
+      filename <- sampleName
+      imputemany_upload <- TRUE
+      save(uniqueID,email,filename,protect_from_deletion,sampleNames,upload_time,should_be_imputed,imputemany_upload,file=paste(homeFolder,"variables.rdata",sep=""))
+      unlink(paste0(homeFolder,"job_status.txt"))
+      write.table("Job is ready",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
+      
+    }
+    
+    
+    #prepare bulk-impute register file
+    imputemany_path <- "/home/ubuntu/misc_files/imputemany_registry.txt"
+    if(!file.exists(imputemany_path))system(paste("touch",imputemany_path))
+    #upload time, has-been-sent,length,  error-sent, email, uniqueIDs
+    registry_entry <-paste(upload_time,FALSE, FALSE, length(sampleNames),email, paste(names(sampleNames),collapse=","),collapse="\t")
+    write(registry_entry,file=imputemany_path,append=TRUE)			
+    
+
+  }else{
+    outfolder <- "/home/ubuntu/imputemany_export/"
+    if(!file.exists(outfolder))dir.create(outfolder)
+    file.copy(path,paste0(outfolder,upload_time,".zip") )
+
+  }  
+  
+  
+  #always mail a notification that an imputemany upload has happened
+  library("mailR")
+  send.mail(from = email_address,to = "lassefolkersen@gmail.com",
+                subject = "Impute-many data set uploaded",
+                body = paste0("A data set with name ",upload_time," was uploaded to the server by ",email," (imputation was set to ",should_be_imputed,")"),
+                html=T,
+                smtp = list(host.name = "smtp.gmail.com",port = 465,user.name = email_address,passwd = email_password,ssl = TRUE),authenticate = TRUE,send = TRUE)
+  
+  
+  #then send in the 
+  return(paste("<b>Genome files succesfully submitted</b>. The processing of your genome will take some time to run. We will email you at",email,"with download-instructions during the next days."))
+  
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+summarize_imputemany_json<-function(uniqueIDs, name){
+  #function to check if a given uniqueID is the last in a batch upload, and if so summarize all of the uniqueIDs in that batch and send it off
+  library("jsonlite")  
+  library("openxlsx")
+  
+  
+  #check uniqueIDs are ok
+  if(class(uniqueIDs)!="character")stop(paste("uniqueIDs must be character, not",class(uniqueIDs)))
+  if(length(uniqueIDs)<=1)stop(paste("uniqueIDs must be lengh more than 1, not",length(uniqueIDs)))
+  missing_files <- vector()
+  for(uniqueID in uniqueIDs){
+    if(!file.exists(paste0("/home/ubuntu/data/",uniqueID)))missing_files<-c(missing_files,uniqueID)
+  }
+  if(length(missing_files)>0)  stop(paste("These",length(missing_files),"uniqueIDs were missing:",paste(missing_files,collapse=", ")))
+  missing_json <- vector()
+  for(uniqueID in uniqueIDs){
+    json_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
+    if(!file.exists(json_path))missing_json<-c(missing_json,uniqueID)
+  }
+  if(length(missing_json)>0)  stop(paste("JSON files were missing for these",length(missing_json),"uniqueIDs:",paste(missing_json,collapse=", ")))
+  
+  
+  
+  
+  #in this for-loop we read in all the json data.
+  #the strategy is to start with a data.frame with uniqueIDs as rows (since that is constant), and then just add on
+  o1 <- data.frame(row.names=uniqueIDs)
+  for(uniqueID in uniqueIDs){
+    json_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
+    data<-fromJSON(json_path)
+    o1[uniqueID,"sampleName"]<-data[["original_filename"]]
+    o1[uniqueID,"ethnicity"]<-data[["ethnicity"]][["guessed_super_pop"]]
+    
+    
+    
+    #all GWAS
+    for(study_id in names(data[["AllDiseases"]])){
+      if(study_id == "documentation")next
+      #hack to handle the GRS-ending part (issue #25)
+      if(!"GRS"%in%names(data[["AllDiseases"]][[study_id]])){
+        o1[uniqueID,study_id]<-data[["AllDiseases"]][[study_id]]
+      }else{
+        #when fixed, just use this
+        o1[uniqueID,study_id]<-data[["AllDiseases"]][[study_id]][["GRS"]]
+      }
+    }
+    
+    
+    #all ukbiobank
+    for(study_id in names(data[["ukbiobank"]])){
+      if(study_id == "documentation")next
+      o1[uniqueID,study_id]<-data[["ukbiobank"]][[study_id]][["GRS"]]
+    }
+  }
+  
+  
+  o2 <- t(o1)
+  
+  #add in phenodata for AllDisease
+  trait_path1 <- "/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_trait_overoverview.rdata"
+  load(trait_path1)
+  insert_block1 <- traits[rownames(o2),]
+  colnames(insert_block1) <- paste0("AllDiseases_",colnames(insert_block1))
+  
+  #add in phenodata for UKbiobank
+  trait_path2 <- "/home/ubuntu/srv/impute-me/ukbiobank/2017-09-28_trait_overoverview.rdata"
+  load(trait_path2)
+  insert_block2 <- traits[rownames(o2),]
+  colnames(insert_block2) <- paste0("ukbiobank_",colnames(insert_block2))
+  
+  
+  #merge
+  o3<-cbind(o2, insert_block1, insert_block2)
+  
+  
+  
+  #output summary file
+  grapper_preventer <- paste(sample(LETTERS,8),collapse="")  
+  dir_out <- paste0("www/summary_",grapper_preventer,"/")
+  file_out <- paste0(dir_out,name,"_summary.xlsx")
+  file_out_long <- paste0("/home/ubuntu/srv/impute-me/",file_out)
+  if(length(grep("/$",hubAddress))){
+    file_out_web <- paste0(hubAddress,file_out)  
+  }else{
+    file_out_web <- paste0(hubAddress,"/",file_out)
+  }
+  dir.create(dirname(file_out_long))
+  write.xlsx(o3,file=file_out_long,rowNames=T)
+  
+  
+  Sys.sleep(1)
+  
+  return(file_out_web)
+}
+
+
+
+
+

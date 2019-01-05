@@ -69,7 +69,19 @@ shinyServer(function(input, output) {
       #then define JSON extraction logic for all modules: first a skipping term 3 parameter, i.e. for missing json info, then the   
       #extraction part. It's easiest for the AllDiseases module because it was designed for this. But not difficult for others.
       if(module == "AllDiseases"){
-        scores[i,"score"]<-d1[[study_code]]
+        
+        #this is a hack because of issue #25: oldfile-json have GRS as first json-entry. 
+        #but newerfile-json have it subsequent to [["GRS"]]. So to put a temp-fix we
+        #check if GRS is present and if so take it from there. In the long
+        #run should be phased-out though.
+        if(all(c("trait","GRS") %in% names(d1[[study_code]]))){
+          scores[i,"score"]<-d1[[study_code]][["GRS"]]
+        }else{
+          scores[i,"score"]<-d1[[study_code]]  
+        }
+
+        
+        
         
       }else if(module == "drugResponse"){
         if(!all(c("z_score","drug","disease") %in% names(d1[[study_code]])))next
@@ -100,6 +112,7 @@ shinyServer(function(input, output) {
               ICD_code="Feeling fine",
               study_code="Breast Cancer",
               module="BRCA",
+              initials_date =NA,
               score =2,
               stringsAsFactors = F
             )

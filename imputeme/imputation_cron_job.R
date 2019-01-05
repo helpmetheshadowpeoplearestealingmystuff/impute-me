@@ -129,27 +129,11 @@ setwd(runDir)
 load(paste(runDir,"/variables.rdata",sep=""))
 rawdata<-paste(runDir,"/",uniqueID,"_raw_data.txt",sep="")
 
-#if running as node, we also create the output dir already here
-if(serverRole== "Node"){
-  dir.create(paste("/home/ubuntu/data/",uniqueID,sep=""))
-}
-
 #run the imputation
 run_imputation(rawdata=rawdata, runDir=runDir)
 
 #summarizing files
-summarize_imputation(runDir=runDir,uniqueID=uniqueID,destinationDir="/home/ubuntu/data")
-
-
-#creating the pData file
-# timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
-# md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
-# gender<-system(paste("cut --delimiter=' ' -f 5 ",runDir,"/step_1.ped",sep=""),intern=T)
-# f<-file(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),"w")
-# writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion"),collapse="\t"),f)
-# writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,gender,protect_from_deletion),collapse="\t"),f)
-# close(f)
-
+summarize_imputation(runDir=runDir,uniqueID=uniqueID)
 
 #Run the genotype extraction routine
 try(crawl_for_snps_to_analyze(uniqueIDs=uniqueID))
@@ -200,40 +184,35 @@ if(serverRole== "Node"){
 
 
 
-
-print("Getting IP and sending mail")
-# ip<-sub("\"}$","",sub("^.+\"ip\":\"","",readLines("http://api.hostip.info/get_json.php", warn=F)))
-ip<-"https://www.impute.me"
-location_simple <- paste(ip,"/www/",uniqueID,".simple_format.zip",sep="")
-location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
-location_json <- paste(ip,"/www/",uniqueID,"_data.json",sep="")
-
-
-message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br><a href=",location_simple,">",location_simple,"</a><br><br>You can also go to <a href='www.impute.me'>www.impute.me</a> and explore the current analysis-modules using this log-in ID: <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>If you have any further questions, please refer to the book <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain probabilistic information on genotype calls and calculated phenotype information, respectively.<br></HTML>",sep="")
-
-
-
-
-for(tryCount in 1:3){
-  print(paste("Trying to mail to",email))
-  mailingResult<-try(send.mail(from = email_address,
-                               to = email,
-                               subject = "Imputation is ready",
-                               body = message,
-                               html=T,
-                               smtp = list(
-                                 host.name = "smtp.gmail.com", 
-                                 port = 465, 
-                                 user.name = email_address, 
-                                 passwd = email_password, 
-                                 ssl = TRUE),
-                               authenticate = TRUE,
-                               send = TRUE))
-  Sys.sleep(10)
-  if(class(mailingResult)!="try-error")break
-  if(tryCount == 3)stop("MAILING FAILED. THIS SHOULD BE FOLLOWED UP")
+if(exists("imputemany_upload") && imputemany_upload){
+  print("Skipping mail because it's from imputemany_upload")
+}else{
+  print("Sending results mail")
+  ip<-"https://www.impute.me"
+  location_simple <- paste(ip,"/www/",uniqueID,".simple_format.zip",sep="")
+  location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
+  location_json <- paste(ip,"/www/",uniqueID,"_data.json",sep="")
+  message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br><a href=",location_simple,">",location_simple,"</a><br><br>You can also go to <a href='www.impute.me'>www.impute.me</a> and explore the current analysis-modules using this log-in ID: <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>If you have any further questions, please refer to the book <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain probabilistic information on genotype calls and calculated phenotype information, respectively.<br></HTML>",sep="")
+  for(tryCount in 1:3){
+    print(paste("Trying to mail to",email))
+    mailingResult<-try(send.mail(from = email_address,
+                                 to = email,
+                                 subject = "Imputation is ready",
+                                 body = message,
+                                 html=T,
+                                 smtp = list(
+                                   host.name = "smtp.gmail.com", 
+                                   port = 465, 
+                                   user.name = email_address, 
+                                   passwd = email_password, 
+                                   ssl = TRUE),
+                                 authenticate = TRUE,
+                                 send = TRUE))
+    Sys.sleep(10)
+    if(class(mailingResult)!="try-error")break
+    if(tryCount == 3)stop("MAILING FAILED. THIS SHOULD BE FOLLOWED UP")
+  }
 }
-
 
 setwd("..")
 unlink(runDir,recursive=TRUE)
@@ -248,3 +227,27 @@ if(serverRole== "Node"){
   unlink(paste("/home/ubuntu/data/",uniqueID,sep=""),recursive=TRUE)
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

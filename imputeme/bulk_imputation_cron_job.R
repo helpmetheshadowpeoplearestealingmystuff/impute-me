@@ -47,6 +47,7 @@ if(serverRole== "Node"){
   remotedata<-system(cmd1,intern=T)
   Sys.sleep(0.2)
   remotedata_df<-as.data.frame(do.call(rbind,strsplit(remotedata,"\\s+")),stringsAsFactors=F)
+  if(ncol(remotedata_df)==0)stop("Nothing found at hub server. Exit, stop and wait.")
   remotedata_df<-remotedata_df[order(remotedata_df[,6]),]
   remoteFoldersToCheck<-remotedata_df[,7]
   
@@ -135,21 +136,29 @@ if(length(imputeThisFolder)!= length_requested){
 
 
 
-#If script is still running, it means there was a job ready for imputation - 
+#If script is still running, it means there was a job ready for imputation.
+
+#Get the uniqueIDs that are lined up
 uniqueIDs<-sub("^.+folder_","",imputeThisFolder)
+
+
+#prepare a runDir (bulk_imputations-folder should already exist)
+if(!file.exists("/home/ubuntu/bulk_imputations/"))dir.create("/home/ubuntu/bulk_imputations/")
 runDir<-paste("/home/ubuntu/bulk_imputations/",format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"_bulk",sep="")
 dir.create(runDir)
 setwd(runDir)
 
 
 #run the imputation
-run_bulk_imputation(uniqueIDs, runDir)
+run_bulk_imputation(uniqueIDs, runDir)  
 
-# stop("Stopping imputation on purpose, to work with 23andme merging")
 
+
+#delete the rundir afterwards (because files are now in summary_folder)
 unlink(runDir,recursive=TRUE)
 
 
+#loop over all samples and perform the summarization step.
 for(uniqueID in uniqueIDs){
   print(paste("Looping over uniqueID",uniqueID,"for the summarization part"))
   
@@ -158,8 +167,11 @@ for(uniqueID in uniqueIDs){
   load(paste0(summary_folder,"/variables.rdata"))
   
     
-  #summarizing files and remove the summary_folder
-  summarize_imputation(runDir=summary_folder,uniqueID=uniqueID,destinationDir="/home/ubuntu/data")  
+  #summarizing files
+  summarize_imputation(runDir=summary_folder,uniqueID=uniqueID)  
+  
+  
+  #remove the summary_folder (tight on space when in bulk-mode)
   unlink(summary_folder,recursive = T)
   setwd("~")
   
@@ -215,38 +227,37 @@ for(uniqueID in uniqueIDs){
   }else{stop("very odd")}
   
   
-
-  print("Getting IP and sending mail")
-  ip<-"https://www.impute.me"
-  location_simple <- paste(ip,"/www/",uniqueID,".simple_format.zip",sep="")
-  location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
-  location_json <- paste(ip,"/www/",uniqueID,"_data.json",sep="")
-  
-  message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br><a href=",location_simple,">",location_simple,"</a><br><br>You can also go to <a href='www.impute.me'>www.impute.me</a> and explore the current analysis-modules using this log-in ID: <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>If you have any further questions, please refer to the book <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain probabilistic information on genotype calls and calculated phenotype information, respectively.<br></HTML>",sep="")
   
   
-  
-  
-  for(tryCount in 1:3){
-    print(paste("Trying to mail to",email))
-    mailingResult<-try(send.mail(from = email_address,
-                                 to = email,
-                                 subject = "Imputation is ready",
-                                 body = message,
-                                 html=T,
-                                 smtp = list(
-                                   host.name = "smtp.gmail.com", 
-                                   port = 465, 
-                                   user.name = email_address, 
-                                   passwd = email_password, 
-                                   ssl = TRUE),
-                                 authenticate = TRUE,
-                                 send = TRUE))
-    Sys.sleep(10)
-    if(class(mailingResult)!="try-error")break
-    if(tryCount == 3)stop("MAILING FAILED. THIS SHOULD BE FOLLOWED UP")
+  if(exists("imputemany_upload") && imputemany_upload){
+    print("Skipping mail because it's from imputemany_upload")
+  }else{
+    print("Sending results mail")
+    ip<-"https://www.impute.me"
+    location_simple <- paste(ip,"/www/",uniqueID,".simple_format.zip",sep="")
+    location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
+    location_json <- paste(ip,"/www/",uniqueID,"_data.json",sep="")
+    message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br><a href=",location_simple,">",location_simple,"</a><br><br>You can also go to <a href='www.impute.me'>www.impute.me</a> and explore the current analysis-modules using this log-in ID: <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>If you have any further questions, please refer to the book <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain probabilistic information on genotype calls and calculated phenotype information, respectively.<br></HTML>",sep="")
+    for(tryCount in 1:3){
+      print(paste("Trying to mail to",email))
+      mailingResult<-try(send.mail(from = email_address,
+                                   to = email,
+                                   subject = "Imputation is ready",
+                                   body = message,
+                                   html=T,
+                                   smtp = list(
+                                     host.name = "smtp.gmail.com", 
+                                     port = 465, 
+                                     user.name = email_address, 
+                                     passwd = email_password, 
+                                     ssl = TRUE),
+                                   authenticate = TRUE,
+                                   send = TRUE))
+      Sys.sleep(10)
+      if(class(mailingResult)!="try-error")break
+      if(tryCount == 3)stop("MAILING FAILED. THIS SHOULD BE FOLLOWED UP")
+    }
   }
-    
   
   
 
