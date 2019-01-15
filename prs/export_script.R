@@ -4,6 +4,14 @@ plink="/home/ubuntu/impute_dir/plink"
 
 export_function<-function(uniqueID){
 
+  #prepare output list
+  output<-list()
+  output[["documentation"]] <- list()
+  output[["documentation"]][["data_set_overview"]] <- "not available yet - not implemented, because first version"
+  output[["documentation"]][["export_script"]] <- "https://github.com/lassefolkersen/impute-me/blob/1166a12f7fb92cd04b4e5eec1bb4e7ca1a07d8f8/prs/export_script.R"
+  
+  
+  
   #check score files exists and are ok
   prs_dir <- "/home/ubuntu/prs_dir/"
   #the idea here is to prepare for a overview data frame with all good prs-sources we'll have
@@ -83,7 +91,6 @@ export_function<-function(uniqueID){
   
   
   #reform to export/json style output
-  output<-list()
   for(i in 1:nrow(score_sets)){
     nicename <- score_sets[i,"nicename"]
     output[[nicename]]<-list()
