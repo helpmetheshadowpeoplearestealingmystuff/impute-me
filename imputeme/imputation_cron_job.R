@@ -51,12 +51,19 @@ if(serverRole== "Node"){
   remoteFoldersToCheck<-remotedata_df[,7]
   
   
-  #check if there's any fast-queue jobs to put up-front
+  #check if there's any fast-queue jobs to put up-front. The fast-queue jobs is just a file with uniqueID
+  #and then TRUE or FALSE. The TRUE or FALSE means if a bulk impute is allowed to 
+  #take it or not
+  #(they can be in priority queue either because they are paid, or because they are error-prone. Don't put error-prone in the bulk imputing line)
   cmd0 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/misc_files/fast_queue_emails.txt
                 ",sep="")
-  f<-system(cmd0,intern=T)
-  remoteFoldersToCheck<-c(remoteFoldersToCheck[remoteFoldersToCheck%in%f],remoteFoldersToCheck[!remoteFoldersToCheck%in%f])
-  
+  f1<-system(cmd0,intern=T)
+  Sys.sleep(0.2)
+  if(length(f1)>0){ #if there is a fast-queue file, we handle it
+    f2<-do.call(rbind,strsplit(f1,"\t"))
+    f3<-f2[,1]
+    remoteFoldersToCheck<-c(remoteFoldersToCheck[remoteFoldersToCheck%in%f3],remoteFoldersToCheck[!remoteFoldersToCheck%in%f3])
+  }  
   
   #then loop over all remote folders
   for(remoteFolderToCheck in remoteFoldersToCheck){
@@ -125,12 +132,12 @@ if(is.na(imputeThisFolder)){
 
 #If script is still running, it means there was a job ready for imputation - 
 runDir<-paste("/home/ubuntu/imputations/",imputeThisFolder,sep="")
-setwd(runDir)
-load(paste(runDir,"/variables.rdata",sep=""))
-rawdata<-paste(runDir,"/",uniqueID,"_raw_data.txt",sep="")
+setwd(runDir) 
+load(paste(runDir,"/variables.rdata",sep="")) #get the parameters, including uniqueID as written in variables.rdata (but should be the same always)
+
 
 #run the imputation
-run_imputation(rawdata=rawdata, runDir=runDir)
+run_imputation(runDir=runDir)
 
 #summarizing files
 summarize_imputation(runDir=runDir,uniqueID=uniqueID)

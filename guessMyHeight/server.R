@@ -29,7 +29,7 @@ shinyServer(function(input, output) {
 		if(height_provided){
 			m<-"The large dot indicates your actual height (up the Y-axis) and your genetic height (out the X-axis). If the dot is inside the colour-shading your genetic height matches your actual height."
 		}else{
-			m<-"The vertical bar indicates your genetic height. The coloured cloud indicates normal actual heights for people with your specific genetic height. From these two you can find your estimated actual height."
+			m<-"The vertical bar indicates your genetic height. The coloured cloud shows a comparison of real heights and genetic height-scores from a large group of people. From these two you can find your estimated actual height."
 		}
 		return(m)
 	})
@@ -41,9 +41,9 @@ shinyServer(function(input, output) {
 		}else if(input$goButton > 0) {
 			height_provided<-isolate(input$height_provided)
 			if(height_provided){
-				m<-"<small><b>Details:</b> The largest dot shows your height on the Y-axis and your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <u><A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A></u>. Smaller dots shown represent other users.</small>"
+				m<-"<small><b>Details:</b> The largest dot shows your height on the Y-axis and your genetic height on the X-axis. The genetic height is calculated as <A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <u><A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A></u>. Smaller dots, if shown, represent previous users.</small>"
 			}else{
-				m<-"<small><b>Details:</b> The vertical bar shows your genetic height on the X-axis. The genetic height is calculated as <u><A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A></u>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <u><A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A></u>. If smaller dots are shown, they represent previous users.</small>"
+				m<-"<small><b>Details:</b> The vertical bar shows your genetic height on the X-axis. The genetic height is calculated as <u><A HREF='https://en.wikipedia.org/wiki/Standard_score'>Z-score</A></u>, which basically means the number of standard deviations above or below the population mean. The population mean is shown as the background colour smear, and is according to the <u><A HREF='http://www.ncbi.nlm.nih.gov/pubmed/?term=25282103'>currently largest height-GWAS</A></u>. If smaller dots are shown, they represent previous users that have volunteered their own height information. The data is corrected for sex as far as this is possible - some data-providers unfortunately do not include measurements on sex-chromosomes.</small>"
 			}
 		}
 		return(m)
@@ -55,7 +55,7 @@ shinyServer(function(input, output) {
 		
 		if(input$goButton == 0){
 			
-			heights_pre_registered_file<-"/home/ubuntu/misc_files/background_heights.txt"
+			heights_pre_registered_file<-"/home/ubuntu/srv/impute-me/guessMyHeight/background_heights.txt"
 			heights_pre_registered<-read.table(heights_pre_registered_file,sep="\t",stringsAsFactors=F,header=T)
 			smoothScatter(
 				x=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%2,"gheight"],
@@ -88,7 +88,7 @@ shinyServer(function(input, output) {
 				if(real_height>210 )stop("real height must be number below 210 cm (or write me an email if you are actually taller than that)")
 				if(real_height<140 ){
 					if(real_age>15){
-						stop("for adults, real height must be number above 150 cm (or write me an email if you are actually shorter than that)")
+						stop(safeError("for adults, real height must be number above 140 cm (or write me an email if you are actually shorter than that)"))
 					}
 				}
 				
@@ -125,7 +125,7 @@ shinyServer(function(input, output) {
 			line<-paste(c(uniqueID,real_height,gheight,gender),collapse="\t")
 			all_heights_file<-"/home/ubuntu/misc_files/all_heights.txt"
 			if(!is.na(real_height) & uniqueID != "id_613z86871"){ #only save if height is given and it is not the test user
-			  write(line,file=all_heights_file,append=TRUE)  
+			  try(write(line,file=all_heights_file,append=TRUE))
 			}
 			
 						
@@ -142,7 +142,7 @@ shinyServer(function(input, output) {
 			
 			#load database for comparison
 			#this is a file that contains the GWAS heights
-			heights_pre_registered_file<-"/home/ubuntu/misc_files/background_heights.txt"
+			heights_pre_registered_file<-"/home/ubuntu/srv/impute-me/guessMyHeight/background_heights.txt"
 			heights_pre_registered<-read.table(heights_pre_registered_file,sep="\t",stringsAsFactors=F,header=T)
 			smoothScatter(
 				x=heights_pre_registered[heights_pre_registered[,"real_gender"]%in%gender,"gheight"],
@@ -155,21 +155,18 @@ shinyServer(function(input, output) {
 			
 			
 			#load previous users data
-			# otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
-			# heights_in_data<-data.frame(height=vector(),gheight=vector(),gender=vector(),stringsAsFactors=F)
-			# for(otherPerson in otherPersons){
-			# 	if(!file.info(otherPerson)[["isdir"]])next
-			# 	if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-			# 	otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F,comment.char="",quote=""),silent=T)
-			# 	if(class(otherPersonPdata)=="try-error")next
-			# 	if(!all(c("gheight","height","gender")%in%colnames(otherPersonPdata)))next
-			# 	if(otherPersonPdata[1,"gender"] != gender) next #only plot persons of the same gender
-			# 	heights_in_data<-rbind(heights_in_data,otherPersonPdata[1,c("height","gheight","gender")])
-			# }
-			heights_in_data <- read.table(all_heights_file,sep="\t",header=T,stringsAsFactors = F)
-			#only same-gender
-			heights_in_data<-heights_in_data[heights_in_data[,"gender"] %in% gender,]
+			heights_in_data <- try(read.table(all_heights_file,sep="\t",header=T,stringsAsFactors = F))
 			
+			
+			#make robust against non-initialized files
+			if(class(heights_in_data)=="try-error"){
+			  heights_in_data <-as.data.frame(matrix(nrow=0,ncol=4,dimnames=list(NULL,c("uniqueID","height","gheight","gender"))))
+			  write.table(heights_in_data,file=all_heights_file, quote=F,row.names=F,col.names=T,sep="\t")
+			}
+			
+			#only same-gender and only first entry from everyone
+			heights_in_data<-heights_in_data[heights_in_data[,"gender"] %in% gender,]
+			heights_in_data<-heights_in_data[!duplicated(heights_in_data[,"uniqueID"]),]
 			
 			#then plot them
 			points(

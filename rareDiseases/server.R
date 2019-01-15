@@ -6,10 +6,27 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 
 shinyServer(function(input, output) {
 	
+  output$text1 <- renderText({ 
+    
+    if(input$goButton == 0){
+      m <- "The overview of rare disease variants found in this module is not the most extensive single-SNP effects available online. They are shown here because they are all well-supported strong genetic effects, for a selection of rare inherited diseases where microarray analysis made sense. This was the reason these SNPs were included in the 2016-version of the 23andme health.<br><br> 
+
+      Especially the last part - that microarray analysis made sence - is very important when analysing the genetics of rare disease; the microarray technology used in consumer genetics is not optimal because the really strong mutations typically are <i>not</i> measured on a microarray. DNA-sequencing is required to detect them. Therefore microarray analysis of rare disease effects has many problems with false negative results. There's a lot of further details to this discussion, chapter 3.5 in <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>this book</a></u> is a good place to seek more information.<br><br>
+      
+      Nonetheless, the 2016-selection of microarray-measurable SNPs made by 23andme still is reasonably relevant to report, particularly for the carrier-information. For non-23andme users, this module has the additional benefit of translating the data for proprietary 23andme SNPs, with the caveat that because the SNPs are very rare they are often hard to impute.<br><br>"
+      
+      
+    }else{
+      m <- "The table shows the variants which are known to confer a range of severe inherited conditions. They are all fairly rare conditions. Slightly more common, however, is the case of being a carrier of these conditions. Being a carrier means that a person have one copy of a disease-causing allele, but will not be affected because the condition only manifests if both copies are of the disease-causing type.<br><br>"
+    }
+    
+    
+    return(m)
+  })
+  
+  
+  
 	get_table_here <- reactive({
-		# 				if(input$goButton == 0){
-		# 					return(NULL)
-		# 				}
 	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
@@ -78,7 +95,7 @@ shinyServer(function(input, output) {
 		
 	},options =list(pageLength = 200,searching = FALSE))
 	
-	output$text_advice1 <- renderText({ 
+	output$text2 <- renderText({ 
 		
 		if(input$goButton == 0){
 			return(NULL)
@@ -122,7 +139,9 @@ shinyServer(function(input, output) {
 		return(m)
 	})
 	
+
 	
+		
 	
 	
 })

@@ -9,13 +9,9 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 
-# Define server logic for random distribution application
+
 shinyServer(function(input, output) {
-	
-	
-	
-	
-	
+
 	output$text <- renderText({ 
 	  #start progress tracker			
 	  progress <- shiny::Progress$new()
@@ -29,14 +25,11 @@ shinyServer(function(input, output) {
 	    }
 	    progress$set(value = value, detail = detail)
 	  }
-	  
-	  
+
 	  # Take a dependency on input$goButton
 		if(input$goButton > 0){
 			path <- isolate(input$largeFile[["datapath"]])
       if(is.null(path))return("No file selected - don't press 'start imputation' before tracker says upload complete.")
-
-			
 
 			#start preparing
 			out<-prepare_imputemany_genome(

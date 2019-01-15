@@ -7,6 +7,8 @@ shinyServer(function(input, output) {
 	
 	output$text_1 <- renderText({ 
 		
+	  input$goButton
+	  
 		if(input$goButton == 0){
 			m<-paste0("An interesting study of political opinion was performed by <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/24569950'>Hatemi et al</a></u> in 2014. While the authors themselves conclude that results are too weak to be formally significant, it can provide the basis of an interesting self-check on genetics of politics. Note, I doubt we see a strong correlation, but it is fun to test.<br><br>"
 			)
@@ -22,14 +24,12 @@ shinyServer(function(input, output) {
 	get_data <- reactive({
 	  if(input$goButton == 0){
 	    return(NULL)
-	  }else if(input$goButton > 1){
-	    stop(safeError("Please only run algorithm once - or else reload web-page"))
 	  }else{
 	    
 		#initial UI data gathering and user-check
 	  uniqueID<-gsub(" ","",input$uniqueID)
-		real_age<-input$real_age
-		real_opinion<-input$real_opinion
+		real_age<-isolate(input$real_age)
+		real_opinion<-isolate(input$real_opinion)
 		
 		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
@@ -67,50 +67,41 @@ shinyServer(function(input, output) {
 		write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
 		
 		
+		#load database for comparison
+		#this is a file that contains the GWAS opinions
+		all_opinions_file<-"/home/ubuntu/misc_files/all_opinions.txt"
+		opinions_in_data<-try(read.table(all_opinions_file,sep="\t",stringsAsFactors=F,header=T))
+		
+		#make robust against non-initialized files
+		if(class(opinions_in_data)=="try-error"){
+		  headers_required <- c("uniqueID","g_opinion","real_opinion","real_age","gender","source","datestamp")
+		  opinions_in_data <-as.data.frame(matrix(nrow=0,ncol=length(headers_required),dimnames=list(NULL,headers_required)))
+		  write.table(opinions_in_data,file=all_opinions_file, quote=F,row.names=F,col.names=T,sep="\t")
+		}
+		
+		
 		
 		#also store this in the all_opinions_file file (for faster loading)
 		line<-paste(c(uniqueID,GRS_beta,real_opinion,real_age,gender,"interactive",format(Sys.time(),"%Y-%m-%d-%H-%M-%S")),collapse="\t")
 		all_opinions_file<-"/home/ubuntu/misc_files/all_opinions.txt"
 		if(!is.na(GRS_beta) & !is.na(real_age) & !is.na(real_opinion) & uniqueID != "id_613z86871"){ #only save if height is given and it is not the test user
-		  
 		  write(line,file=all_opinions_file,append=TRUE)  
 		}
-		
-		
-		
-		
-		
-		#load database for comparison
-		#this is a file that contains the GWAS opinions
-		all_opinions_file<-"/home/ubuntu/misc_files/all_opinions.txt"
-		opinions_in_data<-read.table(all_opinions_file,sep="\t",stringsAsFactors=F,header=T)
+
+    #sort for later user		
 		opinions_in_data<-opinions_in_data[order(opinions_in_data[,"datestamp"],decreasing = T),]
 		#use latest only 
 		opinions_in_data<-opinions_in_data[!duplicated(opinions_in_data[,"uniqueID"]),]
 		
 		
-		# #get all the other persons in the list
-		# otherPersons<-list.files("/home/ubuntu/data/",full.names=T)
-		# opinions_in_data<-data.frame(real_opinion=vector(),g_opinion=vector(),gender=vector(),real_age=vector(),stringsAsFactors=F)
-		# for(otherPerson in otherPersons){
-		#   if(!file.info(otherPerson)[["isdir"]])next
-		#   if(!file.exists(paste(otherPerson,"pData.txt",sep="/")))next
-		#   otherPersonPdata<-try(read.table(paste(otherPerson,"pData.txt",sep="/"),sep="\t",header=T,stringsAsFactors=F,comment.char = "",quote=""),silent=T)
-		#   if(class(otherPersonPdata)=="try-error")next
-		#   if(!all(c("uniqueID","real_opinion","g_opinion","gender","real_age")%in%colnames(otherPersonPdata)))next
-		#   opinions_in_data<-rbind(opinions_in_data,otherPersonPdata[1,c("uniqueID","real_opinion","g_opinion","gender","real_age")])
-		# }
-		# if(!uniqueID%in%opinions_in_data[,"uniqueID"])stop("There was a problem with the registered pData")
-		
-		
-		
 		
 		#do statistics
 		models<-list()
-		models[["lm"]]<-lm(real_opinion~g_opinion,data=opinions_in_data)
-		models[["lm-corrected"]]<-lm(real_opinion ~ g_opinion + gender + real_age,data=opinions_in_data)
-		models[["spearman"]]<-suppressWarnings(cor.test(opinions_in_data[,"g_opinion"],opinions_in_data[,"real_opinion"],method="spearman"))
-		
+		if(nrow(opinions_in_data)>2){
+		  models[["lm"]]<-lm(real_opinion~g_opinion,data=opinions_in_data)
+		  models[["lm-corrected"]]<-lm(real_opinion ~ g_opinion + gender + real_age,data=opinions_in_data)
+		  models[["spearman"]]<-suppressWarnings(cor.test(opinions_in_data[,"g_opinion"],opinions_in_data[,"real_opinion"],method="spearman"))
+		}
 		
 		#write the score to the log file
 		log_function<-function(uniqueID,study_id,genotypes){
@@ -207,63 +198,68 @@ shinyServer(function(input, output) {
 			return("")
 		}else if(input$goButton > 0) {
 		  o<-get_data()
-		  model1_p<-signif(summary(o[["models"]][["lm"]])[["coefficients"]]["g_opinion","Pr(>|t|)"],2)
-		  model1_percent_explained<-signif(100*summary(o[["models"]][["lm"]])$r.squared,2)
 		  
-		  model2_p<-signif(summary(o[["models"]][["lm-corrected"]])[["coefficients"]]["g_opinion","Pr(>|t|)"],2)
-		  model2_percent_explained<-signif(100*summary(o[["models"]][["lm-corrected"]])$r.squared,2)
-		  
-		  spearman_p<-signif(o[["models"]][["spearman"]][["p.value"]],2)
-		  spearman_rho<-signif(o[["models"]][["spearman"]][["estimate"]],2)
-		  
-		  n <- nrow(o[["opinions_in_data"]])
-		  
-		  if(model2_p < 0.005){
-		    outcome1 <- "<b>is</b> a"
-		    outcome2 <- "is"
-		  }else if(model2_p < 0.05){
-		    outcome1 <- "<b>is</b> a weak"
-		    outcome2 <- "is"
+		  if(length(o[["models"]])>0){
+		    model1_p<-signif(summary(o[["models"]][["lm"]])[["coefficients"]]["g_opinion","Pr(>|t|)"],2)
+		    model1_percent_explained<-signif(100*summary(o[["models"]][["lm"]])$r.squared,2)
+		    
+		    model2_p<-signif(summary(o[["models"]][["lm-corrected"]])[["coefficients"]]["g_opinion","Pr(>|t|)"],2)
+		    model2_percent_explained<-signif(100*summary(o[["models"]][["lm-corrected"]])$r.squared,2)
+		    
+		    spearman_p<-signif(o[["models"]][["spearman"]][["p.value"]],2)
+		    spearman_rho<-signif(o[["models"]][["spearman"]][["estimate"]],2)
+		    
+		    n <- nrow(o[["opinions_in_data"]])
+		    
+		    if(model2_p < 0.005){
+		      outcome1 <- "<b>is</b> a"
+		      outcome2 <- "is"
+		    }else if(model2_p < 0.05){
+		      outcome1 <- "<b>is</b> a weak"
+		      outcome2 <- "is"
+		    }else{
+		      outcome1 <- "<b>is not</b> any"
+		      outcome2 <- "would have been"
+		    }
+		    
+		    if(spearman_rho<0.3){
+		      outcome3 <- "a fairly low association score."
+		    }else if(spearman_rho < 0.5){
+		      outcome3 <- "a medium association score."
+		    }else{
+		      outcome3 <- "a high association score."
+		    }
+		    
+		    #handling that outlier
+		    notShown<-sum(o[["opinions_in_data"]][,"g_opinion"]< 0,na.rm=T)
+		    
+		    if(o[["g_opinion"]]<0){
+		      notShownInsert<-", <i>including yours</i>, "
+		    }else{
+		      notShownInsert<-" "
+		    }
+		    
+		    
+		    m<-paste0("<br>With current input from previous users that have volunteered their own political opinion, we can calculate that there ",outcome1,"  significant political opinion effect from genetics. The percent of political opinion variation that ",outcome2," explained by genetics is ",model2_percent_explained,"% when correcting for age and gender (P=",model2_p,") and ",model1_percent_explained,"% unadjusted (P=",model1_p,"). Spearman rank correlation gives rho=",spearman_rho," (P=",spearman_p,"), which is ",outcome3," Note that ",notShown," samples",notShownInsert,"are not shown because of extreme genetic values (possibly ethnicity effects). They are included in statistics however.<br>")
 		  }else{
-		    outcome1 <- "<b>is not</b> any"
-		    outcome2 <- "would have been"
+		    m <- "Statistics not calculated. Need more users."
 		  }
 		  
-		  if(spearman_rho<0.3){
-		    outcome3 <- "a fairly low association score."
-		  }else if(spearman_rho < 0.5){
-		    outcome3 <- "a medium association score."
-		  }else{
-		    outcome3 <- "a high association score."
-		  }
-	
-		  #handling that outlier
-		  notShown<-sum(o[["opinions_in_data"]][,"g_opinion"]< 0,na.rm=T)
-		  
-		  if(o[["g_opinion"]]<0){
-		    notShownInsert<-", <i>including yours</i>, "
-		  }else{
-		    notShownInsert<-" "
-		  }
-		  
-		  
-		  m<-paste0("<br>With current input from ",n," users, we can calculate that there ",outcome1,"  significant political opinion effect from genetics. The percent of political opinion variation that ",outcome2," explained by genetics is ",model2_percent_explained,"% when correcting for age and gender (P=",model2_p,") and ",model1_percent_explained,"% unadjusted (P=",model1_p,"). Spearman rank correlation gives rho=",spearman_rho," (P=",spearman_p,"), which is ",outcome3," Note that ",notShown," samples",notShownInsert,"are not shown because of extreme genetic values (possibly ethnicity effects). They are included in statistics however.<br>")
-			
 		}
-		return(m)
+	  return(m)
 	})
 	
 	
 	output$table1 <- renderDataTable({ 
-		if(input$goButton == 0){
-			return("")
-		}else if(input$goButton > 0) {
-			
-			#getting data
-			o<-get_data()
-			SNPs_to_analyze<-o[["SNPs_to_analyze"]]
-
-			#summarising allele info into single-columns
+	  if(input$goButton == 0){
+	    return("")
+	  }else if(input$goButton > 0) {
+	    
+	    #getting data
+	    o<-get_data()
+	    SNPs_to_analyze<-o[["SNPs_to_analyze"]]
+	    
+	    #summarising allele info into single-columns
 			SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
 			SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
 			
@@ -288,7 +284,7 @@ shinyServer(function(input, output) {
 			
 			
 		}else{
-			m<-paste0("<small><br><b>Methods</b><br>The genetics risk score was calculated using the data found in <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/24569950'>Hatemi et al</a></u>. The method used is identical to the one describes for the <u><a href='http://www.impute.me/AllDiseases/'>GWAS calculator</a></u>.")
+			m<-paste0("<small><br><b>Methods</b><br>The genetics risk score was calculated using the data found in <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/24569950'>Hatemi et al</a></u>. The method used is identical to the one describes for the <u><a href='http://www.impute.me/AllDiseases/'>complex disease</a></u> module.")
 								
 		}
 		return(m)

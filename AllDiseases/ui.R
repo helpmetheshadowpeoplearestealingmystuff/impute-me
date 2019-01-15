@@ -12,13 +12,6 @@ load("/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_trait_overoverview.rdata
 
 #traits to omit ad-hoc (because they don't work)
 traits<-traits[!traits[,"omit"],]
-# 
-# omitThese<-c(
-#   "behavioural_disinhibition_generation_interaction_23942779",
-#   "body_mass_index_in_non-asthmatics_23517042"
-#   
-#   )
-# traits<-traits[!rownames(traits)%in%omitThese,]
 
 
 #defining 1000 genomes populations
@@ -84,10 +77,10 @@ names(selections_other_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"other"]
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
-	titlePanel("GWAS Calculator"),
+	titlePanel("Complex diseases: The GWAS Calculator"),
 	beginPage(),	
 	beginPanel('1/3'),
-	HTML("Thousands of GWAS studies have been performed. This module allows the calculation of genetic risk score for any of them.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:<br>"),
+	HTML("Thousands of genome-wide association studies (GWAS) have been performed. This module allows the calculation of genetic risk score for any of them.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:<br>"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	
 	conditionalPanel(

@@ -108,15 +108,16 @@ shinyServer(function(input, output) {
       if("differing_snps" %in% names(d[["BRCA"]])){
         if(length(d[["BRCA"]][["differing_snps"]]) > 0){
           if(any(d[["BRCA"]][["differing_snps"]] %in% dangerous)){
-            o <- data.frame(
-              ICD_code="Feeling fine",
-              study_code="Breast Cancer",
-              module="BRCA",
-              initials_date =NA,
-              score =2,
-              stringsAsFactors = F
-            )
-            scores <- rbind(scores,o)
+            # o1 <- data.frame(ICD_code="Feeling fine",study_code="Breast Cancer",module="BRCA",initials_date =NA,score =2,stringsAsFactors = F)
+            o2 <- data.frame(ICD_code="Heading to Hospital",study_code="Breast Cancer",module="BRCA",initials_date =NA,score =2,stringsAsFactors = F)
+            o3 <- data.frame(ICD_code="Cancer",study_code="Breast Cancer",module="BRCA",initials_date =NA,score =2,stringsAsFactors = F)
+            o4 <- data.frame(ICD_code="Cancer",study_code="Breast Cancer",module="BRCA",initials_date =NA,score =2,stringsAsFactors = F)
+            o5 <- data.frame(ICD_code="C00-C97",study_code="Breast Cancer",module="BRCA",initials_date =NA,score =2,stringsAsFactors = F)
+            o6 <- data.frame(ICD_code="C00-C75",study_code="Breast Cancer",module="BRCA",initials_date =NA,score =2,stringsAsFactors = F)
+            o7 <- data.frame(ICD_code="C50-C50",study_code="Breast Cancer",module="BRCA",initials_date =NA,score =2,stringsAsFactors = F)
+            o8 <- data.frame(ICD_code="C50",study_code="Breast Cancer",module="BRCA",initials_date =NA,score =2,stringsAsFactors = F)
+            
+            scores <- rbind(scores,o2,o3,o4,o5,o6,o7,o8)
           }
         }
       }
@@ -390,11 +391,14 @@ shinyServer(function(input, output) {
   
   output$text_1 <- renderText({
     if(input$goButton == 0){
-      m<-paste0("
-<b>Background</b><br><br>Except for the few strong-effect cases, the 'rare disease' or 'mendelian' genetics, much of what we can learn from our genomes does not have a particularly  high impact on our health. If you are a healthy adult, the impact of common disease genetics is likely to be minimal. However, the chance that such knowledge is useful increases if you are anyway being evaluated for sets of symptoms that include a given disease. For example, an increased genetic risk of leukemia may mean very little in a general population, but for patients with systemic joint pain it could be the difference between a wrongful investigation for rheumatoid arthritis or correct investigation for leukemia.<br><br>
-
-This is the purpose of this module: By forcing browsing into a pre-defined set of disease-paths, the algorithm provides you only with relevant genetic information. Nothing more, nothing less. In the root of the tree we find 'feeling fine', which is always a neutral colour: People who feel fine don't need to worry about their genetic risk scores. However, when selecting 'heading to hospital', climbing up the tree, the genetic risk scores are revealed as they become relevant. More of the thinking behind this module is explained in <u><a href='https://www.youtube.com/watch?v=ecGL2r28UuA'>this short animation-video from 2017</a></u>.<br><br><br><br>"
-      )
+      m <- "<b>Background</b><br><br>Diseases where one mutation has a strong medical effect on you are luckily rare. For the majority of people, learning from our genes is instead matter risk modifications and weak predictions. For a healthy adult these are typically of little practical use. This is particularly true when data from DNA-microarrays are used, like most consumer genetics. However, the assumption changes drastically if you are not healthy; If you are anyway being evaluated for a given disease, it may very well be useful to know if a different but medically related diagnosis has a particularly high or or low risk. <br><br>
+        
+        For example, if a person is suffering from mental problems, but have not yet been properly evaluated for any specific diagnosis, then genetic risk information for all diseases related to mental problems may become useful knowledge. Because the information can then serve as a guiding point in that difficult challenge of first diagnosis. Similar examples can be made for virtually all areas of early medical evaluation.<br><br>
+        
+        It is the purpose of the module to help with this: By forcing browsing into pre-defined sets of disease-areas, the algorithm provides you only with genetic information that is relevant to.your current medical status. Nothing more, nothing less. Risk scores relevant to the medical area you are interested in will be shown. Fluke signals from irrelevant disorders will not. The details behind all information given here can be explored in the remaining modules of the site, as indicated when you click on each of coloured bubbles above. As such this module can server as an entry-way into the entire site, depending on your context and interest.<br><br>
+        
+        In the root of the tree we find 'feeling fine', which is always a neutral colour: People who feel fine don't need to worry about their genetic risk scores. However, when selecting 'heading to hospital', climbing up the tree, the genetic risk scores are revealed as they become relevant. More of the thinking behind this module is explained in this <u><a href='https://www.youtube.com/watch?v=ecGL2r28UuA'>this short animation-video from 2017</a></u>.<br><br>"
+      
     }else{
       m<-""
     }

@@ -6,8 +6,9 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 
 uniqueIDs<-list.files("/home/ubuntu/data")
 
-#in days days
-keeping_time<-14
+#in days - for traceable and non-traceable, respectively
+keeping_time_1 <- 14
+keeping_time_2 <- 2 * 365
 
 for(uniqueID in uniqueIDs){
   pdata_path<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
@@ -30,7 +31,15 @@ for(uniqueID in uniqueIDs){
   
   start<-strptime(pData[1,"first_timeStamp"],"%Y-%m-%d-%H-%M")
   timedif<-difftime(Sys.time(),start, units="days")
-  if(timedif > keeping_time){
+  
+  if(timedif > keeping_time_2){
+    print(paste("Files from ",uniqueID,"are now",round(timedif),"days old, and the two-year deletion limit should be invoked"))	     
+    stop("Not implmented yet")
+  }
+  
+  
+  
+  if(timedif > keeping_time_1){
 
     #modify pdata to not save personally identifiable information    
     pData[,"email"]<-NULL

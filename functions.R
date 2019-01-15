@@ -26,6 +26,12 @@ if(!is.character(routinely_delete_this))stop("routinely_delete_this not characte
 if(!exists("paypal"))stop("Didn't find paypal")
 if(!is.character(paypal))stop("paypal not character")
 if(length(paypal)!=1)stop("paypal not length 1")
+if(!exists("bulk_node_count"))stop("Didn't find bulk_node_count ")
+if(!is.numeric(bulk_node_count ))stop("bulk_node_count not numeric")
+if(length(bulk_node_count)!=1)stop("bulk_node_count not length 1")
+if(!exists("error_report_mail"))stop("Didn't find error_report_mail")
+if(!is.character(error_report_mail))stop("error_report_mail not character")
+if(length(error_report_mail)!=1)stop("error_report_mail not length 1")
 
 
 prepare_individual_genome<-function(path, email, filename, updateProgress, protect_from_deletion){
@@ -224,7 +230,7 @@ prepare_individual_genome<-function(path, email, filename, updateProgress, prote
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     unlink(homeFolder,recursive=T)
-    stop(safeError("A person with this genome was already analyzed by the system. Write an email if you wish to clear this flag."))
+    stop(safeError("A person with this genome was already analyzed by the system. If this is an error, you can try to re-upload a new version of your DNA-data, e.g. you can go to your data provider (23andme, ancestry.com) and re-download the data you are interested. Then try that file. There will be no block flag for such new file. If this fails, write us an email with uniqueID and ask to have it cleared."))
   }
   write(this_person_md5sum,file="/home/ubuntu/misc_files/md5sums.txt",append=TRUE)			
   
@@ -250,16 +256,18 @@ prepare_individual_genome<-function(path, email, filename, updateProgress, prote
   library("mailR")
   library("rJava")
   queue_length <- length(list.files("/home/ubuntu/imputations/"))
-  message_start <-paste0("<HTML>We received your data from file <i>", filename,"</i> at www.impute.me. It will now be processed, first through an imputation algorithm and then trough several types of genetic-risk score calculators. This takes approximately 19 hours per genome.")
+  message_start <-paste0("<HTML>We received your data from file <i>", filename,"</i> at www.impute.me. It will now be processed, first through an imputation algorithm and then trough several types of genetic-risk score calculators. This takes a little more than a day per genome.")
   if(queue_length > 30){
     
-    run_time <- 19 #hours
-    servers_running <- 8  #default for summer 2017 (don't want to tinker too much with it)
-    genomes_per_day <- servers_running * (run_time / 24)
-    days_left <- round(queue_length / genomes_per_day)
-    half_days_left <- round(days_left/2)
+    run_time <- 1.6 #days
+    servers_running <- bulk_node_count  #servers
+    genomes_per_server <- 10 #genomes
+    genomes_per_day <- servers_running * genomes_per_server / run_time
+    days_left <- queue_length / genomes_per_day
+    days_left_lower <- round(days_left*0.8)
+    days_left_upper <- round(days_left*2.0)
     
-    queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect approximately ",half_days_left,"-",days_left," days of waiting.")
+    queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect approximately ",days_left_lower,"-",days_left_upper," days of waiting.")
   }else if(queue_length > 5){
     queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect several days of waiting.")
   }else{
@@ -299,7 +307,6 @@ prepare_individual_genome<-function(path, email, filename, updateProgress, prote
 
 
 run_imputation<-function(
-  rawdata, 
   runDir, 
   shapeit="/home/ubuntu/impute_dir/bin/shapeit",
   plink="/home/ubuntu/impute_dir/plink",
@@ -308,15 +315,17 @@ run_imputation<-function(
 ){
   library(tools)
   
-  
-  if(class(rawdata)!="character")stop(paste("rawdata must be character, not",class(rawdata)))
-  if(length(rawdata)!=1)stop(paste("rawdata must be lengh 1, not",length(rawdata)))
-  if(!file.exists(rawdata))stop(paste("Did not find rawdata at path:",rawdata))
-  
   if(class(runDir)!="character")stop(paste("runDir must be character, not",class(runDir)))
   if(length(runDir)!=1)stop(paste("runDir must be lengh 1, not",length(runDir)))
   if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
   if(length(grep("/$",runDir))!=0)stop("Please don't use a trailing slash in the runDir")
+  
+  load(paste(runDir,"/variables.rdata",sep=""))
+  rawdata<-paste(runDir,"/",uniqueID,"_raw_data.txt",sep="")
+  
+  if(class(rawdata)!="character")stop(paste("rawdata must be character, not",class(rawdata)))
+  if(length(rawdata)!=1)stop(paste("rawdata must be lengh 1, not",length(rawdata)))
+  if(!file.exists(rawdata))stop(paste("Did not find rawdata at path:",rawdata))
   
   if(class(shapeit)!="character")stop(paste("shapeit must be character, not",class(shapeit)))
   if(length(shapeit)!=1)stop(paste("shapeit must be lengh 1, not",length(shapeit)))
@@ -343,7 +352,7 @@ run_imputation<-function(
   
   
   #Load data using plink 1.9
-  cmd1<-paste(plink,"--noweb --23file",rawdata,"John Doe --recode --out step_1")
+  cmd1<-paste0(plink," --23file ",rawdata," ",uniqueID," ",uniqueID," --recode --out step_1")
   out1<-system(cmd1)
   
   
@@ -1466,8 +1475,11 @@ get_GRS_2<-function(snp_data, mean_scale=T, unit_variance=T, verbose=T){
 
 
 
-generate_report<-function(uniqueIDs=NULL, filename=NULL){
+generate_report<-function(uniqueIDs=NULL, filename=NULL, updateProgress = updateProgress){
   #A function that will crawl all data directories and generate report with various 
+  
+  if(class(updateProgress)!="function")stop(paste("updateProgress must be function, not",class(updateProgress)))
+  
   
   if(is.null(uniqueIDs)){
     uniqueIDs<-list.files("/home/ubuntu/data/")
@@ -1490,7 +1502,25 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
   
   first_timeStamps<-vector()
   user_log<-data.frame(uniqueIDs=vector(),modules=vector(),dates=vector(),stringsAsFactors=F)
+  
+  
+  
+  #for progressupdates
+  stepSize <- 20
+  steps<-round(seq(from=1,to=length(uniqueIDs),length.out=stepSize))
+  
   for(uniqueID in uniqueIDs){
+    
+    #updating progress
+    if(which(uniqueIDs%in%uniqueID)%in% steps){
+      count<-which(uniqueIDs%in%uniqueID)
+      percentage <- round(count / length(uniqueIDs)*100)
+      text <- paste0("reading reports:", percentage,"%")
+      updateProgress(detail = text,value=percentage,max=120)
+    }
+  
+    
+    #getting pData file
     pData_file<-paste("/home/ubuntu/data",uniqueID,"pData.txt",sep="/")
     if(!file.exists(pData_file))next
     pData<-read.table(pData_file,sep="\t",header=T,stringsAsFactors=F)
@@ -1515,6 +1545,8 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
   user_log<-user_log[order(strptime(user_log[,"dates"],format="%Y-%m-%d-%H-%S")),]
   
   special_ids<-c("id_613z86871","id_4K806Dh21","id_8E523a1t7")
+  
+  updateProgress(detail = "Plotting values",value=110,max=120)
   
   for(module in sort(unique(user_log[,"modules"]))){
     #only grab for this module
@@ -1542,18 +1574,19 @@ generate_report<-function(uniqueIDs=NULL, filename=NULL){
   
   
   #plot only special ids (myself)
-  u1<-user_log
-  u1<-u1[u1[,"uniqueIDs"]%in%special_ids,]
-  #get cum-count
-  u1[,"count"]<-1:nrow(u1)
-  plot(type='s',x=strptime(u1[,"dates"],format="%Y-%m-%d-%H-%S"),u1[,"count"],xlab="Date",ylab="",lwd=2,main="Special users",col=rgb(1,0,0,0.7))
-  par(new = T)
-  u2<-u1[!duplicated(u1[,"uniqueIDs"]),,drop=FALSE]
-  u2[,"count"]<-1:nrow(u2)
-  plot(type='s',x=strptime(u2[,"dates"],format="%Y-%m-%d-%H-%S"),u2[,"count"],lwd=2,col="blue",xaxt="n",yaxt="n",xlab="",ylab="")
-  axis(4)
-  legend("topleft",col=c(rgb(1,0,0,0.7),rgb(0,0,1,0.7)),lty=1,legend=c("Unique Requests (left)","Unique Users (right)"),cex=0.7,lwd=2)
-  
+  if(any(special_ids%in%u1[,"uniqueIDs"])){
+    u1<-user_log
+    u1<-u1[u1[,"uniqueIDs"]%in%special_ids,]
+    #get cum-count
+    u1[,"count"]<-1:nrow(u1)
+    plot(type='s',x=strptime(u1[,"dates"],format="%Y-%m-%d-%H-%S"),u1[,"count"],xlab="Date",ylab="",lwd=2,main="Special users",col=rgb(1,0,0,0.7))
+    par(new = T)
+    u2<-u1[!duplicated(u1[,"uniqueIDs"]),,drop=FALSE]
+    u2[,"count"]<-1:nrow(u2)
+    plot(type='s',x=strptime(u2[,"dates"],format="%Y-%m-%d-%H-%S"),u2[,"count"],lwd=2,col="blue",xaxt="n",yaxt="n",xlab="",ylab="")
+    axis(4)
+    legend("topleft",col=c(rgb(1,0,0,0.7),rgb(0,0,1,0.7)),lty=1,legend=c("Unique Requests (left)","Unique Users (right)"),cex=0.7,lwd=2)
+  }
   
   
   
@@ -1613,7 +1646,6 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
   
   if(is.null(modules)){
     modules<-list.files("/home/ubuntu/srv/impute-me/")
-    
   }else{
     if(class(modules)!="character")stop("modules must be of class character")
     if(!all(file.exists(paste("/home/ubuntu/srv/impute-me/",modules,sep=""))))stop("Not all UniqueIDs given were found")
@@ -1674,6 +1706,7 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
     
     
     #get remaining non-ethnicity modules
+    module_count <- 0
     for(module in modules){
       if(!file.info(paste0("/home/ubuntu/srv/impute-me/",module))["isdir"])next
       if("export_script.R" %in% list.files(paste0("/home/ubuntu/srv/impute-me/",module))){
@@ -1684,7 +1717,7 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
         exp <- try(export_function(uniqueID))
         if(class(exp)=="try-error"){next}
         outputList[[module]] <-exp
-        
+        module_count <- module_count + 1
       }
     }
     
@@ -1717,7 +1750,7 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
     }
   }
   
-  m<-paste("The module was successfully run for",length(uniqueIDs),"samples on",length(modules),"modules")
+  m<-paste("The module was successfully run for",length(uniqueIDs),"samples on",module_count,"modules")
   
   
   return(m)
@@ -2293,7 +2326,7 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
     error1<-system(cmd1,intern=T)
     message <- paste0(uniqueID," failed all attempts at starting imputation. It came with special error status:<b> ", paste(special_error_status,collapse=", "),". </b>The last error message was this: ",paste(error1,collapse="\n"),"\n\nThe files under analysis were these:\nc('",paste(uniqueIDs,collapse="','"),"')")
     send.mail(from = email_address,
-              to = "lassefolkersen@gmail.com",
+              to = error_report_mail,
               subject = "Imputation has problem",
               body = message,
               html=T,
@@ -2655,9 +2688,9 @@ prepare_imputemany_genome<-function(path, email, filename, protect_from_deletion
   }  
   
   
-  #always mail a notification that an imputemany upload has happened
+  #always admin-mail a notification that an imputemany upload has happened
   library("mailR")
-  send.mail(from = email_address,to = "lassefolkersen@gmail.com",
+  send.mail(from = email_address,to = error_report_mail,
                 subject = "Impute-many data set uploaded",
                 body = paste0("A data set with name ",upload_time," was uploaded to the server by ",email," (imputation was set to ",should_be_imputed,")"),
                 html=T,
@@ -2772,6 +2805,13 @@ summarize_imputemany_json<-function(uniqueIDs, name){
     for(study_id in names(data[["ukbiobank"]])){
       if(study_id == "documentation")next
       o1[uniqueID,study_id]<-data[["ukbiobank"]][[study_id]][["GRS"]]
+    }
+    
+    
+    #prs
+    for(study_id in names(data[["prs"]])){
+      if(study_id == "documentation")next
+      o1[uniqueID,study_id]<-data[["prs"]][[study_id]][["GRS"]]
     }
   }
   

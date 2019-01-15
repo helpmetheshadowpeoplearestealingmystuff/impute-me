@@ -30,7 +30,7 @@ if(nrow(d1)>0){
       text1 <- paste("This imputemany-study have not been finished and it's",round(d2[upload_time,"age_days"]),"days since it was submitted:",d2[upload_time,"upload_time"])  
       
       emails_to_send[["error_mail"]] <- list()
-      emails_to_send[["error_mail"]][["to"]] <- "lassefolkersen@gmail.com"
+      emails_to_send[["error_mail"]][["to"]] <- error_report_mail
       emails_to_send[["error_mail"]][["subject"]] <- "Error in imputemany-pipeline"
       emails_to_send[["error_mail"]][["text"]] <- text1
       

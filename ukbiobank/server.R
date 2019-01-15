@@ -19,7 +19,7 @@ shinyServer(function(input, output) {
   output$text_1 <- renderText({ 
     
     if(input$goButton == 0){
-      m<-paste0("A genetic risk score is a value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the specialized trait GWAS modules on <u><a href='http://www.impute.me/autoimmuneDiseases/'>autoimmune diseases</a></u> or <u><a href='http://www.impute.me/leukemia/'>leukemia</a></u>, with the added caveat that only automated curation have been performed on these thousands of additional studies.<br><br>"
+      m<-paste0("A polygenic genetic score is a value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the <u><a href='https://ec2-54-218-116-201.us-west-2.compute.amazonaws.com/AllDiseases/'>complex disease module</a></u>, with the added caveat that only automated curation have been performed on these thousands of additional studies.<br><br>"
       )
       
     }else{
@@ -176,7 +176,7 @@ shinyServer(function(input, output) {
         
     
     #add the overall population SD value
-    textToReturn <- paste0(textToReturn," The population-wide standard deviation of this GRS was calculated to be ",signif(population_sum_sd,2)," which is taken into account when arriving at a trait GRS Z-score of ",signif(GRS,2),".")
+    textToReturn <- paste0(textToReturn," The population-wide standard deviation of this polygenic risk score was calculated to be ",signif(population_sum_sd,2)," which is taken into account when arriving at a trait Z-score of ",signif(GRS,2),".")
     
     
     
@@ -185,7 +185,7 @@ shinyServer(function(input, output) {
     if(percentage < 20){
       summary <- " This is a low score."
     }else if(percentage > 90){
-      summary <- " This is a high score. But keep in mind that additional calculation is necessary to determine a real life-time risk. For example having a very high genetic score for something that is not very heritable may make very little difference. These additional calculations typically require further studies, not always available. Refer to the <u><a href='http://www.impute.me/autoimmuneDiseases/'>autoimmune diseases</a></u> and <u><a href='http://www.impute.me/leukemia/'>leukemia</a></u> analysis modules for a more detailed illustration of this."
+      summary <- " This is a high score. But keep in mind that additional calculation is necessary to determine a real life-time risk. For example having a very high genetic score for something that is not very heritable may make very little difference. These additional calculations typically require further studies, not always available."
     }else{
       summary <- " This is a fairly average score."
     }

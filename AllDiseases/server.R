@@ -21,7 +21,7 @@ shinyServer(function(input, output) {
 	output$text_1 <- renderText({ 
 		
 		if(input$goButton == 0){
-			m<-paste0("A genetic risk score is a value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the specialized trait GWAS modules on <u><a href='http://www.impute.me/autoimmuneDiseases/'>autoimmune diseases</a></u> or <u><a href='http://www.impute.me/leukemia/'>leukemia</a></u>, with the added caveat that only automated curation have been performed on these thousands of additional studies.<br><br>"
+			m<-paste0("A polygenic risk score is a value that gives a summary of a large number of different SNPs - each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. Of course the interpretation of this risk depends a lot on other factors as well: How heritable the disease is. How much of this heritability we can explain with known SNPs. And not least, what would the risk of disease be for you otherwise, i.e. without taking the genetic component into account. <br><br>Because the polygenic risk score is only a risk-modifier, knowledge of these three other values are all required if you want to know your overall risk is, i.e. what's the chance in percent. This calculator cannot provide that. But it can provide a view of the <i>known genetic</i> component of your disease risk, based on all the SNPs that we know are associated with the disease. This, we believe, makes it a better choice for complex diseases than the typical one-SNP-at-the time analysis typically seen in consumer genetics.<br><br>"
 			)
 			
 		}else{
@@ -166,7 +166,7 @@ shinyServer(function(input, output) {
 		
 		
 		#add the overall population SD value
-		textToReturn <- paste0(textToReturn," The population-wide standard deviation of this GRS was calculated to be ",signif(population_sum_sd,2)," which is taken into account when arriving at a trait GRS Z-score of ",signif(GRS,2),".")
+		textToReturn <- paste0(textToReturn," The population-wide standard deviation of this polygenic risk score was calculated to be ",signif(population_sum_sd,2)," which is taken into account when arriving at a trait Z-score of ",signif(GRS,2),".")
 		
 		
 		
@@ -175,7 +175,7 @@ shinyServer(function(input, output) {
 		if(percentage < 20){
 		  summary <- " This is a low score."
 		}else if(percentage > 90){
-		  summary <- " This is a high score. But keep in mind that additional calculation is necessary to determine a real life-time risk. For example having a very high genetic score for something that is not very heritable may make very little difference. These additional calculations typically require further studies, not always available. Refer to the <u><a href='http://www.impute.me/autoimmuneDiseases/'>autoimmune diseases</a></u> and <u><a href='http://www.impute.me/leukemia/'>leukemia</a></u> analysis modules for a more detailed illustration of this."
+		  summary <- " This is a high score. But keep in mind that additional calculation is necessary to determine a real life-time risk. For example having a very high genetic score for something that is not very heritable may make very little difference. These additional calculations typically require further studies, not always available."
 		}else{
 		  summary <- " This is a fairly average score."
 		}
@@ -188,7 +188,7 @@ shinyServer(function(input, output) {
 			          
 		          <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections. In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
 		          
-		          <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Precision-medicine module</a></u> under development - based on this info, but without having to scroll through all entries</small>")		
+		          <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also, instead of scrolling through all entries here, then check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Precision-medicine module</a></u> - based on this info, but more focused and scope-relevant view of the scores.</small>")		
 		
 		
 		#add in the (damn) duplicates

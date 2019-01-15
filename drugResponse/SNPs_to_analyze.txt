@@ -163,7 +163,7 @@ rs1333934	27010727	Han Chinese 	heroin-dependency	methadone	9	C	A	0.5973	a highe
 rs4085128	27010727	Han Chinese 	heroin-dependency	methadone	9	C	T	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.404353	T	C	Prior project research			T/C
 rs4877551	27010727	Han Chinese 	heroin-dependency	methadone	9	C	T	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.48143	C	T	Prior project research			C/T
 rs4877552	27010727	Han Chinese 	heroin-dependency	methadone	9	A	G	0.7012	a higher plasma concentration of R-methadone	slope estimate	0.481629	A	G	Prior project research			A/G
-rs4756776	27010727	Han Chinese 	heroin-dependency	methadone	11	T	A	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.327875	G		Prior project research			T/A/C/G
+rs4756776	27010727	Han Chinese 	heroin-dependency	methadone	11	T	A	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.327875	G		Prior project research			T/A
 rs4757240	27010727	Han Chinese 	heroin-dependency	methadone	11	T	G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.49361	T	G	Prior project research			G/A/T
 rs4756779	27010727	Han Chinese 	heroin-dependency	methadone	11	A	G	0.5195	a higher plasma concentration of S-methadone	slope estimate	0.126398	G	A	Prior project research			A/G
 rs4757242	27010727	Han Chinese 	heroin-dependency	methadone	11	T	A	0.343	a higher plasma concentration of S-methadone	slope estimate	0.121406	A	T	Prior project research			A/T

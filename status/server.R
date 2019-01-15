@@ -34,10 +34,8 @@ shinyServer(function(input, output) {
     barplot(currentLoad,xlim=c(0,maxImputationsInQueue+4),ylim=c(0,2),main="",horiz=T,xaxt="n",col=c("grey20","grey40","grey70"))
     axis(side=1,at=seq(1,maxImputationsInQueue,2),labels=seq(1,maxImputationsInQueue,2))
     title(xlab="imputations")
-    # abline(v=maxImputations,lty=2)
     abline(v=maxImputationsInQueue,lty=2)
     text(maxImputationsInQueue+0.02,1.3,adj=0,label="Max queue")
-    # text(maxImputations+ 0.02,1.3,adj=0,label="Max running")
     legend("topright",pch=15,col=c("grey20","grey40","grey70"),legend=c("Running","Remote-running","Queued"))
     
   })
@@ -45,11 +43,27 @@ shinyServer(function(input, output) {
   output$text1 <- renderText({ 
     if(input$goButton > 0){
       library("mailR")
-      relative_webpath<-generate_report()
+      
+      #start progress tracker			
+      progress <- shiny::Progress$new()
+      on.exit(progress$close())
+      progress$set(message = 'Generating report', value = 0)
+      updateProgress <- function(value = NULL, detail = NULL, max=NULL) {
+        if(is.null(max))max <- 50
+        if (is.null(value)) {
+          value <- progress$getValue()
+          value <- value + 1/max
+        }
+        progress$set(value = value, detail = detail)
+      }
+      
+      
+      
+      relative_webpath<-generate_report(updateProgress = updateProgress)
       link<-paste0("http://www.impute.me/",relative_webpath)
       message <- paste("<HTML>The report can be downloaded from <u><a href='",link,"'>this link</a></u></HTML> ",sep="")
       send.mail(from = email_address,
-                to = "lassefolkersen@gmail.com",
+                to = error_report_mail,
                 subject = "Status report",
                 body = message,
                 html=T,
@@ -86,39 +100,41 @@ shinyServer(function(input, output) {
       for(i in 1:length(inputs)){
         e <- inputs[i]
         not_email <- e == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(e)) != ""
-        not_unique_id <- nchar(e)!=12 | length(grep("^id_",e))==0
+        not_unique_id <- nchar(e)!=12 | length(grep("^[Ii][Dd]_",e))==0
         if(not_email &  not_unique_id){
           stop(safeError(paste("a real email adress or uniqueID is needed:",e)))
         }
         if(not_unique_id){
           inputs[i] <- tolower(e)
+        }else{
+          inputs[i]<-sub("^[Ii][Dd]","id",e)
         }
       }        
       
       
       #get folder ids corresponding to these inputs
-      u <- vector()
+      u <- vector() #counter for insertations
       for(folderToCheck in list.files(imputation_path,full.names = T)){
         f<-paste0(folderToCheck,"/variables.rdata")
         if(!file.exists(f))  next
         load(f)
         if(email %in% inputs | uniqueID %in% inputs){
-          b<-basename(folderToCheck)
+          b<-paste(basename(folderToCheck),FALSE) #FALSE, because bulk_imputations are not allowed to load these
           write(b,file=fast_queue_path,append=TRUE)			
           names(b) <- email
-          u<-c(u,b)
+          u<-c(u,b) #update counter for insertations
         }
       }
       
       
       #then load the entire file and remove duplicates plus the ones that are not found in imputation_path anymore
-      y<-try(read.table(fast_queue_path,stringsAsFactors = F)[,1])
+      y<-try(read.table(fast_queue_path,stringsAsFactors = F))
       if(class(y)=="try-error"){
-        y<-vector()
+        y<-data.frame(V1=vector(),V2=vector())
       }else{
-        y<-unique(y)  
+        y<-y[!duplicated(y[,"V1"]),,drop=FALSE]
       }
-      y<-y[y%in%list.files(imputation_path)]
+      y<-y[y[,"V1"]%in%list.files(imputation_path),,drop=FALSE]
       write.table(y, file=fast_queue_path,sep="\t",quote=F,row.names=F,col.names=F)
       
       #then return a status

@@ -1,3 +1,5 @@
+
+
 library("shiny")
 
 
@@ -31,7 +33,7 @@ shinyServer(function(input, output) {
     
     
     # Take a dependency on input$goButton
-    if(input$goButton > 1){
+    if(input$goButton > 0){
       path <- isolate(input$largeFile[["datapath"]])
       email <- isolate(input$email)
       protect_from_deletion <- FALSE

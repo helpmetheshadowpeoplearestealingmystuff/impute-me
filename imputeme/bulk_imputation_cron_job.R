@@ -2,7 +2,6 @@
 # 
 #Strategy - setup this to run every hour on the hour, 
 # 	
-#Don't run it as root. THis is better
 # crontab -u ubuntu -e
 # 50 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
 
@@ -52,10 +51,31 @@ if(serverRole== "Node"){
   remoteFoldersToCheck<-remotedata_df[,7]
   
   
-  #check if there's any fast-queue jobs - and remove them! They don't go into bulk imputation
-  cmd0 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/misc_files/fast_queue_emails.txt",sep="")
-  f<-system(cmd0,intern=T)
-  remoteFoldersToCheck<-c(remoteFoldersToCheck[!remoteFoldersToCheck%in%f])
+  #check if there's any fast-queue jobs to put up-front. The fast-queue jobs is just a file with uniqueID
+  #and then TRUE or FALSE. The TRUE or FALSE means if a bulk impute is allowed to 
+  #take it or not
+  #(they can be in priority queue either because they are paid, or because they are error-prone. Don't put error-prone in the bulk imputing line)
+  cmd0 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/misc_files/fast_queue_emails.txt
+                ",sep="")
+  f1<-system(cmd0,intern=T)
+  Sys.sleep(0.2)
+  if(length(f1)>0){ #if there is a fast-queue file, we handle it
+    f2<-do.call(rbind,strsplit(f1,"\t"))
+    
+    #first bump of the TRUE fast-queue entries (they are ok to run in bulk-impute)
+    f3<-f2[f2[,2]%in%"TRUE",1,drop=FALSE]
+    if(nrow(f3)>0){
+      remoteFoldersToCheck<-c(remoteFoldersToCheck[remoteFoldersToCheck%in%f3],remoteFoldersToCheck[!remoteFoldersToCheck%in%f3])  
+    }
+    
+    #then remove the FALSE fast-queue entries (they are NOT ok to run in bulk-impute)
+    f4<-f2[f2[,2]%in%"FALSE",1,drop=FALSE]
+    if(nrow(f4)>0){
+      remoteFoldersToCheck<-remoteFoldersToCheck[!remoteFoldersToCheck%in%f4]
+    }
+  }
+
+  
   
   
   #then loop over all remote folders - first checking if there is 'length_requested'  ready jobs
