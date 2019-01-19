@@ -72,10 +72,20 @@ export_function<-function(uniqueID){
       
       #prepare plink score run. Note for later - the -read-freq should probably be set up such that the calculation is in line with the main AllDisease module. For later.
       cmd3 <- paste0(plink, " --bfile ", idTempFolder,f, " --score ",score_file," 1 2 3 header sum --out ",out_file)
-      out3 <- system(cmd3,ignore.stdout=T)
+      out3 <- system(cmd3,ignore.stdout=F)
       
+      #give up here if there's problems here
+      if(out3 == 3){
+        cmd4 <- paste0(plink, " --bfile ", idTempFolder,f, " --list-duplicate-vars")
+        out4 <- system(cmd4)  
+
+        unlink(idTempFolder,recursive = T)
+        system(cmd3,ignore.stdout=F)
+        stop(paste("Found an error in the plink score step for chr",chr," - stopping and removing temp folder"))
+      }
+      
+      #read the scores and insert
       per_chr_data<-read.table(paste0(out_file,".profile"),header=T)
-      
       score_sets[i,paste0("PART_CNT1_",chr)] <- per_chr_data[1,"CNT"]
       score_sets[i,paste0("PART_CNT2_",chr)] <- per_chr_data[1,"CNT2"]
       score_sets[i,paste0("PART_SCORESUM_",chr)] <- per_chr_data[1,"SCORESUM"]

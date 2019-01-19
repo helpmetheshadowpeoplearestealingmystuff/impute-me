@@ -391,7 +391,7 @@ shinyServer(function(input, output) {
   
   output$text_1 <- renderText({
     if(input$goButton == 0){
-      m <- "<b>Background</b><br><br>Diseases where one mutation has a strong medical effect on you are luckily rare. For the majority of people, learning from our genes is instead matter risk modifications and weak predictions. For a healthy adult these are typically of little practical use. This is particularly true when data from DNA-microarrays are used, like most consumer genetics. However, the assumption changes drastically if you are not healthy; If you are anyway being evaluated for a given disease, it may very well be useful to know if a different but medically related diagnosis has a particularly high or or low risk. <br><br>
+      m <- "<b>Background</b><br><br>Diseases where one mutation has a strong medical effect on you are luckily rare. For the majority of people, learning from our genes is instead matter risk modifications and weak predictions. For a healthy adult these are typically of little practical use. However, the assumption changes drastically if you are not healthy; If you are anyway being evaluated for a given disease, it may very well be useful to know if a different but medically related diagnosis has a particularly high or or low risk. <br><br>
         
         For example, if a person is suffering from mental problems, but have not yet been properly evaluated for any specific diagnosis, then genetic risk information for all diseases related to mental problems may become useful knowledge. Because the information can then serve as a guiding point in that difficult challenge of first diagnosis. Similar examples can be made for virtually all areas of early medical evaluation.<br><br>
         

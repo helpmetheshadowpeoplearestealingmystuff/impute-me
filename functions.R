@@ -1648,12 +1648,14 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
     modules<-list.files("/home/ubuntu/srv/impute-me/")
   }else{
     if(class(modules)!="character")stop("modules must be of class character")
-    if(!all(file.exists(paste("/home/ubuntu/srv/impute-me/",modules,sep=""))))stop("Not all UniqueIDs given were found")
+    if(!all(file.exists(paste("/home/ubuntu/srv/impute-me/",modules,sep=""))))stop("Not all modules given were found")
   }
   
   
   
   for(uniqueID in uniqueIDs){
+    print(paste("Running export script for",uniqueID))
+    
     outputList <- list()
     #importing standard pData stuff
     pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
@@ -2110,11 +2112,10 @@ run_bulk_imputation<-function(
   allFiles1<-list.files(runDir)
   for(chr in chromosomes){
     for(uniqueID in uniqueIDs){
-      print(paste("Cutting from",uniqueID,"chromosome",chr))
-      # uniqueID<-sub("^.+/","",sub("_raw_data.txt$","",rawdata_file))
       outfolder <- paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/")
       w<-which(samples[,1]%in%uniqueID) -2
-      print(paste("Retrieving",uniqueID,"which is",w,"of",nrow(samples)-2))
+      print(paste0("Extracting chromosome ",chr," from ",uniqueID," (sample ",w," of ",nrow(samples)-2,")"))
+      
       
       #cut and transfer sample file
       write.table(samples[c(1:2,w+2),],file=paste0(outfolder,"step_4_chr",chr,".sample"),quote=F,row.names=F,col.names = F)
@@ -2453,7 +2454,7 @@ prepare_imputemany_genome<-function(path, email, filename, protect_from_deletion
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,path)
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
-    stop(safeError("Email was not in the accepted-emails list"))
+    stop(safeError("Email was not in the accepted-emails list. Your data will not be processed and have already been deleted."))
   }
   if(should_be_imputed){
     imputeok <- acceptedMails[acceptedMails[,"email"]%in%email,"imputeok"]

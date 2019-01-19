@@ -67,7 +67,7 @@ shinyServer(function(input, output) {
 		
 		if(ethnicity_group == "automatic"){
 		  json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
-		  if(!file.exists(json_path))stop(safeError("Automatic guess of ethnicity not possible (json not found)"))
+		  if(!file.exists(json_path))stop(safeError("Json file not found (So cannot do automatic guess)"))
 		  library(jsonlite)
 		  d1<-fromJSON(json_path)
 		  e<-try(d1[["ethnicity"]][["guessed_super_pop"]],silent=F)
@@ -188,7 +188,7 @@ shinyServer(function(input, output) {
 			          
 		          <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections. In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
 		          
-		          <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also, instead of scrolling through all entries here, then check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Precision-medicine module</a></u> - based on this info, but more focused and scope-relevant view of the scores.</small>")		
+		          <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also, instead of scrolling through all entries here, then check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Precision-medicine module</a></u> - based on this info, but giving a more focused and scope-relevant view of the scores.</small>")		
 		
 		
 		#add in the (damn) duplicates
