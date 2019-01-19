@@ -101,14 +101,12 @@ for(uniqueID in uniqueIDs){
     if(!pData[1,"protect_from_deletion"]){
       print(paste("Files from ",uniqueID,"are now",round(timedif),"days old, and are removed due to two-year-limit"))
       
-      vault_folder <- paste0("/home/ubuntu/data/",uniqueID,"/vault/")
-      if(!file.exists(vault_folder))dir.create(vault_folder)
-      suppressWarnings(file.rename(f7, paste0(dirname(f7),"/vault/",basename(f7))))
-      suppressWarnings(file.rename(f8, paste0(dirname(f8),"/vault/",basename(f8))))
-      suppressWarnings(file.rename(f9, paste0(dirname(f9),"/vault/",basename(f9))))
-      suppressWarnings(file.rename(f10, paste0(dirname(f10),"/vault/",basename(f10))))
-      suppressWarnings(file.rename(f11, paste0(dirname(f11),"/vault/",basename(f11))))
-      
+      try(unlink(f7))
+      try(unlink(f8))
+      try(unlink(f9))
+      try(unlink(f10))
+      try(unlink(f11))
+
       
     }else{
       print(paste("Files from ",uniqueID,"are now",round(timedif),"days old, but are kept beyond two-year-limit because of protect-deletion status"))      
