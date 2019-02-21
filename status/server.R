@@ -119,7 +119,7 @@ shinyServer(function(input, output) {
         if(!file.exists(f))  next
         load(f)
         if(email %in% inputs | uniqueID %in% inputs){
-          b<-paste(basename(folderToCheck),FALSE) #FALSE, because bulk_imputations are not allowed to load these
+          b<-paste(basename(folderToCheck),FALSE,sep="\t") #FALSE, because bulk_imputations are not allowed to load these
           write(b,file=fast_queue_path,append=TRUE)			
           names(b) <- email
           u<-c(u,b) #update counter for insertations

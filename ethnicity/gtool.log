@@ -1,8 +1,0 @@
-/home/ubuntu/impute_dir/gtool -S --g /home/ubuntu/data/id_32F0d0850/temp/id_32F0d0850_chr5.gen --s /home/ubuntu/data/id_32F0d0850/temp/samples.txt --inclusion /home/ubuntu/data/id_32F0d0850/temp/snps_in_chr5.txt
-Output files: /home/ubuntu/data/id_32F0d0850/temp/id_32F0d0850_chr5.gen.subset 
-Number of input samples: 1
-Number of output samples: 1
-Snp_id...
-Gen...
-Number of input SNPs: 2519533
-Number of output SNPs: 133

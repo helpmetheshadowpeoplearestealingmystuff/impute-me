@@ -2379,13 +2379,13 @@ reset_runs_from_node<-function(uniqueIDs,check_is_running=T){
   }
   unlink(paste0("~/imputations/",imp_to_delete),recursive=T)  
   
-  bulk_to_delete<-list.files("~/imputemany_data/")
+  bulk_to_delete<-list.files("~/bulk_imputations/")
   if(length(bulk_to_delete)==1){
-    print("Also deleting one folder in ~/imputemany_data")
+    print("Also deleting one folder in ~/bulk_imputations")
   }else{
     print(paste("Deleting",length(bulk_to_delete),"folders in ~/bulk_imputations:",paste(bulk_to_delete,collapse=", ")))
   }
-  unlink(paste0("~/imputemany_data/",bulk_to_delete),recursive=T)  
+  unlink(paste0("~/bulk_imputations/",bulk_to_delete),recursive=T)  
   
   print(paste("Setting Job ready tag for",length(uniqueIDs),"uniqueIDs on hub at:",hubAddress))
   for(uniqueID in uniqueIDs){
@@ -2453,7 +2453,7 @@ prepare_imputemany_genome<-function(path, email, filename, protect_from_deletion
   if(!email%in%acceptedMails[,"email"]){ #bulk-upload must adhere to upload criteria
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,path)
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     stop(safeError("Email was not in the accepted-emails list. Your data will not be processed and have already been deleted."))
   }
   if(should_be_imputed){
@@ -2473,7 +2473,7 @@ prepare_imputemany_genome<-function(path, email, filename, protect_from_deletion
   if(length(grep("^imputation_folder",s)) >= maxImputationsInQueue){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
     m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)			
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     
     stop(safeError(paste("More than",maxImputationsInQueue,"imputations are already in progress. Cannot start a new one. Limited server capacity was the reason for our kickstarter campaign. Supporters were first in line: kck.st/1VlrTlf")))
   }
@@ -2548,6 +2548,13 @@ prepare_imputemany_genome<-function(path, email, filename, protect_from_deletion
     
     #check header
     if(!all(colnames(d)[1:3] == c("RsID","Chr","Position")))stop(safeError("First three column headers must be RsID, Chr, and Position"))
+    
+    
+    #check max-size
+    if(ncol(d)>100){
+      stop(safeError("The file contained more than 100 individuals. This is currently not allowed. It is very easy to lift the ceiling, however, it's just a precaution to not overload servers. Write an email if you need to upload more."))
+    }
+    
     
     #check sample names
     sampleNames<-colnames(d)[4:ncol(d)]
@@ -2647,7 +2654,7 @@ prepare_imputemany_genome<-function(path, email, filename, protect_from_deletion
       if(uniqueID%in%list.files("/home/ubuntu/data/")){
         m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
         m<-paste(m,collapse="\t")
-        write(m,file="/home/ubuntu/misc_files/submission_log.txt",append=TRUE)
+        write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)
         stop(safeError("Problem with unique ID generation. Please re-load and try again."))
       }
       

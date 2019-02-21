@@ -176,7 +176,7 @@ shinyServer(function(input, output) {
         
     
     #add the overall population SD value
-    textToReturn <- paste0(textToReturn," The population-wide standard deviation of this polygenic risk score was calculated to be ",signif(population_sum_sd,2)," which is taken into account when arriving at a trait Z-score of ",signif(GRS,2),".")
+    textToReturn <- paste0(textToReturn," For you, we calculated an ethnicity-corrected trait Z-score of ",signif(GRS,2),".")
     
     
     

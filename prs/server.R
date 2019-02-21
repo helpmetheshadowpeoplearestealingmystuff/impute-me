@@ -25,8 +25,8 @@ shinyServer(function(input, output) {
 		if(input$goButton == 0){
 			return(NULL)
 		}
-    trait_choice <- input$trait_choice
-    uniqueID<-gsub(" ","",input$uniqueID)
+    trait_choice <- isolate(input$trait_choice)
+    uniqueID<-gsub(" ","",isolate(input$uniqueID))
 
 		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))

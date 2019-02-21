@@ -7,8 +7,8 @@ shinyUI(bootstrapPage(
 	titlePanel("Contact"),
 	beginPage(),
 	HTML(	"
-<b>Genetics lead:</b> <u><a href='http://orcid.org/0000-0003-0708-9530'>Lasse Folkersen</a></u>.<br>
-<b>PRS-advice:</b> <u><a href='https://www.kcl.ac.uk/lsm/research/divisions/gmm/departments/mmg/researchgroups/clewis/index.aspx'>Cathryn Lewis</a></u>.<br>
+<b>Genetics lead:</b> <u><a href='http://orcid.org/0000-0003-0708-9530'>Lasse Folkersen</a></u>, PhD.<br>
+<b>PRS-advice:</b> Cathryn Lewis, PhD.<br>
 <b>Interface-design:</b> <u><a href='https://github.com/SDelport?tab=repositories'>Stefan Delport</a></u>.<br>
 <b>HTTPS-security:</b> <u><a href='https://xarentek.com'>Andrew Maris.</a></u><br>
 <b>Student-help:</b> Li Zhang, Vincent Frederik Dahl, Christian Højte Sørensen<br>

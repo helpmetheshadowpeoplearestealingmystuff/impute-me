@@ -8,7 +8,7 @@ trait_choices<-list.files("/home/ubuntu/prs_dir")
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
-	titlePanel("LDpred score"),
+	titlePanel("All-SNP polygenic scores"),
 	beginPage(),
 	beginPanel('1/3'),
 	HTML("This module analysis polygenic risk scores using the most extensive set of all SNPs possible.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:"),

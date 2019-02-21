@@ -29,10 +29,10 @@ if(nrow(d1)>0){
     for(upload_time in rownames(d2)){
       text1 <- paste("This imputemany-study have not been finished and it's",round(d2[upload_time,"age_days"]),"days since it was submitted:",d2[upload_time,"upload_time"])  
       
-      emails_to_send[["error_mail"]] <- list()
-      emails_to_send[["error_mail"]][["to"]] <- error_report_mail
-      emails_to_send[["error_mail"]][["subject"]] <- "Error in imputemany-pipeline"
-      emails_to_send[["error_mail"]][["text"]] <- text1
+      emails_to_send[[paste0("mail_",upload_time)]] <- list()
+      emails_to_send[[paste0("mail_",upload_time)]][["to"]] <- error_report_mail
+      emails_to_send[[paste0("mail_",upload_time)]][["subject"]] <- "Error in imputemany-pipeline"
+      emails_to_send[[paste0("mail_",upload_time)]][["text"]] <- text1
       
       
       #change the error_sent flag to TRUE

@@ -19,9 +19,9 @@ export_function<-function(uniqueID){
   
   for(i in 1:nrow(score_sets)){
     testRead <-read.table(score_sets[i,"path"],nrows=10,header=T,stringsAsFactors = F)
-    if(ncol(testRead)<3)stop(paste("Too few columns in score file",score_file))
-    if(!all(colnames(testRead)[1:2] == c("rsid","ea")))stop(paste("first two columns of a ldpred file must have rsid and ea as headers in",score_file))
-    for(k in 3:ncol(testRead))if(class(testRead[,k])!="numeric")stop(paste("non-numeric column: col",k,"of file",score_file))
+    if(ncol(testRead)<3)stop(paste("Too few columns in score file",basename(score_sets[i,"path"])))
+    if(!all(colnames(testRead)[1:2] == c("rsid","ea")))stop(paste("first two columns of a ldpred file must have rsid and ea as headers in",basename(score_sets[i,"path"])))
+    for(k in 3:ncol(testRead))if(class(testRead[,k])!="numeric")stop(paste("non-numeric column: col",k,"of file",basename(score_sets[i,"path"])))
   }
   
   
