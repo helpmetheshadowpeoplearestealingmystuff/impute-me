@@ -49,7 +49,7 @@ Each specific module function is documented by their UI-provided description. Th
 
 
 
-These scores are extensively used as described in each module. For further understanding of each module, refer to source code of that module. This [pdf-file](2018-09-20_prs_explanatory_slides.pdf) contains further illustrated examples of PRS derivation. The set up of input SNPs is sought to be as complete as possible, e.g. using [LDpred info](https://github.com/lassefolkersen/impute-me/tree/master/LDpredMDD). However, more often it is based on top-significant (pruned) hits out of necessity. This is also indicated on a per-module basis.
+These scores are extensively used as described in each module. For further understanding of each module, refer to source code of that module. This [pdf-file](2018-09-20_prs_explanatory_slides.pdf) contains further illustrated examples of PRS derivation. The set up of input SNPs is sought to be as complete as possible, e.g. using [LDpred info](https://github.com/lassefolkersen/impute-me/tree/master/prs). However, more often it is based on top-significant (pruned) hits out of necessity. This is also indicated on a per-module basis.
 
 When reading the code for each module, the main parts are the ui.R and a server.R file. The details of this setup of this can be found in the <a href='http://shiny.rstudio.com/'>R/Shiny</a> documentation. Shiny is the interface language that have been used to create these modules. A template module which contains the very minimal configuration is found in the ['template'](https://github.com/lassefolkersen/impute-me/tree/master/template) folder. Additional module-specific files that are often used is the SNPs_to_analyze.txt file and the export_script.R, further described elsewhere.
 

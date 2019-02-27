@@ -20,65 +20,157 @@ shinyServer(function(input, output) {
   
   
   
+  get_data <- reactive({
+    if(input$goButton == 0){
+      return(NULL)
+    }
+    study_id <- isolate(input$trait_choice)
+    uniqueID<-gsub(" ","",isolate(input$uniqueID))
+    ethnicity_group<-input$ethnicity_group
+    
+    
+    if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
+    if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
+    if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+      Sys.sleep(3) #wait a little to prevent raw-force fishing	
+      stop(safeError("Did not find a user with this id"))
+    }
+    
+    #json file loading
+    json_file<-paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
+    if(!file.exists(json_file))stop(safeError("Didn't find a json data file. Maybe data was from before implementation of this?"))
+    d<-fromJSON(json_file)
+    
+    #check existence of content
+    if(!"prs" %in% names(d))stop(safeError("Didn't find a PRS-entry in your calculations. Submission was probably made prior to launch of PRS module"))
+    if(!study_id %in% names(d[["prs"]]))stop(safeError("Didn't find a PRS-entry for this trait in your calculations. Submission was probably made prior to implementation. Try another trait or re-upload data."))
+    
+    #extract relevant data
+    d1 <- d[["prs"]][[study_id]]
+    
+    #temp-fix because of 2019-01-11-refactoring (can be removed later)
+    if(any(c("total_snps","contributing_snps")%in%names(d1))){
+      names(d1)[names(d1)%in%"contributing_snps"]<-"alleles_checked"
+      names(d1)[names(d1)%in%"total_snps"]<-"alleles_observed"
+      stop(safeError("Shouldn't have any temp-fix anymore"))
+    }
+    
+    
+    
+    #ethnicity considerations
+    if(ethnicity_group == "automatic"){
+      e<-try(d[["ethnicity"]][["guessed_super_pop"]],silent=F)
+      if(is.null(e) || is.na(e) ||  !e %in% c("AFR", "AMR", "EAS", "EUR", "SAS")){
+        ethnicity_group<-"global"
+      }else{
+        ethnicity_group <- e
+      }
+    }
+    if(ethnicity_group == "global"){
+      #do nothing. Note the density curve location.
+      densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-02-27_densities_ALL.rdata"
+    }else{
+      #note the density curve location
+      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-02-27_densities_",ethnicity_group,".rdata")
+    }
+    
+    
+    load(densityCurvePath)
+    if(!paste0(study_id,"_y") %in% rownames(densities))stop(safeError(paste("This",study_id,"trait was not found to have density-plotting available")))
+    
+    distributionCurve<-list(x=densities[paste0(study_id,"_x"),],y=densities[paste0(study_id,"_y"),])
+    
+    
+    
+    #write the score to the log file
+    log_function<-function(uniqueID){
+      user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"prs",uniqueID,study_id,signif(d1[["GRS"]],3))
+      m<-paste(m,collapse="\t")
+      if(file.exists(user_log_file)){
+        write(m,file=user_log_file,append=TRUE)
+      }else{
+        write(m,file=user_log_file,append=FALSE)
+      }
+    }
+    try(log_function(uniqueID))
+    
+    #return data    
+    return(list(
+      d1 = d1,
+      distributionCurve=distributionCurve
+    ))
+    
+  })
+  
   
   output$table1 <- renderTable({ 
-		if(input$goButton == 0){
-			return(NULL)
-		}
-    trait_choice <- isolate(input$trait_choice)
-    uniqueID<-gsub(" ","",isolate(input$uniqueID))
-
-		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
-		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
-			Sys.sleep(3) #wait a little to prevent raw-force fishing	
-			stop(safeError("Did not find a user with this id"))
-		}
-
-	  #json file loading
-	  json_file<-paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
-	  if(!file.exists(json_file))stop(safeError("Didn't find a json data file. Maybe data was from before implementation of this?"))
-	  d<-fromJSON(json_file)
-	  
-	  #check existence of content
-	  if(!"prs" %in% names(d))stop(safeError("Didn't find a PRS-entry in your calculations. Submission was probably made prior to launch of PRS module"))
-		if(!trait_choice %in% names(d[["prs"]]))stop(safeError("Didn't find a PRS-entry for this trait in your calculations. Submission was probably made prior to implementation. Try another trait or re-upload data."))
-
-	  print("checks ok")
-	  
-	  #extract relevant data
-	  d1 <- d[["prs"]][[trait_choice]]
-	  
-	  #temp-fix because of 2019-01-11-refactoring (can be removed later)
-	  if(any(c("total_snps","contributing_snps")%in%names(d1))){
-	    names(d1)[names(d1)%in%"contributing_snps"]<-"alleles_checked"
-	    names(d1)[names(d1)%in%"total_snps"]<-"alleles_observed"
-	  }
-	    
-	  #create basic result table
-	  table <- data.frame(
-	    "Polygenic Risk Score"=signif(d1[["GRS"]],3),
-	    "Alleles checked (plink CNT)"=d1[["alleles_checked"]],
-	    "Alleles observed (plink CNT2)"=d1[["alleles_observed"]],
-	    check.names=F
-	  )
-
-	
-	  #write the score to the log file
-	  log_function<-function(uniqueID){
-	    user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
-	    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"prs",uniqueID,trait_choice,signif(d1[["GRS"]],3))
-	    m<-paste(m,collapse="\t")
-	    if(file.exists(user_log_file)){
-	      write(m,file=user_log_file,append=TRUE)
-	    }else{
-	      write(m,file=user_log_file,append=FALSE)
-	    }
-	  }
-	  try(log_function(uniqueID))
-	  
-	  	
-		return(table)
-		
-	},include.rownames = FALSE)
+    if(input$goButton == 0){
+      return(NULL)
+    }
+    
+    
+    o <- get_data()
+    
+    d1 <- o[["d1"]]
+    
+    #create basic result table
+    table <- data.frame(
+      "Polygenic Risk Score"=signif(d1[["GRS"]],3),
+      "Alleles checked (plink CNT)"=d1[["alleles_checked"]],
+      "Alleles observed (plink CNT2)"=d1[["alleles_observed"]],
+      check.names=F
+    )
+    
+    
+    
+    
+    return(table)
+    
+  },include.rownames = FALSE)
+  
+  
+  
+  
+  
+  output$plot_1 <- renderPlot({ 
+    if(input$goButton == 0){
+      return(NULL)
+    }
+    
+    o<-get_data()
+    d1<-o[["d1"]]
+    GRS_beta <- d1[["GRS"]]
+    
+    
+    distributionCurve <- o[["distributionCurve"]]
+    xlim<-range(distributionCurve[["x"]])
+    control_mean<-0
+    control_sd<-1
+    # y_control<-dnorm(x,mean=control_mean,sd=control_sd)
+    ylim <- c(0,max(distributionCurve[["y"]]))
+    
+    plot(NULL,xlim=xlim,ylim=c(0,1),ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n",lwd=2)
+    
+    
+    #draw the main line
+    abline(v=GRS_beta,lwd=3)
+    
+    
+    #optionally add real distribution curve
+    if(!is.null(distributionCurve)){
+      real_x <- distributionCurve[["x"]]
+      real_y <- distributionCurve[["y"]]
+      adj_y<-real_y# * (ylim[2] / max(real_y))
+      lines(x=real_x,y=adj_y,lty=2)
+      
+    }
+    
+    legend("topleft",legend=c("User distribution","Your genetic risk score"),lty=c(2,1),lwd=c(2,3),col=c("black","black"))
+    
+    
+  })
+  
+  
+  
 })

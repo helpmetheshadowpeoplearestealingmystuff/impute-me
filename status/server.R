@@ -132,7 +132,10 @@ shinyServer(function(input, output) {
       if(class(y)=="try-error"){
         y<-data.frame(V1=vector(),V2=vector())
       }else{
-        y<-y[!duplicated(y[,"V1"]),,drop=FALSE]
+        drop_these <- order(y[,"V2"])[duplicated(y[order(y[,"V2"]),"V1"])]
+        if(length(drop_these)>0){
+          y<-y[!rownames(y)%in%drop_these,,drop=FALSE]  
+        }
       }
       y<-y[y[,"V1"]%in%list.files(imputation_path),,drop=FALSE]
       write.table(y, file=fast_queue_path,sep="\t",quote=F,row.names=F,col.names=F)
