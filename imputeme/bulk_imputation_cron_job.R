@@ -250,9 +250,9 @@ for(uniqueID in uniqueIDs){
   
   
   if(exists("imputemany_upload") && imputemany_upload){
-    print("Skipping mail because it's from imputemany_upload")
+    print(paste(Sys.time(),"skipping mail because it's from imputemany_upload"))
   }else{
-    print("Sending results mail")
+    print(paste(Sys.time(),"sending results mail"))
     ip<-"https://www.impute.me"
     location_simple <- paste(ip,"/www/",uniqueID,".simple_format.zip",sep="")
     location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")

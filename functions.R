@@ -1712,7 +1712,8 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
     for(module in modules){
       if(!file.info(paste0("/home/ubuntu/srv/impute-me/",module))["isdir"])next
       if("export_script.R" %in% list.files(paste0("/home/ubuntu/srv/impute-me/",module))){
-        print(paste("Running",module,"for",uniqueID))
+        
+        print(paste(Sys.time(),"Running module",module,"for",uniqueID))
         if(exists("export_function"))suppressWarnings(rm("export_function"))
         source(paste(paste0("/home/ubuntu/srv/impute-me/",module,"/export_script.R")))
         if(!exists("export_function"))stop(paste("In module",module,"there was an export_script.R without an export_function"))
@@ -1876,7 +1877,7 @@ run_bulk_imputation<-function(
   
   
   
-  cat(paste0("Starting imputation running on these files:\nc('",paste(uniqueIDs,collapse="','"),"')\nGood luck!\n"))
+  cat(paste0(Sys.time(),"\nStarting imputation running on these files:\nc('",paste(uniqueIDs,collapse="','"),"')\nGood luck!\n"))
   setwd(runDir)
   chromosomes <- c("X",as.character(1:22))
   # chromosomes <- c("22")

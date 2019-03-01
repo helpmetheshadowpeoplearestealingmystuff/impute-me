@@ -72,7 +72,7 @@ export_function<-function(uniqueID){
       
       #prepare plink score run. Note for later - the -read-freq should probably be set up such that the calculation is in line with the main AllDisease module. For later.
       cmd3 <- paste0(plink, " --bfile ", idTempFolder,f, " --score ",score_file," 1 2 3 header sum --out ",out_file)
-      out3 <- system(cmd3,ignore.stdout=F)
+      out3 <- system(cmd3,ignore.stdout=T)
       
       #give up here if there's problems here
       if(out3 == 3){

@@ -36,7 +36,8 @@ if(runningJobCount>(maxImputations-1)){
 
 #money saving implementation. If this is hub and there's a job, just send an email an turn on a node server. That way server can run on a small computer
 if(serverRole== "Hub"){
-    stop("Hub running is not currently implemented, but could easily be in the future")
+    # stop("Hub running is not currently implemented, but could easily be in the future")
+  foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
 }
 
 
@@ -192,9 +193,9 @@ if(serverRole== "Node"){
 
 
 if(exists("imputemany_upload") && imputemany_upload){
-  print("Skipping mail because it's from imputemany_upload")
+  print(paste(Sys.time(),"skipping mail because it's from imputemany_upload"))
 }else{
-  print("Sending results mail")
+  print(paste(Sys.time(),"sending results mail"))
   ip<-"https://www.impute.me"
   location_simple <- paste(ip,"/www/",uniqueID,".simple_format.zip",sep="")
   location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")

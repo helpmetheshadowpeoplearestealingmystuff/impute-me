@@ -7,7 +7,6 @@ source("../uifunctions.R")
 initialize('hc',TRUE)
 
 shinyUI(bootstrapPage(
-  tags$head(includeScript("google-analytics.js")),
 	head(),
 	navigation(),
 	titlePanel("Initiate genome analysis"),
