@@ -894,13 +894,11 @@ get_genotypes<-function(
 
 
 get_GRS<-function(genotypes, betas){
-  
+  #this function is deprecated --- use get_GRS_2 instead
   if(class(genotypes)!="data.frame")stop(paste("genotypes must be data.frame, not",class(genotypes)))
   if(!"genotype"%in%colnames(genotypes))stop(paste("genotypes must have a column genotype"))
   if(!all(unique(sub("[0-9].+$","",rownames(genotypes)))%in%c("i","rs"))){
-    
     stop(paste("genotypes must have rownames starting with rs. You had these:",paste(unique(sub("[0-9].+$","",rownames(genotypes))),collapse=", ")))
-    
   }
   
   if(class(betas)!="data.frame")stop(paste("genotypes must be data.frame, not",class(betas)))
@@ -908,27 +906,15 @@ get_GRS<-function(genotypes, betas){
   if(!all(necessary_columns%in%colnames(betas)))stop(paste("betas must have a column",paste(necessary_columns,collapse=", ")))
   if(!all(unique(sub("[0-9].+$","",rownames(betas)))%in%c("i","rs")))stop("betas must have rownames starting with rs")
   
-  
-  # if(!all(rownames(genotypes)%in%rownames(betas)))stop("all SNPs in genotypes must be present in betas")
   if(!all(rownames(betas)%in%rownames(genotypes)))stop("all SNPs in betas must be present in genotypes")
   
   
   
   geneticRiskScore<-0
   for(snp in rownames(betas)){
-    if(is.na(genotypes[snp,"genotype"])){
-      warning(paste("Note, for",snp,"we found missing genotypes. This can cause errors particularly if the data is not mean centered."))
-      next
-    }
-    
     genotype<-strsplit(genotypes[snp,],"/")[[1]]
     effect_allele<-betas[snp,"effect_allele"]
     non_effect_allele<-betas[snp,"non_effect_allele"]
-    
-    if(!all(genotype%in%c(effect_allele,non_effect_allele))){
-      print(paste("Note, for",snp,"we found wrong alleles:",paste(genotype,collapse=""),"and should find",effect_allele,"or",non_effect_allele))
-      next
-    }
     
     beta<-betas[snp,"Beta"]	
     geneticRiskScore <- geneticRiskScore + sum(genotype%in%effect_allele) * beta
@@ -1014,7 +1000,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
   
   
   #getting the AllDiseases + ukbiobank SNPs if possible
-  load("/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_all_gwas_snps.rdata")
+  load("/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_all_gwas_snps.rdata")
   e1<-gwas_snps
   load("/home/ubuntu/srv/impute-me/ukbiobank/2017-09-28_all_ukbiobank_snps.rdata")
   e2<-gwas_snps
@@ -1302,7 +1288,7 @@ remove_all_empty_data_folders<-function(uniqueIDs=NULL){
 
 
 
-get_GRS_2<-function(snp_data, mean_scale=T, unit_variance=T, verbose=T){
+get_GRS_2<-function(snp_data, mean_scale=T, unit_variance=T, verbose=F){
   #snp_data       a data frame with genotype, effect sizes and information on effect/non-effect allele. Optionally also information about minor allele frequency and minor/major allele (for use with mean scaling etc)
   #mean_scale     logical. If TRUE the GRS output is scaled so that the average person, by MAF-information, will have a score of 0
   #unit_variance  logical. If TRUE the GRS output is scaled so that 68% of everyone, by MAF/HWE-information, are within 1 unit of 0 (=1 SD)
@@ -2051,7 +2037,7 @@ run_bulk_imputation<-function(
     #checking for errors and stopping if there are any. No point to continue otherwise
     log<-readLines(paste("step_4_chr",chr,"_shapeit_log.log",sep=""))
     if(substr(log[length(log)],1,5)=="ERROR"){
-      stop(paste("At chr",chr," the shapeit failed. Check this file for explanation: step_4_chr",chr,"_shapeit.log",sep=""))
+      stop(paste("At chr",chr," the shapeit failed. Check this file for explanation: step_4_chr",chr,"_shapeit_log.log",sep=""))
     }
     
     #removing the placeholder person again
