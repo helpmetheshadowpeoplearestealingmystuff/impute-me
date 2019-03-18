@@ -150,7 +150,7 @@ shinyServer(function(input, output) {
     # y_control<-dnorm(x,mean=control_mean,sd=control_sd)
     ylim <- c(0,max(distributionCurve[["y"]]))
     
-    plot(NULL,xlim=xlim,ylim=c(0,1),ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n",lwd=2)
+    plot(NULL,xlim=xlim,ylim=ylim,ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n",lwd=2)
     
     
     #draw the main line

@@ -1,8 +1,6 @@
 # 
 #Strategy - setup this to run every hour on the hour, 
 # 	
-#Don't run it as root. THis is better
-# crontab -u ubuntu -e
 # 50 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
 
 
@@ -12,21 +10,36 @@ library("tools")
 source("/home/ubuntu/srv/impute-me/functions.R")
 
 
-
-#First checking if node is already at max load (maxImputations)
+#First checking if node is already at max load (maxImputations, set in configuration.R)
 foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
 runningJobCount<-0
-remoteRunningJobCount<-0
 for(folderToCheck in foldersToCheck){
   jobStatusFile<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
   if(file.exists(jobStatusFile)){
     jobStatus<-read.table(jobStatusFile,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
-    if(jobStatus=="Job is running"){
-      runningJobCount<-runningJobCount+1
-    }
-    if(jobStatus=="Job is remote-running"){
-      remoteRunningJobCount<-remoteRunningJobCount+1
-    }
+    if(jobStatus=="Job is running"){runningJobCount<-runningJobCount+1}
+  }
+}
+
+#then stop job if runs are already running
+#if not, go to sleep and wait before re-checking. This is an optional thing, set in configuration.R, 
+#but it's really smart because it allows the credit count of the AWS instnce to recover a bit, and 
+#ultimately gives faster turn-around and more stable servers
+if(runningJobCount>(maxImputations-1)){
+  stop(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
+}else{
+  Sys.sleep(seconds_wait_before_start)
+}
+
+
+#After sleeping period, wake up and re-check
+foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
+runningJobCount<-0
+for(folderToCheck in foldersToCheck){
+  jobStatusFile<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
+  if(file.exists(jobStatusFile)){
+    jobStatus<-read.table(jobStatusFile,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
+    if(jobStatus=="Job is running"){runningJobCount<-runningJobCount+1}
   }
 }
 if(runningJobCount>(maxImputations-1)){
@@ -34,14 +47,9 @@ if(runningJobCount>(maxImputations-1)){
 }
 
 
-#money saving implementation. If this is hub and there's a job, just send an email an turn on a node server. That way server can run on a small computer
-if(serverRole== "Hub"){
-    # stop("Hub running is not currently implemented, but could easily be in the future")
-  foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
-}
 
 
-#If the computer is not too busy and the serverRole is node - we fetch ONE job
+#If the computer is not too busy and the serverRole is node - we fetch ONE job (if it is hub, the jobs are already there)
 if(serverRole== "Node"){
   #sort checking order by time entered
   cmd1 <- paste("ssh ubuntu@",hubAddress," ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' /home/ubuntu/imputations/  | tail -n +2",sep="")
@@ -55,7 +63,8 @@ if(serverRole== "Node"){
   #check if there's any fast-queue jobs to put up-front. The fast-queue jobs is just a file with uniqueID
   #and then TRUE or FALSE. The TRUE or FALSE means if a bulk impute is allowed to 
   #take it or not
-  #(they can be in priority queue either because they are paid, or because they are error-prone. Don't put error-prone in the bulk imputing line)
+  #(they can be in priority queue either because they are paid, or because they are error-prone. 
+  #Don't put error-prone in the bulk imputing line)
   cmd0 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/misc_files/fast_queue_emails.txt
                 ",sep="")
   f1<-system(cmd0,intern=T)

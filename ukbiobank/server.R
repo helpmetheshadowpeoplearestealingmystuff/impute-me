@@ -135,7 +135,7 @@ shinyServer(function(input, output) {
     rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
     genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
     SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
-    SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T, verbose=T)
+    SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T)
     population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
     GRS <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
     
@@ -270,7 +270,7 @@ shinyServer(function(input, output) {
       
       
       #fill the controls
-      if(all(!x<GRS_beta))stop("GRS too low to plot")
+      if(all(!x<GRS_beta))stop(safeError("GRS too low to plot"))
       max_GRS_i<-max(which(x<GRS_beta))
       upper_x<-x[1:max_GRS_i]
       upper_y<-y_control[1:max_GRS_i]

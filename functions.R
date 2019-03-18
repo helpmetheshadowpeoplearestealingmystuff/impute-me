@@ -32,6 +32,9 @@ if(length(bulk_node_count)!=1)stop("bulk_node_count not length 1")
 if(!exists("error_report_mail"))stop("Didn't find error_report_mail")
 if(!is.character(error_report_mail))stop("error_report_mail not character")
 if(length(error_report_mail)!=1)stop("error_report_mail not length 1")
+if(!exists("seconds_wait_before_start"))stop("Didn't find seconds_wait_before_start")
+if(!is.numeric(seconds_wait_before_start))stop("seconds_wait_before_start not numeric")
+if(length(seconds_wait_before_start)!=1)stop("seconds_wait_before_start not length 1")
 
 
 prepare_individual_genome<-function(path, email, filename, updateProgress, protect_from_deletion){
@@ -349,7 +352,8 @@ run_imputation<-function(
     genes_for_good_cleaner(uniqueID,runDir)
   }
   
-  
+  #print start message
+  cat(paste0(Sys.time(),"\nStarting imputation running on this file: ",uniqueID,"\nGood luck!\n"))
   
   #Load data using plink 1.9
   cmd1<-paste0(plink," --23file ",rawdata," ",uniqueID," ",uniqueID," --recode --out step_1")
@@ -753,7 +757,7 @@ get_genotypes<-function(
     
     #only here need to check that raw data is there
     if(!file.exists(genZipFile) | !file.exists(inputZipFile)){
-      stop(safeError(paste("Did not find and .input_data or a .gen file in idFolder. This probably means that raw data has been deleted and no furter SNP-data can be retrieved.")))
+      stop(safeError(paste("Did not find genome-wide data for this uniqueID. This probably means that raw data has been deleted and no furter SNP-data can be retrieved. Since our policy is to delete personally traceable data, such as genome-wide SNP data, after 14 days, this can often affect users that submitted their data before an update. Their is no solution to this, other than re-upload of data.")))
     }
     
     

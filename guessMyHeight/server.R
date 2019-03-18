@@ -270,7 +270,7 @@ shinyServer(function(input, output) {
 			GRS_file_name<-"/home/ubuntu/srv/impute-me/hairColour/SNPs_to_analyze.txt"
 			GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F)
 			for(component in c("blonde","red")){
-				print(paste("Getting",component,"g-haircolour"))
+				# print(paste("Getting",component,"g-haircolour"))
 				s1<-GRS_file[GRS_file[,"Category"]%in%component,]
 				rownames(s1)<-s1[,"SNP"]
 				#get genotypes and calculate gHairColour

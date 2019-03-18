@@ -15,7 +15,7 @@ shinyServer(function(input, output) {
 		}else if(input$goButton > 0) {
 			print(paste("Ok",input$goButton))
 		}
-	  show_non_measured <- input$show_non_measured
+	  show_measured <- input$show_measured
 	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
@@ -49,6 +49,35 @@ shinyServer(function(input, output) {
 		
 		#get genotypes 
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=BRCA_table)
+
+				
+		# #retry genotypes in a special input-only mode
+		# BRCA_table_input <- BRCA_table
+		# BRCA_table_input[,"chr_name"] <- "input"
+		# genotypes_input<-get_genotypes(uniqueID=uniqueID,request=BRCA_table_input,namingLabel="BRCA")
+		# 
+		# #check what extra is found
+		# found_imputed <- rownames(genotypes)[!is.na(genotypes[,"genotype"])]
+		# found_input <- rownames(genotypes_input)[!is.na(genotypes_input[,"genotype"])]
+		# new <- found_input[!found_input%in%found_imputed]
+		# genotypes[new,"genotype"] <- genotypes_input[new,"genotype"]
+		# 
+		# This would fix the genotypes missing - but it opens up a huge bag of troubles, 
+		# because it also means that we have to make sure that *any* notation that input
+		# data comes with is properly taken care of. For example - it's a little random
+		# if a DTC vendor write -/- or D/D or T/T or I/I for an indel. So, the problem
+		# is that if we write "normal genotype T/T, and that vendor chose to write I/I
+		# then it is quite easy to misunderstand as something bad. 
+		#
+		# So -- it's concluded that impute.me will not fix this right now, but rather throw
+		# away genotypes that don't make it through imputation, including indels etc. Because
+		# fixing would mean that the entire advantage of strand-alignment and QC implicit in
+		# imputation would be lost in this particular module. And risks of error. So - altogether
+		# better to just not report anything. BRCA needs sequencing anyway, so it's grasping at 
+		# straws to try to improve it.
+		
+		
+		
 		BRCA_table[,"Your genotype"]<-genotypes[rownames(BRCA_table),]
 
 		
@@ -58,7 +87,7 @@ shinyServer(function(input, output) {
 		}
 		
 		#remove non measured if needed
-		if(!show_non_measured){
+		if(show_measured){
 		  BRCA_table<-BRCA_table[!is.na(BRCA_table[,"Your genotype"]),]
 		}
 		

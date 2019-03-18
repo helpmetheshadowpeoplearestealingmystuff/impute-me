@@ -2,8 +2,11 @@ library("shiny")
 
 source("/home/ubuntu/srv/impute-me/functions.R")
 dataFolder<-"/home/ubuntu/data/"
-snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_semi_curated_version_gwas_central.rdata"
-trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_trait_overoverview.rdata"
+snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_semi_curated_version_gwas_central.rdata"
+trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
+
+#testing
+#preload
 
 
 #testing
@@ -13,8 +16,11 @@ ethnicities_labels<-c("Automatic guess","global","African","Ad Mixed American","
 names(ethnicities_labels)<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
 
 #preload
+library(openxlsx)
 load(snps_file)
-load(trait_file)
+traits <- read.xlsx(trait_file,rowNames=T)
+# traits<-traits[!is.na(traits[,"omit"]) & !traits[,"omit"],]  
+
 
 shinyServer(function(input, output) {
 	
@@ -56,9 +62,9 @@ shinyServer(function(input, output) {
 		
 		#getting the relevant trait name, pmid and SNPs to analyze
 		trait<-traits[study_id,"trait"]
-		pmid<-traits[study_id,"PMID"]
-		if(!pmid%in%data[,"PUBMEDID"])stop(paste("PMID",pmid,"was not found in system"))
-		if(!trait%in%data[,"DISEASE.TRAIT"])stop(paste("trait",trait,"was not found"))
+		pmid<-traits[study_id,"pmid"]
+		if(!pmid%in%data[,"pmid"])stop(paste("PMID",pmid,"was not found in system"))
+		
 		SNPs_to_analyze<-data[data[,"study_id"]%in%study_id ,]
 		
     #setting up back-ground frequency sources
@@ -94,19 +100,12 @@ shinyServer(function(input, output) {
 		
 		
 		#gathering some background info for the study		
-		link<-unique(SNPs_to_analyze[,"LINK"])
-		if(length(link)!=1)stop("Problem with link length")
-		author<-unique(SNPs_to_analyze[,"FIRST.AUTHOR"])
-		if(length(author)!=1)stop("Problem with author length")
-		sampleSize<-unique(SNPs_to_analyze[,"sampleSize"])
-		if(length(sampleSize)!=1){
-			print("Problem with sampleSize length - but just took mean")
-			sampleSize <- round(mean(sampleSize,na.rm=T))
-		}
-		DATE<-unique(SNPs_to_analyze[,"DATE"])
-		if(length(DATE)!=1)stop("Problem with DATE length")
+		link<-paste0("www.ncbi.nlm.nih.gov/pubmed/",traits[study_id,"pmid"])
+		author<-traits[study_id,"first_author"]
+		sampleSize<-traits[study_id,"sampleSize"]
+		publication_date<-traits[study_id,"publication_date"]
 		textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a target='_blank' href='http://",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",trait,".")
-		textToReturn <- paste0(textToReturn," This study reports a total sample size of ",sampleSize,", as entered on date ",DATE,".")
+		textToReturn <- paste0(textToReturn," This study reports a total sample size of ",sampleSize,", as entered on date ",publication_date,".")
 		
 		
 		
@@ -255,7 +254,7 @@ shinyServer(function(input, output) {
 			
 			
 			#fill the controls
-			if(all(!x<GRS_beta))stop("GRS too low to plot")
+			if(all(!x<GRS_beta))stop(safeError("GRS too low to plot"))
 			max_GRS_i<-max(which(x<GRS_beta))
 			upper_x<-x[1:max_GRS_i]
 			upper_y<-y_control[1:max_GRS_i]
@@ -315,9 +314,6 @@ shinyServer(function(input, output) {
 			SNPs_to_analyze[,"Risk/non-risk Allele"]<-paste(SNPs_to_analyze[,"effect_allele"],SNPs_to_analyze[,"non_effect_allele"],sep="/")
 			SNPs_to_analyze[,"Major/minor Allele"]<-paste(SNPs_to_analyze[,"major_allele"],SNPs_to_analyze[,"minor_allele"],sep="/")
 			
-			# col_to_remove<-c("DATE","sampleSize","ensembl_alleles","LINK","FIRST.AUTHOR","PUBMEDID","chr_name","CHR_POS","effect_allele","non_effect_allele","major_allele","minor_allele","DISEASE.TRAIT")
-			# for(col in col_to_remove){SNPs_to_analyze[,col]<-NULL}
-			
 			
 			
 			
@@ -329,7 +325,7 @@ shinyServer(function(input, output) {
 			# SNPs_to_analyze[duplicated(SNPs_to_analyze[,"SNP"]),"GRS"]<-""
 			
 			#shortening the reported gene count
-			SNPs_to_analyze[,"Reported Gene"]<-sapply(strsplit(SNPs_to_analyze[,"REPORTED.GENE.S."],", "),function(x){
+			SNPs_to_analyze[,"reported_genes"]<-sapply(strsplit(SNPs_to_analyze[,"reported_genes"],", "),function(x){
 				paste(x[1:min(c(2,length(x)))],collapse=", ")
 			})
 			
@@ -340,10 +336,10 @@ shinyServer(function(input, output) {
 			}
 			
 			
-			keep<-c("SNP","REGION","genotype","Risk/non-risk Allele","personal_score","score_diff"
-,"effect_size","P.VALUE","Major/minor Allele","minor_allele_freq","Reported Gene")
+			keep<-c("SNP","genotype","Risk/non-risk Allele","personal_score","score_diff"
+,"effect_size","p_value","Major/minor Allele","minor_allele_freq","reported_genes")
 			SNPs_to_analyze<-SNPs_to_analyze[,keep]
-			colnames(SNPs_to_analyze)<-c("SNP","Location","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
+			colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
 			
 			return(SNPs_to_analyze)
 		}

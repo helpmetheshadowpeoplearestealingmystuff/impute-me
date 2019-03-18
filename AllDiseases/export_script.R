@@ -3,14 +3,15 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 
 export_function<-function(uniqueID){
   # dataFolder<-"/home/ubuntu/data/"
-  snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_semi_curated_version_gwas_central.rdata"
-  trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_trait_overoverview.rdata"
+  snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_semi_curated_version_gwas_central.rdata"
+  trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
   
   #testing
   #preload
+  library(openxlsx)
   load(snps_file)
-  load(trait_file)
-  traits<-traits[!traits[,"omit"],]  
+  traits <- read.xlsx(trait_file,rowNames=T)
+  traits<-traits[!is.na(traits[,"omit"]) & !traits[,"omit"],]  
   
   if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
     stop("Did not find a user with this id")
@@ -51,7 +52,7 @@ export_function<-function(uniqueID){
     #calculate GRS
     snp_data<-SNPs_requested
     snp_data[,"genotype"] <- genotypes[rownames(snp_data),"genotype"]
-    snp_data <-get_GRS_2(snp_data,mean_scale=T, unit_variance=T, verbose=T)
+    snp_data <-get_GRS_2(snp_data,mean_scale=T, unit_variance=T, verbose=F)
     population_sum_sd<-sqrt(sum(snp_data[,"population_score_sd"]^2,na.rm=T))
     GRS_beta <-sum(snp_data[,"score_diff"],na.rm=T) / population_sum_sd
     

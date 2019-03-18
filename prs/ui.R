@@ -4,6 +4,7 @@ initialize('sti',TRUE)
 
 
 trait_choices<-list.files("/home/ubuntu/prs_dir")
+trait_choices<-trait_choices[!file.info(paste0("/home/ubuntu/prs_dir/",trait_choices))[,"isdir"]]
 
 
 #defining 1000 genomes populations

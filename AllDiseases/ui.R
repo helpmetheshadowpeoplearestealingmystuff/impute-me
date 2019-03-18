@@ -3,14 +3,16 @@ source("../uifunctions.R")
 initialize('gmh',TRUE)
 
 
+library(openxlsx)
+# trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
+# traits <- read.xlsx(trait_file,rowNames=T)
+# traits<-traits[!is.na(traits[,"omit"]) & !traits[,"omit"],]  
 
-load("/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_trait_overoverview.rdata")
-
-#testing
-# load("AllDiseases/2018-05-28_trait_overoverview.rdata")
+#don't free the update just yet
+load("~/srv/impute-me/AllDiseases/2018-05-28_trait_overoverview.rdata")
 
 
-#traits to omit ad-hoc (because they don't work)
+#traits to omit ad-hoc (because they don't work or because they are actively selected against)
 traits<-traits[!traits[,"omit"],]
 
 
@@ -47,30 +49,21 @@ names(selections_other)<-traits[traits[,"other"],"niceName"]
 
 selections_all_newest<-traits[traits[,"most_recent"],"study_id"]
 names(selections_all_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"most_recent"],"niceName"])
-# names(selections_all_newest)<-traits[traits[,"most_recent"],"niceName"]
 
 selections_disease_newest<-traits[traits[,"disease"] & traits[,"most_recent"],"study_id"]
 names(selections_disease_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"disease"] & traits[,"most_recent"],"niceName"])
-# names(selections_disease_newest)<-traits[traits[,"disease"] & traits[,"most_recent"],"niceName"]
-
 
 selections_biometrics_newest<-traits[traits[,"biometrics"] & traits[,"most_recent"],"study_id"]
 names(selections_biometrics_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"biometrics"] & traits[,"most_recent"],"niceName"])
-# names(selections_biometrics_newest)<-traits[traits[,"biometrics"] & traits[,"most_recent"],"niceName"]
-
 
 selections_biomarker_newest<-traits[traits[,"biomarker"] & traits[,"most_recent"],"study_id"]
 names(selections_biomarker_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"biomarker"] & traits[,"most_recent"],"niceName"])
-# names(selections_biomarker_newest)<-traits[traits[,"biomarker"] & traits[,"most_recent"],"niceName"]
 
 selections_response_newest<-traits[traits[,"response"] & traits[,"most_recent"],"study_id"]
 names(selections_response_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"response"] & traits[,"most_recent"],"niceName"])
-# names(selections_response_newest)<-traits[traits[,"response"] & traits[,"most_recent"],"niceName"]
-
 
 selections_other_newest<-traits[traits[,"other"] & traits[,"most_recent"],"study_id"]
 names(selections_other_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"other"] & traits[,"most_recent"],"niceName"])
-# names(selections_other_newest)<-traits[traits[,"other"] & traits[,"most_recent"],"niceName"]
 
 
 

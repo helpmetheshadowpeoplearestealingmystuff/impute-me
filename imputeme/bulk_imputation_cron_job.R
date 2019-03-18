@@ -1,8 +1,7 @@
 
 # 
 #Strategy - setup this to run every hour on the hour, 
-# 	
-# crontab -u ubuntu -e
+#
 # 50 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
 
 
@@ -24,12 +23,29 @@ for(folderToCheck in foldersToCheck){
   jobStatusFile<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
   if(file.exists(jobStatusFile)){
     jobStatus<-read.table(jobStatusFile,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
-    if(jobStatus=="Job is running"){
-      runningJobCount<-runningJobCount+1
-    }
-    if(jobStatus=="Job is remote-running"){
-      remoteRunningJobCount<-remoteRunningJobCount+1
-    }
+    if(jobStatus=="Job is running"){runningJobCount<-runningJobCount+1}
+  }
+}
+
+#then stop job if runs are already running
+#if not, go to sleep and wait before re-checking. This is an optional thing, set in configuration.R, 
+#but it's really smart because it allows the credit count of the AWS instnce to recover a bit, and 
+#ultimately gives faster turn-around and more stable servers
+if(runningJobCount>(maxImputations-1)){
+  stop(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
+}else{
+  Sys.sleep(seconds_wait_before_start)
+}
+
+
+#After sleeping period, wake up and re-check
+foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
+runningJobCount<-0
+for(folderToCheck in foldersToCheck){
+  jobStatusFile<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
+  if(file.exists(jobStatusFile)){
+    jobStatus<-read.table(jobStatusFile,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
+    if(jobStatus=="Job is running"){runningJobCount<-runningJobCount+1}
   }
 }
 if(runningJobCount>(maxImputations-1)){
