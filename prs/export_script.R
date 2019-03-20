@@ -51,7 +51,7 @@ export_function<-function(uniqueID){
   outZip<-unzip(simple_format_zip_path, overwrite = TRUE,exdir = idTempFolder, unzip = "internal")
   chromosomes <- as.character(1:22)
   
-  chromosomes <- as.character(c(1,4,10))
+  
   
   merge_files <- paste0(uniqueID,"_chr",chromosomes,".simple_format.txt")
   if(!all(merge_files %in% list.files(idTempFolder)))stop("Not all expected files found")
