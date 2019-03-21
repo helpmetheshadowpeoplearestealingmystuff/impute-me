@@ -10,8 +10,8 @@ export_function<-function(uniqueID){
   #prepare output list
   output<-list()
   output[["documentation"]] <- list()
-  output[["documentation"]][["data_set_overview"]] <- "not available yet - not implemented, because first version"
-  output[["documentation"]][["export_script"]] <- "https://github.com/lassefolkersen/impute-me/blob/1166a12f7fb92cd04b4e5eec1bb4e7ca1a07d8f8/prs/export_script.R"
+  output[["documentation"]][["data_set_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/589f332a148e7c0f6041637bd1c97ec0de1a14ee/prs/2019-03-05_study_list.xlsx"
+  output[["documentation"]][["export_script"]] <- "https://github.com/lassefolkersen/impute-me/blob/589f332a148e7c0f6041637bd1c97ec0de1a14ee/prs/export_script.R"
   
   
   

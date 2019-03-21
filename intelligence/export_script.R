@@ -19,8 +19,8 @@ export_function<-function(uniqueID){
   
   output<-list()
   output[["documentation"]] <- list()
-  output[["documentation"]][["trait_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/master/AllDiseases/2018-05-28_trait_overoverview.rdata"
-  output[["documentation"]][["snp_file"]] <- "https://github.com/lassefolkersen/impute-me/blob/master/AllDiseases/2018-05-28_semi_curated_version_gwas_central.rdata"
+  output[["documentation"]][["trait_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/589f332a148e7c0f6041637bd1c97ec0de1a14ee/intelligence/2019-03-04_trait_overview.xlsx"
+  output[["documentation"]][["snp_file"]] <- "https://github.com/lassefolkersen/impute-me/blob/589f332a148e7c0f6041637bd1c97ec0de1a14ee/intelligence/2019-03-04_semi_curated_version_gwas_central.rdata"
   
   
   #get ethnicity parameter
