@@ -4,12 +4,10 @@ initialize('gmh',TRUE)
 
 
 library(openxlsx)
-# trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
-# traits <- read.xlsx(trait_file,rowNames=T)
-# traits<-traits[!is.na(traits[,"omit"]) & !traits[,"omit"],]  
-
-#don't free the update just yet
-load("~/srv/impute-me/AllDiseases/2018-05-28_trait_overoverview.rdata")
+trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
+traits <- read.xlsx(trait_file,rowNames=F)
+rownames(traits) <- traits[,"study_id"]
+traits<-traits[!is.na(traits[,"omit"]) & !traits[,"omit"],]
 
 
 #traits to omit ad-hoc (because they don't work or because they are actively selected against)
@@ -137,7 +135,9 @@ shinyUI(bootstrapPage(
 	  checkboxInput("only_show_newest", label ="Only show newest study", value = TRUE),
 	  radioButtons("trait_group", "Trait categories:", trait_groups, selected = "disease"),
 	  radioButtons("ethnicity_group", label="Reference population:", choices=ethnicities, selected = "automatic", inline = FALSE,width = NULL),
-	  checkboxInput("real_dist", label ="Plot real distribution (experimental)", value = FALSE)
+	  checkboxInput("use_all_snp_score", label ="Show all-SNP score if possible (experimental)", value = TRUE),
+	  checkboxInput("plot_heritability", label ="Plot heritability", value = FALSE),
+	  checkboxInput("real_dist", label ="Plot user distribution (experimental)", value = FALSE)
 	  
 	),
 	
@@ -148,6 +148,10 @@ shinyUI(bootstrapPage(
 	# h2("Genetic risk score:"),
 	htmlOutput("text_1"),
 	plotOutput("plot_1"),
+	conditionalPanel(
+	  condition = "input.plot_heritability",
+	  plotOutput("plot_2",height = "200px")
+	),
 	htmlOutput("text_2"),
 	dataTableOutput("table1"),
 	htmlOutput("text_3"),

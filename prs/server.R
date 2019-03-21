@@ -68,10 +68,10 @@ shinyServer(function(input, output) {
     }
     if(ethnicity_group == "global"){
       #do nothing. Note the density curve location.
-      densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-02-27_densities_ALL.rdata"
+      densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-03-20_densities_ALL.rdata"
     }else{
       #note the density curve location
-      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-02-27_densities_",ethnicity_group,".rdata")
+      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-03-20_densities_",ethnicity_group,".rdata")
     }
     
     

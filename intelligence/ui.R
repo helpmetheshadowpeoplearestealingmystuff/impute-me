@@ -71,7 +71,7 @@ shinyUI(bootstrapPage(
 	titlePanel("Complex diseases: The GWAS Calculator"),
 	beginPage(),	
 	beginPanel('1/3'),
-	HTML("Thousands of genome-wide association studies (GWAS) have been performed. This module allows the calculation of genetic risk score for any of them.<br><br>To run analysis input your user-id, or use the test-value of id_111111111:<br>"),
+	HTML("Thousands of genome-wide association studies (GWAS) have been performed. This module allows the calculation of genetic risk score for any of them.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:<br>"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	
 	conditionalPanel(
@@ -135,9 +135,9 @@ shinyUI(bootstrapPage(
 	  checkboxInput("only_show_newest", label ="Only show newest study", value = TRUE),
 	  radioButtons("trait_group", "Trait categories:", trait_groups, selected = "disease"),
 	  radioButtons("ethnicity_group", label="Reference population:", choices=ethnicities, selected = "automatic", inline = FALSE,width = NULL),
-	  checkboxInput("use_all_snp_score", label ="Use all-SNP score if possible (experimental)", value = FALSE),
-	  checkboxInput("plot_heritability", label ="Plot heritability (experimental)", value = FALSE),
-	  checkboxInput("real_dist", label ="Plot real distribution (experimental)", value = FALSE)
+	  checkboxInput("use_all_snp_score", label ="Show all-SNP score if possible (experimental)", value = TRUE),
+	  checkboxInput("plot_heritability", label ="Plot heritability", value = FALSE),
+	  checkboxInput("real_dist", label ="Plot user distribution (experimental)", value = FALSE)
 	  
 	),
 	

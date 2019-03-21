@@ -4,6 +4,7 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 dataFolder<-"/home/ubuntu/data/"
 snps_file<-"/home/ubuntu/srv/impute-me/intelligence/2019-03-04_semi_curated_version_gwas_central.rdata"
 trait_file<-"/home/ubuntu/srv/impute-me/intelligence/2019-03-04_trait_overview.xlsx"
+all_snp_trait_file <- "/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx"
 
 #testing
 #preload
@@ -19,7 +20,8 @@ names(ethnicities_labels)<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "S
 library(openxlsx)
 load(snps_file)
 traits <- read.xlsx(trait_file,rowNames=T)
-# traits<-traits[!is.na(traits[,"omit"]) & !traits[,"omit"],]  
+all_snp_traits<-read.xlsx(all_snp_trait_file,rowNames=T)
+
 
 
 shinyServer(function(input, output) {
@@ -50,8 +52,22 @@ shinyServer(function(input, output) {
     
     uniqueID<-gsub(" ","",input$uniqueID)
     ethnicity_group<-input$ethnicity_group
-    real_dist<-input$real_dist
     use_all_snp_score <- input$use_all_snp_score
+    plot_heritability <- input$plot_heritability
+    real_dist<-input$real_dist
+    
+    #If trait is not available in all_snp_traits we override the use_all_snp_score and set to FALSE
+    #(this would be the most frequent case actually. For now)
+    if(!study_id %in% rownames(all_snp_traits)){
+      use_all_snp_score <- FALSE
+    }
+    
+    
+    #If use_all_snp_score is TRUE real_dist must be TRUE as well, so override that
+    if(use_all_snp_score){
+      real_dist<-TRUE
+    }
+    
     
     
     
@@ -223,10 +239,7 @@ shinyServer(function(input, output) {
     #SNP count as relevant, but keep main table with top SNPs to illustrate
     if(use_all_snp_score){
       
-      #check that real_dist is on
-      if(!real_dist)stop(safeError("Can only plot all-SNP scores together with user-based 'real distributions', so please switch on that option as well"))
       
-      all_snp_traits <- read.xlsx("/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx",rowNames=T)
       if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
       
       file_to_read <- all_snp_traits[study_id,"file_to_read"]
@@ -247,6 +260,15 @@ shinyServer(function(input, output) {
       if(!file_to_read%in%names(d2))stop(safeError("No all-SNP scores were available for this study for this sample. It was probably uploaded before implementation."))
       d3<-d2[[file_to_read]]
       
+      
+      #check and react to alleles_checked
+      alleles_checked <- d3[["alleles_checked"]]
+      qc_limit <- 300000 # number determined in QC to fix the really bad outliers (it's a compeltely separate top below this, and there's none in-between)
+      if(alleles_checked < qc_limit){ 
+        stop(safeError("We detected a problem with the number of SNPs used in this all-SNP PRS score. It is available in your json file, but will not displayed here due to calculation-quality concerns. Switch off the 'show all-SNP score' option to revert to basic score plotting."))
+      }
+      
+      
       #replace GRS
       GRS <- d3[["GRS"]]
       
@@ -257,10 +279,10 @@ shinyServer(function(input, output) {
       #replace the distribution curves
       if(ethnicity_group == "global"){
         #do nothing. Note the density curve location.
-        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-02-27_densities_ALL.rdata"
+        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-03-20_densities_ALL.rdata"
       }else{
         #note the density curve location
-        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-02-27_densities_",ethnicity_group,".rdata")
+        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-03-20_densities_",ethnicity_group,".rdata")
       }
       
       
@@ -268,7 +290,7 @@ shinyServer(function(input, output) {
       methodsToReturn<-sub("This was centered so that the average score in the general population would be zero.+","",methodsToReturn)
       
       #insert new methods text
-      methodsToReturn <- c(methodsToReturn,"<br><br>The polygenic risk score was calculated according to the LDpred method using default settings and weighting scheme w1. The comparison distributions are that of all other users of impute.me of the same ethnicity.")
+      methodsToReturn <- c(methodsToReturn,paste0("<br><br>The calculation of the polygenic risk score was done according to the LDpred method using default settings and weighting scheme w1. The comparison distributions are that of all other users of impute.me of the same ethnicity, i.e. ",ethnicities_labels[ethnicity_group]))
       
       
       
@@ -281,7 +303,7 @@ shinyServer(function(input, output) {
       
       
       #Insert summary score text
-      textToReturn <- paste0(textToReturn," For you, we calculated an all-SNP polygenic risk score of ",signif(GRS,2),". You can compare this score with that of other users in above plot.")  
+      textToReturn <- paste0(textToReturn," For you, we calculated an all-SNP polygenic risk score of ",signif(GRS,2),". You can compare this score with that of other users in above plot. The table below shows the strongest of the SNPs to illustrate the polygenic nature of the trait.")  
       
     }
     
@@ -289,7 +311,7 @@ shinyServer(function(input, output) {
     #write the score to the log file
     log_function<-function(uniqueID,study_id,genotypes){
       user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
-      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"intelligence",uniqueID,study_id,GRS,ethnicity_group)
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"intelligence",uniqueID,study_id,GRS,ethnicity_group,use_all_snp_score,real_dist,plot_heritability)
       m<-paste(m,collapse="\t")
       if(file.exists(user_log_file)){
         write(m,file=user_log_file,append=TRUE)
@@ -325,69 +347,89 @@ shinyServer(function(input, output) {
       
       if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
       
-      #use normal plotting for top-hit GWAS scores
+    
+      
+      #plotting for top-hit scores
       if(!use_all_snp_score){
         
+        #get xlim, ylim and x and y
+        #since scores are mean=0 and SD=1 we draw a reference curve
+        reference_mean<-0
+        reference_sd<-1
+        xlim<-c(reference_mean - reference_sd*3, reference_mean + reference_sd*3)
+        reference_x<-seq(xlim[1],xlim[2],length.out=100)
+        reference_y<-dnorm(reference_x,mean=reference_mean,sd=reference_sd)
+        ylim <- range(reference_y)
         
-        
-        control_mean<-0
-        control_sd<-1
-        xlim<-c(control_mean - control_sd*3, control_mean + control_sd*3)
-        
-        x<-seq(xlim[1],xlim[2],length.out=100)
-        y_control<-dnorm(x,mean=control_mean,sd=control_sd)
-        plot(x,y_control,type="l",col="blue",ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n",lwd=2)
+        #draw curve
+        plot(NULL,xlim=xlim,ylim=ylim,ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n")
         par(mai=c(0.2,0.1,0.1,0.1))
+        lines(x=reference_x,y=reference_y,lty=1,col="blue",lwd=2)
         
-        #fill the controls
-        if(all(!x<GRS_beta))stop(safeError("GRS too low to plot"))
-        max_GRS_i<-max(which(x<GRS_beta))
-        upper_x<-x[1:max_GRS_i]
-        upper_y<-y_control[1:max_GRS_i]
-        x_lines <- c(upper_x,GRS_beta,GRS_beta,xlim[1])
-        y_lines <- c(upper_y,upper_y[length(upper_y)],0,0)
-        polygon(x=x_lines, y = y_lines, density = NULL, angle = 45,border = NA, col = rgb(0,0,1,0.3), lty = par("lty"))
+        #fill in shading
+        if(!all(!reference_x<GRS_beta)){
+          max_GRS_i<-max(which(reference_x<GRS_beta))
+          upper_x<-reference_x[1:max_GRS_i]
+          upper_y<-reference_y[1:max_GRS_i]
+          x_lines <- c(upper_x,GRS_beta,GRS_beta,xlim[1])
+          y_lines <- c(upper_y,upper_y[length(upper_y)],0,0)
+          polygon(x=x_lines, y = y_lines, density = NULL, angle = 45,border = NA, col = rgb(0,0,1,0.3), lty = par("lty"))
+        }
         
         #draw the main line
         abline(v=GRS_beta,lwd=3)
-        
-        
+
         #optionally add real distribution curve
         if(!is.null(distributionCurve)){
           real_x <- distributionCurve[["x"]]
           real_y <- distributionCurve[["y"]]
-          adj_y<-real_y * (max(y_control) / max(real_y))
+          adj_y<-real_y * (max(reference_y) / max(real_y))
           lines(x=real_x,y=adj_y,lty=2)
-          
         }
         
-        #only plot user distributions for all-SNP scores
+        #add legend depending on real-dist score
+        if(is.null(distributionCurve)){
+          legend("topleft",legend=c("Population distribution","Your genetic risk score"),lty=c(1,1),lwd=c(2,3),col=c("blue","black"))
+        }else{
+          legend("topleft",legend=c("Population distribution","Impute.me user distribution","Your genetic risk score"),lty=c(1,2,1),lwd=c(2,2,3),col=c("blue","black","black"))
+        }
+        
+      #plotting for all-SNP scores
       }else{
+        
+        #get xlim, ylim and x and y
+        #since mean and sd is not standardized we get only according to previous users
         distributionCurve <- o[["distributionCurve"]]
-        xlim<-range(distributionCurve[["x"]])
-        xlim[1] <- xlim[1]-0.5
-        xlim[2] <- xlim[2]+0.5
+        real_x <- distributionCurve[["x"]]
+        real_y <- distributionCurve[["y"]]
+        xlim<-range(c(real_x,GRS_beta))
+        xlim[1] <- xlim[1]-0.1
+        xlim[2] <- xlim[2]+0.1
+        ylim <- c(0,max(real_y))
+
         
-        control_mean<-0
-        control_sd<-1
-        ylim <- c(0,max(distributionCurve[["y"]]))
+        #draw curve
+        plot(NULL,xlim=xlim,ylim=ylim,ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n")
+        par(mai=c(0.2,0.1,0.1,0.1))
+        lines(x=real_x,y=real_y,lty=2,col="black",lwd=1)
         
-        plot(NULL,xlim=xlim,ylim=ylim,ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n",lwd=2)
-        
+        #fill in shading
+        if(!all(!real_x<GRS_beta)){
+          max_GRS_i<-max(which(real_x<GRS_beta))
+          upper_x<-real_x[1:max_GRS_i]
+          upper_y<-real_y[1:max_GRS_i]
+          x_lines <- c(upper_x,GRS_beta,GRS_beta,xlim[1])
+          y_lines <- c(upper_y,upper_y[length(upper_y)],0,0)
+          polygon(x=x_lines, y = y_lines, density = NULL, angle = 45,border = NA, col = rgb(0,0,1,0.3), lty = par("lty"))
+        }
         
         #draw the main line
         abline(v=GRS_beta,lwd=3)
-        
-        #add real distribution curve
-        real_x <- distributionCurve[["x"]]
-        real_y <- distributionCurve[["y"]]
-        adj_y<-real_y# * (ylim[2] / max(real_y))
-        lines(x=real_x,y=adj_y,lty=2)
-        
-        
+
+        legend("topleft",legend=c("Impute.me user distribution","Your genetic risk score"),lwd=c(1,3),col=c("black","black"),lty=c(2,1))
       }
       
-      legend("topleft",legend=c("Population distribution","Your genetic risk score"),lty=c(1,1),lwd=c(2,3),col=c("blue","black"))
+      
       
     }		
   })
@@ -400,10 +442,11 @@ shinyServer(function(input, output) {
     }
     o<-get_data()
     study_id<-o[["study_id"]]
+    use_all_snp_score <- o[["use_all_snp_score"]]
     
     if(is.na(traits[study_id,"known_heritability"]) |  is.na(traits[study_id,"total_heritability"])){
       plot(NULL,xlim=c(0,1),ylim=c(0,2),xaxt="n",yaxt="n",xlab="",ylab="",frame=F)
-      text(x=0.5,y=1,label="Heritability not registered for this trait",col="grey70")
+      text(x=0.5,y=1,label="Heritability not registered for this trait",col="grey80")
       
     }else{
       
@@ -413,7 +456,7 @@ shinyServer(function(input, output) {
     
       
       #if using all-SNP prs, then overwrite the data
-      if(isolate(input$use_all_snp_score)){
+      if(use_all_snp_score){
         all_snp_traits <- read.xlsx("/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx",rowNames=T)
         if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
         known<-all_snp_traits[study_id,"known_heritability"]
@@ -450,9 +493,11 @@ shinyServer(function(input, output) {
       
       #plot on-top of boxes texts (afterwards so they are not overwritten)
       text(x=x1,y=1.5,label="This\nscore",srt=0)
-      text(x=x2,y=1.5,label="Unknown\ngenetics",srt=0,col="grey30")
-      # text(x=x3,y=1.5,label="Environment",srt=45)
+      if(total - known > 0.2){
+        text(x=x2,y=1.5,label="Unknown\ngenetics",srt=0,col="grey30")  
+      }
       
+
       #plot under-boxes texts (afterwards so they are not overwritten)
       text(x=x4,y=0.5,label="Genetics",srt=0)
       text(x=x3,y=0.5,label="Environment",srt=0)

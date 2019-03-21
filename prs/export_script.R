@@ -119,8 +119,9 @@ export_function<-function(uniqueID){
       pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
       if(class(pData)!="try-error" && "ethnicity" %in% colnames(pData)){
         ethnicity <-pData[1,"ethnicity"]
+        if(is.na(ethnicity))ethnicity <-"ALL"
       }else{
-        ethnicity <-"GLOBAL"
+        ethnicity <-"ALL"
       }
       freq_file <- paste0("/home/ubuntu/prs_dir/frequencies/2019-03-11_chr",chr,"_",ethnicity,"_freq.txt.gz")
       

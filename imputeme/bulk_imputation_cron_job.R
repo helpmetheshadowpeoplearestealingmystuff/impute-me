@@ -20,10 +20,10 @@ foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"
 runningJobCount<-0
 remoteRunningJobCount<-0
 for(folderToCheck in foldersToCheck){
-  jobStatusFile<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
-  if(file.exists(jobStatusFile)){
-    jobStatus<-read.table(jobStatusFile,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
-    if(jobStatus=="Job is running"){runningJobCount<-runningJobCount+1}
+  job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
+  if(file.exists(job_status_file)){
+    job_status<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
+    if(job_status=="Job is running"){runningJobCount<-runningJobCount+1}
   }
 }
 
@@ -42,10 +42,10 @@ if(runningJobCount>(maxImputations-1)){
 foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
 runningJobCount<-0
 for(folderToCheck in foldersToCheck){
-  jobStatusFile<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
-  if(file.exists(jobStatusFile)){
-    jobStatus<-read.table(jobStatusFile,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
-    if(jobStatus=="Job is running"){runningJobCount<-runningJobCount+1}
+  job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
+  if(file.exists(job_status_file)){
+    job_status<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
+    if(job_status=="Job is running"){runningJobCount<-runningJobCount+1}
   }
 }
 if(runningJobCount>(maxImputations-1)){
@@ -99,9 +99,9 @@ if(serverRole== "Node"){
   for(remoteFolderToCheck in remoteFoldersToCheck){
     if(length(remoteFoldersToRun)>=length_requested)break
     cmd2 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
-    jobStatus<-system(cmd2,intern=T)
+    job_status<-system(cmd2,intern=T)
     #Check if the job is ready
-    if(jobStatus=="Job is ready"){
+    if(job_status=="Job is ready"){
       print(paste("Found job-status file and job is ready",remoteFolderToCheck))
       remoteFoldersToRun <- c(remoteFoldersToRun,remoteFolderToCheck)
     }
@@ -143,16 +143,16 @@ for(folderToCheck in foldersToCheck){
     print(paste("Didn't find a job-status file - should probably auto-delete",folderToCheck))
     next
   }
-  jobStatus<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
-  if(jobStatus=="Job is not ready yet"){
+  job_status<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
+  if(job_status=="Job is not ready yet"){
     print(paste("Found job-status file - but job is not ready yet",folderToCheck))
     next
   }
-  if(jobStatus=="Job is running"){
+  if(job_status=="Job is running"){
     print(paste("Found job-status file - but job is already running",folderToCheck))
     next
   }
-  if(jobStatus=="Job is ready"){
+  if(job_status=="Job is ready"){
     print(paste("Found job-status file and job is ready",folderToCheck))
     unlink(job_status_file)
     write.table("Job is running",file=job_status_file,col.names=F,row.names=F,quote=F)
