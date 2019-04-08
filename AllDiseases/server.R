@@ -60,6 +60,10 @@ shinyServer(function(input, output) {
     #(this would be the most frequent case actually. For now)
     if(!study_id %in% rownames(all_snp_traits)){
       use_all_snp_score <- FALSE
+    }else{
+      if(is.na(all_snp_traits[study_id,"file_to_read"])){
+        use_all_snp_score <- FALSE
+      }
     }
     
     
@@ -170,7 +174,7 @@ shinyServer(function(input, output) {
     rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
     genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
     SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
-    SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T, verbose=T)
+    SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T, verbose=F)
     population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
     if(population_sum_sd == 0)stop(safeError("For some reason we couldn't analyse this particular trait from your genomic data."))
     
@@ -311,7 +315,7 @@ shinyServer(function(input, output) {
     #write the score to the log file
     log_function<-function(uniqueID,study_id,genotypes){
       user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
-      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"AllDiseases",uniqueID,study_id,GRS,ethnicity_group,use_all_snp_score,real_dist,plot_heritability)
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"AllDisease",uniqueID,study_id,GRS,ethnicity_group,use_all_snp_score,real_dist,plot_heritability)
       m<-paste(m,collapse="\t")
       if(file.exists(user_log_file)){
         write(m,file=user_log_file,append=TRUE)

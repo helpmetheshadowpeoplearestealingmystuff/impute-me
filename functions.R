@@ -1978,7 +1978,10 @@ run_bulk_imputation<-function(
     
     #check for position duplicates
     map<-read.table(paste0("step_2m_chr",chr,".map"),stringsAsFactors = F,comment.char = "")
-    if(sum(duplicated(map[,4]))>10000)stop("Found way too many duplicate positions")
+    if(sum(duplicated(map[,4]))>10000){
+      duplicates_found <- sum(duplicated(map[,4]))
+      stop(paste("Found",duplicates_found,"duplicate positions, and the current threshold is 10000"))
+    }
     exclude<-unique(map[duplicated(map[,4]),2])
     write.table(exclude,file=paste0('step_2_overall_exclusions_chr',chr),sep='\t',row.names=FALSE,col.names=F,quote=F)
     
@@ -2209,7 +2212,7 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
   
   
   #Common problem 4: lack of sorting (first re-check if this is a problem after MT removal)
-  cmd_special_3<-paste(plink,"--noweb --23file ",rawdata_file," ",uniqueID," ",uniqueID," --recode --out step_1")
+  cmd_special_3<-paste0(plink," --noweb --23file ",rawdata_file," ",uniqueID," ",uniqueID," --recode --out step_1")
   sorting_check<-system(cmd_special_3,intern=T)
   if(length(grep("are out of order",sorting_check))>0){
     
@@ -2280,7 +2283,8 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
     print("re-running to map")
     system(cmd_special_3,intern=F)
     map_file<-map_file2
-    if(!file.exists(map_file)){stop("Didn't find map file")}
+    #there is maybe an opportunity here to catch a few of the still-failing - could insert a grep "^rs" filter, seems to often be the failing criteria here.
+    if(!file.exists(map_file)){stop("Didn't find map file - This error has been raised a few times now, could probably be handled better with a few more filters")}
   }
   map<-read.table(map_file,sep='\t',stringsAsFactors=F,comment.char = "")
   map<-map[!duplicated(map[,2]),]
