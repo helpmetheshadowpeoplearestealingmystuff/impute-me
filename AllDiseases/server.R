@@ -96,8 +96,6 @@ shinyServer(function(input, output) {
     
     #setting up back-ground frequency sources
     #The default behavior is to try to guess ethnicity. If this fails it should revert to 'global' distribution but prepare to make a note of it in the methods.
-    ethnicity_explanation_text <- "All scaling was done using the minor-allele frequency (MAF) for each SNP, as taken from the 1000 genomes project v3, using a _CHOICE_ frequency distribution."
-    
     if(ethnicity_group == "automatic"){
       json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
       if(!file.exists(json_path))stop(safeError("Json file not found (So cannot do automatic guess)"))
@@ -105,10 +103,10 @@ shinyServer(function(input, output) {
       d1<-fromJSON(json_path)
       e<-try(d1[["ethnicity"]][["guessed_super_pop"]],silent=F)
       if(is.null(e) || is.na(e) ||  !e %in% c("AFR", "AMR", "EAS", "EUR", "SAS")){
-        ethnicity_explanation_text<-paste0(ethnicity_explanation_text," This was done because we could not automatically guess your ethnicity, but you can use the advanced tab to set it yourself.")
+        # ethnicity_explanation_text<-paste0(ethnicity_explanation_text," This was done because we could not automatically guess your ethnicity, but you can use the advanced tab to set it yourself.")
         ethnicity_group<-"global"
       }else{
-        ethnicity_explanation_text<-paste0(ethnicity_explanation_text," This was done based on an automated guess.")
+        # ethnicity_explanation_text<-paste0(ethnicity_explanation_text," This was done based on an automated guess.")
         ethnicity_group <- e
       }
     }
@@ -121,8 +119,8 @@ shinyServer(function(input, output) {
       #note the density curve location
       densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/AllDiseases/2019-03-13_densities_",ethnicity_group,".rdata")
     }
-    #then explain which choice was made
-    ethnicity_explanation_text <- sub("_CHOICE_",ethnicities_labels[ethnicity_group],ethnicity_explanation_text)
+    
+    
     
     
     
@@ -131,7 +129,7 @@ shinyServer(function(input, output) {
     author<-traits[study_id,"first_author"]
     sampleSize<-traits[study_id,"sampleSize"]
     publication_date<-traits[study_id,"publication_date"]
-    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a target='_blank' href='http://",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",trait,".")
+    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a target='_blank' href='http://",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",tolower(trait),".")
     textToReturn <- paste0(textToReturn," This study reports a total sample size of ",sampleSize,", as entered on date ",publication_date,".")
     
     
@@ -186,7 +184,7 @@ shinyServer(function(input, output) {
     #check for question marks in risk-allele
     c1<-apply(SNPs_to_analyze[,c("minor_allele","major_allele","effect_allele","non_effect_allele")]=="?",1,sum)
     if(sum(c1>0) & !use_all_snp_score){
-      textToReturn <- paste0(textToReturn," Also note that ",sum(c1>0)," SNP(s) had <b>missing or discrepant</b> allele information, meaning that risk-allele or minor/major allele could not be correctly assigned. This is indicated with a '?' in the results table and causes the SNP to be omitted from the GRS-calculation. This is likely due to strand-reporting issues, and may be fixable by checking the original study.")
+      textToReturn <- paste0(textToReturn," Also note that ",sum(c1>0)," SNP(s) had missing or discrepant allele information, meaning that risk-allele or minor/major allele could not be correctly assigned. This is indicated with a '?' in the results table and causes the SNP to be omitted from the GRS-calculation. This is likely due to strand-reporting issues, and may be fixable by checking the original study.")
     }
     
     
@@ -213,14 +211,15 @@ shinyServer(function(input, output) {
     }
     
     
-    #write the methods text
-    sd_calculation_sentence <- paste0("This gave an ethnicity-specific standard deviation for this polygenic risk score as ",signif(population_sum_sd,2)," which is taken into account when arriving at the trait Z-score of ",signif(GRS,2),".")
+    #write the methods text for GWAS-significant hits
+    methodsToReturn<-paste0("<small><br><b>Methods</b><br>The polygenic risk score is calculated by combining your genotype data with trait association data from <u><a href='",link,"'>",author," et al</a></u>. This is done by counting how many risk-alleles you have for each SNP (column <i>'Your genotype'</i>) and multiplying that count by the reported effect-size of the SNP (column <i>'Effect Size'</i>). This gives a SNP-score for each row (column <i>'SNP-score'</i>). The SNP-score is then centered so that the <i>average</i> score in the general population would be zero (column <i>'SNP-score population normalized'</i>). All of these population normalized values are then summarized to get an overall score. This sum is further scaled so that its standard-deviation in the general population would be equal to 1 ('unit-variance'). This effectively makes it a <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-score</a></u>. The scaling and centering is based on the minor-allele frequencies (MAF) taken from the 1000 genomes project, using the ",ethnicities_labels[ethnicity_group]," frequency distribution. This gives an ethnicity-specific standard deviation of ",signif(population_sum_sd,2),". If you summarize the population normalized SNP-score column and divide by this number, you too will obtain the reported Z-score of ",signif(GRS,2),", illustrating how your score is a combination of many SNPs working together. Further details of all calculations can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/03c51c63b262f600d509469e361db35bd2a8a5fb/functions.R#L1295-L1455'>source code</a></u>. 
+
+                            <br><br>The advantage of this approach is that it only requires a list of GWAS-significant SNPs, their frequency, effect-size and effect-alleles.  This makes it possible to implement the calculation systematically for many diseases and traits. 
+                            
+                            <br><br>One weakness in this approach is that it assumes that individuals from the 1000 genomes project are a reasonably normal reference group. For some traits or diseases this may not be true. As an alternative, you can select the <i>'plot user distribution'</i> option in the advanced options sections. This will overlay the plot with distribution of all impute.me users. The weakness of that approach, however, is the assumption that most users of impute.me are reasonably normal. Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities where it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. In most cases, higher score means high level - but it is recommended to consult with the original GWAS publication if there is any doubt. Thirdly, it is important to note that many of these scores only explain very small proportions of the overall risk. You can switch on the <i>'Plot heritability'</i> in advanced option to see how much. However, this is currently only available for some traits.
+                            
+                            <br><br>Finally, instead of scrolling through all the alphabetical entries here, then check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Precision-medicine module</a></u>. The data in that module is based on the calculations made here, but the information is instead given as a view of scores relevant only to a specific disease-scope. The intention is give relevant information for a given context, while avoiding risk-sorted lists bound to produce spurious and wrongful observations (see <u><a href='https://github.com/lassefolkersen/impute-me/issues/8'>discussion</a></u> here).</small>")		
     
-    methodsToReturn<-paste0("<small><br><b>Methods</b><br>Input data was downloaded from several online scientific sources, including <u><a href='https://www.ncbi.nlm.nih.gov/pubmed/'>PubMed</a></u>, <u><a href='http://www.gwascentral.org/'>GWAS central</a></u> and <u><a href='https://www.ebi.ac.uk/gwas/'>GWAS catalog</a></u>. Then a per-SNP score was calculated by counting the risk-alleles multiplied by the effect size (OR or beta as reported in original paper). This was centered so that the average score in the general population would be zero ('population normalized'). This means, that if a person is homozygote for a very rare risk variant this will result in a very high Z-score, conversely if the SNP is common, the Z-score will be less extreme. The sum of these normalized SNP-scores are calculated to get a trait-wide genetic risk score (GRS). This GRS was additionally scaled so that standard-deviation in the general population is 1 (unit-variance), effectively making the scores <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-scores</a></u>. ", ethnicity_explanation_text, sd_calculation_sentence," Further details of the calculation can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/56813bf071d7fa4c0a658c90d2ebee196a781e8a/functions.R#L1166-L1326'>source code</a></u>. 
-			          
-		          <br><br>The advantage of this approach is that it does not require further data input than MAF, effect-size and genotype.  This makes the calculation fairly easy to implement. To perform a double check of this theoretical distribution, switch on the 'plot real distribution' option in the advanced options sections. In most cases the theoretical and real distribution is the same, but if it is not it may indicate problems such as highly-ethnicity specific effects. 
-		          
-		          <br><br>Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities were it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. Again it is recommended to consult with the original GWAS publication. Also, instead of scrolling through all entries here, then check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Precision-medicine module</a></u> - based on this info, but giving a more focused and scope-relevant view of the scores.</small>")		
     
     
     #add in the (damn) duplicates
@@ -290,11 +289,14 @@ shinyServer(function(input, output) {
       }
       
       
-      #remove irrelevant methods text
-      methodsToReturn<-sub("This was centered so that the average score in the general population would be zero.+","",methodsToReturn)
+      #write the methods text for all-SNP scores
+      methodsToReturn<-paste0("<small><br><b>Methods</b><br>The all-SNP polygenic risk score is calculated by combining your genotype data with complete trait association data from <u><a href='",link,"'>",author," et al</a></u>. This is done by counting how many risk-alleles you have for each SNP (column <i>'Your genotype'</i>) and multiplying that count by the reported effect-size of the SNP (column <i>'Effect Size'</i>). This gives a SNP-score for each row (column <i>'SNP-score'</i>). Note that the table only shows the most significant SNPs as an example, even though a total of ",new_snp_count," independent SNPs are used in the calculation. This is done according to the <u><a href='https://www.cog-genomics.org/plink2'>plink</a></u> <i>score</i> method. For missing SNPs, the average frequency for ",ethnicities_labels[ethnicity_group]," ethnicity is used, based on data from the 1000 genomes project.  Further details of all calculations can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/03c51c63b262f600d509469e361db35bd2a8a5fb/prs/export_script.R#L96-L97'>source code</a></u>. 
+
+                              <br><br>The all-SNP polygenic risk score is still an experimental functionality of impute.me. You can switch it off by un-selecting <i>'Show all-SNP score'</i> in advanced options. The main advantage is that explains more of the risk variation than the default score types that are based only on GWAS-significant SNPs. You can explore the difference by using the <i>'Plot heritability</i>' switch under advanced options.
+
+                              <br><br>A main disadvantage of the all-SNP score is that it is difficult to implement it systematically for many diseases and traits, which is the reason it is only available for few selected studies. This is likely to change in the future as more and more studies release their full summary-stats without access-conditions. Check this <u><a href='https://github.com/lassefolkersen/impute-me/issues/9'>github issue</a></u> for further perspectives. Remaining disadvantages mainly relate to how we implement the calculations. For example, the current implementation only have the option to compare to previous users of impute.me. This is something we are working actively on.</small>")		
       
-      #insert new methods text
-      methodsToReturn <- c(methodsToReturn,paste0("<br><br>The calculation of the polygenic risk score was done according to the LDpred method using default settings and weighting scheme w1. The comparison distributions are that of all other users of impute.me of the same ethnicity, i.e. ",ethnicities_labels[ethnicity_group]))
+      
       
       
       
@@ -575,10 +577,10 @@ shinyServer(function(input, output) {
       }
       
       
-      keep<-c("SNP","genotype","Risk/non-risk Allele","personal_score","score_diff"
-              ,"effect_size","p_value","Major/minor Allele","minor_allele_freq","reported_genes")
+      keep<-c("SNP","genotype","Risk/non-risk Allele","effect_size","personal_score","score_diff"
+              ,"p_value","Major/minor Allele","minor_allele_freq","reported_genes")
       SNPs_to_analyze<-SNPs_to_analyze[,keep]
-      colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","SNP-score","SNP-score (population normalized)","Effect Size","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
+      colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Effect Size","SNP-score","SNP-score (population normalized)","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
       
       return(SNPs_to_analyze)
     }
