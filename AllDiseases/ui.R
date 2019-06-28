@@ -3,6 +3,7 @@ source("../uifunctions.R")
 initialize('gmh',TRUE)
 
 
+#load functions and define paths of reference files and data directory
 library(openxlsx)
 trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
 traits <- read.xlsx(trait_file,rowNames=F)
@@ -18,11 +19,14 @@ traits<-traits[!traits[,"omit"],]
 ethnicities<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
 names(ethnicities)<-c("Automatic guess","Global average","African","Ad Mixed American","East Asian","European","South Asian")
 
-#Trait groups
+#Define the trait groups
 trait_groups<-c("all","disease","biometrics","biomarker","response","other")
 names(trait_groups)<-c("All","Disease","Biometrics","Biomarker","Response","Other")
 
 
+#create overview of what is selectable in the UI - 
+#note there wil be one object per trait group (the 6 groups defined above), 
+#and each of the will be duplicated into newest and all
 selections_all<-traits[,"study_id"]
 names(selections_all)<-traits[,"niceName"]
 
@@ -40,10 +44,6 @@ names(selections_response)<-traits[traits[,"response"],"niceName"]
 
 selections_other<-traits[traits[,"other"],"study_id"]
 names(selections_other)<-traits[traits[,"other"],"niceName"]
-
-
-
-
 
 selections_all_newest<-traits[traits[,"most_recent"],"study_id"]
 names(selections_all_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"most_recent"],"niceName"])
@@ -65,6 +65,8 @@ names(selections_other_newest)<-sub(" [PMID [0-9]+]$","",traits[traits[,"other"]
 
 
 
+
+#Start main Shiny scripts
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
@@ -146,6 +148,8 @@ shinyUI(bootstrapPage(
 	beginPanel('2/3'),
 	
 	# h2("Genetic risk score:"),
+	htmlOutput("text_4"),
+	
 	htmlOutput("text_1"),
 	plotOutput("plot_1"),
 	conditionalPanel(

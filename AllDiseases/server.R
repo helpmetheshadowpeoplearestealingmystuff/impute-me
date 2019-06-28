@@ -1,37 +1,36 @@
 library("shiny")
 
+
+#load functions and define paths of reference files and data directory
 source("/home/ubuntu/srv/impute-me/functions.R")
 dataFolder<-"/home/ubuntu/data/"
 snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_semi_curated_version_gwas_central.rdata"
 trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
 all_snp_trait_file <- "/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx"
 
-#testing
-#preload
 
 
-#testing
-
-
+#defining 1000 genomes populations
 ethnicities_labels<-c("Automatic guess","global","African","Ad Mixed American","East Asian","European","South Asian")
 names(ethnicities_labels)<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
 
-#preload
+
+#preload data
 library(openxlsx)
 load(snps_file)
 traits <- read.xlsx(trait_file,rowNames=T)
 all_snp_traits<-read.xlsx(all_snp_trait_file,rowNames=T)
 
 
-
+#Start main Shiny scripts
 shinyServer(function(input, output) {
   
+  
+  #The top text shown before any analysis is run  
   output$text_1 <- renderText({ 
-    
     if(input$goButton == 0){
       m<-paste0("A polygenic risk score is a value that gives a summary of a large number of different SNPs - each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. Of course the interpretation of this risk depends a lot on other factors as well: How heritable the disease is. How much of this heritability we can explain with known SNPs. And not least, what would the risk of disease be for you otherwise, i.e. without taking the genetic component into account. <br><br>Because the polygenic risk score is only a risk-modifier, knowledge of these three other values are all required if you want to know what your overall risk is, i.e. what's the chance in percent. This calculator cannot provide that. But it can provide a view of the <i>known genetic</i> component of your disease risk, based on all the SNPs that we know are associated with the disease. This, we believe, makes it a better choice for complex diseases than the typical one-SNP-at-the time analysis typically seen in consumer genetics.<br><br>"
       )
-      
     }else{
       m<-""
     }
@@ -39,7 +38,7 @@ shinyServer(function(input, output) {
   })
   
   
-  
+  #The main data gathereing function, defined as reactive because it's used in several different calls
   get_data <- reactive({
     
     #initial UI data gathering and user-check
@@ -216,7 +215,7 @@ shinyServer(function(input, output) {
 
                             <br><br>The advantage of this approach is that it only requires a list of GWAS-significant SNPs, their frequency, effect-size and effect-alleles.  This makes it possible to implement the calculation systematically for many diseases and traits. 
                             
-                            <br><br>One weakness in this approach is that it assumes that individuals from the 1000 genomes project are a reasonably normal reference group. For some traits or diseases this may not be true. As an alternative, you can select the <i>'plot user distribution'</i> option in the advanced options sections. This will overlay the plot with distribution of all impute.me users. The weakness of that approach, however, is the assumption that most users of impute.me are reasonably normal. Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities where it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. In most cases, higher score means high level - but it is recommended to consult with the original GWAS publication if there is any doubt. Thirdly, it is important to note that many of these scores only explain very small proportions of the overall risk. You can switch on the <i>'Plot heritability'</i> in advanced option to see how much. However, this is currently only available for some traits.
+                            <br><br>One weakness in this approach is that it assumes that individuals from the 1000 genomes project are a reasonably normal reference group. For some traits or diseases this may not be true. As an alternative, you can select the <i>'plot user distribution'</i> option in the advanced options sections. This will overlay the plot with distribution of all ethnicity-matched impute.me users. The weakness of that approach, however, is the assumption that most users of impute.me are reasonably normal. Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities where it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. In most cases, higher score means high level - but it is recommended to consult with the original GWAS publication if there is any doubt. Thirdly, it is important to note that many of these scores only explain very small proportions of the overall risk. You can switch on the <i>'Plot heritability'</i> in advanced option to see how much. However, this is currently only available for some traits.
                             
                             <br><br>Finally, instead of scrolling through all the alphabetical entries here, then check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Precision-medicine module</a></u>. The data in that module is based on the calculations made here, but the information is instead given as a view of scores relevant only to a specific disease-scope. The intention is give relevant information for a given context, while avoiding risk-sorted lists bound to produce spurious and wrongful observations (see <u><a href='https://github.com/lassefolkersen/impute-me/issues/8'>discussion</a></u> here).</small>")		
     
@@ -290,11 +289,11 @@ shinyServer(function(input, output) {
       
       
       #write the methods text for all-SNP scores
-      methodsToReturn<-paste0("<small><br><b>Methods</b><br>The all-SNP polygenic risk score is calculated by combining your genotype data with complete trait association data from <u><a href='",link,"'>",author," et al</a></u>. This is done by counting how many risk-alleles you have for each SNP (column <i>'Your genotype'</i>) and multiplying that count by the reported effect-size of the SNP (column <i>'Effect Size'</i>). This gives a SNP-score for each row (column <i>'SNP-score'</i>). Note that the table only shows the most significant SNPs as an example, even though a total of ",new_snp_count," independent SNPs are used in the calculation. This is done according to the <u><a href='https://www.cog-genomics.org/plink2'>plink</a></u> <i>score</i> method. For missing SNPs, the average frequency for ",ethnicities_labels[ethnicity_group]," ethnicity is used, based on data from the 1000 genomes project.  Further details of all calculations can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/03c51c63b262f600d509469e361db35bd2a8a5fb/prs/export_script.R#L96-L97'>source code</a></u>. 
+      methodsToReturn<-paste0("<small><br><b>Methods</b><br>The all-SNP polygenic risk score is calculated by combining your genotype data with complete trait association data from <u><a href='",link,"'>",author," et al</a></u>. This is done by counting how many risk-alleles you have for each SNP (column <i>'Your genotype'</i>) and multiplying that count by the reported effect-size of the SNP (column <i>'Effect Size'</i>). This gives a SNP-score for each row (column <i>'SNP-score'</i>). Note that the table only shows the most significant SNPs as an example, even though a total of ",new_snp_count," SNPs are used in the calculation. This is done according to the <u><a href='https://www.cog-genomics.org/plink2'>plink</a></u> <i>score</i> method. For missing SNPs, the average frequency for ",ethnicities_labels[ethnicity_group]," ethnicity is used, based on data from the 1000 genomes project.  Further details of all calculations can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/03c51c63b262f600d509469e361db35bd2a8a5fb/prs/export_script.R#L96-L97'>source code</a></u>. 
 
                               <br><br>The all-SNP polygenic risk score is still an experimental functionality of impute.me. You can switch it off by un-selecting <i>'Show all-SNP score'</i> in advanced options. The main advantage is that explains more of the risk variation than the default score types that are based only on GWAS-significant SNPs. You can explore the difference by using the <i>'Plot heritability</i>' switch under advanced options.
 
-                              <br><br>A main disadvantage of the all-SNP score is that it is difficult to implement it systematically for many diseases and traits, which is the reason it is only available for few selected studies. This is likely to change in the future as more and more studies release their full summary-stats without access-conditions. Check this <u><a href='https://github.com/lassefolkersen/impute-me/issues/9'>github issue</a></u> for further perspectives. Remaining disadvantages mainly relate to how we implement the calculations. For example, the current implementation only have the option to compare to previous users of impute.me. This is something we are working actively on.</small>")		
+                              <br><br>A main disadvantage of the all-SNP score is that it is difficult to implement it systematically for many diseases and traits, which is the reason it is only available for few selected studies. This is likely to change in the future as more and more studies release their full summary-stats without access-conditions. Check this <u><a href='https://github.com/lassefolkersen/impute-me/issues/9'>github issue</a></u> for further perspectives. Remaining disadvantages mainly relate to how we implement the calculations. For example, the current implementation only have the option to compare to previous ethnicity-matched users of impute.me. This is something we are working actively on.</small>")		
       
       
       
@@ -341,6 +340,7 @@ shinyServer(function(input, output) {
   
   
   
+  #The main gaussian distribution plot  
   output$plot_1 <- renderPlot({ 
     if(input$goButton == 0){
       return(NULL)
@@ -353,7 +353,7 @@ shinyServer(function(input, output) {
       
       if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
       
-    
+      
       
       #plotting for top-hit scores
       if(!use_all_snp_score){
@@ -384,7 +384,7 @@ shinyServer(function(input, output) {
         
         #draw the main line
         abline(v=GRS_beta,lwd=3)
-
+        
         #optionally add real distribution curve
         if(!is.null(distributionCurve)){
           real_x <- distributionCurve[["x"]]
@@ -400,7 +400,7 @@ shinyServer(function(input, output) {
           legend("topleft",legend=c("Population distribution","Impute.me user distribution","Your genetic risk score"),lty=c(1,2,1),lwd=c(2,2,3),col=c("blue","black","black"))
         }
         
-      #plotting for all-SNP scores
+        #plotting for all-SNP scores
       }else{
         
         #get xlim, ylim and x and y
@@ -412,7 +412,7 @@ shinyServer(function(input, output) {
         xlim[1] <- xlim[1]-0.1
         xlim[2] <- xlim[2]+0.1
         ylim <- c(0,max(real_y))
-
+        
         
         #draw curve
         plot(NULL,xlim=xlim,ylim=ylim,ylab="Number of people with this score",xlab="Genetic risk score",yaxt="n")
@@ -431,7 +431,7 @@ shinyServer(function(input, output) {
         
         #draw the main line
         abline(v=GRS_beta,lwd=3)
-
+        
         legend("topleft",legend=c("Impute.me user distribution","Your genetic risk score"),lwd=c(1,3),col=c("black","black"),lty=c(2,1))
       }
       
@@ -442,6 +442,7 @@ shinyServer(function(input, output) {
   
   
   
+  #The supporting (optional) heritability explained plot
   output$plot_2 <- renderPlot({ 
     if(input$goButton == 0){
       return(NULL)
@@ -459,7 +460,7 @@ shinyServer(function(input, output) {
       #get variables
       known<-traits[study_id,"known_heritability"]
       total <-traits[study_id,"total_heritability"]
-    
+      
       
       #if using all-SNP prs, then overwrite the data
       if(use_all_snp_score){
@@ -503,7 +504,7 @@ shinyServer(function(input, output) {
         text(x=x2,y=1.5,label="Unknown\ngenetics",srt=0,col="grey30")  
       }
       
-
+      
       #plot under-boxes texts (afterwards so they are not overwritten)
       text(x=x4,y=0.5,label="Genetics",srt=0)
       text(x=x3,y=0.5,label="Environment",srt=0)
@@ -540,6 +541,8 @@ shinyServer(function(input, output) {
   })
   
   
+  
+  #The table of SNPs and their effects
   output$table1 <- renderDataTable({ 
     if(input$goButton == 0){
       return("")
@@ -587,6 +590,8 @@ shinyServer(function(input, output) {
   },options = list(searching = FALSE,paging = FALSE))
   
   
+  
+  #The long methods section written after the SNPs-table
   output$text_3 <- renderText({ 
     
     if(input$goButton == 0){
@@ -599,6 +604,90 @@ shinyServer(function(input, output) {
     }
     return(methodsToReturn)
   })
+  
+  
+  
+  #The Vancouver-study collaboration box
+  output$text_4 <- renderText({ 
+    minimum_level <- 5
+    
+    
+    #Mention all UI elements to make sure this renderText object is triggered. Other than that these following 10 lines don't do anything
+    if(input$only_show_newest){
+      ui_selector <- paste0("trait_",input$trait_group,"_newest")  
+    }else{
+      ui_selector <- paste0("trait_",input$trait_group)
+    }
+    study_id<-input[[ui_selector]]
+    ethnicity_group<-input$ethnicity_group
+    use_all_snp_score<-input$use_all_snp_score
+    plot_heritability <- input$plot_heritability
+    real_dist<-input$real_dist
+    
+
+    if(input$goButton == 0){return("")}
+    
+    uniqueID<-gsub(" ","",input$uniqueID)
+    if(uniqueID == "id_613z86871"){return("")}
+    
+    user_log_path <- paste0("~/data/",uniqueID,"/user_log_file.txt")
+    if(!file.exists(user_log_path))return("")
+    
+    
+    cmd1 <- paste0("wc -l ",user_log_path)
+    total_entries <- as.numeric(sub(" .+$","",system(cmd1,intern=T)))
+    
+    #to make sure we don't slow down the program too much for "old" users
+    if(total_entries > 1000)return("")
+    if(total_entries < minimum_level)return("")
+    
+    q<-grep("\tAllDisease\t",readLines(user_log_path),value=T)
+    if(length(q)<minimum_level)return("")
+    
+    #now we can go to plot/no-plot logic, because each step will be more rare and won't slow down so much
+    show_box <- FALSE
+    
+    if(length(q) >= minimum_level & length(q)<10) show_box <- TRUE
+    
+    if(length(q)>=15 & length(q)<20) show_box <- TRUE
+    
+    if(length(q)>=25 & length(q)<30) show_box <- TRUE
+    
+    if(length(q)>=40 & length(q)<45) show_box <- TRUE
+    
+    if(length(q)>=60 & length(q)<75) show_box <- TRUE
+    
+    if(length(q)>=80 & length(q)<85) show_box <- TRUE
+    
+    if(length(q)>=100 & length(q)<105) show_box <- TRUE
+    
+    if(length(q)>=120 & length(q)<125) show_box <- TRUE
+    
+    if(length(q)>=150) show_box <- TRUE
+    
+    if(show_box){
+      
+      
+      survey_log_file<-"/home/ubuntu/logs/submission/ubc_survey.txt"
+      if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ubc_survey",uniqueID,length(q))
+      m<-paste(m,collapse="\t")
+      write(m,file=survey_log_file,append=TRUE)
+      
+      
+      out <- paste0("<div style='background-color: #cfc ; padding: 10px; border: 1px solid green;'>
+<p>Dear user<br></p>
+<p><img style='padding: 0 15px; float: right;' src='../www/ubc_logo.png'>In collaboration with the University of British Columbia, we are currently conducting a study on motivations, perceptions and reactions in consumer genomics. We would therefore like to invite you to participate:<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u><a href='https://rc.bcchr.ca/redcap/surveys/?s=LAP43CYXTL'>Survey-link</a></u></b><br><br>
+The results of this survey is intended for scientific publication and by participating you will therefore help by contributing important knowledge to the genetics field.</p></div>")
+      return(out)
+      
+    }
+    
+  })
+  
+  
+  
   
   
 })
