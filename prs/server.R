@@ -12,8 +12,8 @@ shinyServer(function(input, output) {
     if(input$goButton == 0){
       message <- "<br>Polygenic risk scores essentially means the weighted sum of effects from many SNPs. How they are calculated is a matter of great debate in current genetics. This module explores their calculation using the so-called <u><a href='https://github.com/bvilhjal/ldpred'>LD-pred</a></u> algorithm. The main difference between this and the current <u><a href='https://www.impute.me/AllDiseases/'>Complex Disease</a></u> module is that virtually all measured SNPs in the entire genome are included in the calculation, not just those that are genome-wide significant.<br><br>"
     }else if(input$goButton > 0) {
-      message <- "<br>Since the module is highly experimental, the current reporting basically is the LD-pred score output as is, along with QC information on number of included SNPs. This means that the score currently only can be interpreted on a relative scale, i.e. you can upload two samples and see which one is higher.<br><br>
-      Obviously this is an area of very active development, and we aim to provide a setup wherein scores are reported within a framework of risk relative to e.g. large population segments or similar.<br><br>"
+      message <- "<br>Since the module is highly experimental, the current reporting basically is the LD-pred score output as is, along with QC information on number of included SNPs. This means that in this module the score currently only can be interpreted on a relative scale, i.e. you can upload two samples and see which one is higher.<br><br>
+      In the main 'complex disease' module however, these scores are extracted and normalized to zero-mean and unit-variance. This means that the scores when browsed in the main module are Z-scores, as is indeed the aim to have all scores be.<br><br>"
     }
     return(message)
   })
@@ -68,10 +68,10 @@ shinyServer(function(input, output) {
     }
     if(ethnicity_group == "global"){
       #do nothing. Note the density curve location.
-      densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-03-20_densities_ALL.rdata"
+      densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_ALL.rdata"
     }else{
       #note the density curve location
-      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-03-20_densities_",ethnicity_group,".rdata")
+      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_",ethnicity_group,".rdata")
     }
     
     

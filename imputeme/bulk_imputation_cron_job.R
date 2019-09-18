@@ -164,7 +164,7 @@ for(folderToCheck in foldersToCheck){
 
 #Stop if none are found
 if(length(imputeThisFolder)!= length_requested){
-  stop(paste0("Not ",length_requested," folders were found to be ready for imputation"))
+  stop(paste0(length(imputeThisFolder)," impute-queue folders were found to be ready for imputation. The requested number is ",length_requested,".")) #here we could easily have a mechanism for proceeded if the found number is >10, but for now we just fail so we can sort it out later. It's not applicable in node-running-setups anyway, because they always take 10.
 }else{
   print(paste("Found",length_requested,"ready sets to impute"))
 }
@@ -273,7 +273,7 @@ for(uniqueID in uniqueIDs){
     location_simple <- paste(ip,"/www/",uniqueID,".simple_format.zip",sep="")
     location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
     location_json <- paste(ip,"/www/",uniqueID,"_data.json",sep="")
-    message <- paste("<HTML>We have completed imputation of your genome. You can retrieve your imputed genome at this address:<br><a href=",location_simple,">",location_simple,"</a><br><br>You can also go to <a href='www.impute.me'>www.impute.me</a> and explore the current analysis-modules using this log-in ID: <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>If you have any further questions, please refer to the book <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br><br>For advanced users, it is also possible to download the <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain probabilistic information on genotype calls and calculated phenotype information, respectively.<br></HTML>",sep="")
+    message <- paste("<HTML>We have completed processing the file <i>",filename,"</i>. You can now go to <a href='www.impute.me'>www.impute.me</a> and explore the analysis-modules using this ID:<br><br> <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>If you have any further questions, please refer to the book <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br><br>For advanced users, it is also possible to download full data as <a href=",location_simple,">simple-format</a>, <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain imputed data, imputation probability scores and calculated phenotype information, respectively.<br></HTML>",sep="")
     for(tryCount in 1:3){
       print(paste("Trying to mail to",email))
       mailingResult<-try(send.mail(from = email_address,

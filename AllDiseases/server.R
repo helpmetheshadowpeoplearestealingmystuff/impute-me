@@ -215,7 +215,7 @@ shinyServer(function(input, output) {
 
                             <br><br>The advantage of this approach is that it only requires a list of GWAS-significant SNPs, their frequency, effect-size and effect-alleles.  This makes it possible to implement the calculation systematically for many diseases and traits. 
                             
-                            <br><br>One weakness in this approach is that it assumes that individuals from the 1000 genomes project are a reasonably normal reference group. For some traits or diseases this may not be true. As an alternative, you can select the <i>'plot user distribution'</i> option in the advanced options sections. This will overlay the plot with distribution of all ethnicity-matched impute.me users. The weakness of that approach, however, is the assumption that most users of impute.me are reasonably normal. Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities where it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. In most cases, higher score means high level - but it is recommended to consult with the original GWAS publication if there is any doubt. Thirdly, it is important to note that many of these scores only explain very small proportions of the overall risk. You can switch on the <i>'Plot heritability'</i> in advanced option to see how much. However, this is currently only available for some traits.
+                            <br><br>One weakness in this approach is that it assumes that individuals from the 1000 genomes project are a reasonably normal reference group. For some traits or diseases this may not be true. As an alternative, you can select the <i>'plot user distribution'</i> option in the advanced options sections. This will overlay the plot with distribution of all ethnicity-matched impute.me users. The weakness of that approach, however, is the assumption that most users of impute.me are reasonably normal. Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities where it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. In most cases, higher score means high level - but it is recommended to consult with the original GWAS publication if there is any doubt. Thirdly, it is important to note that many of these scores only explain very small proportions of the overall risk. How much is illustrated in the blue bar plot below the bell curve. The more dark blue, the more predictive the score is. In the <u><a href='https://www.impute.me/prsExplainer'>PRS-explanatory module</a></u> you can further explore what this predivtiveness means in a sandbox setting.
                             
                             <br><br>Finally, instead of scrolling through all the alphabetical entries here, then check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Precision-medicine module</a></u>. The data in that module is based on the calculations made here, but the information is instead given as a view of scores relevant only to a specific disease-scope. The intention is give relevant information for a given context, while avoiding risk-sorted lists bound to produce spurious and wrongful observations (see <u><a href='https://github.com/lassefolkersen/impute-me/issues/8'>discussion</a></u> here).</small>")		
     
@@ -281,17 +281,17 @@ shinyServer(function(input, output) {
       #replace the distribution curves
       if(ethnicity_group == "global"){
         #do nothing. Note the density curve location.
-        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-03-20_densities_ALL.rdata"
+        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_ALL.rdata"
       }else{
         #note the density curve location
-        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-03-20_densities_",ethnicity_group,".rdata")
+        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_",ethnicity_group,".rdata")
       }
-      
+
       
       #write the methods text for all-SNP scores
       methodsToReturn<-paste0("<small><br><b>Methods</b><br>The all-SNP polygenic risk score is calculated by combining your genotype data with complete trait association data from <u><a href='",link,"'>",author," et al</a></u>. This is done by counting how many risk-alleles you have for each SNP (column <i>'Your genotype'</i>) and multiplying that count by the reported effect-size of the SNP (column <i>'Effect Size'</i>). This gives a SNP-score for each row (column <i>'SNP-score'</i>). Note that the table only shows the most significant SNPs as an example, even though a total of ",new_snp_count," SNPs are used in the calculation. This is done according to the <u><a href='https://www.cog-genomics.org/plink2'>plink</a></u> <i>score</i> method. For missing SNPs, the average frequency for ",ethnicities_labels[ethnicity_group]," ethnicity is used, based on data from the 1000 genomes project.  Further details of all calculations can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/03c51c63b262f600d509469e361db35bd2a8a5fb/prs/export_script.R#L96-L97'>source code</a></u>. 
 
-                              <br><br>The all-SNP polygenic risk score is still an experimental functionality of impute.me. You can switch it off by un-selecting <i>'Show all-SNP score'</i> in advanced options. The main advantage is that explains more of the risk variation than the default score types that are based only on GWAS-significant SNPs. You can explore the difference by using the <i>'Plot heritability</i>' switch under advanced options.
+                              <br><br>The all-SNP polygenic risk score is still a semi-experimental functionality of impute.me. You can switch it off by un-selecting <i>'Show all-SNP score'</i> in advanced options. The main advantage is that explains more of the risk variation than the default score types that are based only on GWAS-significant 'top' SNPs. You can see the difference as how much dark-blue there is in the bar-plot of variability explained. The difference can also be further explored in the sandbox <u><a href='https://www.impute.me/prsExplainer'>PRS-explanatory module</a></u>.
 
                               <br><br>A main disadvantage of the all-SNP score is that it is difficult to implement it systematically for many diseases and traits, which is the reason it is only available for few selected studies. This is likely to change in the future as more and more studies release their full summary-stats without access-conditions. Check this <u><a href='https://github.com/lassefolkersen/impute-me/issues/9'>github issue</a></u> for further perspectives. Remaining disadvantages mainly relate to how we implement the calculations. For example, the current implementation only have the option to compare to previous ethnicity-matched users of impute.me. This is something we are working actively on.</small>")		
       
@@ -299,12 +299,23 @@ shinyServer(function(input, output) {
       
       
       
-      
+      #get density curve      
       load(densityCurvePath)
       if(!paste0(file_to_read,"_y") %in% rownames(densities))stop(safeError(paste("This",study_id,"trait was not found to have density-plotting available")))
-      
       distributionCurve<-list(x=densities[paste0(file_to_read,"_x"),],y=densities[paste0(file_to_read,"_y"),])
       
+
+      #scale to zero-mean and unit-variance
+      x <-distributionCurve[["x"]]
+      y <- distributionCurve[["y"]]
+      mean <- x[order(y,decreasing=T)[1]]
+      proportion <- cumsum(y[order(y,decreasing=T)]) / sum(y)
+      one_sd_range_index<-range(as.numeric(names(proportion[proportion < 0.6827])))
+      sd <- mean(abs(x[one_sd_range_index] - mean))
+      
+      #execute scaling
+      GRS <- (GRS - mean) / sd
+      distributionCurve[["x"]] <- (distributionCurve[["x"]] - mean) / sd
       
       
       #Insert summary score text
@@ -451,28 +462,27 @@ shinyServer(function(input, output) {
     study_id<-o[["study_id"]]
     use_all_snp_score <- o[["use_all_snp_score"]]
     
-    if(is.na(traits[study_id,"known_heritability"]) |  is.na(traits[study_id,"total_heritability"])){
+    
+    #get variables
+    known<-traits[study_id,"known_heritability"]
+    total <-traits[study_id,"total_heritability"]
+    
+    
+    #if using all-SNP prs, then overwrite the data
+    if(use_all_snp_score){
+      all_snp_traits <- read.xlsx("/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx",rowNames=T)
+      if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
+      known<-all_snp_traits[study_id,"known_heritability"]
+      total <-all_snp_traits[study_id,"total_heritability"]
+    }
+
+    #if either of these are NA, we'll have to plot 'not registered'    
+    if(is.na(known) |  is.na(total)){
       plot(NULL,xlim=c(0,1),ylim=c(0,2),xaxt="n",yaxt="n",xlab="",ylab="",frame=F)
       text(x=0.5,y=1,label="Heritability not registered for this trait",col="grey80")
       
     }else{
-      
-      #get variables
-      known<-traits[study_id,"known_heritability"]
-      total <-traits[study_id,"total_heritability"]
-      
-      
-      #if using all-SNP prs, then overwrite the data
-      if(use_all_snp_score){
-        all_snp_traits <- read.xlsx("/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx",rowNames=T)
-        if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
-        known<-all_snp_traits[study_id,"known_heritability"]
-        total <-all_snp_traits[study_id,"total_heritability"]
-        
-      }
-      
-      
-      
+
       #set colours  
       colours <- c("#006680FF","#0088AAFF","#2AD4FFFF")
       names(colours) <- c("known","unknown","environment")

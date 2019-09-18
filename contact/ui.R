@@ -6,7 +6,7 @@ shinyUI(bootstrapPage(
 	navigation(),
 	titlePanel("Contact"),
 	beginPage(),
-	HTML(	"
+	HTML("
 <b>Genetics lead:</b> <u><a href='http://orcid.org/0000-0003-0708-9530'>Lasse Folkersen</a></u>, PhD.<br>
 <b>PRS-advice:</b> Cathryn Lewis, PhD.<br>
 <b>Interface-design:</b> <u><a href='https://github.com/SDelport?tab=repositories'>Stefan Delport</a></u>.<br>
@@ -23,7 +23,10 @@ A central part of the site is the creation of a guidebook for personal genome an
 <br>
 Finally, we welcome suggestions for other analysis types, particularly if you can program them yourself - the system is highly modular and can easily be extended even with just a limited knowledge of R-programming and genetics.<br>
 				"),
-# 	endPage(),
+
+	htmlOutput("text_1"),
+  dataTableOutput("table_1"),
+	endPage(),
 	footer()
 ))
 

@@ -81,10 +81,7 @@ shinyServer(function(input, output) {
   
   
   output$text2 <- renderText({
-    if(input$insertFastEmail > 1){
-      return("only submit one job")
-    }
-    if(input$insertFastEmail == 1){
+    if(input$insertFastEmail >= 1){
       fast_queue_path <- "/home/ubuntu/misc_files/fast_queue_emails.txt"
       imputation_path <- "/home/ubuntu/imputations/"
       
@@ -94,7 +91,7 @@ shinyServer(function(input, output) {
       }
     
       #split and check emails
-      inputs<-input$email
+      inputs<-isolate(input$email)
       inputs<-strsplit(inputs,",")[[1]]
       inputs <- gsub(" +$","",gsub("^ +","",inputs))
       for(i in 1:length(inputs)){

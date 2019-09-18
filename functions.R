@@ -267,8 +267,8 @@ prepare_individual_genome<-function(path, email, filename, updateProgress, prote
     genomes_per_server <- 10 #genomes
     genomes_per_day <- servers_running * genomes_per_server / run_time
     days_left <- queue_length / genomes_per_day
-    days_left_lower <- round(days_left*0.8)
-    days_left_upper <- round(days_left*2.0)
+    days_left_lower <- round(days_left*1.2) #because always have at least some paid ones skipping the line
+    days_left_upper <- round(days_left*2.5)
     
     queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect approximately ",days_left_lower,"-",days_left_upper," days of waiting.")
   }else if(queue_length > 5){
@@ -530,10 +530,13 @@ summarize_imputation<-function(
   chromosomes<-unique(sub("_[0-9-]+$","",sub("^step_7_chr","",step7ResultsFiles)))
   chromosomes<-chromosomes[order(suppressWarnings(as.numeric(chromosomes)))]
   
+  #get the right order, not this is somewhat complicated by the fact that most chunks are marked numerically, then some are marked as e.g. 10-1, 10-2 (see the memory limit issue)
   for(chr in chromosomes){
     print(paste("Merging chunks in chromosome",chr))
     s <-grep(paste("^step_7_chr",chr,"_",sep=""), step7ResultsFiles,value=T)
-    s<-s[order(as.numeric(sub("-[0-9]","",sub("^.+_","",s))),as.numeric(substr(sub("^.+_","",s),3,3)))]
+    main_number <- as.numeric(sub("-[0-9]","",sub("^.+_","",s)))
+    suffix_number <- suppressWarnings(as.numeric(sub("^-","",sub("^[0-9]+","",sub("^.+_","",s)))))
+    s<-s[order(main_number,suffix_number)]
     print(paste("For chr",chr,"these were the files to merge:",paste(s,collapse=", ")))
     cmd1<-paste("cat ",paste(s,collapse=" ")," > ",uniqueID,"_chr",chr,".gen",sep="")
     system(cmd1)
@@ -636,20 +639,38 @@ summarize_imputation<-function(
   zipFile_simpleformat<-paste(runDir,paste(uniqueID,".simple_format.zip",sep=""),sep="/")
   twentythreeandmeFiles<-paste(uniqueID,"_chr",chromosomes,".simple_format.txt",sep="")
   zip(zipFile_simpleformat, twentythreeandmeFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-  file.rename(zipFile_simpleformat, paste(prepDestinationDir,basename(zipFile_simpleformat),sep="/"))
+  zipFile_simpleformat_destination <- paste(prepDestinationDir,basename(zipFile_simpleformat),sep="/")
+  move_result <- file.rename(zipFile_simpleformat, zipFile_simpleformat_destination)
+  if(!move_result){ #this would fail, for example if data is on another volume. But we can still copy
+    file.copy(zipFile_simpleformat, zipFile_simpleformat_destination)
+    unlink(zipFile_simpleformat)
+  }
   unlink(list.files(runDir,pattern="23andme",full.names=T))
+  
   
   #zipping gen files
   zipFileGen<-paste(runDir,paste(uniqueID,".gen.zip",sep=""),sep="/")
   zip(zipFileGen, genFiles, flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-  file.rename(zipFileGen, paste(prepDestinationDir,basename(zipFileGen),sep="/"))
+  zipFileGen_destination <- paste(prepDestinationDir,basename(zipFileGen),sep="/")
+  move_result <- file.rename(zipFileGen, zipFileGen_destination)
+  if(!move_result){ #this would fail, for example if data is on another volume. But we can still copy
+    file.copy(zipFileGen, zipFileGen_destination)
+    unlink(zipFileGen)
+  }
   unlink(genFiles)
+  
+  
+  
   
   #move the original file as well
   zipFileOriginal<-paste(runDir,paste(uniqueID,".input_data.zip",sep=""),sep="/")
   zip(zipFileOriginal, paste(uniqueID,"_raw_data.txt",sep=""), flags = "-r9X", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-  file.rename(zipFileOriginal, paste(prepDestinationDir,basename(zipFileOriginal),sep="/"))
-  
+  zipFileOriginal_destination <- paste(prepDestinationDir,basename(zipFileOriginal),sep="/")
+  move_result <- file.rename(zipFileOriginal, zipFileOriginal_destination)
+  if(!move_result){ #this would fail, for example if data is on another volume. But we can still copy
+    file.copy(zipFileOriginal, zipFileOriginal_destination)
+    unlink(zipFileOriginal)
+  }
   
   
   
@@ -777,7 +798,12 @@ get_genotypes<-function(
       if(length(input_genotypes)>0){
         input_genotypes<-do.call(rbind,strsplit(input_genotypes,"\t"))
         input_genotypes[,4]<-sub("\r$","",input_genotypes[,4])
-        if(any(nchar(input_genotypes[,4])!=2))stop("input data must have length 2 genotypes")
+        if(any(nchar(input_genotypes[,4])!=2)){
+          print("WARNING: input data should have length 2 genotypes. We try to clean the \r ending once more")
+          input_genotypes[,4]<-sub("\r$","",input_genotypes[,4])
+        }
+        if(any(nchar(input_genotypes[,4])!=2))stop("Input data must have length 2 genotypes")
+          
         
         input_genotypes[,4]<-paste(substr(input_genotypes[,4],1,1),substr(input_genotypes[,4],2,2),sep="/")
         genotypes<-data.frame(rsids=input_genotypes[,1],genotype=input_genotypes[,4],stringsAsFactors=F)
@@ -1677,22 +1703,24 @@ run_export_script<-function(uniqueIDs=NULL,modules=NULL, delay=0){
     names(outputList)[names(outputList)%in%"email"] <- "original_submission_email"
     
     
-    #save ethnicity in pData (because it is needed elsewhere)
-    source(paste(paste0("/home/ubuntu/srv/impute-me/","ethnicity"  ,"/export_script.R")))
-    ethnicity <- try(export_function(uniqueID))
-    if(class(ethnicity)=="try-error"){
-      ethnicity<-NA
-    }else{
-      ethnicity<-ethnicity[["guessed_super_pop"]]
-    }
-    pDataFile <- paste0("/home/ubuntu/data/",uniqueID,"/pData.txt")
-    pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"),silent=T)
-    if(class(pData)!="try-error"){
-      pData[1,"ethnicity"] <- ethnicity
-      write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
-      print(paste("Determined and saved ethnicity as:",ethnicity))
-    }else{
-      print(paste("Couldn't save ethnicity in pData:",ethnicity))
+    #check if ethnicity is in pData, and if not save it there (because it is needed elsewhere)
+    if(!"ethnicity"%in%colnames(pData)){
+      source(paste(paste0("/home/ubuntu/srv/impute-me/","ethnicity"  ,"/export_script.R")))
+      ethnicity <- try(export_function(uniqueID))
+      if(class(ethnicity)=="try-error"){
+        ethnicity<-NA
+      }else{
+        ethnicity<-ethnicity[["guessed_super_pop"]]
+      }
+      pDataFile <- paste0("/home/ubuntu/data/",uniqueID,"/pData.txt")
+      pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"),silent=T)
+      if(class(pData)!="try-error"){
+        pData[1,"ethnicity"] <- ethnicity
+        write.table(pData,file=pDataFile,sep="\t",col.names=T,row.names=F,quote=F)
+        print(paste("Determined and saved ethnicity as:",ethnicity))
+      }else{
+        print(paste("Couldn't save ethnicity in pData:",ethnicity))
+      }
     }
     
     
@@ -1866,12 +1894,12 @@ run_bulk_imputation<-function(
   }
   
   
-  
+  #set runDir to the bulk_impute folder, define chromosomes and print a ready start message
   cat(paste0(Sys.time(),"\nStarting imputation running on these files:\nc('",paste(uniqueIDs,collapse="','"),"')\nGood luck!\n"))
   setwd(runDir)
   chromosomes <- c("X",as.character(1:22))
-  # chromosomes <- c("22")
   
+  #First loop that basically just handles the uploaded data a little better, reformat it all to plink and do few check-ups of data consistency
   for(uniqueID in uniqueIDs){
     print("")
     print(paste("Preparing files for",uniqueID))
@@ -1883,7 +1911,7 @@ run_bulk_imputation<-function(
       genes_for_good_cleaner(uniqueID,runDir)
     }
     
-    #Load data using plink 1.9
+    #Load data using plink 1.9 (note it's pretty important which version to use, because they have different functionalities)
     cmd1<-paste0(plink," --noweb --23file ",rawdata_file," ",uniqueID," ",uniqueID," --recode --out step_1_",uniqueID)
     out1<-system(cmd1)
     
@@ -1911,89 +1939,108 @@ run_bulk_imputation<-function(
   
   
   
-  #loop over chromosomes
+  #Second loop over chromosomes, in this one we merge the plink files from the different samples
+  #and run the actual imputation
   for(chr in chromosomes){
     merge_files<-paste0("step_2_",sub("_raw_data.txt","",basename(rawdata_files)),"_chr",chr)
     merge_df<-data.frame(bed=paste0(merge_files,".bed"),bim=paste0(merge_files,".bim"),fam=paste0(merge_files,".fam"))
-    merge_df<-merge_df[2:nrow(merge_df),]
-    write.table(merge_df,file="step_2_merge_list.txt",sep="\t",quote=F,row.names=F,col.names=F)
     
     
     #check that all files are there
     missing <- vector()
+    row_to_remove <- vector()
     for(i in 1:nrow(merge_df)){
       for(j in 1:ncol(merge_df)){
         f<-as.character(merge_df[i,j])
         if(!file.exists(f)){
           missing <-c(missing, f)
+          row_to_remove <- unique(c(row_to_remove, i))
         }
       }
     }
-    if(length(missing)>0)stop(paste("Didn't find these",length(missing),"files:",paste(missing,collapse=", ")))
+    if(length(missing)>0){
+      print(paste0("WARNING: These ",length(missing)," files from ",length(row_to_remove)," samples, were not found and will not be processed at chr",chr,": ",paste(missing,collapse=", ")))
+      merge_df<-merge_df[!(1:nrow(merge_df))%in%row_to_remove,]
+    }    
     
-    
-    
-    #use plink to merge
-    cmd1_a <- paste0(plink," --bfile ",merge_files[1]," --merge-list step_2_merge_list.txt --recode --out step_2m_chr",chr)
-    out1_a<-system(cmd1_a)
-    
-    
-    #handling nonbiallelic (just excluding them)
-    if(out1_a==3){
-      missnp<-read.table(paste0("step_2m_chr",chr,".missnp"),stringsAsFactors = F)[,1]
-      if(length(missnp) > 500) {
-        cat(paste("\n\nThe missnp>500 error was triggered. Outputting debug info\n\n"))
-        debug_info<-list()
+    #Consider if we should continue at all: if there's none, we don't. If there's more we do. 
+    #However, if there's only one we have to proceed in a special way because the merge commands would fail
+    if(nrow(merge_df)==0){ #no continue case
+      print(paste0("NOTE: Skipping chr",chr," because none of the samples had it"))
+      next
+      
+    }else if(nrow(merge_df)==1){ #no merge case
+      print(paste0("NOTE: In chr",chr," there was no merging, because only one sample had it"))
+      first_bed_file <- sub(".bed","",merge_df[1,1])
+      cmd3 <- paste0(plink," --bfile ",first_bed_file," --recode --out step_2_chr",chr)
+      out2<-system(cmd3)
+      
+    }else if(nrow(merge_df)>1){ #merge case
+      first_bed_file <- sub(".bed","",merge_df[1,1])
+      merge_df<-merge_df[2:nrow(merge_df),]
+      write.table(merge_df,file="step_2_merge_list.txt",sep="\t",quote=F,row.names=F,col.names=F)
+      cmd4 <- paste0(plink," --bfile ",first_bed_file," --merge-list step_2_merge_list.txt --recode --out step_2m_chr",chr)
+      out2<-system(cmd4)
+      
+      
+      
+      
+      #handling nonbiallelic (just excluding them)
+      if(out2==3){
+        missnp<-read.table(paste0("step_2m_chr",chr,".missnp"),stringsAsFactors = F)[,1]
+        if(length(missnp) > 500) {
+          cat(paste("\n\nThe missnp>500 error was triggered. Outputting debug info\n\n"))
+          debug_info<-list()
+          for(uniqueID in uniqueIDs){
+            cmd5<-paste0(plink," --bfile step_2_",uniqueID,"_chr",chr," --recode --out step_2_",uniqueID,"_chr",chr,"_missnp_hunt --extract step_2m_chr",chr,".missnp")
+            system(cmd5)
+            debug_ped<-readLines(paste0("step_2_",uniqueID,"_chr",chr,"_missnp_hunt.ped"))
+            debug_gt<-strsplit(debug_ped," ")[[1]]
+            debug_gt<-debug_gt[7:length(debug_gt)]
+            debug_df<-data.frame(A1=debug_gt[c(T,F)], A2=debug_gt[c(F,T)])
+            debug_df[,"snp"]<-read.table(paste0("step_2_",uniqueID,"_chr",chr,"_missnp_hunt.map"))[,2]
+            debug_df[,"uniqueID"] <- uniqueID
+            debug_info[[uniqueID]]<-debug_df
+          }
+          debug_all<-do.call(rbind,debug_info)
+          for(msnp in sample(missnp,5)){
+            s<-debug_all[debug_all[,"snp"]%in%msnp,]
+            rownames(s)<-NULL
+            print(msnp)
+            print(s)
+          }
+          stop("Too many non-biallelic SNPs. This must be investigated. Check above debugging info")
+          
+        }
         for(uniqueID in uniqueIDs){
-          cmd1_b<-paste0(plink," --bfile step_2_",uniqueID,"_chr",chr," --recode --out step_2_",uniqueID,"_chr",chr,"_missnp_hunt --extract step_2m_chr",chr,".missnp")
-          system(cmd1_b)
-          debug_ped<-readLines(paste0("step_2_",uniqueID,"_chr",chr,"_missnp_hunt.ped"))
-          debug_gt<-strsplit(debug_ped," ")[[1]]
-          debug_gt<-debug_gt[7:length(debug_gt)]
-          debug_df<-data.frame(A1=debug_gt[c(T,F)], A2=debug_gt[c(F,T)])
-          debug_df[,"snp"]<-read.table(paste0("step_2_",uniqueID,"_chr",chr,"_missnp_hunt.map"))[,2]
-          debug_df[,"uniqueID"] <- uniqueID
-          debug_info[[uniqueID]]<-debug_df
+          #Go back to the previous files from previous step and take them, now excluding triallelics.
+          cmd6<-paste0(plink," --bfile step_2_",uniqueID,"_chr",chr," --make-bed --out step_2_",uniqueID,"_chr",chr," --exclude step_2m_chr",chr,".missnp")
+          system(cmd6)
         }
-        debug_all<-do.call(rbind,debug_info)
-        for(msnp in sample(missnp,5)){
-          s<-debug_all[debug_all[,"snp"]%in%msnp,]
-          rownames(s)<-NULL
-          print(msnp)
-          print(s)
-        }
-        stop("Too many non-biallelic SNPs. This must be investigated. Check above debugging info")
-        
+        #then retry merge
+        cmd7 <- paste0(plink," --bfile ",first_bed_file," --merge-list step_2_merge_list.txt --recode --out step_2m_chr",chr)
+        out1_a<-system(cmd7)
       }
-      for(uniqueID in uniqueIDs){
-        #Go back to the previous files from previous step and take them, now excluding triallelics.
-        cmd1_c<-paste0(plink," --bfile step_2_",uniqueID,"_chr",chr," --make-bed --out step_2_",uniqueID,"_chr",chr," --exclude step_2m_chr",chr,".missnp")
-        system(cmd1_c)
+      
+      
+      #check for position duplicates
+      map<-read.table(paste0("step_2m_chr",chr,".map"),stringsAsFactors = F,comment.char = "")
+      if(sum(duplicated(map[,4]))>10000){
+        duplicates_found <- sum(duplicated(map[,4]))
+        stop(paste("Found",duplicates_found,"duplicate positions, and the current threshold is 10000"))
       }
-      #then retry merge
-      cmd1_a <- paste0(plink," --bfile ",merge_files[1]," --merge-list step_2_merge_list.txt --recode --out step_2m_chr",chr)
-      out1_a<-system(cmd1_a)
-    }
-    
-    
-    #check for position duplicates
-    map<-read.table(paste0("step_2m_chr",chr,".map"),stringsAsFactors = F,comment.char = "")
-    if(sum(duplicated(map[,4]))>10000){
-      duplicates_found <- sum(duplicated(map[,4]))
-      stop(paste("Found",duplicates_found,"duplicate positions, and the current threshold is 10000"))
-    }
-    exclude<-unique(map[duplicated(map[,4]),2])
-    write.table(exclude,file=paste0('step_2_overall_exclusions_chr',chr),sep='\t',row.names=FALSE,col.names=F,quote=F)
-    
-    
-    cmd1_b<-paste(plink," --file step_2m_chr",chr," --exclude step_2_overall_exclusions_chr",chr," --recode --out step_2_chr",chr,sep="")
-    system(cmd1_b)
-    
-    
+      exclude<-unique(map[duplicated(map[,4]),2])
+      write.table(exclude,file=paste0('step_2_overall_exclusions_chr',chr),sep='\t',row.names=FALSE,col.names=F,quote=F)
+      
+      
+      cmd8<-paste(plink," --file step_2m_chr",chr," --exclude step_2_overall_exclusions_chr",chr," --recode --out step_2_chr",chr,sep="")
+      system(cmd8)
+      
+    }    
     
     #Then check for strand flips etc. 
-    cmd3<-paste(shapeit," -check --input-ped step_2_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_2_chr",chr,"_shapeit_log",sep="")
-    system(cmd3)
+    cmd9<-paste(shapeit," -check --input-ped step_2_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_2_chr",chr,"_shapeit_log",sep="")
+    system(cmd9)
     
     
     #Many homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
@@ -2036,9 +2083,9 @@ run_bulk_imputation<-function(
     write.table(c(omitNonIdentical,omitBlank,omitMissing,omitRemaining),file=paste("step_3_chr",chr,"_exclusions",sep=""),sep='\t',row.names=F,col.names=F,quote=F)
     
     
-    #running the shapeit command (with eleven people, the ten right ones and a placeholder heterozygote
-    cmd4<-paste(shapeit," --input-ped step_3_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_4_chr",chr,"_shapeit_log --exclude-snp step_3_chr",chr,"_exclusions -O step_4_chr",chr,sep="")
-    system(cmd4)
+    #running the shapeit command (with up to eleven people, the ten right ones and a placeholder heterozygote - or less if some where skipped)
+    cmd10<-paste(shapeit," --input-ped step_3_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_4_chr",chr,"_shapeit_log --exclude-snp step_3_chr",chr,"_exclusions -O step_4_chr",chr,sep="")
+    system(cmd10)
     
     
     #checking for errors and stopping if there are any. No point to continue otherwise
@@ -2049,17 +2096,17 @@ run_bulk_imputation<-function(
     
     #removing the placeholder person again
     left_limit <- 5 + length(merge_files) * 2
-    cmd5_1<-paste0("cut --delimiter=' ' -f 1-",left_limit," step_4_chr",chr,".haps > step_5_chr",chr,".haps")
-    system(cmd5_1)
+    cmd11<-paste0("cut --delimiter=' ' -f 1-",left_limit," step_4_chr",chr,".haps > step_5_chr",chr,".haps")
+    system(cmd11)
     top_limit <- 2 + length(merge_files) 
-    cmd5_2<-paste0("head -n ",top_limit," step_4_chr",chr,".sample > step_5_chr",chr,".sample")
-    system(cmd5_2)
+    cmd12<-paste0("head -n ",top_limit," step_4_chr",chr,".sample > step_5_chr",chr,".sample")
+    system(cmd12)
     
     
     
     #detect max length of each chromosome
-    cmd6<-paste("zcat /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz | tail -n 1 | cut --delimiter=\\  -f 2",sep="")
-    maxPos<-as.numeric(system(cmd6,intern=T))
+    cmd13<-paste("zcat /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz | tail -n 1 | cut --delimiter=\\  -f 2",sep="")
+    maxPos<-as.numeric(system(cmd13,intern=T))
     
     
     #iterate over 5e6 chunks
@@ -2069,8 +2116,8 @@ run_bulk_imputation<-function(
       end <- start+5e6
       
       
-      cmd7<-paste(impute2," -m /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start," ",end," -Ne 20000 -o step_7_chr",chr,"_",i,sep="")
-      step_7_log<-system(cmd7)
+      cmd14<-paste(impute2," -m /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start," ",end," -Ne 20000 -o step_7_chr",chr,"_",i,sep="")
+      step_7_log<-system(cmd14)
       
       
       #test for memory-lack bug (step_7_log will be 137 if killed, otherwise 0)
@@ -2082,14 +2129,19 @@ run_bulk_imputation<-function(
           end_2 <- floor(starts[i]+ (j)*(5e6/ divisions))
           print(paste("restart imputation with new subset to avoid memory-lack bug:",start_2,"to",end_2)   )
           
-          cmd7<-paste(impute2," -m /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start_2," ",end_2," -Ne 20000 -o step_7_chr",chr,"_",i,"-",j,sep="")
-          step_7_log_2<-system(cmd7)
+          cmd15<-paste(impute2," -m /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l /home/ubuntu/impute_dir/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start_2," ",end_2," -Ne 20000 -o step_7_chr",chr,"_",i,"-",j,sep="")
+          step_7_log_2<-system(cmd15)
           if(step_7_log_2 == 137){print("the memory problem was still active after second round")
           }
         }
       }
     }
   }
+  
+  
+  #backup for manual inspection #REMOVE LATER, JUST FOR DEBUGGING
+  # file.copy(list.files(),"/home/ubuntu/data/2019-06-30_temp_out/")
+  
   
   
   #clean up pre-step-5 files to save space
@@ -2099,16 +2151,34 @@ run_bulk_imputation<-function(
   unlink(list.files(pattern="^step_3.+"))
   
   
-  
-  #then copy out each of the step_7 files into separate imputation folders
-  sample_file<-grep("step_5",grep("\\.sample$",list.files(),value=T),value=T)[1] #just pick the first one - they should be identical
-  samples<-read.table(sample_file,stringsAsFactors=F)
+  #In this loop over chromosomes, we copy out each of the step_7 files into separate imputation folders
+  #making them ready for later (per-sample) run of the summarize_imputation function
   allFiles1<-list.files(runDir)
   for(chr in chromosomes){
+    samples_path <- paste0("step_5_chr",chr,".sample")
+    if(!file.exists(samples_path)){
+      if(chr =="X"){
+        print("Skipping the step_7-file division for chrX because no samples file found.")
+        next
+      }else{
+        stop("Didn't find the step_5 samples file")
+      }
+    }
+    samples<-read.table(samples_path,stringsAsFactors = F)
     for(uniqueID in uniqueIDs){
       outfolder <- paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/")
       w<-which(samples[,1]%in%uniqueID) -2
-      print(paste0("Extracting chromosome ",chr," from ",uniqueID," (sample ",w," of ",nrow(samples)-2,")"))
+      
+      if(length(w)==0 & chr=="X"){
+        print(paste0("NOTE: for ",uniqueID," at chr",chr," no imputed data was found, so this was skipped"))
+        next
+      }else if(length(w)!=1 & chr!="X"){
+        stop(paste0("With ",uniqueID," at chr",chr," no imputed data was found."))
+      }else{
+        print(paste0("Extracting chromosome ",chr," from ",uniqueID," (sample ",w," of ",nrow(samples)-3,")"))  
+      }
+      
+      
       
       
       #cut and transfer sample file
@@ -2121,12 +2191,18 @@ run_bulk_imputation<-function(
       middle <- 5 + (w-1) * 3 + 2
       right <- 5 + (w-1) * 3 + 3
       for(step7ResultsFile in step7ResultsFiles){
-        cmd8<-paste0("cut --delimiter=' ' -f 1,2,3,4,5,",left,",",middle,",",right," ",step7ResultsFile," > ",outfolder,step7ResultsFile)
-        system(cmd8)
+        cmd16<-paste0("cut --delimiter=' ' -f 1,2,3,4,5,",left,",",middle,",",right," ",step7ResultsFile," > ",outfolder,step7ResultsFile)
+        system(cmd16)
       }
     }
     Sys.sleep(0.5) #take a break
-    unlink(step7Files) #clean up files afterwards (or else we break the 30GB limit)
+    
+    
+    #backup for manual inspection #REMOVE LATER, JUST FOR DEBUGGING
+    # file.copy(list.files(),"/home/ubuntu/data/2019-06-30_temp_out/")
+    
+    #clean up files afterwards (or else we break the 30GB limit)
+    unlink(step7Files) 
   }
 }
 
@@ -2284,7 +2360,10 @@ special_error_check<-function(uniqueID,runDir,plink="/home/ubuntu/impute_dir/pli
     system(cmd_special_3,intern=F)
     map_file<-map_file2
     #there is maybe an opportunity here to catch a few of the still-failing - could insert a grep "^rs" filter, seems to often be the failing criteria here.
-    if(!file.exists(map_file)){stop("Didn't find map file - This error has been raised a few times now, could probably be handled better with a few more filters")}
+    if(!file.exists(map_file)){
+      print(special_error_status)
+      stop("Didn't find map file - This error is commonly the end-stop after trying all rescue operations. See any prints above to figure it out")
+      }
   }
   map<-read.table(map_file,sep='\t',stringsAsFactors=F,comment.char = "")
   map<-map[!duplicated(map[,2]),]
@@ -2484,7 +2563,7 @@ prepare_imputemany_genome<-function(path, email, filename, protect_from_deletion
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
-    stop(safeError("This file was already analyzed by the system. Write an email if you wish to clear this flag (or make a small change in your file so it doesn't have the same md5sum)."))
+    stop(safeError(paste0("This file was already analyzed by the system. Write an email if you wish to clear this flag (or make a small change in your file so it doesn't have the same md5sum, i.e. ",this_person_md5sum,").")))
   }
   write(this_person_md5sum,file="/home/ubuntu/misc_files/md5sums.txt",append=TRUE)			
   
@@ -2822,8 +2901,9 @@ summarize_imputemany_json<-function(uniqueIDs, name){
   o2 <- t(o1)
   
   #add in phenodata for AllDisease
-  trait_path1 <- "/home/ubuntu/srv/impute-me/AllDiseases/2018-05-28_trait_overoverview.rdata"
-  load(trait_path1)
+  trait_path1 <- "/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
+  library(openxlsx)
+  traits <- read.xlsx(trait_path1,rowNames=T)
   insert_block1 <- traits[rownames(o2),]
   colnames(insert_block1) <- paste0("AllDiseases_",colnames(insert_block1))
   

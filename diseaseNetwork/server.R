@@ -357,7 +357,7 @@ shinyServer(function(input, output) {
     o1[w2,"score"] <- "+"
     
     # Translate module names
-    niceNames <- c("GWAS calculator","Drug response","UK-biobank","Rare Diseases","BRCA")
+    niceNames <- c("Complex Diseases","Drug response","UK-biobank","Rare Diseases","BRCA")
     names(niceNames) <- c("AllDiseases","drugResponse","ukbiobank","rareDiseases","BRCA")
     o1[,"module"] <- niceNames[o1[,"module"]]
     
