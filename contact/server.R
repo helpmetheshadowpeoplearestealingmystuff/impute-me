@@ -21,7 +21,7 @@ shinyServer(function(input, output) {
   
   
 	
-  output$table_1 <- renderDataTable({ 
+  output$table_1 <- DT::renderDataTable({ 
 	  external_material_path <- "~/misc_files/external_material.txt"
 	  
 	  required_headers <- c("short_title",	"long_title",	"year",	"author",	"language",	"url",	"url2","display")
@@ -52,7 +52,7 @@ shinyServer(function(input, output) {
 	  
 		
 		return(d)
-	},escape=F,options = list(searching = FALSE, paging = FALSE))
+	},escape=F,options = list(searching = FALSE, paging = FALSE),rownames= FALSE)
 
 	
 	

@@ -1,4 +1,3 @@
-
 source("../uifunctions.R")
 initialize('gmh',TRUE)
 
@@ -138,7 +137,7 @@ shinyUI(bootstrapPage(
 	  radioButtons("trait_group", "Trait categories:", trait_groups, selected = "disease"),
 	  radioButtons("ethnicity_group", label="Reference population:", choices=ethnicities, selected = "automatic", inline = FALSE,width = NULL),
 	  checkboxInput("use_all_snp_score", label ="Show all-SNP score if possible (experimental)", value = TRUE),
-	  checkboxInput("plot_heritability", label ="Plot heritability", value = FALSE),
+	  checkboxInput("plot_heritability", label ="Plot variability explained", value = FALSE),
 	  checkboxInput("real_dist", label ="Plot user distribution (experimental)", value = FALSE)
 	  
 	),
@@ -157,7 +156,7 @@ shinyUI(bootstrapPage(
 	  plotOutput("plot_2",height = "200px")
 	),
 	htmlOutput("text_2"),
-	dataTableOutput("table1"),
+	DT::dataTableOutput("table1"),
 	htmlOutput("text_3"),
 	
 	

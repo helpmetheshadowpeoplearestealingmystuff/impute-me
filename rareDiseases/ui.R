@@ -21,7 +21,7 @@ shinyUI(bootstrapPage(
 	htmlOutput("text1"),
 	htmlOutput("text2"),
 	HTML("<br><br><br>"),
-	dataTableOutput("table1"),
+	DT::dataTableOutput("table1"),
 	
 	endPage(),
 	footer()

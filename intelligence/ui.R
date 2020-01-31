@@ -146,14 +146,15 @@ shinyUI(bootstrapPage(
 	beginPanel('2/3'),
 	
 	# h2("Genetic risk score:"),
-	htmlOutput("text_1"),
+	# htmlOutput("text_1"),
+	htmlOutput("text_4"),
 	plotOutput("plot_1"),
 	conditionalPanel(
 	  condition = "input.plot_heritability",
 	  plotOutput("plot_2",height = "200px")
 	),
 	htmlOutput("text_2"),
-	dataTableOutput("table1"),
+	DT::dataTableOutput("table1"),
 	htmlOutput("text_3"),
 	
 	

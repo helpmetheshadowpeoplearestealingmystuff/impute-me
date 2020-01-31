@@ -1,4 +1,5 @@
 library("shiny")
+library("jsonlite")
 
 
 source("/home/ubuntu/srv/impute-me/functions.R")
@@ -7,7 +8,7 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
 	
-	output$table1 <- renderDataTable({ 
+	output$table1 <- DT::renderDataTable({ 
 		# Take a dependency on input$goButton
 		
 		if(input$goButton == 0){
@@ -120,7 +121,35 @@ shinyServer(function(input, output) {
 		
 		
 		
+	},rownames= FALSE)
+	
+	
+	
+	#The optional text noting if input data had some BRCA relevant SNPS
+	#that were not carried over in imputation (github issue #28)
+	output$text_1 <- renderText({ 
+	  if(input$goButton == 0){
+	    return(NULL)
+	  }else if(input$goButton > 0) {
+	    print(paste("Ok",input$goButton))
+	  }
+	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
+    jsonfile<-paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json" )
+	  if(!file.exists(jsonfile))return(NULL)
+    d<-fromJSON(jsonfile)
+	  a<-try(d[["BRCA"]][["snps_in_input_but_not_analyzed"]])
+	  if(class(a)=="try-error")return(NULL)
+	  if(is.null(a))return(NULL)
+    if(length(a)>5){
+      a1 <- a[1:5]
+    }else{
+      a1 <- a
+    }
+	  m <- paste0("Please note that ",length(a)," other relevant SNPs were measured according to your input data (e.g. ",paste(a1,collapse=", "),"). However, for <u><a href='https://github.com/lassefolkersen/impute-me/issues/28'>technical reasons</a></u> these were not included in the analysis and we cannot report on them.")
+	  return(m)
 	})
+	
+	
 	
 })
 

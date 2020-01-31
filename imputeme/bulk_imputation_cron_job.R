@@ -4,7 +4,7 @@
 #
 # 50 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
 
-
+library("methods")
 library("mailR")
 library("rJava")
 library("tools")
@@ -32,6 +32,7 @@ for(folderToCheck in foldersToCheck){
 #but it's really smart because it allows the credit count of the AWS instnce to recover a bit, and 
 #ultimately gives faster turn-around and more stable servers
 if(runningJobCount>(maxImputations-1)){
+  return(NULL)
   stop(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
 }else{
   Sys.sleep(seconds_wait_before_start)
@@ -49,6 +50,7 @@ for(folderToCheck in foldersToCheck){
   }
 }
 if(runningJobCount>(maxImputations-1)){
+  return(NULL)
   stop(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
 }
 
@@ -60,7 +62,9 @@ if(serverRole== "Node"){
   #sort checking order by time entered
   cmd1 <- paste("ssh ubuntu@",hubAddress," ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' /home/ubuntu/imputations/  | tail -n +2",sep="")
   remotedata<-system(cmd1,intern=T)
-  Sys.sleep(0.2)
+  
+  
+  Sys.sleep(0.2) #And remember to pause if running interactive. It'll fail otherwise
   remotedata_df<-as.data.frame(do.call(rbind,strsplit(remotedata,"\\s+")),stringsAsFactors=F)
   if(ncol(remotedata_df)==0)stop("Nothing found at hub server. Exit, stop and wait.")
   remotedata_df<-remotedata_df[order(remotedata_df[,6]),]
@@ -127,7 +131,9 @@ if(serverRole== "Node"){
     }
     
     #Update the local foldersToCheck to reflect new arrivals
-    foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
+    # foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
+    #Update the local folder file, but keeping the original order to reflect priority runs
+    foldersToCheck<-remoteFoldersToRun
   }
 }
 

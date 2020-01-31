@@ -250,9 +250,9 @@ shinyServer(function(input, output) {
 	})
 	
 	
-	output$table1 <- renderDataTable({ 
+	output$table1 <- DT::renderDataTable({ 
 	  if(input$goButton == 0){
-	    return("")
+	    return(NULL)
 	  }else if(input$goButton > 0) {
 	    
 	    #getting data
@@ -274,7 +274,7 @@ shinyServer(function(input, output) {
 			
 			return(SNPs_to_analyze)
 		}
-	},options = list(searching = FALSE,paging = FALSE))
+	},options = list(searching = FALSE,paging = FALSE),rownames= FALSE)
 
 	
 	output$text_3 <- renderText({ 

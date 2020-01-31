@@ -21,14 +21,14 @@ shinyUI(bootstrapPage(
 	beginPanel('2/3'),
 
 	htmlOutput("text1"),
-	dataTableOutput("table1"),
+	DT::dataTableOutput("table1"),
 
 	
 	htmlOutput("text2"),
-	dataTableOutput("table2"),
+	DT::dataTableOutput("table2"),
 
 	# htmlOutput("text3"),
-	# dataTableOutput("table3"),
+	# DT::dataTableOutput("table3"),
 	endPanel(),
 	
 	endPage(),

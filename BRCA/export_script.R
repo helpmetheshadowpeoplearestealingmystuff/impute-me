@@ -42,8 +42,6 @@ export_function<-function(uniqueID){
   BRCA_table[,"clinvar"]<-factor(BRCA_table[,"clinvar"],levels=order)
   BRCA_table<-BRCA_table[order(BRCA_table[,"clinvar"]),]
   
-  # BRCA_table[,"chr_name"]<-BRCA_table[,"chrom_start"]<-BRCA_table[,"SNP"]<-NULL
-  
   
   
   output<-list()
@@ -70,6 +68,21 @@ export_function<-function(uniqueID){
   }
   
   
+  #checking for SNPs that are measured in input, but didn't make it through imputation (issue #28)
+  input_data_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".input_data.zip")
+  idTempFolder<-paste("/home/ubuntu/data",uniqueID,"temp/",sep="/")
+  if(file.exists(input_data_path) & !file.exists(idTempFolder)){
+    dir.create(idTempFolder)
+    outZip<-unzip(input_data_path, overwrite = TRUE,exdir = idTempFolder, unzip = "internal")
+    cmd1 <- paste("grep -E '",paste(paste(rownames(BRCA_table),"\t",sep=""),collapse="|"),"' ",outZip,sep="")
+    input_grep<-system(cmd1,intern=T)    
+    snps_in_input<-sapply(strsplit(input_grep,"\t"),function(x){x[1]})
+    imputed_snps <- rownames(BRCA_table)[!is.na(BRCA_table[,"Your genotype"])]
+    output[["snps_in_input_but_not_analyzed"]] <- snps_in_input[!snps_in_input%in%imputed_snps]
+    unlink(idTempFolder,recursive = T)
+  }
+  
+
   return(output)
   
 }

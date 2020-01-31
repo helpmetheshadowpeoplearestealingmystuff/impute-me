@@ -210,6 +210,11 @@ shinyServer(function(input, output) {
     }
     
     
+    #add that breast cancer PRS is no substitute for a BRCA sequencing
+    if(length(grep("breast_cancer_",study_id))>0){
+      textToReturn<-paste0(textToReturn," Note that this breast cancer PRS <b>is no substitute for a BRCA-gene sequencing</b>. It only includes info from common variation, and in breast cancer there are particularly strong nonsense-mutations in the BRCA-genes that have high impact on risk, but are not detectable with microarray data.")
+    }
+    
     #write the methods text for GWAS-significant hits
     methodsToReturn<-paste0("<small><br><b>Methods</b><br>The polygenic risk score is calculated by combining your genotype data with trait association data from <u><a href='",link,"'>",author," et al</a></u>. This is done by counting how many risk-alleles you have for each SNP (column <i>'Your genotype'</i>) and multiplying that count by the reported effect-size of the SNP (column <i>'Effect Size'</i>). This gives a SNP-score for each row (column <i>'SNP-score'</i>). The SNP-score is then centered so that the <i>average</i> score in the general population would be zero (column <i>'SNP-score population normalized'</i>). All of these population normalized values are then summarized to get an overall score. This sum is further scaled so that its standard-deviation in the general population would be equal to 1 ('unit-variance'). This effectively makes it a <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-score</a></u>. The scaling and centering is based on the minor-allele frequencies (MAF) taken from the 1000 genomes project, using the ",ethnicities_labels[ethnicity_group]," frequency distribution. This gives an ethnicity-specific standard deviation of ",signif(population_sum_sd,2),". If you summarize the population normalized SNP-score column and divide by this number, you too will obtain the reported Z-score of ",signif(GRS,2),", illustrating how your score is a combination of many SNPs working together. Further details of all calculations can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/03c51c63b262f600d509469e361db35bd2a8a5fb/functions.R#L1295-L1455'>source code</a></u>. 
 
@@ -272,7 +277,7 @@ shinyServer(function(input, output) {
       
       
       #replace GRS
-      GRS <- d3[["GRS"]]
+      GRS <- d3[["SCORESUM_PLINK_1_9"]] 
       
       #replace SNP count
       new_snp_count <- d3[["alleles_observed"]]
@@ -453,7 +458,7 @@ shinyServer(function(input, output) {
   
   
   
-  #The supporting (optional) heritability explained plot
+  #The pie-chart version of the heritability plot
   output$plot_2 <- renderPlot({ 
     if(input$goButton == 0){
       return(NULL)
@@ -465,7 +470,7 @@ shinyServer(function(input, output) {
     
     #get variables
     known<-traits[study_id,"known_heritability"]
-    total <-traits[study_id,"total_heritability"]
+    # total <-traits[study_id,"total_heritability"]
     
     
     #if using all-SNP prs, then overwrite the data
@@ -473,72 +478,155 @@ shinyServer(function(input, output) {
       all_snp_traits <- read.xlsx("/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx",rowNames=T)
       if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
       known<-all_snp_traits[study_id,"known_heritability"]
-      total <-all_snp_traits[study_id,"total_heritability"]
+      # total <-all_snp_traits[study_id,"total_heritability"]
     }
-
+    
     #if either of these are NA, we'll have to plot 'not registered'    
-    if(is.na(known) |  is.na(total)){
+    # if(is.na(known) |  is.na(total)){
+    #change to only 'known' have to be non-NA
+    if(is.na(known)){
       plot(NULL,xlim=c(0,1),ylim=c(0,2),xaxt="n",yaxt="n",xlab="",ylab="",frame=F)
       text(x=0.5,y=1,label="Heritability not registered for this trait",col="grey80")
       
     }else{
-
-      #set colours  
-      colours <- c("#006680FF","#0088AAFF","#2AD4FFFF")
-      names(colours) <- c("known","unknown","environment")
-      
-      #initialize plot
-      plot(NULL,xlim=c(0,1),ylim=c(0,2),xaxt="n",yaxt="n",xlab="Variability explained",ylab="",frame=F)
-      par(mai=c(0.2,0.1,0.0,0.1))
-      
-      #plot known genetics
-      x1 <- known / 2
-      symbols(x=x1,y=1.5,rectangles=matrix(c(known,1),ncol=2),add=TRUE,bg=colours["known"],inches=FALSE)
-      
-      #plot unknown genetics
-      x2 <- known + (total-known) /2
-      symbols(x=x2,y=1.5,rectangles=matrix(c(total-known,1),ncol=2),add=TRUE,bg=colours["unknown"],inches=FALSE)
-      
-      #plot environment
-      x3 <- 1 - (1 - total)/2
-      symbols(x=x3,y=1.5,rectangles=matrix(c(1-total,1),ncol=2),add=TRUE,bg=colours["environment"],inches=FALSE)
+      #define the plotting parameters (major is 'this score', minor is the others like 'unknown')
+      major_text_r <- 0.6
+      major_text_cex <- 0.8
+      major_text_col <- "grey60"
+      minor_text_r <- 0.4
+      minor_text_cex <- 0.8
+      minor_text_col <- "grey30"
       
       
-      #get position of 'genetics text
-      x4 <- total / 2
+      #creating the JA-pie chart
+      x1 <- known  #plot known genetics
+      x2 <- 1-known
       
+      #commented out parts for not showing twin-heritability
+      # x2 <- total-known #plot unknown genetics
+      # x3 <- 1 - total #plot environment
+      #showing twin heritability as well (switched off)
+      # pie( c(x1,x2,x3),labels=c("","",""),init.angle=init_angle_rad*(180/pi),col = c("#006680FF", "#0088AAFF", "#2AD4FFFF"),border=F)
+      # x3_angle_rad <- init_angle_rad + x1*pi*2 + x2*pi*2 + x3*pi
+      # text(x=minor_text_r*cos(x3_angle_rad),y=minor_text_r*sin(x3_angle_rad),label="environment",cex=minor_text_cex,col=minor_text_col)
       
-      #plot on-top of boxes texts (afterwards so they are not overwritten)
-      text(x=x1,y=1.5,label="This\nscore",srt=0)
-      if(total - known > 0.2){
-        text(x=x2,y=1.5,label="Unknown\ngenetics",srt=0,col="grey30")  
-      }
+      init_angle_rad <-  0.5*pi - (x1*pi)
+      par(mai=c(0,0,0,0))
+      pie(
+        c(x1,x2),
+        labels=c("",""),
+        init.angle=init_angle_rad*(180/pi),
+        col = c("#006680FF", "#0088AAFF"),
+        border=F)
       
+      #create labels
+      x1_angle_rad <- init_angle_rad + x1*pi
+      text(x=major_text_r*cos(x1_angle_rad),y=major_text_r*sin(x1_angle_rad),label="this score",cex=major_text_cex,col=major_text_col)
+      x2_angle_rad <- init_angle_rad + x1*pi*2 + x2*pi
+      text(x=minor_text_r*cos(x2_angle_rad),y=minor_text_r*sin(x2_angle_rad),label="unknown",cex=minor_text_cex,col=minor_text_col)
       
-      #plot under-boxes texts (afterwards so they are not overwritten)
-      text(x=x4,y=0.5,label="Genetics",srt=0)
-      text(x=x3,y=0.5,label="Environment",srt=0)
+      #create (optional?) lines up to distribution plot
+      lines(x=c(0.8*cos(init_angle_rad),1),y=c(0.8*sin(init_angle_rad),1))
+      x1_end_rad <- init_angle_rad + x1*pi*2
+      lines(x=c(0.8*cos(x1_end_rad),-1),y=c(0.8*sin(x1_end_rad),1))
       
-      #plot horizontal braces for genetics
-      k <- 0.01
-      lines(x=c(0+k,total-k),y=c(0.8,0.8),col="grey60")
-      lines(x=c(0+k,0),y=c(0.8,0.9),col="grey60")
-      lines(x=c(total-k,total),y=c(0.8,0.9),col="grey60")
+      #sub-title
+      mtext("Variablity explained",side=1,line=-2)    
+    
       
-      
-      #plot horizontal braces for environment
-      k <- 0.01
-      lines(x=c(total+k,1-k),y=c(0.8,0.8),col="grey60")
-      lines(x=c(total+k,total),y=c(0.8,0.9),col="grey60")
-      lines(x=c(1-k,1),y=c(0.8,0.9),col="grey60")
-      
-      
-      #plot helper lines
-      # lines(x=c(0,0),y=c(1,2),lty=2)
-      # lines(x=c(known,1),y=c(1,2),lty=2)
     }
   })
+
   
+  #The old version of the heritability plot - showing bars instead of pie chart, and also including twin-heritability
+  # output$plot_2b <- renderPlot({ 
+  #   if(input$goButton == 0){
+  #     return(NULL)
+  #   }
+  #   o<-get_data()
+  #   study_id<-o[["study_id"]]
+  #   use_all_snp_score <- o[["use_all_snp_score"]]
+  #   
+  #   if(is.na(traits[study_id,"known_heritability"]) |  is.na(traits[study_id,"total_heritability"])){
+  #     plot(NULL,xlim=c(0,1),ylim=c(0,2),xaxt="n",yaxt="n",xlab="",ylab="",frame=F)
+  #     text(x=0.5,y=1,label="Heritability not registered for this trait",col="grey80")
+  #     
+  #   }else{
+  #     
+  #     #get variables
+  #     known<-traits[study_id,"known_heritability"]
+  #     total <-traits[study_id,"total_heritability"]
+  #     
+  #     
+  #     #if using all-SNP prs, then overwrite the data
+  #     if(use_all_snp_score){
+  #       all_snp_traits <- read.xlsx("/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx",rowNames=T)
+  #       if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
+  #       known<-all_snp_traits[study_id,"known_heritability"]
+  #       total <-all_snp_traits[study_id,"total_heritability"]
+  #       
+  #     }
+  #     
+  #     
+  #     
+  #     #set colours  
+  #     colours <- c("#006680FF","#0088AAFF","#2AD4FFFF")
+  #     names(colours) <- c("known","unknown","environment")
+  #     
+  #     #initialize plot
+  #     plot(NULL,xlim=c(0,1),ylim=c(0,2),xaxt="n",yaxt="n",xlab="Variability explained",ylab="",frame=F)
+  #     par(mai=c(0.2,0.1,0.0,0.1))
+  #     
+  #     #plot known genetics
+  #     x1 <- known / 2
+  #     symbols(x=x1,y=1.5,rectangles=matrix(c(known,1),ncol=2),add=TRUE,bg=colours["known"],inches=FALSE)
+  #     
+  #     #plot unknown genetics
+  #     x2 <- known + (total-known) /2
+  #     symbols(x=x2,y=1.5,rectangles=matrix(c(total-known,1),ncol=2),add=TRUE,bg=colours["unknown"],inches=FALSE)
+  #     
+  #     #plot environment
+  #     x3 <- 1 - (1 - total)/2
+  #     symbols(x=x3,y=1.5,rectangles=matrix(c(1-total,1),ncol=2),add=TRUE,bg=colours["environment"],inches=FALSE)
+  #     
+  #     
+  #     #get position of 'genetics text
+  #     x4 <- total / 2
+  #     
+  #     
+  #     #plot on-top of boxes texts (afterwards so they are not overwritten)
+  #     text(x=x1,y=1.5,label="This\nscore",srt=0)
+  #     if(total - known > 0.2){
+  #       text(x=x2,y=1.5,label="Unknown\ngenetics",srt=0,col="grey30")  
+  #     }
+  #     
+  #     
+  #     #plot under-boxes texts (afterwards so they are not overwritten)
+  #     text(x=x4,y=0.5,label="Genetics",srt=0)
+  #     text(x=x3,y=0.5,label="Environment",srt=0)
+  #     
+  #     #plot horizontal braces for genetics
+  #     k <- 0.01
+  #     lines(x=c(0+k,total-k),y=c(0.8,0.8),col="grey60")
+  #     lines(x=c(0+k,0),y=c(0.8,0.9),col="grey60")
+  #     lines(x=c(total-k,total),y=c(0.8,0.9),col="grey60")
+  #     
+  #     
+  #     #plot horizontal braces for environment
+  #     k <- 0.01
+  #     lines(x=c(total+k,1-k),y=c(0.8,0.8),col="grey60")
+  #     lines(x=c(total+k,total),y=c(0.8,0.9),col="grey60")
+  #     lines(x=c(1-k,1),y=c(0.8,0.9),col="grey60")
+  #     
+  #     
+  #     #plot helper lines
+  #     # lines(x=c(0,0),y=c(1,2),lty=2)
+  #     # lines(x=c(known,1),y=c(1,2),lty=2)
+  #   }
+  # })
+  # 
+  
+    
   output$text_2 <- renderText({ 
     if(input$goButton == 0){
       return("")
@@ -550,12 +638,20 @@ shinyServer(function(input, output) {
     return(m)
   })
   
+
   
+  
+  
+  
+  
+  
+  
+    
   
   #The table of SNPs and their effects
-  output$table1 <- renderDataTable({ 
+  output$table1 <- DT::renderDataTable({ 
     if(input$goButton == 0){
-      return("")
+      return(NULL)
     }else if(input$goButton > 0) {
       
       #getting data
@@ -594,10 +690,9 @@ shinyServer(function(input, output) {
               ,"p_value","Major/minor Allele","minor_allele_freq","reported_genes")
       SNPs_to_analyze<-SNPs_to_analyze[,keep]
       colnames(SNPs_to_analyze)<-c("SNP","Your Genotype","Risk/ non-risk Allele","Effect Size","SNP-score","SNP-score (population normalized)","P-value","Major/ minor Allele","Minor Allele Frequency","Reported Gene")
-      
       return(SNPs_to_analyze)
     }
-  },options = list(searching = FALSE,paging = FALSE))
+  },options = list(searching = FALSE,paging = FALSE),rownames= FALSE)
   
   
   
@@ -654,44 +749,54 @@ shinyServer(function(input, output) {
     q<-grep("\tAllDisease\t",readLines(user_log_path),value=T)
     if(length(q)<minimum_level)return("")
     
+    
+    
+    ######################
+    #This is the logic for the personality genie
+    #
+    ###################
+    show_on_these_study_ids<- c("agreeableness_21173776","conscientiousness_21173776","extroversion_21173776","neuroticism_21173776","openness_to_experience_21173776","anger_24489884","conscientiousness_27918536","feeling_fed-up_29500382","feeling_guilty_29500382","feeling_hurt_29500382","feeling_lonely_29500382","feeling_miserable_29500382","feeling_nervous_29500382","feeling_tense_29500382","feeling_worry_29500382","gambling_22780124","life_satisfaction_27089181","irritable_mood_29500382","worry_29942085","worry_too_long_after_an_embarrassing_experience_29500382","openness_to_experience_21173776","extroversion_21173776","self-reported_risk-taking_behaviour_30181555","self-reported_risk-taking_behaviour_30271922","temperament_22832960","eudaimonic_well-being_30279531","hedonic_well-being_30279531","subjective_well-being_mtag_29292387","subjective_well-being_multi-trait_analysis_29292387","subjective_well-being_27089181","subjective_well-being_29292387")
+    if(study_id %in% show_on_these_study_ids){
+      survey_log_file<-"/home/ubuntu/logs/submission/personalitygenie_survey.txt"
+      if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"personalitygenie_survey",uniqueID,study_id)
+      m<-paste(m,collapse="\t")
+      write(m,file=survey_log_file,append=TRUE)
+      out <- paste0("<div style='background-color: #cfc ; padding: 10px; border: 1px solid green;'>
+<p>Dear user<br></p>
+<p><img style='padding: 0 15px; float: right;' src='../www/personalitygenielogo.png'>Since you are interested in this trait, perhaps you would also be interested in the Personality Genie study, run by Dr. Denise Cook. The study investigates human personality and the potential genetic associations linked with it. You can read more about it at this link, as well as participate:<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u><a href='https://www.personalitygenie.com/'>www.personalitygenie.com</a></u></b><br><br>
+                    The study involves (re)-upload of your raw DNA data outside of the impute-me site, there is no data transfer from here. But it looks like an interesting and solid study worthy of support.</p></div>")
+      return(out)
+    }
+    
+    
+    ###################
+    #This is the logic for the UBC study. It's after the personality genie because only few traits
+    #will go to the personality genie box.
     #now we can go to plot/no-plot logic, because each step will be more rare and won't slow down so much
     show_box <- FALSE
-    
     if(length(q) >= minimum_level & length(q)<10) show_box <- TRUE
-    
     if(length(q)>=15 & length(q)<20) show_box <- TRUE
-    
     if(length(q)>=25 & length(q)<30) show_box <- TRUE
-    
     if(length(q)>=40 & length(q)<45) show_box <- TRUE
-    
     if(length(q)>=60 & length(q)<75) show_box <- TRUE
-    
     if(length(q)>=80 & length(q)<85) show_box <- TRUE
-    
     if(length(q)>=100 & length(q)<105) show_box <- TRUE
-    
     if(length(q)>=120 & length(q)<125) show_box <- TRUE
-    
     if(length(q)>=150) show_box <- TRUE
-    
     if(show_box){
-      
-      
       survey_log_file<-"/home/ubuntu/logs/submission/ubc_survey.txt"
       if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ubc_survey",uniqueID,length(q))
       m<-paste(m,collapse="\t")
       write(m,file=survey_log_file,append=TRUE)
-      
-      
       out <- paste0("<div style='background-color: #cfc ; padding: 10px; border: 1px solid green;'>
 <p>Dear user<br></p>
 <p><img style='padding: 0 15px; float: right;' src='../www/ubc_logo.png'>In collaboration with the University of British Columbia, we are currently conducting a study on motivations, perceptions and reactions in consumer genomics. We would therefore like to invite you to participate:<br><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u><a href='https://rc.bcchr.ca/redcap/surveys/?s=LAP43CYXTL'>Survey-link</a></u></b><br><br>
 The results of this survey is intended for scientific publication and by participating you will therefore help by contributing important knowledge to the genetics field.</p></div>")
       return(out)
-      
     }
     
   })

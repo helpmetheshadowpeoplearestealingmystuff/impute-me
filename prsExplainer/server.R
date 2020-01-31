@@ -11,7 +11,7 @@ load("/home/ubuntu/srv/impute-me/prsExplainer/2019-07-27_commonmind_test_data.rd
 prs_available <- data.frame(
   row.names=c("SCZ Cases\nAll-SNP\nSCZ score","SCZ Cases\nTop-SNP\nSCZ score","BP Cases\nAll-SNP\nBP score"),
   niceNames= c("Schizophrenia All-SNP","Schizophrenia Top-SNP","Bipolar Disorder All-SNP"),
-  variability_explained = c(0.094,0.043,0.102),
+  variability_explained = c(0.094,0.043,0.0775),
   twin_heritability = c(0.8,0.8,0.7)
 )
 
@@ -416,9 +416,20 @@ shinyServer(function(input, output) {
     sensitivity <- tpr
     specificity <- 1 - fpr
     
+    
+    #calculate AUC (by hand)
+    auc <- 0
+    for(i in nrow(roc):2){
+      width<-(roc[i-1,"fpr"] - roc[i,"fpr"])
+      height <- 1-roc[i,"tpr"]
+      auc <- auc + width*height
+    }
+    auc
+    
     #plot them in the lower right of the figure
     text(x=0.6,y=0.5,
          label=paste0(
+           "AUC: ",signif(auc,3),"\n",
            "Sensitivity: ",sensitivity,"\n",
            "Specificity: ",specificity,"\n",
            "PPV: ",ppv,"\n",
@@ -436,11 +447,13 @@ shinyServer(function(input, output) {
     trait_label <- input$trait_label
     score_name <- prs_available[trait_label,"niceNames"]
     
-    m<-paste0("This plot shows more advanced prediction statistics for the ",score_name," risk score. PPV = Positive Predictive Value, NPV = Negative Predictive Value, TPR = True Positive Rate (or sensitivity or recall), FPR = False Positive Rate (or fall-out or 1-specificity).")    
+    m<-paste0("This plot shows more advanced prediction statistics for the ",score_name," risk score. AUC = area under the curve, PPV = Positive Predictive Value, NPV = Negative Predictive Value, TPR = True Positive Rate (or sensitivity or recall), FPR = False Positive Rate (or fall-out or 1-specificity).")    
     return(m)    
   })
   
+
   
+
 })
 
 

@@ -96,7 +96,7 @@ shinyUI(bootstrapPage(
 	htmlOutput("text_1"),
 	plotOutput("plot_1"),
 	htmlOutput("text_2"),
-	dataTableOutput("table1"),
+	DT::dataTableOutput("table1"),
 	htmlOutput("text_3"),
 	
 	

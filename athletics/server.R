@@ -58,7 +58,7 @@ shinyServer(function(input, output) {
     
   })
   
-  output$table1 <- renderDataTable({ 
+  output$table1 <- DT::renderDataTable({ 
     if(input$goButton == 0){
       return(NULL)
     }else if(input$goButton > 0) {
@@ -71,7 +71,7 @@ shinyServer(function(input, output) {
       
       return(table)
     }
-  })
+  },rownames= FALSE)
   
   output$text1 <- renderText({ 
     if(input$goButton == 0){
@@ -87,7 +87,7 @@ shinyServer(function(input, output) {
   
   
   
-  output$table2 <- renderDataTable({ 
+  output$table2 <- DT::renderDataTable({ 
     if(input$goButton == 0){
       return(NULL)
     }else if(input$goButton > 0) {
@@ -137,7 +137,7 @@ shinyServer(function(input, output) {
       
       return(domains)
     }
-  })
+  },rownames= FALSE)
   
   output$text2 <- renderText({ 
     if(input$goButton == 0){

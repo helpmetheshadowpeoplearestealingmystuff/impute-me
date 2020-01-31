@@ -26,17 +26,17 @@ all_snp_traits<-read.xlsx(all_snp_trait_file,rowNames=T)
 
 shinyServer(function(input, output) {
   
-  output$text_1 <- renderText({ 
-    
-    if(input$goButton == 0){
-      m<-paste0("<b>2019-03-13 the intelligence module was recently updated to test out new functionality that will soon be released in the all-complex-trait module. If you are looking for the IQ and EQ mesurements from previous version, de-select 'Only show newest study' under advanced options, and find <i>Emotional Intelligence [PMID 29527006]</i> (Warrier et al, EQ) and <i>Intelligence [PMID 29326435]</i> (Hill et al, IQ). However as <u><a href='https://www.tapatalk.com/groups/anthroscape/impute-me-ethnicity-plot-t80372-s30.html'>discussed</a></u>, we were not so happy with the Hill et al results and have updated to a more recent study. Also -- while under advanced options, do try out the new heritability plot options. We are working on accurate feedback on how much each score actually explains of a trait.</b><br><br><br>A polygenic risk score is a value that gives a summary of a large number of different SNPs - each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. Of course the interpretation of this risk depends a lot on other factors as well: How heritable the disease is. How much of this heritability we can explain with known SNPs. And not least, what would the risk of disease be for you otherwise, i.e. without taking the genetic component into account. <br><br>Because the polygenic risk score is only a risk-modifier, knowledge of these three other values are all required if you want to know what your overall risk is, i.e. what's the chance in percent. This calculator cannot provide that. But it can provide a view of the <i>known genetic</i> component of your disease risk, based on all the SNPs that we know are associated with the disease. This, we believe, makes it a better choice for complex diseases than the typical one-SNP-at-the time analysis typically seen in consumer genetics.<br><br>"
-      )
-      
-    }else{
-      m<-""
-    }
-    return(m)
-  })
+  # output$text_1 <- renderText({ 
+  #   
+  #   if(input$goButton == 0){
+  #     m<-paste0("<b>2019-03-13 the intelligence module was recently updated to test out new functionality that will soon be released in the all-complex-trait module. If you are looking for the IQ and EQ mesurements from previous version, de-select 'Only show newest study' under advanced options, and find <i>Emotional Intelligence [PMID 29527006]</i> (Warrier et al, EQ) and <i>Intelligence [PMID 29326435]</i> (Hill et al, IQ). However as <u><a href='https://www.tapatalk.com/groups/anthroscape/impute-me-ethnicity-plot-t80372-s30.html'>discussed</a></u>, we were not so happy with the Hill et al results and have updated to a more recent study. Also -- while under advanced options, do try out the new heritability plot options. We are working on accurate feedback on how much each score actually explains of a trait.</b><br><br><br>A polygenic risk score is a value that gives a summary of a large number of different SNPs - each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. Of course the interpretation of this risk depends a lot on other factors as well: How heritable the disease is. How much of this heritability we can explain with known SNPs. And not least, what would the risk of disease be for you otherwise, i.e. without taking the genetic component into account. <br><br>Because the polygenic risk score is only a risk-modifier, knowledge of these three other values are all required if you want to know what your overall risk is, i.e. what's the chance in percent. This calculator cannot provide that. But it can provide a view of the <i>known genetic</i> component of your disease risk, based on all the SNPs that we know are associated with the disease. This, we believe, makes it a better choice for complex diseases than the typical one-SNP-at-the time analysis typically seen in consumer genetics.<br><br>"
+  #     )
+  #     
+  #   }else{
+  #     m<-""
+  #   }
+    # return(m)
+  # })
   
   
   
@@ -279,10 +279,10 @@ shinyServer(function(input, output) {
       #replace the distribution curves
       if(ethnicity_group == "global"){
         #do nothing. Note the density curve location.
-        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-03-20_densities_ALL.rdata"
+        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_ALL.rdata"
       }else{
         #note the density curve location
-        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-03-20_densities_",ethnicity_group,".rdata")
+        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_",ethnicity_group,".rdata")
       }
       
       
@@ -436,7 +436,88 @@ shinyServer(function(input, output) {
   
   
   
+  
+  
+  #The pie-chart version of the heritability plot
   output$plot_2 <- renderPlot({ 
+    if(input$goButton == 0){
+      return(NULL)
+    }
+    o<-get_data()
+    study_id<-o[["study_id"]]
+    use_all_snp_score <- o[["use_all_snp_score"]]
+    
+    
+    #get variables
+    known<-traits[study_id,"known_heritability"]
+    total <-traits[study_id,"total_heritability"]
+    
+    
+    #if using all-SNP prs, then overwrite the data
+    if(use_all_snp_score){
+      all_snp_traits <- read.xlsx("/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx",rowNames=T)
+      if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
+      known<-all_snp_traits[study_id,"known_heritability"]
+      total <-all_snp_traits[study_id,"total_heritability"]
+    }
+    
+    #if either of these are NA, we'll have to plot 'not registered'    
+    if(is.na(known) |  is.na(total)){
+      plot(NULL,xlim=c(0,1),ylim=c(0,2),xaxt="n",yaxt="n",xlab="",ylab="",frame=F)
+      text(x=0.5,y=1,label="Heritability not registered for this trait",col="grey80")
+      
+    }else{
+      #define the plotting parameters (major is 'this score', minor is the others like 'unknown')
+      major_text_r <- 0.6
+      major_text_cex <- 0.8
+      major_text_col <- "grey60"
+      minor_text_r <- 0.4
+      minor_text_cex <- 0.8
+      minor_text_col <- "grey30"
+      
+      
+      #creating the JA-pie chart
+      x1 <- known  #plot known genetics
+      x2 <- 1-known
+      
+      #commented out parts for not showing twin-heritability
+      # x2 <- total-known #plot unknown genetics
+      # x3 <- 1 - total #plot environment
+      #showing twin heritability as well (switched off)
+      # pie( c(x1,x2,x3),labels=c("","",""),init.angle=init_angle_rad*(180/pi),col = c("#006680FF", "#0088AAFF", "#2AD4FFFF"),border=F)
+      # x3_angle_rad <- init_angle_rad + x1*pi*2 + x2*pi*2 + x3*pi
+      # text(x=minor_text_r*cos(x3_angle_rad),y=minor_text_r*sin(x3_angle_rad),label="environment",cex=minor_text_cex,col=minor_text_col)
+      
+      init_angle_rad <-  0.5*pi - (x1*pi)
+      par(mai=c(0,0,0,0))
+      pie(
+        c(x1,x2),
+        labels=c("",""),
+        init.angle=init_angle_rad*(180/pi),
+        col = c("#006680FF", "#0088AAFF"),
+        border=F)
+      
+      #create labels
+      x1_angle_rad <- init_angle_rad + x1*pi
+      text(x=major_text_r*cos(x1_angle_rad),y=major_text_r*sin(x1_angle_rad),label="this score",cex=major_text_cex,col=major_text_col)
+      x2_angle_rad <- init_angle_rad + x1*pi*2 + x2*pi
+      text(x=minor_text_r*cos(x2_angle_rad),y=minor_text_r*sin(x2_angle_rad),label="unknown",cex=minor_text_cex,col=minor_text_col)
+      
+      #create (optional?) lines up to distribution plot
+      lines(x=c(0.8*cos(init_angle_rad),1),y=c(0.8*sin(init_angle_rad),1))
+      x1_end_rad <- init_angle_rad + x1*pi*2
+      lines(x=c(0.8*cos(x1_end_rad),-1),y=c(0.8*sin(x1_end_rad),1))
+      
+      #sub-title
+      mtext("Variablity explained",side=1)    
+      
+      
+    }
+  })
+  
+  
+  
+  output$plot_2b <- renderPlot({ 
     if(input$goButton == 0){
       return(NULL)
     }
@@ -534,9 +615,9 @@ shinyServer(function(input, output) {
   })
   
   
-  output$table1 <- renderDataTable({ 
+  output$table1 <- DT::renderDataTable({ 
     if(input$goButton == 0){
-      return("")
+      return(NULL)
     }else if(input$goButton > 0) {
       
       #getting data
@@ -578,7 +659,7 @@ shinyServer(function(input, output) {
       
       return(SNPs_to_analyze)
     }
-  },options = list(searching = FALSE,paging = FALSE))
+  },options = list(searching = FALSE,paging = FALSE),rownames= FALSE)
   
   
   output$text_3 <- renderText({ 
@@ -593,6 +674,64 @@ shinyServer(function(input, output) {
     }
     return(methodsToReturn)
   })
+  
+  
+  
+  
+  
+  
+  #The personalitygenie-study collaboration box
+  output$text_4 <- renderText({ 
+    minimum_level <- 5
+    
+    
+    #Mention all UI elements to make sure this renderText object is triggered. Other than that these following 10 lines don't do anything
+    if(input$only_show_newest){
+      ui_selector <- paste0("trait_",input$trait_group,"_newest")  
+    }else{
+      ui_selector <- paste0("trait_",input$trait_group)
+    }
+    study_id<-input[[ui_selector]]
+    ethnicity_group<-input$ethnicity_group
+    use_all_snp_score<-input$use_all_snp_score
+    plot_heritability <- input$plot_heritability
+    real_dist<-input$real_dist
+    
+    
+    if(input$goButton == 0){return("")}
+    
+    uniqueID<-gsub(" ","",input$uniqueID)
+    if(uniqueID == "id_613z86871"){return("")}
+    
+   
+    
+    ######################
+    #This is the logic for the personality genie
+    # In intelligence module all the traits are of interest to this study, so we just roll
+    # a dice and show every third query
+    ###################
+    
+    
+    if(sample(1:3,1)==1){
+      survey_log_file<-"/home/ubuntu/logs/submission/personalitygenie_survey.txt"
+      if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"personalitygenie_survey",uniqueID,study_id)
+      m<-paste(m,collapse="\t")
+      write(m,file=survey_log_file,append=TRUE)
+      out <- paste0("<div style='background-color: #cfc ; padding: 10px; border: 1px solid green;'>
+                    <p>Dear user<br></p>
+                    <p><img style='padding: 0 15px; float: right;' src='../www/personalitygenielogo.png'>Since you are interested in this trait, perhaps you would also be interested in the Personality Genie study, run by Dr. Denise Cook. The study investigates human personality and the potential genetic associations linked with it. You can read more about it at this link, as well as participate:<br><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u><a href='https://www.personalitygenie.com/'>www.personalitygenie.com</a></u></b><br><br>
+                    The study involves (re)-upload of your raw DNA data outside of the impute-me site, there is no data transfer from here. But it looks like an interesting and solid study worthy of support.</p></div>")
+      return(out)
+    }
+    
+    
+  })
+  
+  
+  
+  
   
   
 })

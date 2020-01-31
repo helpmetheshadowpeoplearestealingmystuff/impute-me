@@ -36,8 +36,7 @@ shinyUI(bootstrapPage(
   endPanel(),
   beginPanel('2/3'),
   
-  
-  
+
   conditionalPanel(
     condition = "input.explanation_choices.includes('basic_bell_curve')",
     plotOutput("plot_basic_bell_curve"),

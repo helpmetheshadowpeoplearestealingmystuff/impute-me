@@ -47,13 +47,7 @@ shinyServer(function(input, output) {
     
     #extract relevant data
     d1 <- d[["prs"]][[study_id]]
-    
-    #temp-fix because of 2019-01-11-refactoring (can be removed later)
-    if(any(c("total_snps","contributing_snps")%in%names(d1))){
-      names(d1)[names(d1)%in%"contributing_snps"]<-"alleles_checked"
-      names(d1)[names(d1)%in%"total_snps"]<-"alleles_observed"
-      stop(safeError("Shouldn't have any temp-fix anymore"))
-    }
+
     
     
     

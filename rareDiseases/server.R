@@ -79,7 +79,7 @@ shinyServer(function(input, output) {
 		
 	})
 	
-	output$table1 <- renderDataTable({ 
+	output$table1 <- DT::renderDataTable({ 
 		if(input$goButton == 0){
 			return(NULL)
 		}
@@ -93,7 +93,7 @@ shinyServer(function(input, output) {
 		return(table)
 		
 		
-	},options =list(pageLength = 200,searching = FALSE))
+	},options =list(pageLength = 200,searching = FALSE),rownames= FALSE)
 	
 	output$text2 <- renderText({ 
 		
