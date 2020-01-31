@@ -18,8 +18,8 @@ export_function<-function(uniqueID){
   
   output<-list()
   output[["documentation"]] <- list()
-  output[["documentation"]][["trait_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/15ce6cb5a25dfe42f5cdf6c2010b7e3a8af53f18/ukbiobank/2017-09-28_trait_overoverview.rdata"
-  output[["documentation"]][["snp_file"]] <- "https://github.com/lassefolkersen/impute-me/blob/master/ukbiobank/2017-09-28_semi_curated_version_ukbiobank.rdata"
+  output[["documentation"]][["trait_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/14ba4b697185898135755ec69e36fe3cdad5c8e1/ukbiobank/2017-09-28_trait_overoverview.rdata"
+  output[["documentation"]][["snp_file"]] <- "https://github.com/lassefolkersen/impute-me/blob/14ba4b697185898135755ec69e36fe3cdad5c8e1/ukbiobank/2017-09-28_semi_curated_version_ukbiobank.rdata"
   
   
   #get ethnicity parameter
