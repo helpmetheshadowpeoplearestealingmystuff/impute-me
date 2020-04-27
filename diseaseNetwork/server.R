@@ -8,7 +8,7 @@ library("visNetwork")
 #for real run
 source("/home/ubuntu/srv/impute-me/functions.R")
 load("/home/ubuntu/srv/impute-me/diseaseNetwork/2018-02-21_igraph_object.rdata")
-link_file<-"/home/ubuntu/srv/impute-me/diseaseNetwork/2018-09-18_link_file.xlsx"
+link_file<-"/home/ubuntu/srv/impute-me/diseaseNetwork/2020-04-11_link_file.xlsx"
 link_all<-read.xlsx(link_file)  
 
 
@@ -307,7 +307,7 @@ shinyServer(function(input, output) {
     uniqueID <- gsub(" ","",input$uniqueID)
     o<-get_colour_code()
     
-    if(is.null(o) | input$goButton == 0 | is.null(input$focus_node)){
+    if(is.null(o) | input$goButton == 0 | is.null(input$focus_node) | uniqueID==""){
       return(NULL)
     }
     focus_node <- input$focus_node

@@ -19,7 +19,7 @@ shinyServer(function(input, output) {
   output$text_1 <- renderText({ 
     
     if(input$goButton == 0){
-      m<-paste0("A polygenic genetic score is a value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the <u><a href='https://ec2-54-218-116-201.us-west-2.compute.amazonaws.com/AllDiseases/'>complex disease module</a></u>, with the added caveat that only automated curation have been performed on these thousands of additional studies.<br><br>"
+      m<-paste0("A polygenic genetic score is a value that gives a summary of a large number of different SNPs each of which contribute a little to disease risk. The higher the value, the higher the risk of developing disease. More details of its interpretation, calculation and limitations can be found in the <u><a href='https://www.impute.me/AllDiseases/'>complex disease module</a></u>, with the added caveat that only automated curation have been performed on these thousands of additional studies.<br><br>"
       )
       
     }else{

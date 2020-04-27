@@ -4,8 +4,8 @@ library("shiny")
 #load functions and define paths of reference files and data directory
 source("/home/ubuntu/srv/impute-me/functions.R")
 dataFolder<-"/home/ubuntu/data/"
-snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_semi_curated_version_gwas_central.rdata"
-trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
+snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2020-04-02_snp_weights.rdata"
+trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2020-04-02_trait_overview.xlsx"
 all_snp_trait_file <- "/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx"
 
 
@@ -13,6 +13,13 @@ all_snp_trait_file <- "/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx
 #defining 1000 genomes populations
 ethnicities_labels<-c("Automatic guess","global","African","Ad Mixed American","East Asian","European","South Asian")
 names(ethnicities_labels)<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
+
+
+#establish ordinal number ending
+ordinals<-rep("th",1,100)
+ordinals[c(1,seq(21,91,10))] <- "st"
+ordinals[c(2,seq(22,92,10))] <- "nd"
+ordinals[c(3,seq(23,93,10))] <- "rd"
 
 
 #preload data
@@ -111,12 +118,12 @@ shinyServer(function(input, output) {
     }
     if(ethnicity_group == "global"){
       #do nothing. Note the density curve location.
-      densityCurvePath<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-13_densities_ALL.rdata"
+      densityCurvePath<-"/home/ubuntu/srv/impute-me/AllDiseases/2020-04-17_densities_ALL.rdata"
     }else{
       #then replace the MAF with the correct superpopulation group
       SNPs_to_analyze[,"minor_allele_freq"] <- SNPs_to_analyze[,paste0(ethnicity_group,"_AF")]
       #note the density curve location
-      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/AllDiseases/2019-03-13_densities_",ethnicity_group,".rdata")
+      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/AllDiseases/2020-04-17_densities_",ethnicity_group,".rdata")
     }
     
     
@@ -191,23 +198,33 @@ shinyServer(function(input, output) {
     
     #add the overall population SD value
     if(!use_all_snp_score){
-      textToReturn <- paste0(textToReturn," For you, we calculated an ethnicity-corrected trait Z-score of ",signif(GRS,2),".")  
+      textToReturn <- paste0(textToReturn,"<br><br>For you, we calculated an ethnicity-corrected trait Z-score of ",signif(GRS,2),".")  
     }
     
     
     
-    #add the final summary
+    #add the final summary 
     percentage<-floor(pnorm(GRS,mean=0,sd=1)*100)
     if(percentage < 20){
-      summary <- " This is a low score."
+      summary <- " This is a lower score than the average person."
     }else if(percentage > 90){
-      summary <- " This is a high score. But keep in mind that additional calculation is necessary to determine a real life-time risk. For example having a very high genetic score for something that is not very heritable may make very little difference. These additional calculations typically require further studies, not always available."
+      summary <- " This is a higher score than the average person. <br><br>But keep in mind that additional calculation is necessary to determine a real life-time risk. For example having a very high genetic score for something that is not very heritable may make very little difference. These additional calculations typically require further studies, not always available. If you would like someone to discuss these findings with we recommend <u><a href='https://www.greygenetics.com/'>greygenetics.com</a></u>."
+      summary <- paste0(summary,"<br><br><div style='background-color: #cfc ; padding: 10px; border: 1px solid green;'><p>PLEASE NOTE:<br>The information provided in this module:<br>1) CANNOT definitively tell you whether or not you currently have - or whether you will develop - any of the traits for which information is provided.<br>2) is about RISK for the conditions listed. There are genetic variations that may contribute to risk that are NOT included in the scores provided. Remember that behavior, experience, and lifestyle factors may contribute to your risk, and these are not included in the scores provided.<br></div>")
     }else{
       summary <- " This is a fairly average score."
     }
+    
+    
+    
+    #return a read-out
     if(!use_all_snp_score){
-      textToReturn <- paste0(textToReturn," This means that your genetic risk score for this trait will be <b>higher than ",percentage,"% of the general population</b>.",summary)
+      if(percentage > 50){
+        textToReturn <- paste0(textToReturn," This means that your genetic risk score for <b>this trait is higher than ",percentage,"% of and lower than ",100-percentage,"% of the general population</b>.",summary)
+      }else{
+        textToReturn <- paste0(textToReturn," This means that your genetic risk score for <b>this trait is lower than ",100-percentage,"% of and higher than ",percentage,"% of the general population</b>.",summary)
+      }
     }
+    
     
     
     #add that breast cancer PRS is no substitute for a BRCA sequencing
@@ -220,7 +237,7 @@ shinyServer(function(input, output) {
 
                             <br><br>The advantage of this approach is that it only requires a list of GWAS-significant SNPs, their frequency, effect-size and effect-alleles.  This makes it possible to implement the calculation systematically for many diseases and traits. 
                             
-                            <br><br>One weakness in this approach is that it assumes that individuals from the 1000 genomes project are a reasonably normal reference group. For some traits or diseases this may not be true. As an alternative, you can select the <i>'plot user distribution'</i> option in the advanced options sections. This will overlay the plot with distribution of all ethnicity-matched impute.me users. The weakness of that approach, however, is the assumption that most users of impute.me are reasonably normal. Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities where it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. In most cases, higher score means high level - but it is recommended to consult with the original GWAS publication if there is any doubt. Thirdly, it is important to note that many of these scores only explain very small proportions of the overall risk. How much is illustrated in the blue bar plot below the bell curve. The more dark blue, the more predictive the score is. In the <u><a href='https://www.impute.me/prsExplainer'>PRS-explanatory module</a></u> you can further explore what this predivtiveness means in a sandbox setting.
+                            <br><br>One weakness in this approach is that it assumes that individuals from the 1000 genomes project are a reasonably normal reference group. For some traits or diseases this may not be true. As an alternative, you can select the <i>'plot user distribution'</i> option in the advanced options sections. This will overlay the plot with distribution of all ethnicity-matched impute.me users. The weakness of that approach, however, is the assumption that most users of impute.me are reasonably normal. Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities where it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. In most cases, higher score means high level - but it is recommended to consult with the original GWAS publication if there is any doubt. Thirdly, it is important to note that many of these scores only explain very small proportions of the overall risk. How much is illustrated in the blue pie chart below the bell curve. The more dark blue, the more predictive the score is. In the <u><a href='https://www.impute.me/prsExplainer'>PRS-explanatory module</a></u> you can further explore what this predivtiveness means in a sandbox setting.
                             
                             <br><br>Finally, instead of scrolling through all the alphabetical entries here, then check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Precision-medicine module</a></u>. The data in that module is based on the calculations made here, but the information is instead given as a view of scores relevant only to a specific disease-scope. The intention is give relevant information for a given context, while avoiding risk-sorted lists bound to produce spurious and wrongful observations (see <u><a href='https://github.com/lassefolkersen/impute-me/issues/8'>discussion</a></u> here).</small>")		
     
@@ -350,7 +367,8 @@ shinyServer(function(input, output) {
       GRS=GRS,
       distributionCurve=distributionCurve,
       study_id=study_id,
-      use_all_snp_score=use_all_snp_score ))
+      use_all_snp_score=use_all_snp_score,
+      ethnicity_group=ethnicity_group))
   })
   
   
@@ -466,7 +484,7 @@ shinyServer(function(input, output) {
     o<-get_data()
     study_id<-o[["study_id"]]
     use_all_snp_score <- o[["use_all_snp_score"]]
-    
+    ethnicity_group <- o[["ethnicity_group"]]
     
     #get variables
     known<-traits[study_id,"known_heritability"]
@@ -492,11 +510,21 @@ shinyServer(function(input, output) {
       #define the plotting parameters (major is 'this score', minor is the others like 'unknown')
       major_text_r <- 0.6
       major_text_cex <- 0.8
-      major_text_col <- "grey60"
       minor_text_r <- 0.4
       minor_text_cex <- 0.8
-      minor_text_col <- "grey30"
       
+      if(ethnicity_group == "EUR"){
+        major_text_col <- "grey60"
+        minor_text_col <- "grey30"
+        known_col <- "#006680FF"
+        unknown_col <- "#0088AAFF"
+      }else{
+        major_text_col <- "grey80"
+        minor_text_col <- "grey60"
+        known_col <- "#AEAEAE"
+        unknown_col <- "#D8D8D8"
+        
+      }
       
       #creating the JA-pie chart
       x1 <- known  #plot known genetics
@@ -516,7 +544,7 @@ shinyServer(function(input, output) {
         c(x1,x2),
         labels=c("",""),
         init.angle=init_angle_rad*(180/pi),
-        col = c("#006680FF", "#0088AAFF"),
+        col = c(known_col, unknown_col),
         border=F)
       
       #create labels
@@ -530,103 +558,20 @@ shinyServer(function(input, output) {
       x1_end_rad <- init_angle_rad + x1*pi*2
       lines(x=c(0.8*cos(x1_end_rad),-1),y=c(0.8*sin(x1_end_rad),1))
       
-      #sub-title
-      mtext("Variablity explained",side=1,line=-2)    
-    
-      
+      #subtitle or add warning for wrong variability in non-european
+      if(ethnicity_group == "EUR"){
+        mtext("Variablity explained",side=1,line=-2)    
+      }else{
+        text(
+          x=0,y=0,
+          label="Variability explained for this trait is uncertain\nfor your ancestral background.",
+          cex=1,col="black")
+      }
     }
   })
 
   
-  #The old version of the heritability plot - showing bars instead of pie chart, and also including twin-heritability
-  # output$plot_2b <- renderPlot({ 
-  #   if(input$goButton == 0){
-  #     return(NULL)
-  #   }
-  #   o<-get_data()
-  #   study_id<-o[["study_id"]]
-  #   use_all_snp_score <- o[["use_all_snp_score"]]
-  #   
-  #   if(is.na(traits[study_id,"known_heritability"]) |  is.na(traits[study_id,"total_heritability"])){
-  #     plot(NULL,xlim=c(0,1),ylim=c(0,2),xaxt="n",yaxt="n",xlab="",ylab="",frame=F)
-  #     text(x=0.5,y=1,label="Heritability not registered for this trait",col="grey80")
-  #     
-  #   }else{
-  #     
-  #     #get variables
-  #     known<-traits[study_id,"known_heritability"]
-  #     total <-traits[study_id,"total_heritability"]
-  #     
-  #     
-  #     #if using all-SNP prs, then overwrite the data
-  #     if(use_all_snp_score){
-  #       all_snp_traits <- read.xlsx("/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx",rowNames=T)
-  #       if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
-  #       known<-all_snp_traits[study_id,"known_heritability"]
-  #       total <-all_snp_traits[study_id,"total_heritability"]
-  #       
-  #     }
-  #     
-  #     
-  #     
-  #     #set colours  
-  #     colours <- c("#006680FF","#0088AAFF","#2AD4FFFF")
-  #     names(colours) <- c("known","unknown","environment")
-  #     
-  #     #initialize plot
-  #     plot(NULL,xlim=c(0,1),ylim=c(0,2),xaxt="n",yaxt="n",xlab="Variability explained",ylab="",frame=F)
-  #     par(mai=c(0.2,0.1,0.0,0.1))
-  #     
-  #     #plot known genetics
-  #     x1 <- known / 2
-  #     symbols(x=x1,y=1.5,rectangles=matrix(c(known,1),ncol=2),add=TRUE,bg=colours["known"],inches=FALSE)
-  #     
-  #     #plot unknown genetics
-  #     x2 <- known + (total-known) /2
-  #     symbols(x=x2,y=1.5,rectangles=matrix(c(total-known,1),ncol=2),add=TRUE,bg=colours["unknown"],inches=FALSE)
-  #     
-  #     #plot environment
-  #     x3 <- 1 - (1 - total)/2
-  #     symbols(x=x3,y=1.5,rectangles=matrix(c(1-total,1),ncol=2),add=TRUE,bg=colours["environment"],inches=FALSE)
-  #     
-  #     
-  #     #get position of 'genetics text
-  #     x4 <- total / 2
-  #     
-  #     
-  #     #plot on-top of boxes texts (afterwards so they are not overwritten)
-  #     text(x=x1,y=1.5,label="This\nscore",srt=0)
-  #     if(total - known > 0.2){
-  #       text(x=x2,y=1.5,label="Unknown\ngenetics",srt=0,col="grey30")  
-  #     }
-  #     
-  #     
-  #     #plot under-boxes texts (afterwards so they are not overwritten)
-  #     text(x=x4,y=0.5,label="Genetics",srt=0)
-  #     text(x=x3,y=0.5,label="Environment",srt=0)
-  #     
-  #     #plot horizontal braces for genetics
-  #     k <- 0.01
-  #     lines(x=c(0+k,total-k),y=c(0.8,0.8),col="grey60")
-  #     lines(x=c(0+k,0),y=c(0.8,0.9),col="grey60")
-  #     lines(x=c(total-k,total),y=c(0.8,0.9),col="grey60")
-  #     
-  #     
-  #     #plot horizontal braces for environment
-  #     k <- 0.01
-  #     lines(x=c(total+k,1-k),y=c(0.8,0.8),col="grey60")
-  #     lines(x=c(total+k,total),y=c(0.8,0.9),col="grey60")
-  #     lines(x=c(1-k,1),y=c(0.8,0.9),col="grey60")
-  #     
-  #     
-  #     #plot helper lines
-  #     # lines(x=c(0,0),y=c(1,2),lty=2)
-  #     # lines(x=c(known,1),y=c(1,2),lty=2)
-  #   }
-  # })
-  # 
-  
-    
+
   output$text_2 <- renderText({ 
     if(input$goButton == 0){
       return("")
@@ -639,15 +584,6 @@ shinyServer(function(input, output) {
   })
   
 
-  
-  
-  
-  
-  
-  
-  
-    
-  
   #The table of SNPs and their effects
   output$table1 <- DT::renderDataTable({ 
     if(input$goButton == 0){

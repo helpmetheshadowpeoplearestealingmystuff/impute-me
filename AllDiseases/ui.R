@@ -4,7 +4,7 @@ initialize('gmh',TRUE)
 
 #load functions and define paths of reference files and data directory
 library(openxlsx)
-trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
+trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2020-04-02_trait_overview.xlsx"
 traits <- read.xlsx(trait_file,rowNames=F)
 rownames(traits) <- traits[,"study_id"]
 traits<-traits[!is.na(traits[,"omit"]) & !traits[,"omit"],]
@@ -137,7 +137,7 @@ shinyUI(bootstrapPage(
 	  radioButtons("trait_group", "Trait categories:", trait_groups, selected = "disease"),
 	  radioButtons("ethnicity_group", label="Reference population:", choices=ethnicities, selected = "automatic", inline = FALSE,width = NULL),
 	  checkboxInput("use_all_snp_score", label ="Show all-SNP score if possible (experimental)", value = TRUE),
-	  checkboxInput("plot_heritability", label ="Plot variability explained", value = FALSE),
+	  checkboxInput("plot_heritability", label ="Plot variability explained", value = TRUE),
 	  checkboxInput("real_dist", label ="Plot user distribution (experimental)", value = FALSE)
 	  
 	),

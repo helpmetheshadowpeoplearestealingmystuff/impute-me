@@ -75,13 +75,18 @@ prepare_individual_genome<-function(path, email, filename, updateProgress, prote
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     
-    stop(safeError(paste("More than",maxImputationsInQueue,"imputations are already in progress. Cannot start a new one. Limited server capacity was the reason for our kickstarter campaign. Supporters were first in line: kck.st/1VlrTlf")))
+    stop(safeError(paste("More than",maxImputationsInQueue,"imputations are already in progress. Cannot start a new one. The only solution to this is to wait a few days until the queues are shorter.")))
   }
   
   
-  
-  
-  
+  #check for vcf file
+  if(length(grep("\\.vcf\\.gz$",filename))==1 | length(grep("\\.vcf$",filename))==1){
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"vcf_file_forbidden",email,filename)
+    m<-paste(m,collapse="\t")
+    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
+    stop(safeError("The data file looked like a VCF-format file. Currently we do not accept VCF files by default, the main reason being that this file-format is not standardized enough for polygenic risk scoring calculations. More discussion, as well as work-around solutions can be found in github issue #32."))
+  }
+
   
   #Create uniqueID 
   print("create uniqueID")
@@ -262,7 +267,6 @@ prepare_individual_genome<-function(path, email, filename, updateProgress, prote
   queue_length <- length(list.files("/home/ubuntu/imputations/"))
   message_start <-paste0("<HTML>We received your data from file <i>", filename,"</i> at www.impute.me. It will now be processed, first through an imputation algorithm and then trough several types of genetic-risk score calculators. This takes a little more than a day per genome.")
   if(queue_length > 50){
-    
     run_time <- 1.6 #days
     servers_running <- bulk_node_count  #servers
     genomes_per_server <- 10 #genomes
@@ -270,7 +274,6 @@ prepare_individual_genome<-function(path, email, filename, updateProgress, prote
     days_left <- queue_length / genomes_per_day
     days_left_lower <- round(days_left*1.2) #because always have at least some paid ones skipping the line
     days_left_upper <- round(days_left*2.5)
-    
     queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect approximately ",days_left_lower,"-",days_left_upper," days of waiting.")
   }else if(queue_length > 5){
     queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect several days of waiting.")
@@ -279,8 +282,15 @@ prepare_individual_genome<-function(path, email, filename, updateProgress, prote
   }
   message_end1 <- paste0(" The service is non-profit, but because of heavy computing-requirements for the imputation analysis it is not free to run. We therefore strongly encourage you to pay a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>, suggested 5 USD). Also, if you do this and put your unique ID, (<i>",uniqueID,"</i>) as payment-message, you'll be moved to priority queue. Either way, once the analysis is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using this uniqueID.<br><br> ")
   
-  message_end2 <- paste0("In the meantime, may we recommend the book <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br></HTML>")
+  #assign the right language book to people (Swedes and Norwegians can get the Danish language one too)
+  if(length(grep("\\.dk$",email))==1 | length(grep("\\.no$",email))==1 | length(grep("\\.se$",email))==1){
+    booklink<-"https://www.saxo.com/dk/forstaa-dit-dna_lasse-westergaard-folkersen_haeftet_9788770170154"
+  }else{
+    booklink<-"https://www.worldscientific.com/worldscibooks/10.1142/11070"
+  }
+  message_end2 <- paste0("In the meantime, may we recommend the book <u><a href='",booklink,"'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br></HTML>")
   
+  #send the mail
   message <- paste0(message_start,queue_message,message_end1,message_end2)
   mailingResult<-try(send.mail(from = email_address,
                                to = email,
@@ -377,28 +387,14 @@ run_imputation<-function(runDir){
   #loop over chromosomes
   for(chr in c("X",as.character(1:22))){
     
-    # #Working with shapeit4 - but giving up... it s
-    # cmd2<-paste0(plink," --file step_1 --chr ",chr," --recode vcf --out step_2_chr",chr," --exclude step_2_exclusions")
-    # out2<-system(cmd2)
-    # cmd3<-paste0(bcftools," view step_2_chr",chr,".vcf  -Oz -o step_2_chr",chr,".vcf.gz")
-    # out3<-system(cmd3)
-    # cmd4<-paste0(bcftools," index step_2_chr",chr,".vcf.gz")
-    # out4<-system(cmd4)
-    # #if X chromosome is missing it is allowed to skip forward
-    # if(out2 == 13 & chr == "X"){
-    #   print("Didn't find X-chr data, so skipping that")
-    #   next
-    # }
-    # cmd5<-paste0(shapeit," --input ",runDir,"/step_2_chr",chr,".vcf.gz --map /home/ubuntu/programs/shapeit_maps/chr",chr,".b37.gmap.gz --region X --output step_4_chr",chr)
-    # system(cmd5)
-    
+  
     
     #First in loop - extract only one specific chromosome
     cmd2<-paste(plink," --file step_1 --chr ",chr," --recode --out step_2_chr",chr," --exclude step_2_exclusions",sep="")
     out2<-system(cmd2)
     
     #if X chromosome is missing it is allowed to skip forward
-    if(out2 == 13 & chr == "X"){
+    if(out2 %in% c(12,13) & chr == "X"){
       print("Didn't find X-chr data, so skipping that")
       next
     }
@@ -425,7 +421,7 @@ run_imputation<-function(runDir){
         !logStrand[,6] %in% c("D","I") 
       ,]
     
-    #This removes any cases where there are more than to alleles involved
+    #This removes any cases where there are more than two alleles involved
     forceHomozygoteTable<-forceHomozygoteTable[sapply(apply(forceHomozygoteTable[,c(5,6,9,10)],1,unique),length)==2,]
     
     #This removes any duplicates there might be
@@ -453,9 +449,14 @@ run_imputation<-function(runDir){
     system(cmd4)
     
     
-    #checking for errors and stopping if there are any. No point to continue otherwise
+    #checking for errors and stopping if there are any. 
+    #No point to continue otherwise
+    #There's a few specialized bug-hunter scripts that may be activated at this point
     log<-readLines(paste("step_4_chr",chr,"_shapeit_log.log",sep=""))
     if(substr(log[length(log)],1,5)=="ERROR"){
+      if(length(grep("Non biallelic site",log[length(log)]))>0){
+        check_for_rare_nonbiallic_snps(uniqueID)
+      }
       stop(paste("At chr",chr," the shapeit failed. Check this file for explanation: step_4_chr",chr,"_shapeit.log",sep=""))
     }
     
@@ -814,7 +815,7 @@ get_genotypes<-function(
     
     #if input is in as a chromosome, use the 23andmefile as input
     if("input"%in%chromosomes){
-      snpsFromInput<-requestDeNovo[requestDeNovo[,"chr_name"]%in%"input","SNP"]
+      snpsFromInput<-rownames(requestDeNovo[requestDeNovo[,"chr_name"]%in%"input",])
       outZip<-unzip(inputZipFile, overwrite = TRUE,exdir = idTempFolder, unzip = "internal")
       cmd0 <- paste("grep -E '",paste(paste(snpsFromInput,"\t",sep=""),collapse="|"),"' ",outZip,sep="")
       input_genotypes<-system(cmd0,intern=T)
@@ -1059,7 +1060,7 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
   
   
   #getting the AllDiseases + ukbiobank SNPs if possible
-  load("/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_all_gwas_snps.rdata")
+  load("/home/ubuntu/srv/impute-me/AllDiseases/2020-04-02_all_gwas_snps.rdata")
   e1<-gwas_snps
   load("/home/ubuntu/srv/impute-me/ukbiobank/2017-09-28_all_ukbiobank_snps.rdata")
   e2<-gwas_snps
@@ -1094,33 +1095,68 @@ crawl_for_snps_to_analyze<-function(uniqueIDs=NULL){
 
 
 
-make_overview_of_samples<-function(verbose=T){
-  uniqueIDs<-list.files("/home/ubuntu/data/")
-  all_pData<-list()
-  for(uniqueID in uniqueIDs){
-    pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
-    if(file.exists(pDataFile)){
-      all_pData[[uniqueID]]<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
-    }else{
-      if(verbose)print(paste("Didn't find a pData file for",uniqueID))	
-    }
-  }
-  all_columns<-unique(unlist(lapply(all_pData,colnames)))
-  pData<-as.data.frame(matrix(nrow=0,ncol=length(all_columns),dimnames=list(NULL,all_columns)))
-  for(uniqueID in names(all_pData)){
-    p<-all_pData[[uniqueID]]
-    for(missing_col in all_columns[!all_columns%in%colnames(p)]){
-      p[1,missing_col]<-NA
-    }
-    pData<-rbind(pData,p[,all_columns])
-  }
-  rownames(pData)<-pData[,"uniqueID"]
-  return(pData)
+make_overview_of_samples<-function(verbose=T,type="bash"){
   
+  uniqueIDs<-list.files("/home/ubuntu/data/")
+  if(length(verbose)!=1)stop("verbose must be length 1")
+  if(length(type)!=1)stop("type must be length 1")
+  if(class(verbose)!="logical")stop("verbose must be class logical")
+  if(class(type)!="character")stop("type must be class character")
+  allowedTypes <- c("bash","R")
+  if(!type%in%allowedTypes)stop("Type must be one of",paste(allowedTypes,collapse=", "))
+  t0 <- Sys.time()
+  
+  if(type == "bash"){
+    cmd1 <- paste(c("echo -n > /home/ubuntu/misc_files/temporary_file_for_overview.txt;",
+                    "for filename in /home/ubuntu/data/id_*;",
+                    "do",
+                    "file=$filename/pData.txt;",
+                    "cat $file >> /home/ubuntu/misc_files/temporary_file_for_overview.txt;",
+                    "done"),collapse=" ")
+    system(cmd1)
+    d<-readLines("/home/ubuntu/misc_files/temporary_file_for_overview.txt")
+    unlink("/home/ubuntu/misc_files/temporary_file_for_overview.txt")
+    d1<-strsplit(d,"\t")
+    all_columns<-unique(unlist(d1[seq(1,length(d1),by=2)]))
+    output <- data.frame(matrix(ncol=length(all_columns),nrow=length(uniqueIDs),dimnames=list(uniqueIDs,all_columns)))
+    for(i in seq(1,length(d1),by=2)){
+      content<-d1[[i+1]]
+      names(content)<-d1[[i]]
+      output[content["uniqueID"],]<-content[all_columns]
+    }
+    t1<-Sys.time()
+    
+    if(verbose)print(paste("Retrieved",nrow(output),"entries in", signif(as.numeric(difftime(t1,t0,units="mins")),2),"minutes"))
+    return(output)
+  }
+  
+  if(type == "R"){
+    all_pData<-list()
+    for(uniqueID in uniqueIDs){
+      pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+      if(file.exists(pDataFile)){
+        all_pData[[uniqueID]]<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
+      }else{
+        if(verbose)print(paste("Didn't find a pData file for",uniqueID))	
+      }
+    }
+    
+    all_columns<-unique(unlist(lapply(all_pData,colnames)))
+    pData<-as.data.frame(matrix(nrow=0,ncol=length(all_columns),dimnames=list(NULL,all_columns)))
+    for(uniqueID in names(all_pData)){
+      p<-all_pData[[uniqueID]]
+      for(missing_col in all_columns[!all_columns%in%colnames(p)]){
+        p[1,missing_col]<-NA
+      }
+      pData<-rbind(pData,p[,all_columns])
+    }
+    rownames(pData)<-pData[,"uniqueID"]
+    t1<-Sys.time()
+    if(verbose)print(paste("Retrieved",nrow(pData),"entries in", signif(as.numeric(difftime(t1,t0,units="mins")),2),"minutes"))
+    return(pData)
+  }
   
 }
-
-
 
 
 format_ancestry_com_as_23andme<-function(path){
@@ -2123,9 +2159,14 @@ run_bulk_imputation<-function(
     system(cmd10)
     
     
-    #checking for errors and stopping if there are any. No point to continue otherwise
+    #checking for errors and stopping if there are any. 
+    #No point to continue otherwise
+    #There's a few specialized bug-hunter scripts that may be activated at this point
     log<-readLines(paste("step_4_chr",chr,"_shapeit_log.log",sep=""))
     if(substr(log[length(log)],1,5)=="ERROR"){
+      if(length(grep("fully missing individuals",log[length(log)]))>0){
+        count_x_chr_entries(chr)
+      }
       stop(paste("At chr",chr," the shapeit failed. Check this file for explanation: step_4_chr",chr,"_shapeit_log.log",sep=""))
     }
     
@@ -2386,20 +2427,20 @@ special_error_check<-function(uniqueID,runDir){
   canaries<-data.frame(canaries,stringsAsFactors = F)
   colnames(canaries)<-c("snp","1kg_pos")
   canaries[,"1kg_pos"] <- as.numeric(canaries[,"1kg_pos"])
-  if(file.exists(map_file1)){
-    map_file<-map_file1
-  }else if(file.exists(map_file2)){
-    map_file<-map_file2
-  }else if(file.exists(map_file3)){
-    map_file<-map_file3
-  }
-  if(exists("map_file")){
+  if(file.exists(map_file1) | file.exists(map_file2) | file.exists(map_file3)){
+    if(file.exists(map_file1)){
+      map_file<-map_file1
+    }else if(file.exists(map_file2)){
+      map_file<-map_file2
+    }else if(file.exists(map_file3)){
+      map_file<-map_file3
+    }
     map<-read.table(map_file,sep='\t',stringsAsFactors=F,comment.char = "")
     map<-map[!duplicated(map[,2]),]
     rownames(map) <- map[,2]
     canaries<-canaries[canaries[,"snp"]%in%rownames(map),]
     if(nrow(canaries)==0){
-      c(special_error_status, "no snps for built check, so not performed. May want to add more canaries in the future.")
+      special_error_status<-c(special_error_status, "no snps for built check, so not performed. May want to add more canaries in the future.")
     }else{
       canaries[,"input_pos"]<-map[canaries[,"snp"],4]
       if(all(canaries[,"1kg_pos"] == canaries[,"input_pos"])){
@@ -2409,7 +2450,7 @@ special_error_check<-function(uniqueID,runDir){
       }
     }
   }else{
-    special_error_status<-c(special_error_status, "built check wasn't performed because of missing map file")
+    special_error_status<-c(special_error_status, "built check could not be completed due to missing map file.")
   }
   
   
@@ -2982,7 +3023,7 @@ summarize_imputemany_json<-function(uniqueIDs, name){
   o2 <- t(o1)
   
   #add in phenodata for AllDisease
-  trait_path1 <- "/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
+  trait_path1 <- "/home/ubuntu/srv/impute-me/AllDiseases/2020-04-02_trait_overview.xlsx"
   library(openxlsx)
   traits <- read.xlsx(trait_path1,rowNames=T)
   insert_block1 <- traits[rownames(o2),]
@@ -3024,3 +3065,160 @@ summarize_imputemany_json<-function(uniqueIDs, name){
 
 
 
+
+
+
+check_for_rare_nonbiallic_snps<-function(uniqueID){
+  #There's a rare error type that we've seen maybe 10-11 times now
+  #where a few, like less than 20, rows of the input data have mismatch in
+  #allele-types. Not strand-flip - impossible mis-match. If those rows
+  #are removed it'll process fine, and if audited it typically turns out
+  #it's either updated dbsnp (very rare) or else just seems like typos
+  #in the input. 
+  #This is so rare and so bad that it shouldn't be allowed to run 
+  #by auto-pilot, but the function here should be able to give a better
+  #error output so it can be easily fixed if need be
+  
+  cat(paste0(Sys.time(),"\nStarting check_for_rare_nonbiallic_snps for ",uniqueID," - this will result in failure, but hopefully will give informative output\nGood luck!\n\n"))
+  
+  #define program paths
+  shapeit="/home/ubuntu/programs/shapeit.v2.904.3.10.0-693.11.6.el7.x86_64/bin/shapeit"
+  plink="/home/ubuntu/programs/plink"
+  impute2="/home/ubuntu/programs/impute_v2.3.2_x86_64_static/impute2"
+  sample_ref="/home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3.sample"
+  
+  library(tools)
+  
+  
+  if(class(uniqueID)!="character")stop(paste("uniqueID must be class character, not",class(uniqueID)))
+  if(length(uniqueID)!=1)stop(paste("uniqueID must be length 1, not",length(uniqueID)))
+  basefolder <- paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID)
+  if(!file.exists(basefolder))stop(paste("Didn't find imputation folder at",basefolder))
+  inputfile_path <- paste0(basefolder,"/",uniqueID,"_raw_data.txt")
+  if(!file.exists(inputfile_path))stop(paste("Didn't find inputfile_path at",inputfile_path))
+  
+  
+  output_messages <- vector()
+  
+  
+  
+  #loop over chromosomes
+  for(chr in c("X",as.character(1:22))){
+
+    #This is a copy of the real impute run - but with error collection
+    
+    #First in loop - extract only one specific chromosome
+    cmd2<-paste(plink," --file step_1 --chr ",chr," --recode --out step_2_chr",chr," --exclude step_2_exclusions",sep="")
+    out2<-system(cmd2,ignore.stdout = TRUE, ignore.stderr = TRUE)
+    
+    #if X chromosome is missing it is allowed to skip forward
+    if(out2 %in% c(12,13) & chr == "X"){
+      print("Didn't find X-chr data, so skipping that")
+      next
+    }
+    
+    #Then check for strand flips etc. 
+    cmd3<-paste(shapeit," -check --input-ped step_2_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_2_chr",chr,"_shapeit_log",sep="")
+    system(cmd3,ignore.stdout = TRUE, ignore.stderr = TRUE)
+    
+    #Many homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
+    logFile<-read.table(paste("step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1)
+    omitMissing<-logFile[logFile[,1] %in% 'Missing',3]
+    logStrand<-logFile[logFile[,1] %in% 'Strand',]
+    omitNonIdentical<-logStrand[logStrand[,5] != logStrand[,6],3]
+    omitBlank<-logStrand[logStrand[,5]%in%'',3]
+    
+    #These are super-annoying. We have to create another (fake) person with the alternative allele just for their sake. This next command takes all the homozygotes, minus the indels (which are too complicated to lift out from 23andme)
+    forceHomozygoteTable<-logStrand[
+      logStrand[,5] == logStrand[,6] & 
+        nchar(logStrand[,9])==1 & 
+        nchar(logStrand[,10])==1 &
+        !logStrand[,5] %in% c("D","I") &
+        !logStrand[,6] %in% c("D","I") 
+      ,]
+    
+    #This removes any cases where there are more than two alleles involved
+    forceHomozygoteTable<-forceHomozygoteTable[sapply(apply(forceHomozygoteTable[,c(5,6,9,10)],1,unique),length)==2,]
+    
+    #This removes any duplicates there might be
+    forceHomozygoteTable<-forceHomozygoteTable[!duplicated(forceHomozygoteTable[,4]),]
+    map<-read.table(paste("step_2_chr",chr,".map",sep=""),sep="\t",stringsAsFactors=F,comment.char = "")
+    #This loads the ped file, and doubles it
+    ped2<-ped1<-strsplit(readLines(paste("step_2_chr",chr,".ped",sep=""))," ")[[1]]
+    ped2[1]<-"Temporary"
+    ped2[2]<-"Non_person"
+    if((length(ped1)-6) / 2 !=nrow(map))stop("mismatch between map and ped")
+    replacementPos<-which(map[,2]%in%forceHomozygoteTable[,4])
+    A1_pos<-7+2*(replacementPos-1)
+    A2_pos<-8+2*(replacementPos-1)
+    ped2[A1_pos]<-forceHomozygoteTable[,9]
+    ped2[A2_pos]<-forceHomozygoteTable[,10]
+    ped<-rbind(ped1,ped2)
+    write.table(ped,paste("step_3_chr",chr,".ped",sep=""),sep=" ",col.names=F,row.names=F,quote=F)
+    omitRemaining<-logStrand[!logStrand[,4]%in%forceHomozygoteTable[,4],3]
+    write.table(c(omitNonIdentical,omitBlank,omitMissing,omitRemaining),file=paste("step_3_chr",chr,"_exclusions",sep=""),sep='\t',row.names=F,col.names=F,quote=F)
+    
+    #running the shapeit command (with two people, the right one and a placeholder heterozygote
+    cmd4<-paste(shapeit," -check --input-ped step_3_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_4_chr",chr,"_shapeit_log --exclude-snp step_3_chr",chr,"_exclusions",sep="")
+    system(cmd4,ignore.stdout = T, ignore.stderr = T)
+
+    #This is the error collection part
+    log<-readLines(paste("step_4_chr",chr,"_shapeit_log.log",sep=""))
+    log_end<-log[[length(log)]]
+    if(length(grep("ERROR",log_end))>0){
+      message <- paste0("CHR",chr,": ",log_end)
+      print(message)
+      output_messages<-c(output_messages,message)
+    }
+    
+  }
+  
+  
+  cat(paste0("\n\n",Sys.time(),"\nFinished error collection run. Errors are shown above. Note there's a possibility of multiple errors on one chromosome not being shown, because shapeit only reports the first. If that's the case, probably best to discard the sample.\n\n"))
+  stop("Ended check_for_rare_nonbiallic_snps run")
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+count_x_chr_entries<-function(chr){
+  #This is the error where a few of the bulk-imputation run samples
+  #have so few SNPs in a chromosome - typically X-chromosome -
+  #that a specific window fails. It's not big problem, they should
+  #just be run as single-run runs instead. But this function will help
+  #identifying which sample it should be
+  #Note - it'll always result in a fail in the end
+  
+  cat(paste0(Sys.time(),"\nStarting count_x_chr_entries for chr",chr," - this will result in failure, but hopefully will give informative output\nGood luck!\n\n"))
+
+  if(class(chr)!="character")stop(paste("chr must be class character, not ",class(chr)))
+  if(length(chr)!=1)stop(paste("chr must be length 1, not ",length(chr)))
+
+  bulk_folder<-list.files("/home/ubuntu/bulk_imputations",full.names=T)
+  if(length(bulk_folder)!=1)stop(paste("Found",length(bulk_folder),"bulk folders. The count_x_chr_entries script can only run if there is exactly one."))
+  
+  ped_path <- paste0(bulk_folder,"/step_2m_chr",chr,".ped")
+  if(!file.exists(ped_path))stop(paste("Did not find ped at",ped_path," The count_x_chr_entries script must have a ped file."))
+  
+  d<-read.table(ped_path,sep=" ",stringsAsFactors = F)
+  result<-apply(d[,6:ncol(d)]==0,1,sum)
+  names(result) <-d[,1]
+  result<-sort(result,decreasing=T)
+  
+  
+  cat(paste0(Sys.time(),"\nThe findings from the scan was that chr",chr," had ",ncol(d)-6," entries. The number of missing in each samples is shown here, sorted:\n\n"))
+  
+  for(uniqueID in names(result)){
+    cat(paste0(uniqueID,"\n",result[uniqueID],"\n"))
+  }
+  
+  stop("count_x_chr_entries")
+}

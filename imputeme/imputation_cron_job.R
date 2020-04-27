@@ -209,7 +209,14 @@ if(exists("imputemany_upload") && imputemany_upload){
   location_simple <- paste(ip,"/www/",uniqueID,".simple_format.zip",sep="")
   location_gen <- paste(ip,"/www/",uniqueID,".gen.zip",sep="")
   location_json <- paste(ip,"/www/",uniqueID,"_data.json",sep="")
-  message <- paste("<HTML>We have completed processing the file <i>",filename,"</i>. You can now go to <a href='www.impute.me'>www.impute.me</a> and explore the analysis-modules using this ID:<br><br> <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>If you have any further questions, please refer to the book <u><a href='https://www.worldscientific.com/worldscibooks/10.1142/11070'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br><br>For advanced users, it is also possible to download full data as <a href=",location_simple,">simple-format</a>, <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain imputed data, imputation probability scores and calculated phenotype information, respectively.<br></HTML>",sep="")
+  #assign the right language book to people (Swedes and Norwegians can get the Danish language one too)
+  if(length(grep("\\.dk$",email))==1 | length(grep("\\.no$",email))==1 | length(grep("\\.se$",email))==1){
+    booklink<-"https://www.saxo.com/dk/forstaa-dit-dna_lasse-westergaard-folkersen_haeftet_9788770170154"
+  }else{
+    booklink<-"https://www.worldscientific.com/worldscibooks/10.1142/11070"
+  }
+  
+  message <- paste("<HTML>We have completed processing the file <i>",filename,"</i>. You can now go to <a href='www.impute.me'>www.impute.me</a> and explore the analysis-modules using this ID:<br><br> <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>If you have any further questions, please refer to the book <u><a href='",booklink,"'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br><br>For advanced users, it is also possible to download full data as <a href=",location_simple,">simple-format</a>, <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain imputed data, imputation probability scores and calculated phenotype information, respectively.<br></HTML>",sep="")
   for(tryCount in 1:3){
     print(paste("Trying to mail to",email))
     mailingResult<-try(send.mail(from = email_address,

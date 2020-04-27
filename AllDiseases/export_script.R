@@ -3,8 +3,8 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 
 export_function<-function(uniqueID){
   # dataFolder<-"/home/ubuntu/data/"
-  snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_semi_curated_version_gwas_central.rdata"
-  trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2019-03-04_trait_overview.xlsx"
+  snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2020-04-02_snp_weights.rdata"
+  trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2020-04-02_trait_overview.xlsx"
   
   #testing
   #preload
@@ -54,7 +54,7 @@ export_function<-function(uniqueID){
     snp_data[,"genotype"] <- genotypes[rownames(snp_data),"genotype"]
     snp_data <-get_GRS_2(snp_data,mean_scale=T, unit_variance=T, verbose=F)
     population_sum_sd<-sqrt(sum(snp_data[,"population_score_sd"]^2,na.rm=T))
-    GRS_beta <-sum(snp_data[,"score_diff"],na.rm=T) / population_sum_sd
+    GRS_beta <-signif(sum(snp_data[,"score_diff"],na.rm=T) / population_sum_sd,4)
     
     output[[study_id]] <- list()
     output[[study_id]][["GRS"]]<- GRS_beta

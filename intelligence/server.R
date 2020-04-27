@@ -110,12 +110,12 @@ shinyServer(function(input, output) {
     }
     if(ethnicity_group == "global"){
       #do nothing. Note the density curve location.
-      densityCurvePath<-"/home/ubuntu/srv/impute-me/intelligence/2019-03-13_densities_ALL.rdata"
+      densityCurvePath<-"/home/ubuntu/srv/impute-me/intelligence/2020-04-17_densities_ALL.rdata"
     }else{
       #then replace the MAF with the correct superpopulation group
       SNPs_to_analyze[,"minor_allele_freq"] <- SNPs_to_analyze[,paste0(ethnicity_group,"_AF")]
       #note the density curve location
-      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/intelligence/2019-03-13_densities_",ethnicity_group,".rdata")
+      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/intelligence/2020-04-17_densities_",ethnicity_group,".rdata")
     }
     #then explain which choice was made
     ethnicity_explanation_text <- sub("_CHOICE_",ethnicities_labels[ethnicity_group],ethnicity_explanation_text)

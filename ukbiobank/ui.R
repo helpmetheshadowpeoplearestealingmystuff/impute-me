@@ -50,7 +50,7 @@ shinyUI(bootstrapPage(
 	titlePanel("UK-Biobank Calculator"),
 	beginPage(),	
 	beginPanel('1/3'),
-	HTML("A study of ~½ million UK residents, known as the UK biobank, have recently been published. This module allows the calculation of genetic risk score for any of the published traits.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:<br>"),
+	HTML("A study of ~½ million UK residents, known as the UK biobank, is the background of these trait predictions. This module allows the calculation of genetic risk score for any of the published traits in that study.<br><br>To run analysis input your user-id, or use the test-value of id_613z86871:<br>"),
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),
 	
 	conditionalPanel(

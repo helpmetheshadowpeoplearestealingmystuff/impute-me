@@ -121,7 +121,8 @@ export_function<-function(uniqueID){
   )
 
   algorithms_to_run <- c(
-    "SCORESUM_PLINK_1_9"
+    "SCORESUM_PLINK_1_9",
+    "SCORESUM_PLINK_2_0_DOSAGE_MATRIX"
   )
   
   ###################
@@ -559,7 +560,6 @@ export_function<-function(uniqueID){
   output[["documentation"]][["timing"]][["step_3"]] <- signif(as.numeric(difftime(t4,t3,units="mins")),2)
   output[["documentation"]][["timing"]][["step_4"]] <- signif(as.numeric(difftime(t5,t4,units="mins")),2)
   
-  #typical timings observed for 12 test-PRS are 15, 10, 14, and 5 minutes respectively for each of the steps
   
   #remove the PART columns (they've been summed up already)
   for(k in grep("^PART",colnames(score_sets),value=T))score_sets[,k]<-NULL
