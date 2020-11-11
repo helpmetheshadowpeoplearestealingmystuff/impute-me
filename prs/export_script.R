@@ -36,7 +36,7 @@ export_function<-function(uniqueID){
   output<-list()
   output[["documentation"]] <- list()
   output[["documentation"]][["data_set_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/14ba4b697185898135755ec69e36fe3cdad5c8e1/prs/2019-03-05_study_list.xlsx"
-  output[["documentation"]][["export_script"]] <- "https://github.com/lassefolkersen/impute-me/blob/14ba4b697185898135755ec69e36fe3cdad5c8e1/prs/export_script.R"
+  output[["documentation"]][["export_script"]] <- "https://github.com/lassefolkersen/impute-me/blob/31846520f7bb84c3ab079b5fd0ea202bbf30b844/prs/export_script.R"
   
   
   

@@ -8,7 +8,7 @@ export_function<-function(uniqueID){
   
   output<-list()
   output[["documentation"]] <- list()
-  output[["documentation"]][["source"]] <- "https://github.com/lassefolkersen/impute-me/blob/14ba4b697185898135755ec69e36fe3cdad5c8e1/drugResponse/SNPs_to_analyze.txt"
+  output[["documentation"]][["source"]] <- "https://github.com/lassefolkersen/impute-me/blob/31846520f7bb84c3ab079b5fd0ea202bbf30b844/drugResponse/SNPs_to_analyze.txt"
 
   
   #retrieving SNPs

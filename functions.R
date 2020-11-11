@@ -2188,7 +2188,7 @@ run_export_script<-function(
       coderepository="https://github.com/lassefolkersen/impute-me",
       mainarticle="https://doi.org/10.3389/fgene.2020.00578",
       releaseupdates="https://twitter.com/imputeme",
-      version="Spring 2020"
+      version="Autumn 2020"
     )
     
     
