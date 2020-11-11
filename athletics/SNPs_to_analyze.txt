@@ -21,7 +21,7 @@ rs3196378	9	effect allele increase risk	2.38	A	C	Achilles tendon	COL5A1 SNP. Fro
 rs143383	20	NA		NA	NA	Achilles tendon	GDF5 SNP. From Posthumus 2010b, PMID 20360039. The usual weak level of evidence from candidate genes. Note paper has TT as risk but that is different in modern notation. Also poorly proxy SNP tagged. Mentioned, but omitted from analysis.	0.453474	NA	NA	G/A	A	G
 rs3834129	2	NA		NA	NA	Achilles tendon	CASP8 SNPs. From Nell 2012. The usual weak level of evidence from candidate gene studies. Not imputable, shouldnt be analyzed.	0.388978		NA	I/D	NA	NA
 rs1045485	2	effect allele increase risk	1.69	G	C	Achilles tendon	CASP8 SNPs. From Nell 2012. The usual weak level of evidence from candidate gene studies. G is risk allele.	0.052716		NA	G/C	G	C
-rs3018362	11	effect allele increase risk	1.49	A	G	Stress fracture	RANK gene, from PMID 25464125.	0.38				G	A
+rs3018362	18	effect allele increase risk	1.49	A	G	Stress fracture	RANK gene, from PMID 25464125.	0.38				G	A
 rs1021188	13	effect allele increase risk	1.25	C	T	Stress fracture	RANKL gene, from PMID 25464125.	0.22				T	C
 rs3751143	12	effect allele increase risk	Not reported	C	A	Stress fracture	P2X7R gene, from PMID 26825304. Glu496Ala-loss of function) was associated with stress fracture injury.	0.21				A	C
 rs1718119	12	effect allele increase risk	Not reported	G	A	Stress fracture	P2X7R gene, from PMID 26825304. Ala348Thr-gain of function was associated with a reduced occurrence of stress fracture	0.32				G	A

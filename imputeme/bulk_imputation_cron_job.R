@@ -1,8 +1,10 @@
-
 # 
-#Strategy - setup this to run every hour on the hour, 
+#Setup this to run every hour.  It will check for jobs to handle in the /home/ubuntu/imputations queueing area 
+#and if present it will execute the relevant scripts, run_imputation, summarize_imputation, and also the 
+#PRS-calculation scripts run_export_scripts
 #
-# 50 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
+# Suggested setup for cronjob (edit with crontab -e)
+# 50 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/BULK_imputation_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
 
 library("methods")
 library("mailR")
@@ -11,50 +13,53 @@ library("tools")
 source("/home/ubuntu/srv/impute-me/functions.R")
 
 
-#bulk running parameter
+
+#This block serves to space the runs some time apart. It is mostly relevant on e.g. t2.medium AWS instances
+#that can build up computing power. But it may also be useful in debugging situations.
+if(seconds_wait_before_start>0){
+  #First checking if node is already at max load (maxImputations)
+  foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
+  runningJobCount<-0
+  remoteRunningJobCount<-0
+  for(folderToCheck in foldersToCheck){
+    job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
+    if(file.exists(job_status_file)){
+      job_status<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
+      if(job_status=="Job is running"){runningJobCount<-runningJobCount+1}
+    }
+  }
+  #then stop job if runs are already running
+  if(runningJobCount>(maxImputations-1)){
+    stop(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
+  }else{
+    Sys.sleep(seconds_wait_before_start)
+  }
+  #After sleeping period, wake up and re-check (equal to the seconds_wait_before_start=0 setting)
+}
+
+
+
+
+
+
+#Script starts here in case the seconds_wait_before_start delay is not used.
+foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
+runningJobCount<-0
+for(folderToCheck in foldersToCheck){
+  job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
+  if(file.exists(job_status_file)){
+    job_status<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
+    if(job_status=="Job is running"){runningJobCount<-runningJobCount+1}
+  }
+}
+if(runningJobCount>(maxImputations-1)){
+  stop(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
+}
+
+
+
+#bulk running parameter (never tested with anything else than 10)
 length_requested <- 10
-
-
-#First checking if node is already at max load (maxImputations)
-foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
-runningJobCount<-0
-remoteRunningJobCount<-0
-for(folderToCheck in foldersToCheck){
-  job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
-  if(file.exists(job_status_file)){
-    job_status<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
-    if(job_status=="Job is running"){runningJobCount<-runningJobCount+1}
-  }
-}
-
-#then stop job if runs are already running
-#if not, go to sleep and wait before re-checking. This is an optional thing, set in configuration.R, 
-#but it's really smart because it allows the credit count of the AWS instnce to recover a bit, and 
-#ultimately gives faster turn-around and more stable servers
-if(runningJobCount>(maxImputations-1)){
-  return(NULL)
-  stop(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
-}else{
-  Sys.sleep(seconds_wait_before_start)
-}
-
-
-#After sleeping period, wake up and re-check
-foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
-runningJobCount<-0
-for(folderToCheck in foldersToCheck){
-  job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
-  if(file.exists(job_status_file)){
-    job_status<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
-    if(job_status=="Job is running"){runningJobCount<-runningJobCount+1}
-  }
-}
-if(runningJobCount>(maxImputations-1)){
-  return(NULL)
-  stop(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
-}
-
-
 
 
 #If the computer is not too busy and the serverRole is node - we fetch 10 jobs
@@ -72,9 +77,9 @@ if(serverRole== "Node"){
   
   
   #check if there's any fast-queue jobs to put up-front. The fast-queue jobs is just a file with uniqueID
-  #and then TRUE or FALSE. The TRUE or FALSE means if a bulk impute is allowed to 
-  #take it or not
-  #(they can be in priority queue either because they are paid, or because they are error-prone. Don't put error-prone in the bulk imputing line)
+  #and then TRUE or FALSE. The TRUE or FALSE means if a bulk impute is allowed to take it or not
+  #(they can be in priority queue either because they are paid, or because they are error-prone. 
+  #Don't put error-prone in the bulk imputing line)
   cmd0 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/misc_files/fast_queue_emails.txt
                 ",sep="")
   f1<-system(cmd0,intern=T)
@@ -82,7 +87,7 @@ if(serverRole== "Node"){
   if(length(f1)>0){ #if there is a fast-queue file, we handle it
     f2<-do.call(rbind,strsplit(f1,"\t"))
     
-    #first bump of the TRUE fast-queue entries (they are ok to run in bulk-impute)
+    #first prioritize the TRUE fast-queue entries (they are ok to run in bulk-impute)
     f3<-f2[f2[,2]%in%"TRUE",1,drop=FALSE]
     if(nrow(f3)>0){
       remoteFoldersToCheck<-c(remoteFoldersToCheck[remoteFoldersToCheck%in%f3],remoteFoldersToCheck[!remoteFoldersToCheck%in%f3])  
@@ -213,8 +218,8 @@ for(uniqueID in uniqueIDs){
   summarize_imputation(runDir=summary_folder,uniqueID=uniqueID)  
   
   
-  #remove the summary_folder (tight on space when in bulk-mode)
-  unlink(summary_folder,recursive = T)
+  #remove the contents of the summary_folder (tight on space when in bulk-mode)
+  unlink(paste0(summary_folder,"/*"))
   setwd("~")
   
   
@@ -308,6 +313,10 @@ for(uniqueID in uniqueIDs){
       if(class(mailingResult)!="try-error")break
       if(tryCount == 3)stop("MAILING FAILED. THIS SHOULD BE FOLLOWED UP")
     }
+    
+    
+    #Only completely remove the run folder towards the end (otherwise new run may start up while running export scripts)
+    unlink(summary_folder,recursive = T)
   }
   
   

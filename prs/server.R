@@ -48,8 +48,9 @@ shinyServer(function(input, output) {
     #extract relevant data
     d1 <- d[["prs"]][[study_id]]
 
-    
-    
+    #stop if the alleles checked count is too low
+    if(d1[["alleles_observed"]] < 600000)stop(safeError(paste("Only",d1[["alleles_checked"]],"variants were found to be available for PRS calculation. This could indicate that something went wrong in the calculation and that the PRS should not be trusted.")))
+
     
     #ethnicity considerations
     if(ethnicity_group == "automatic"){

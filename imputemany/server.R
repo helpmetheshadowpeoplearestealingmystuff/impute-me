@@ -35,10 +35,11 @@ shinyServer(function(input, output) {
 			out<-prepare_imputemany_genome(
 			  path=path,
 			  email = isolate(input$email),
-			  filename=isolate(input$largeFile[["name"]]), 
-			  protect_from_deletion = FALSE,
 			  updateProgress = updateProgress,
-			  should_be_imputed = isolate(input$should_be_imputed))
+			  should_be_imputed = isolate(input$should_be_imputed),
+			  protect_from_deletion = FALSE,
+			  filename=isolate(input$largeFile[["name"]])
+			)
 			
 			return(out)
 		}

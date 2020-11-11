@@ -1,6 +1,9 @@
 # 
-#Strategy - setup this to run every hour on the hour, 
-# 	
+#Setup this to run every hour.  It will check for jobs to handle in the /home/ubuntu/imputations queueing area 
+#and if present it will execute the relevant scripts, run_imputation, summarize_imputation, and also the 
+#PRS-calculation scripts run_export_scripts
+#
+# Suggested setup for cronjob (edit with crontab -e)
 # 50 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
 
 
@@ -10,29 +13,35 @@ library("tools")
 source("/home/ubuntu/srv/impute-me/functions.R")
 
 
-#First checking if node is already at max load (maxImputations, set in configuration.R)
-foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
-runningJobCount<-0
-for(folderToCheck in foldersToCheck){
-  job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
-  if(file.exists(job_status_file)){
-    job_status<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
-    if(job_status=="Job is running"){runningJobCount<-runningJobCount+1}
+
+#This block serves to space the runs some time apart. It is mostly relevant on e.g. t2.medium AWS instances
+#that can build up computing power. But it may also be useful in debugging situations.
+if(seconds_wait_before_start>0){
+  #First checking if node is already at max load (maxImputations, set in configuration.R)
+  foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
+  runningJobCount<-0
+  for(folderToCheck in foldersToCheck){
+    job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
+    if(file.exists(job_status_file)){
+      job_status<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
+      if(job_status=="Job is running"){runningJobCount<-runningJobCount+1}
+    }
   }
-}
-
-#then stop job if runs are already running
-#if not, go to sleep and wait before re-checking. This is an optional thing, set in configuration.R, 
-#but it's really smart because it allows the credit count of the AWS instnce to recover a bit, and 
-#ultimately gives faster turn-around and more stable servers
-if(runningJobCount>(maxImputations-1)){
-  stop(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
-}else{
-  Sys.sleep(seconds_wait_before_start)
+  #then stop job if runs are already running
+  if(runningJobCount>(maxImputations-1)){
+    stop(paste("Found",runningJobCount,"running jobs, and max is",maxImputations,"so doing nothing"))
+  }else{
+    Sys.sleep(seconds_wait_before_start)
+  }
+  #After sleeping period, wake up and re-check (equal to the seconds_wait_before_start=0 setting)
 }
 
 
-#After sleeping period, wake up and re-check
+
+
+
+
+#Script starts here in case the seconds_wait_before_start delay is not used.
 foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
 runningJobCount<-0
 for(folderToCheck in foldersToCheck){
@@ -61,10 +70,8 @@ if(serverRole== "Node"){
   
   
   #check if there's any fast-queue jobs to put up-front. The fast-queue jobs is just a file with uniqueID
-  #and then TRUE or FALSE. The TRUE or FALSE means if a bulk impute is allowed to 
-  #take it or not
-  #(they can be in priority queue either because they are paid, or because they are error-prone. 
-  #Don't put error-prone in the bulk imputing line)
+  #and then TRUE or FALSE. The TRUE or FALSE means if a bulk impute is allowed to take it or not
+  #which is not relevant here in single-running.
   cmd0 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/misc_files/fast_queue_emails.txt
                 ",sep="")
   f1<-system(cmd0,intern=T)

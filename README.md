@@ -6,7 +6,7 @@ This introduction is divided into three sections:
 * the use and setup of the analysis modules, 
 * the algorithm components behind-the-scenes,
 
-Together, these three aspects make up the functionality of impute.me.
+Together, these three aspects make up the functionality of impute.me. Further details on the underlying theory is available in [Front. Genet., 30 June 2020](https://doi.org/10.3389/fgene.2020.00578).
 
 
 

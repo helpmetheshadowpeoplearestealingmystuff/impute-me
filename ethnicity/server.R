@@ -68,6 +68,25 @@ shinyServer(function(input, output){
     if(input$goButton == 0){
       return(NULL)
     }
+    
+    #Set up progress tracker
+    progress <- shiny::Progress$new()
+    on.exit(progress$close())
+    progress$set(message = "", value = 0)
+    updateProgress <- function(value = NULL, detail = NULL, max=NULL) {
+      if(is.null(max))max <- 50
+      if (is.null(value)) {
+        value <- progress$getValue()
+        value <- value + 1/max
+      }
+      progress$set(value = value, detail = detail)
+    }
+    updateProgress(detail = "Check uniqueID, extract genotypes",value=1,max=4)
+    
+    
+    
+    
+    #get main variable
     uniqueID<-isolate(gsub(" ","",input$uniqueID))
     pc_selections<-isolate(input$pc_selections)
     ethnicities<-isolate(input$ethnicities)
@@ -143,7 +162,11 @@ shinyServer(function(input, output){
       }
     }
     try(log_function(uniqueID))
+
+    #Update progress
+    updateProgress(detail = "Calculate PCA, prepare 3D plot",value=2,max=4)
     
+        
     
     #Effectuate the plot
     plot_ly(pca, x = ~x, y = ~y, z = ~z, type = "scatter3d", mode = "markers", color= ~pop_long,

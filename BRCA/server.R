@@ -28,10 +28,14 @@ shinyServer(function(input, output) {
 		}
 		
 		
-		#Get gender
-		# gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
+		
+		#Get vcf-class and abort module if TRUE
+		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+		is_vcf<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"imputation_type"]=="vcf")
+		if(class(is_vcf)!="try-error" && length(is_vcf) == 1 && is_vcf)stop(safeError("fail."))
 		
 		
+		#get list of variants that realistically can be obtained with imputed microarrays
 		BRCA_table_file <-"/home/ubuntu/srv/impute-me/BRCA/SNPs_to_analyze.txt"
 		BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F)
 
@@ -134,6 +138,14 @@ shinyServer(function(input, output) {
 	    print(paste("Ok",input$goButton))
 	  }
 	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
+	  
+	  
+	  #First get vcf-class and abort module if TRUE
+	  pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+	  is_vcf<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"imputation_type"]=="vcf")
+	  if(class(is_vcf)!="try-error" && length(is_vcf) == 1 && is_vcf)stop(safeError("This module has been disabled for users submitting vcf files. That's because vcf files usually are derived from DNA-sequencing, but the investigations made in this module are tailored to microarray-data. Directly analyzing the vcf file itself, outside of impute.me, is likely to be more informative for you in context of the questions asked by this module."))
+	  
+	  #then if ok we continue to get snps_in_input_but_not_analyzed info
     jsonfile<-paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json" )
 	  if(!file.exists(jsonfile))return(NULL)
     d<-fromJSON(jsonfile)

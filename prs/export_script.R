@@ -61,57 +61,9 @@ export_function<-function(uniqueID){
   
   
   
-  # Notes on different approaches
-  # 
-  # Concordance
-  # the new methods seem to correlate fairly well.
-  # Pearson correlation on PRS, over 12 traits, 66 european samples
-  #   |             | 1_9|  2_0| 2_0_DOSAGE| 2_0_DOSAGE_MATRIX|
-  #   |:------------|---:|----:|----------:|-----------------:|
-  #   |1_9_original |   1| 0.88|       0.88|              0.88|
-  #   |1_9          |  NA| 0.88|       0.88|              0.88|
-  #   |2_0          |  NA|   NA|       0.99|              0.99|
-  #   |2_0_DOSAGE   |  NA|   NA|         NA|              1.00|
-  # 
-  # Prediction rate
-  # In SCZ, the only one checkable trait with these test samples,
-  # it looks reasonable. "Reasonable" meaning Cohens D: 0.843 (P=0.0064) 
-  # in the tested on (1.9) and Cohens D: 0.778 (P=0.0074) in the new one. 
-  # So slightly less. 
-  # 1 trait, 66 european samples, as in https://doi.org/10.1101/861831
-  # SCORESUM_PLINK_1_9 Cohens D: 0.843 (P=0.0064)
-  # SCORESUM_PLINK_2_0 Cohens D: 0.745 (P=0.011)
-  # SCORESUM_PLINK_2_0_DOSAGE Cohens D: 0.778 (P=0.0074)
-  # SCORESUM_PLINK_2_0_DOSAGE_MATRIX Cohens D: 0.778 (P=0.0074)
-  # 
-  # Timing
-  # In minutes per sample, average over 66 traits, one computation node
-  # SCORESUM_PLINK_1_9 Minutes: 5.13
-  # SCORESUM_PLINK_2_0 Minutes: 25.5
-  # SCORESUM_PLINK_2_0_DOSAGE Minutes: 30.4
-  # SCORESUM_PLINK_2_0_DOSAGE_MATRIX Minutes: 6.7
-  # 
-  # Conclusions
-  # The non-dosage plink 2.0 (SCORESUM_PLINK_2_0) doesn't perform very well. 
-  # Odd, since the only change is a move to plink 2.0 and use center scaling. 
-  # It has predictiveness Cohens D: 0.745 (P=0.011). Another 
-  # surprise is that the old method (SCORESUM_PLINK_1_9) actually is quite 
-  # fast. This one is plink 1.9 on hard-called genotypes with no center-
-  # scaling and taking one PRS-weight file at the time. It's equally fast 
-  # as the dosage-based batch-PRS-taking plink 2.0 version, and a tiny bit 
-  # more predictive. Which is nice because that's the one we've been 
-  # using for the past year.
-  # However, the new  2.0 "dosage-matrix" (SCORESUM_PLINK_2_0_DOSAGE_MATRIX) version is 
-  # does have some clear advantages:
-  #   1) it doesn't scale timing with more PRS-weights, and we 
-  #      want more PRS-weights
-  #   2) in spite of not having test data for it, it seems prudent 
-  #      to fill in population ref-scaled in the cases where a SNP 
-  #      is missing. This done in all the plink 2.0 setups, but not in 1.9
-  # So overall SCORESUM_PLINK_2_0_DOSAGE_MATRIX is probably
-  # the way to go in the future. These next five lines is the place to configure 
-  # it on the run and slowly start up some real samples on both types
-  
+  # Select which of the different approaches to actually run.
+  # A more complete write-up of testing is available at this DOI:
+  # https://doi.org/10.13140/RG.2.2.10081.53602
   
   algorithms_to_run <- c(
     "SCORESUM_PLINK_1_9",
