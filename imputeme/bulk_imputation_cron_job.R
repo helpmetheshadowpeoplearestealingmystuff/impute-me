@@ -294,24 +294,28 @@ for(uniqueID in uniqueIDs){
     
     
     message <- paste("<HTML>We have completed processing the file <i>",filename,"</i>. You can now go to <a href='www.impute.me'>www.impute.me</a> and explore the analysis-modules using this ID:<br><br> <b>",uniqueID,"</b><br><br>The service is non-profit, but the computing price for an imputation is approximately 5 USD per imputation. So if you have not done so already, please make a contribution to keep the servers running (<u><a href='",paypal,"'>paypal</a></u>).<br><br>If you have any further questions, please refer to the book <u><a href='",booklink,"'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br><br>For advanced users, it is also possible to download full data as <a href=",location_simple,">simple-format</a>, <a href=",location_gen,">gen-format</a> and <a href=",location_json,">json-format</a> files. These contain imputed data, imputation probability scores and calculated phenotype information, respectively.<br></HTML>",sep="")
-    for(tryCount in 1:3){
-      print(paste("Trying to mail to",email))
-      mailingResult<-try(send.mail(from = email_address,
-                                   to = email,
-                                   subject = "Imputation is ready",
-                                   body = message,
-                                   html=T,
-                                   smtp = list(
-                                     host.name = "smtp.gmail.com", 
-                                     port = 465, 
-                                     user.name = email_address, 
-                                     passwd = email_password, 
-                                     ssl = TRUE),
-                                   authenticate = TRUE,
-                                   send = TRUE))
-      Sys.sleep(10)
-      if(class(mailingResult)!="try-error")break
-      if(tryCount == 3)stop("MAILING FAILED. THIS SHOULD BE FOLLOWED UP")
+    if(email_address != "" & email_password != ""){
+      for(tryCount in 1:3){
+        print(paste("Trying to mail to",email))
+        mailingResult<-try(send.mail(from = email_address,
+                                     to = email,
+                                     subject = "Imputation is ready",
+                                     body = message,
+                                     html=T,
+                                     smtp = list(
+                                       host.name = "smtp.gmail.com", 
+                                       port = 465, 
+                                       user.name = email_address, 
+                                       passwd = email_password, 
+                                       ssl = TRUE),
+                                     authenticate = TRUE,
+                                     send = TRUE))
+        Sys.sleep(10)
+        if(class(mailingResult)!="try-error")break
+        if(tryCount == 3)stop("MAILING FAILED. THIS SHOULD BE FOLLOWED UP")
+      }
+    }else{
+      print(paste("Email is not configured - this is the intended message:",message))
     }
     
     

@@ -1,40 +1,44 @@
 
 
-# read configuration file
-source("/home/ubuntu/misc_files/configuration.R")
-if(!exists("maxImputations"))stop("Didn't find maxImputations")
+# read configuration file and if not existing then set defaults
+configuration_file<-"/home/ubuntu/misc_files/configuration.R"
+if(file.exists(configuration_file)){source(configuration_file)}
+if(!exists("maxImputations"))maxImputations <- 1
 if(!is.numeric(maxImputations))stop("maxImputations not numeric")
 if(length(maxImputations)!=1)stop("maxImputations not length 1")
-if(!exists("maxImputationsInQueue"))stop("Didn't find maxImputationsInQueue")
+if(!exists("maxImputationsInQueue"))maxImputationsInQueue<-200
 if(!is.numeric(maxImputationsInQueue))stop("maxImputationsInQueue not numeric")
 if(length(maxImputationsInQueue)!=1)stop("maxImputationsInQueue not length 1")
-if(!exists("serverRole"))stop("Didn't find serverRole")
+if(!exists("serverRole"))serverRole<-"Hub"
 if(!is.character(serverRole))stop("serverRole not character")
 if(length(serverRole)!=1)stop("serverRole not length 1")
 if(!serverRole%in%c("Hub","Node"))stop("serverRole not Hub or Node")
-if(!exists("hubAddress"))stop("Didn't find hubAddress")
+if(!exists("hubAddress"))hubAddress<-""
 if(!is.character(hubAddress))stop("hubAddress not character")
 if(length(hubAddress)!=1)stop("hubAddress not length 1")
-if(!exists("email_password"))stop("Didn't find email_password ")
+if(!exists("email_password"))email_password<-""
 if(!is.character(email_password ))stop("email_password  not character")
 if(length(email_password )!=1)stop("email_password  not length 1")
-if(!exists("email_address"))stop("Didn't find email_address")
+if(!exists("email_address"))email_address<-""
 if(!is.character(email_address))stop("email_address not character")
 if(length(email_address)!=1)stop("email_address not length 1")
-if(!exists("routinely_delete_this"))stop("Didn't find routinely_delete_this")
+if(!exists("routinely_delete_this"))routinely_delete_this<-c("link","data")
 if(!is.character(routinely_delete_this))stop("routinely_delete_this not character")
-if(!exists("paypal"))stop("Didn't find paypal")
+if(!exists("paypal"))paypal<-""
 if(!is.character(paypal))stop("paypal not character")
 if(length(paypal)!=1)stop("paypal not length 1")
-if(!exists("bulk_node_count"))stop("Didn't find bulk_node_count ")
+if(!exists("bulk_node_count"))bulk_node_count<-1
 if(!is.numeric(bulk_node_count ))stop("bulk_node_count not numeric")
 if(length(bulk_node_count)!=1)stop("bulk_node_count not length 1")
-if(!exists("error_report_mail"))stop("Didn't find error_report_mail")
+if(!exists("error_report_mail"))error_report_mail<-""
 if(!is.character(error_report_mail))stop("error_report_mail not character")
 if(length(error_report_mail)!=1)stop("error_report_mail not length 1")
-if(!exists("seconds_wait_before_start"))stop("Didn't find seconds_wait_before_start")
+if(!exists("seconds_wait_before_start"))seconds_wait_before_start<-0
 if(!is.numeric(seconds_wait_before_start))stop("seconds_wait_before_start not numeric")
 if(length(seconds_wait_before_start)!=1)stop("seconds_wait_before_start not length 1")
+if(!exists("running_as_docker"))running_as_docker<-FALSE
+if(!is.logical(running_as_docker))stop("running_as_docker not logical")
+if(length(running_as_docker)!=1)stop("running_as_docker not length 1")
 
 
 prepare_individual_genome<-function(
@@ -42,7 +46,8 @@ prepare_individual_genome<-function(
   email=NULL, 
   updateProgress=NULL, 
   protect_from_deletion=FALSE, 
-  filename=NULL
+  filename=NULL,
+  predefined_uniqueID=NULL
 ){
   #This is the data-receiving function. It performs all checks that can be made
   #in web-speed, meaning maximum a few seconds. If these are passed, the file, plus
@@ -52,6 +57,7 @@ prepare_individual_genome<-function(
   #updateProgress         is the progress update tracker for the shiny interface
   #protect_from_deletion  is a switch carried down the analysis, that can be set as TRUE for debugging purposes
   #filename               is the optional filename of the sample (useful to have separate for e.g. shiny file submission, where it otherwise may be called e.g. /tmp/RtmpAKCi8i/9527843b29213cdef70532ff/0.gz). If not set, this will default to basename(path).
+  #uniqueID               is an optional pre-defined uniqueID. This is only used when accessing the function from outside of the usual web-upload interface, and bypasses the random-ID step. Still has to obey the usual 12-digit alphanumeric rules.
   
   #loading libraries
   library("mailR")
@@ -63,6 +69,7 @@ prepare_individual_genome<-function(
   if(class(path)!="character")stop(paste("path must be character, not",class(path)))
   if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
   if(!file.exists(path))stop(paste("Did not find file at path:",path))
+  if(substr(path,1,1)!="/")path<-normalizePath(path)
   
   #Check filename is ok and set to basename(path) if not given
   #the actual file will anyway be renamed as <uniqueID>_raw_data.txt so it is not an 
@@ -86,9 +93,11 @@ prepare_individual_genome<-function(
   if(is.null(email))email<-error_report_mail
   if(class(email)!="character")stop(paste("email must be character, not",class(email)))
   if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
-  if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
-    stop(safeError(paste("a real email adress is needed:",email)))
-  }
+  if(!running_as_docker){
+    if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
+      stop(safeError(paste("a real email adress is needed:",email)))
+    }
+  }  
   
   
   #updating progress
@@ -115,16 +124,22 @@ prepare_individual_genome<-function(
   
   
   #Create uniqueID and check that it is unique
-  print("create uniqueID")
-  uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
-  numberOfLetters<-sample(c(1,1,2,3),1)
-  if(numberOfLetters>0){
-    positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
-    l<-c(LETTERS,letters)
-    l<-l[!l%in%c("o","O")] #I hate it when O is in
-    for(x in positionsToInsertLetter){
-      substr(uniqueID,x,x)<-sample(l,1)
+  if(is.null(predefined_uniqueID)){
+    print("create uniqueID")
+    uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
+    numberOfLetters<-sample(c(1,1,2,3),1)
+    if(numberOfLetters>0){
+      positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
+      l<-c(LETTERS,letters)
+      l<-l[!l%in%c("o","O")] #I hate it when O is in
+      for(x in positionsToInsertLetter){
+        substr(uniqueID,x,x)<-sample(l,1)
+      }
     }
+  }else{ #if pre-supplied, check that is according to ID-rules.
+    uniqueID<-predefined_uniqueID
+    if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
+    if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
   }
   if(uniqueID%in%list.files("/home/ubuntu/data/")){  #Also check for pre-existing uniqueIDs and stop if so (never happened though)
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
@@ -353,7 +368,7 @@ prepare_individual_genome<-function(
     
     #check header
     testReadHeader<-try(readLines(path,n=250))
-    if(testReadHeader[1] != "##fileformat=VCFv4.2"){
+    if(!testReadHeader[1] %in% c("##fileformat=VCFv4.2","##fileformat=VCFv4.1")){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"wrong_starting_vcf_header",email,uniqueID,filename)
       m<-paste(m,collapse="\t")
       write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)
@@ -380,7 +395,7 @@ prepare_individual_genome<-function(
     
     #size check requirement
     #we used to have this as a line-count requirement, but the zcat path | wc -l call
-    #is too slow. Instead it's set to at least 100 GB size, which is about half
+    #is too slow. Instead it's set to at least 100 MB size, which is about half
     #an average Dante lab vcf file. We haven't established a firm lower 
     #bound on this, but it is logged for future fine-tuning.
     #
@@ -444,7 +459,7 @@ prepare_individual_genome<-function(
     
     
     #check read-depth
-    minimum_mean_depth_of_first_hundred_reads <- 10 #would be nice to have genome-wide average depth, since the first 10 could be hard to sequence regions. But it's not possible to read the entire vcf in browsing-time, which is required for these format rejection-checks
+    minimum_mean_depth_of_first_hundred_reads <- 10 #would be nice to have genome-wide average depth, since the first chunk of reads in testRead could be hard to sequence regions. But it's not possible to read the entire vcf in browsing-time, which is required for these format rejection-checks
     format<-try(strsplit(testRead[1,9],":")[[1]])
     depth_index <- try(which(format%in%"DP"))
     depths<-try(as.numeric(sapply(strsplit(testRead[,10],":"),function(x,depth_index){x[depth_index]},depth_index)))
@@ -637,8 +652,27 @@ prepare_individual_genome<-function(
   }
   
   
-  return(paste("Genome files succesfully submitted. <b>The processing of your genome will take several days to run</b>. Typically between 1 and 5 days, depending on server-queue. When the processing is finished you will receive an email to",email,"with uniqueID and download-instructions. Look in your spam filter if not. You can close this browser window."))
   
+  #if running as docker, then check that supercronic job is running. If not, start it.
+  if(running_as_docker){
+    processes<-system("ps -e",intern=T)
+    processes<-do.call(rbind,strsplit(processes," +"))
+    if(!"supercronic" %in% processes[,5]){
+      if(!file.exists("/home/ubuntu/misc_files/supercronic.txt"))stop(safeError("Code was found to be running as docker container, but with no misc_files/supercronic.txt file ready for launch. The job will likely never execute."))
+      supercronic_out<-try(system("supercronic /home/ubuntu/misc_files/supercronic.txt &"))
+      if(supercronic_out != 0)stop(safeError("Code was found to be running as docker container, but gave an error when trying to start supercronic. The job will likely not start"))
+    }
+  }
+  
+  
+  #end with a message. In docker the message includes uniqueID, in web-running it does not (needs email absolutely)
+  if(running_as_docker){
+    return(paste("Genome files succesfully submitted. <b>The processing of your genome will take several days to run</b>. Typically between 1 and 5 days, depending on server-queue. When the processing is finished you will receive an email to",email,"with uniqueID and download-instructions. Look in your spam filter if not. The uniqueID of this run is <b>", uniqueID,"</b> -  you can close this browser window."))
+  }else{
+    return(paste("Genome files succesfully submitted. <b>The processing of your genome will take several days to run</b>. Typically between 1 and 5 days, depending on server-queue. When the processing is finished you will receive an email to",email,"with uniqueID and download-instructions. Look in your spam filter if not. You can close this browser window."))
+  }
+  
+    
   
 }
 
@@ -2887,8 +2921,8 @@ special_error_check<-function(
   canaries<-rbind(
     c("rs3762954","662955"),
     c("rs390560","2601689"),
-    c("rs10043332","3128346"),
-    c("rs10070917","4955950"),
+    # c("rs10043332","3128346"), #often gets double location in 23andme data
+    # c("rs10070917","4955950"), #often gets double location in 23andme data
     c("rs11740668","404623"),
     c("rs999292","93218958"),
     c("rs13147822","107960572"),
@@ -2947,7 +2981,9 @@ special_error_check<-function(
     error1<-system(cmd_final1,intern=T)
     error1 <- gsub("\b","",error1)
     message <- paste0("<HTML>",uniqueID," failed all attempts at starting imputation. It came with special error status:<br><b>", paste(special_error_status,collapse="<br>"),".</b><br><br>The last error message was this: <br><br><small>",paste(error1,collapse="<br>"),"</small><br></HTML>")
-    send.mail(from = email_address,
+    print("Sending error mail and giving up")
+    print(special_error_status)
+    mailingResult<-try(send.mail(from = email_address,
               to = error_report_mail,
               subject = "An impute-me sample has problem",
               body = message,
@@ -2959,11 +2995,8 @@ special_error_check<-function(
                 passwd = email_password, 
                 ssl = TRUE),
               authenticate = TRUE,
-              send = TRUE)
-    print("")
-    print(special_error_status)
-    print("")
-    stop("Sending error mail and giving up")
+              send = TRUE),silent=T)
+    stop("Special error check failed")
   }
   return(special_error_status)
 }  
@@ -3131,15 +3164,17 @@ prepare_imputemany_genome<-function(
   acceptedMails_path<-"/home/ubuntu/misc_files/accepted_emails.txt"
   if(!file.exists(acceptedMails_path))stop(safeError("Configuration error: Email accepted-emails list not found"))
   acceptedMails<-read.table(acceptedMails_path,stringsAsFactors=F,header=T)
-  if(!email%in%acceptedMails[,"email"]){ #bulk-upload must adhere to upload criteria
+  if(!email%in%acceptedMails[,"email"] & !"any" %in% acceptedMails[,"email"]){ #bulk-upload must adhere to upload criteria
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,path)
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
-    stop(safeError("Email was not in the accepted-emails list. Your data will not be processed and have already been deleted."))
+    stop(safeError("Email was not in the accepted-emails list, and/or the entry 'any' was not found in the accepted emails list. Your data will not be processed and have already been deleted."))
   }
-  if(should_be_imputed){
-    imputeok <- acceptedMails[acceptedMails[,"email"]%in%email,"imputeok"]
-    if(!imputeok)stop(safeError("Email was not in the accepted-emails list for impute-ok"))
+  if(should_be_imputed ){
+    if(!"any" %in% acceptedMails[,"email"]){
+      imputeok <- acceptedMails[acceptedMails[,"email"]%in%email,"imputeok"]
+      if(!imputeok)stop(safeError("Email was in the accepted-emails list, but was FALSE for imputeok"))
+    }
   }
   
   #set upload time
@@ -3382,14 +3417,14 @@ prepare_imputemany_genome<-function(
   
   
   #always admin-mail a notification that an imputemany upload has happened
-  send.mail(from = email_address,to = error_report_mail,
+  mailingResult<-try(send.mail(from = email_address,to = error_report_mail,
                 subject = "Impute-many data set uploaded",
                 body = paste0("A data set with name ",upload_time," was uploaded to the server by ",email," (imputation was set to ",should_be_imputed,")"),
                 html=T,
-                smtp = list(host.name = "smtp.gmail.com",port = 465,user.name = email_address,passwd = email_password,ssl = TRUE),authenticate = TRUE,send = TRUE)
+                smtp = list(host.name = "smtp.gmail.com",port = 465,user.name = email_address,passwd = email_password,ssl = TRUE),authenticate = TRUE,send = TRUE))
   
   
-  #then send in the 
+  #then send in interface (doesn't matter too much if an admin-email is sent or not)
   return(paste("<b>Genome files succesfully submitted</b>. The processing of your genome will take some time to run. We will email you at",email,"with download-instructions during the next days."))
   
   
@@ -3926,7 +3961,12 @@ convert_vcfs_to_simple_format<-function(
     }else if(length(grep("[0-9]+:[0-9]+",tped[,"V2"])) > minimum_required_variant_count){
       print("Switching to chr:pos positional matching in the style of Dante lab")
       rownames(tped) <- tped[,"V2"]
-      rownames(bed) <- bed[,"chr_pos_name"]
+      if(chr_prefix){
+        rownames(bed) <- paste0("chr",bed[,"chr_pos_name"])
+      }else{
+        rownames(bed) <- bed[,"chr_pos_name"]  
+      }
+      
       
     }else{
       stop("Not matching on rsid in vcf-name field and also not recognised as Dante lab chr:pos naming. Needs manual evaluation.")

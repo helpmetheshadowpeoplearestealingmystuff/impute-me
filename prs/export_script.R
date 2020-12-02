@@ -23,15 +23,6 @@ export_function<-function(uniqueID){
   chromosomes <- as.character(1:22)
   
   
-  #creating a temp folder to use
-  idTempFolder<-paste("/home/ubuntu/data",uniqueID,"temp/",sep="/")
-  if(file.exists(idTempFolder)){
-    stop(paste("Temp folder exists already, this could indicate that",uniqueID,"is already worked on."))
-  }else{
-    dir.create(idTempFolder)
-  }
-  
-  
   #prepare output list
   output<-list()
   output[["documentation"]] <- list()
@@ -60,6 +51,13 @@ export_function<-function(uniqueID){
   }
   
   
+  #creating a temp folder to use
+  idTempFolder<-paste("/home/ubuntu/data",uniqueID,"temp/",sep="/")
+  if(file.exists(idTempFolder)){
+    stop(paste("Temp folder exists already, this could indicate that",uniqueID,"is already worked on."))
+  }else{
+    dir.create(idTempFolder)
+  }
   
   # Select which of the different approaches to actually run.
   # A more complete write-up of testing is available at this DOI:

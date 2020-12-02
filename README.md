@@ -1,3 +1,7 @@
+[![Main programming language](https://img.shields.io/github/languages/top/lassefolkersen/impute-me?style=flat-square)](https://cran.r-project.org)
+[![Updates on twitter](https://img.shields.io/twitter/follow/imputeme?label=twitter&style=flat-square)](https://twitter.com/ImputeMe)
+[![Docker Container available](https://img.shields.io/docker/v/lassefolkersen/impute-me?label=docker)](https://hub.docker.com/repository/docker/lassefolkersen/impute-me)
+
 # Impute.me code
 
 This introduction is divided into three sections: 
