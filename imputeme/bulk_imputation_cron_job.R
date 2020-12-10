@@ -278,6 +278,7 @@ for(uniqueID in uniqueIDs){
   
   if(exists("imputemany_upload") && imputemany_upload){
     print(paste(Sys.time(),"skipping mail because it's from imputemany_upload"))
+    unlink(summary_folder,recursive = T)
   }else{
     print(paste(Sys.time(),"sending results mail"))
     ip<-"https://www.impute.me"

@@ -166,7 +166,8 @@ echo "source('/home/ubuntu/srv/impute-me/functions.R')" >> /home/ubuntu/.Rprofil
 echo "}" >> /home/ubuntu/.Rprofile
 
 #Write a crontab to open using supercronic, once the docker is running
-RUN echo "*/10 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/logs/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1" > /home/ubuntu/misc_files/supercronic.txt
+RUN echo "*/10 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-impute-cron.log 2>&1" > /home/ubuntu/misc_files/supercronic.txt && \
+echo "*/18 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/vcf_handling_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-vcf-cron.log 2>&1" > /home/ubuntu/misc_files/supercronic.txt
 
 #clone the main github repo
 RUN git clone https://github.com/lassefolkersen/impute-me.git /home/ubuntu/srv/impute-me/
@@ -176,5 +177,7 @@ WORKDIR /home/ubuntu
 
 #final command
 CMD shiny-server
+
+
 
 

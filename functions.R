@@ -47,7 +47,8 @@ prepare_individual_genome<-function(
   updateProgress=NULL, 
   protect_from_deletion=FALSE, 
   filename=NULL,
-  predefined_uniqueID=NULL
+  predefined_uniqueID=NULL,
+  overrule_vcf_checks=FALSE
 ){
   #This is the data-receiving function. It performs all checks that can be made
   #in web-speed, meaning maximum a few seconds. If these are passed, the file, plus
@@ -57,7 +58,8 @@ prepare_individual_genome<-function(
   #updateProgress         is the progress update tracker for the shiny interface
   #protect_from_deletion  is a switch carried down the analysis, that can be set as TRUE for debugging purposes
   #filename               is the optional filename of the sample (useful to have separate for e.g. shiny file submission, where it otherwise may be called e.g. /tmp/RtmpAKCi8i/9527843b29213cdef70532ff/0.gz). If not set, this will default to basename(path).
-  #uniqueID               is an optional pre-defined uniqueID. This is only used when accessing the function from outside of the usual web-upload interface, and bypasses the random-ID step. Still has to obey the usual 12-digit alphanumeric rules.
+  #predefined_uniqueID    is an optional pre-defined uniqueID. This is only used when accessing the function from outside of the usual web-upload interface, and bypasses the random-ID step. Still has to obey the usual 12-digit alphanumeric rules.
+  #overrule_vcf_checks    a logical indicating if the (strict) vcf-files should be bypassed. Don't do this when accepting web-input, since you get a lot of low-pass and exon-seq vcfs then. But can be done in a controlled environment. 
   
   #loading libraries
   library("mailR")
@@ -292,7 +294,6 @@ prepare_individual_genome<-function(
     
     #send a mail (TODO remove this later, once vcf is under more control)
     #also, don't delete because we are still debugging on vcf_file
-    protect_from_deletion<-TRUE
     mailingResult<-try(send.mail(from = email_address,
                                  to = error_report_mail,
                                  subject = "VCF is queued",
@@ -378,7 +379,7 @@ prepare_individual_genome<-function(
     
     
     
-    #check for check-up escape sentence
+    #check for check-up escape sentence and/or overrule_vcf_checks argument
     #can be anything in the header, e.g. 
     ###INFO=<ID=Something=I solemnly swear that this file is of good enough quality>
     escape_checks<-FALSE
@@ -391,6 +392,7 @@ prepare_individual_genome<-function(
         write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)
       }
     }
+    if(overrule_vcf_checks)escape_checks<-TRUE
     
     
     #size check requirement
@@ -3424,7 +3426,21 @@ prepare_imputemany_genome<-function(
                 smtp = list(host.name = "smtp.gmail.com",port = 465,user.name = email_address,passwd = email_password,ssl = TRUE),authenticate = TRUE,send = TRUE))
   
   
-  #then send in interface (doesn't matter too much if an admin-email is sent or not)
+  
+  #if running as docker, then check that supercronic job is running. If not, start it.
+  if(running_as_docker){
+    processes<-system("ps -e",intern=T)
+    processes<-do.call(rbind,strsplit(processes," +"))
+    if(!"supercronic" %in% processes[,5]){
+      if(!file.exists("/home/ubuntu/misc_files/supercronic.txt"))stop(safeError("Code was found to be running as docker container, but with no misc_files/supercronic.txt file ready for launch. The job will likely never execute."))
+      supercronic_out<-try(system("supercronic /home/ubuntu/misc_files/supercronic.txt &"))
+      if(supercronic_out != 0)stop(safeError("Code was found to be running as docker container, but gave an error when trying to start supercronic. The job will likely not start"))
+    }
+  }
+  
+  
+  
+  #then send in interface (doesn't matter too much if an admin-email was sent or not, it'll run either way)
   return(paste("<b>Genome files succesfully submitted</b>. The processing of your genome will take some time to run. We will email you at",email,"with download-instructions during the next days."))
   
   
@@ -4159,10 +4175,6 @@ convert_vcfs_to_simple_format<-function(
     
     
 }
-
-
-
-
 
 
 
