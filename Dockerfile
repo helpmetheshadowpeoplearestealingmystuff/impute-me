@@ -167,7 +167,7 @@ echo "}" >> /home/ubuntu/.Rprofile
 
 #Write a crontab to open using supercronic, once the docker is running
 RUN echo "*/10 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-impute-cron.log 2>&1" > /home/ubuntu/misc_files/supercronic.txt && \
-echo "*/18 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/vcf_handling_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-vcf-cron.log 2>&1" > /home/ubuntu/misc_files/supercronic.txt
+echo "*/18 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/vcf_handling_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-vcf-cron.log 2>&1" >> /home/ubuntu/misc_files/supercronic.txt
 
 #clone the main github repo
 RUN git clone https://github.com/lassefolkersen/impute-me.git /home/ubuntu/srv/impute-me/
@@ -181,3 +181,27 @@ CMD shiny-server
 
 
 
+# #To build
+# docker build --tag lassefolkersen/impute.me:v0.9.2 .
+# docker tag lassefolkersen/impute.me:v0.9.1 lassefolkersen/impute.me:v0.9.2
+# 
+# #to stop and remove
+# docker stop $(docker ps -aq)
+# docker rm $(docker ps -aq)
+# 
+# #to run
+# docker run \
+# -v ~/dockertest4:/home/ubuntu/data \
+# -p 3838:3838 \
+# lassefolkersen/impute.me:v0.9.2
+# 
+# #to view online
+# http://localhost:3838
+# 
+# #to push to dockerhub
+# docker push lassefolkersen/impute.me:v0.9.1
+# 
+# #to enter image
+# docker ps
+# docker exec -it 7b974b466ade /bin/bash
+# 
