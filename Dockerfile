@@ -159,7 +159,9 @@ echo "any   TRUE" >> /home/ubuntu/misc_files/accepted_emails.txt
 #Set ll to give long lists
 RUN echo "alias ll='ls -lh'" > /home/ubuntu/.bashrc
 
-#Custome the R opening slightly (just load functions.R by default)
+#Customize the R opening slightly, by load ingfunctions.R as default.
+#not important for pipeline running, but nice to have when operating
+#and debugging inside the container.
 RUN echo ".First <- function(){" > /home/ubuntu/.Rprofile && \
 echo "cat('\n   Welcome to impute.me!\n\n')" >> /home/ubuntu/.Rprofile && \
 echo "source('/home/ubuntu/srv/impute-me/functions.R')" >> /home/ubuntu/.Rprofile && \
