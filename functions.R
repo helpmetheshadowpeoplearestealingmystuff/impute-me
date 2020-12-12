@@ -65,6 +65,7 @@ prepare_individual_genome<-function(
   library("mailR")
   library("rJava")
   library("tools")
+  library("shiny")
   
   
   #check that input path is ok and accesible
@@ -306,7 +307,7 @@ prepare_individual_genome<-function(
                                    passwd = email_password, 
                                    ssl = TRUE),
                                  authenticate = TRUE,
-                                 send = TRUE))
+                                 send = TRUE),silent=T)
     
     
     #create vcf folder
@@ -330,7 +331,7 @@ prepare_individual_genome<-function(
     #check if it's gz file - if it is we juse it as-is
     if(substr(filename, nchar(filename)-2,nchar(filename)) == ".gz"){
       filetype<-system(paste("file ", newTempPath),intern=T)
-      if(length(grep("gzip compressed",filetype))==1){
+      if(length(grep("gzip",filetype))==1){
         file.rename(newTempPath, newReadyPath)
       }else{ 
         m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"gzip_wrong_file",email,uniqueID,filename)
@@ -646,7 +647,7 @@ prepare_individual_genome<-function(
                                  passwd = email_password, 
                                  ssl = TRUE),
                                authenticate = TRUE,
-                               send = TRUE))
+                               send = TRUE),silent=T)
   if(class(mailingResult)=="try-error"){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"mailing_error",email,uniqueID,filename)
     m<-paste(m,collapse="\t")
@@ -661,6 +662,13 @@ prepare_individual_genome<-function(
     processes<-do.call(rbind,strsplit(processes," +"))
     if(!"supercronic" %in% processes[,5]){
       if(!file.exists("/home/ubuntu/misc_files/supercronic.txt"))stop(safeError("Code was found to be running as docker container, but with no misc_files/supercronic.txt file ready for launch. The job will likely never execute."))
+      #it's possible that the ending ampersand is not a good idea. The problem is that when the
+      #docker is running as a web-interface it works well. But when the function is called from outside of
+      #the docker, with docker exec - then supercronic deletes itself after a few seconds. It can be
+      #kept with e.g. a Sys.sleep() argument. But that would destroy the feedback on the website
+      #and there's no easy way to tell which place invoked the command. So right now the web
+      #interface "wins" because that's for more casual users. Then super users can
+      #separately call and start the supercronic
       supercronic_out<-try(system("supercronic /home/ubuntu/misc_files/supercronic.txt &"))
       if(supercronic_out != 0)stop(safeError("Code was found to be running as docker container, but gave an error when trying to start supercronic. The job will likely not start"))
     }
@@ -670,6 +678,7 @@ prepare_individual_genome<-function(
   #end with a message. In docker the message includes uniqueID, in web-running it does not (needs email absolutely)
   if(running_as_docker){
     return(paste("Genome files succesfully submitted. <b>The processing of your genome will take several days to run</b>. Typically between 1 and 5 days, depending on server-queue. When the processing is finished you will receive an email to",email,"with uniqueID and download-instructions. Look in your spam filter if not. The uniqueID of this run is <b>", uniqueID,"</b> -  you can close this browser window."))
+    
   }else{
     return(paste("Genome files succesfully submitted. <b>The processing of your genome will take several days to run</b>. Typically between 1 and 5 days, depending on server-queue. When the processing is finished you will receive an email to",email,"with uniqueID and download-instructions. Look in your spam filter if not. You can close this browser window."))
   }
@@ -1119,7 +1128,7 @@ summarize_imputation<-function(
   if(exists("is_vcf_file") && is_vcf_file){
     imputation_type<-"vcf"
   }else{
-    crontabs<-grep("^#",system("crontab -l",intern=T),invert = T,value=T)
+    crontabs<-try(grep("^#",system("crontab -l",intern=T),invert = T,value=T),silent=T)
     crontabs<-sub(" .+$","",sub("^.+Rscript /home/ubuntu/srv/impute-me/imputeme/","",crontabs))
     if(any(c("bulk_imputation_cron_job.R","imputation_cron_job.R")%in%crontabs)){
       if("imputation_cron_job.R"%in%crontabs){
@@ -3848,7 +3857,7 @@ convert_vcfs_to_simple_format<-function(
   for(uniqueID in uniqueIDs){
     print(paste("Converting",uniqueID,"VCF to internal standard files"))
     vcf_folder <- paste0("/home/ubuntu/vcfs/vcf_folder_",uniqueID,"/")
-    bed_path<-"/home/ubuntu/misc_files/2020-10-05_common_snps.txt.gz"
+    bed_path<-"/home/ubuntu/srv/impute-me/imputeme/2020-10-05_common_snps.txt.gz"
     applied_bed_path <- paste0(vcf_folder,"temporary_bed.txt")
     vcf_path<-paste0(vcf_folder,uniqueID,"_raw_data.vcf.gz")
     job_status_file <- paste0(vcf_folder,"job_status.txt")
@@ -4168,7 +4177,7 @@ convert_vcfs_to_simple_format<-function(
     
     
     #deleting working folders and reset wd folder
-    if(!protect_from_deletion)unlink(vcf_folder,recursive = T)
+    # if(!protect_from_deletion)unlink(vcf_folder,recursive = T)
     unlink(out_temp_path,recursive=T)
     setwd(start_wd)
   }

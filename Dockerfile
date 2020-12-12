@@ -179,29 +179,3 @@ WORKDIR /home/ubuntu
 CMD shiny-server
 
 
-
-
-# #To build
-# docker build --tag lassefolkersen/impute.me:v0.9.2 .
-# docker tag lassefolkersen/impute.me:v0.9.1 lassefolkersen/impute.me:v0.9.2
-# 
-# #to stop and remove
-# docker stop $(docker ps -aq)
-# docker rm $(docker ps -aq)
-# 
-# #to run
-# docker run \
-# -v ~/dockertest4:/home/ubuntu/data \
-# -p 3838:3838 \
-# lassefolkersen/impute.me:v0.9.2
-# 
-# #to view online
-# http://localhost:3838
-# 
-# #to push to dockerhub
-# docker push lassefolkersen/impute.me:v0.9.1
-# 
-# #to enter image
-# docker ps
-# docker exec -it 7b974b466ade /bin/bash
-# 
