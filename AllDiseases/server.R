@@ -178,7 +178,7 @@ shinyServer(function(input, output) {
     rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
     genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
     SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
-    SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T, verbose=F)
+    SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T)
     population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
     if(population_sum_sd == 0)stop(safeError("For some reason we couldn't analyse this particular trait from your genomic data."))
     
@@ -686,6 +686,26 @@ shinyServer(function(input, output) {
     if(length(q)<minimum_level)return("")
     
     
+    ######################
+    #This is the logic for the Propeciahelp
+    #
+    ###################
+    show_on_these_study_ids<- c("prostate-specific_antigen_levels_conditioned_on_lead_snps_28139693","prostate-specific_antigen_levels_28139693","male-pattern_baldness_30573740","male-pattern_baldness_29146897","male-pattern_baldness_28272467","male-pattern_baldness_28196072","male-pattern_baldness_22693459","dehydroepiandrosterone_sulphate_levels_21533175","androgen_levels_22936694","remission_after_ssri_treatment_in_mdd_or_neuroticism_29559929","remission_after_ssri_treatment_in_mdd_or_openness_29559929","response_to_ssri_in_mdd_or_openness_29559929","depressive_symptoms_ssri_exposure_interaction_25649181")
+    if(study_id %in% show_on_these_study_ids){
+      survey_log_file<-"/home/ubuntu/logs/submission/propecia_survey.txt"
+      if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"propecia_survey",uniqueID,study_id)
+      m<-paste(m,collapse="\t")
+      write(m,file=survey_log_file,append=TRUE)
+      out <- paste0("<div style='background-color: #cfc ; padding: 10px; border: 1px solid green;'>
+<p>Dear user<br></p>
+<p><img style='padding: 0 15px; float: right;' src='../www/propeciahelplogo.png'>Since you are interested in this trait, perhaps you would also be interested in the The Propeciahelp study, run by William Gallaher. Propeciahelp is a Post-Finasteride Syndrome (PFS) patient organisation. PFS describes serious mental, physical and sexual side effects that persist – or more commonly deleteriously progress – after discontinuation of Finasteride. You can read more about it at this link, as well as participate:<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u><a href='https://www.propeciahelp.com/'>https://www.propeciahelp.com</a></u></b><br><br>
+                    The study involves (re)-upload of your raw DNA data outside of the impute-me site, there is no data transfer from here.</p></div>")
+      return(out)
+    }
+    
+    
     
     ######################
     #This is the logic for the personality genie
@@ -702,7 +722,7 @@ shinyServer(function(input, output) {
 <p>Dear user<br></p>
 <p><img style='padding: 0 15px; float: right;' src='../www/personalitygenielogo.png'>Since you are interested in this trait, perhaps you would also be interested in the Personality Genie study, run by Dr. Denise Cook. The study investigates human personality and the potential genetic associations linked with it. You can read more about it at this link, as well as participate:<br><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u><a href='https://www.personalitygenie.com/'>www.personalitygenie.com</a></u></b><br><br>
-                    The study involves (re)-upload of your raw DNA data outside of the impute-me site, there is no data transfer from here. But it looks like an interesting and solid study worthy of support.</p></div>")
+                    The study involves (re)-upload of your raw DNA data outside of the impute-me site, there is no data transfer from here.</p></div>")
       return(out)
     }
     

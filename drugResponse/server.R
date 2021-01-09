@@ -109,7 +109,7 @@ shinyServer(function(input, output) {
       }
       
       rownames(d2)<-d2[,"SNP"]
-      d3<-try(get_GRS_2(d2, mean_scale=T, unit_variance=T, verbose=T))
+      d3<-try(get_GRS_2(d2, mean_scale=T, unit_variance=T))
       if(class(d3)=="try-error"){
         per_study[study,"Z-score"] <- "Not calculated"
         per_study[study,"Percentage"] <- "Not calculated"

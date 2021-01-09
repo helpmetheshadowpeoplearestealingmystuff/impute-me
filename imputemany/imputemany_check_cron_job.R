@@ -39,7 +39,7 @@ if(nrow(d1)>0){
       text1 <- paste("This imputemany-study have not been finished and it's",round(d2[upload_time,"age_days"]),"days since it was submitted:",d2[upload_time,"upload_time"])  
       
       emails_to_send[[paste0("mail_",upload_time)]] <- list()
-      emails_to_send[[paste0("mail_",upload_time)]][["to"]] <- error_report_mail
+      emails_to_send[[paste0("mail_",upload_time)]][["to"]] <- get_conf("error_report_mail")
       emails_to_send[[paste0("mail_",upload_time)]][["subject"]] <- "Error in imputemany-pipeline"
       emails_to_send[[paste0("mail_",upload_time)]][["text"]] <- text1
       
@@ -93,7 +93,7 @@ if(length(emails_to_send)==0)stop("Didn't find any finished imputemany runs to r
 
 for(j in 1:length(emails_to_send)){
   print(paste("Send mail to",emails_to_send[[j]][["to"]],"with subject:",emails_to_send[[j]][["subject"]]))
-  mailingResult<-try(send.mail(from = email_address,
+  mailingResult<-try(send.mail(from = get_conf("from_email_address"),
                                to = emails_to_send[[j]][["to"]],
                                subject = emails_to_send[[j]][["subject"]],
                                body = emails_to_send[[j]][["text"]],
@@ -101,8 +101,8 @@ for(j in 1:length(emails_to_send)){
                                smtp = list(
                                  host.name = "smtp.gmail.com",
                                  port = 465,
-                                 user.name = email_address,
-                                 passwd = email_password,
+                                 user.name = get_conf("from_email_address"),
+                                 passwd = get_conf("from_email_password"),
                                  ssl = TRUE),
                                authenticate = TRUE,
                                send = TRUE))

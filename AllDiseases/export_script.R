@@ -22,7 +22,6 @@ export_function<-function(uniqueID){
   output[["documentation"]][["trait_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/31846520f7bb84c3ab079b5fd0ea202bbf30b844/AllDiseases/2020-04-02_trait_overview.xlsx"
   output[["documentation"]][["snp_file"]] <- "https://github.com/lassefolkersen/impute-me/blob/31846520f7bb84c3ab079b5fd0ea202bbf30b844/AllDiseases/2020-04-02_snp_weights.rdata"
   
-  
   #get ethnicity parameter
   pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
   pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
@@ -52,7 +51,7 @@ export_function<-function(uniqueID){
     #calculate GRS
     snp_data<-SNPs_requested
     snp_data[,"genotype"] <- genotypes[rownames(snp_data),"genotype"]
-    snp_data <-get_GRS_2(snp_data,mean_scale=T, unit_variance=T, verbose=F)
+    snp_data <-get_GRS_2(snp_data,mean_scale=T, unit_variance=T)
     population_sum_sd<-sqrt(sum(snp_data[,"population_score_sd"]^2,na.rm=T))
     GRS_beta <-signif(sum(snp_data[,"score_diff"],na.rm=T) / population_sum_sd,4)
     

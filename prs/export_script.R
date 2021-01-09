@@ -4,8 +4,6 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 
 export_function<-function(uniqueID){
   
-  #Switch on only in testing otherwise it prints way too much info
-  verbose=FALSE
   
   #set correct plink version (that's v1.90b1g being refered here first, and then plink 2.00 alpha)
   plink="/home/ubuntu/programs/plink"
@@ -15,8 +13,18 @@ export_function<-function(uniqueID){
   prs_dir <- "/home/ubuntu/prs_dir/"
   prs_overview_path<-"/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx"
   
-  #when running the alternative PRS-expansion set
-  # prs_overview_path<-"/home/ubuntu/misc_files/2019-08-01_study_list.xlsx"
+  
+  #Set verbosity consequences
+  if(verbose > 3){
+    ignore.stdout <- FALSE 
+  }else{
+    ignore.stdout<- TRUE
+  }
+  if(verbose > 2){
+    ignore.stderr <- FALSE 
+  }else{
+    ignore.stderr<- TRUE
+  }
   
   
   #set chromosomes to iterate over (good place for testing limitation)
@@ -42,7 +50,7 @@ export_function<-function(uniqueID){
   
   #run through score sets to check consistency (just takes few seconds)
   for(i in 1:nrow(score_sets)){
-    if(!file.exists(score_sets[i,"path"]))stop(paste("Didn't find PRS weights file at",score_sets[i,"path"]))
+    if(!file.exists(score_sets[i,"path"]))stop(paste0("PRS weights files were missing, e.g. this one: ",score_sets[i,"path"]))
     if(file.info(score_sets[i,"path"])[["isdir"]])stop(paste("This PRS weights file was actually a directory:",score_sets[i,"path"]))
     testRead <-read.table(score_sets[i,"path"],nrows=10,header=T,stringsAsFactors = F)
     if(ncol(testRead)<3)stop(paste("Too few columns in score file",basename(score_sets[i,"path"])))
@@ -75,6 +83,8 @@ export_function<-function(uniqueID){
     "SCORESUM_PLINK_2_0_DOSAGE_MATRIX"
   )
   
+  
+  
   ###################
   #prepare plink score run using 1.9. on hard-calls
   #
@@ -104,17 +114,17 @@ export_function<-function(uniqueID){
       #Load data using plink
       f <- paste0(uniqueID,"_chr",chr,".simple_format.txt")
       cmd1<-paste0(plink," --noweb --23file ",idTempFolder,f," ",uniqueID,"  ",uniqueID," --recode --make-bed --out ",idTempFolder,"/",f)
-      out1<-system(cmd1,ignore.stdout=!verbose, ignore.stderr =!verbose)
+      out1<-system(cmd1,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
       
       #check if score can be run at all 
       #we would like to get rid of this check-up but it still comes up in <1% of the runs. Also the computing price is small since it doesn't scale with PRS count
       cmd3 <- paste0(plink, " --score ",score_sets[1,"path"]," --bfile ", idTempFolder,f," --out ",idTempFolder,"/",f,".temp")
-      out3 <- system(cmd3,ignore.stdout=!verbose, ignore.stderr =!verbose)
+      out3 <- system(cmd3,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
       if(out3 == 3){
-        print(paste0("Fixing the duplicate SNP error in chr ",chr," - this can be removed once it is well established as ok in upstream pipelines, also for odd/lacking genome data"))
+        if(verbose>0)print(paste0(Sys.time(),": Fixing the duplicate SNP error in chr ",chr," - this can be removed once it is well established as ok in upstream pipelines, also for odd/lacking genome data"))
         cmd4 <- paste0("awk -i inplace '!seen[$1]++' ",idTempFolder,f)
         out4 <- system(cmd4)
-        out1<-system(cmd1,ignore.stdout=!verbose, ignore.stderr =!verbose)
+        out1<-system(cmd1,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
       }
       
       #clean up non-used temp files while going to not spike the disk-requirements
@@ -134,13 +144,13 @@ export_function<-function(uniqueID){
         
         
         cmd5 <- paste0(plink, " --bfile ", idTempFolder,f," --score ",score_file," 1 2 3 header sum --out ",out_file)
-        out5 <- system(cmd5,ignore.stdout=!verbose, ignore.stderr =!verbose)
+        out5 <- system(cmd5,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
         
         #give up here if there's problems here
         if(out5 == 3){
           unlink(idTempFolder,recursive = T)
           system(cmd5,ignore.stdout=F)
-          stop(paste("Found an error in the plink score step for chr",chr," - stopping and removing temp folder"))
+          stop(paste0(Sys.time(),": Found an error in the plink score step for chr ",chr," - stopping and removing temp folder"))
         }
         
         #read the scores and insert
@@ -209,17 +219,17 @@ export_function<-function(uniqueID){
       #Load data using plink
       f <- paste0(uniqueID,"_chr",chr,".simple_format.txt")
       cmd1<-paste0(plink," --noweb --23file ",idTempFolder,f," ",uniqueID,"  ",uniqueID," --recode --make-bed --out ",idTempFolder,"/",f)
-      out1<-system(cmd1,ignore.stdout=!verbose, ignore.stderr =!verbose)
+      out1<-system(cmd1,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
       
       #check if score can be run at all 
       #we would like to get rid of this check-up but it still comes up in <1% of the runs. Also the computing price is small since it doesn't scale with PRS count
       cmd3 <- paste0(plink, " --score ",score_sets[1,"path"]," --bfile ", idTempFolder,f," --out ",idTempFolder,"/",f,".temp")
-      out3 <- system(cmd3,ignore.stdout=!verbose, ignore.stderr =!verbose)
+      out3 <- system(cmd3,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
       if(out3 == 3){
-        print(paste0("Fixing the duplicate SNP error in chr ",chr," - this can be removed once it is well established as ok in upstream pipelines, also for odd/lacking genome data"))
+        if(verbose>0)print(paste0(Sys.time(),": Fixing the duplicate SNP error in chr ",chr," - this can be removed once it is well established as ok in upstream pipelines, also for odd/lacking genome data"))
         cmd4 <- paste0("awk -i inplace '!seen[$1]++' ",idTempFolder,f)
         out4 <- system(cmd4)
-        out1<-system(cmd1,ignore.stdout=!verbose, ignore.stderr =!verbose)
+        out1<-system(cmd1,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
       }
       
       #clean up non-used temp files while going to not spike the disk-requirements
@@ -253,7 +263,7 @@ export_function<-function(uniqueID){
         #then run the score calculation in plink with freq correction
         out_file<-paste0(idTempFolder,"score_file",i,"_chr",chr,".plink2.txt")
         cmd6 <- paste0(plink2, " --bfile ", idTempFolder,f," --read-freq ", freq_file," --score ",score_file," 1 2 3 header --out ",out_file)
-        out6 <- system(cmd6,ignore.stdout=!verbose, ignore.stderr =!verbose)
+        out6 <- system(cmd6,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
         
         
         if(out6 == 0){
@@ -261,9 +271,9 @@ export_function<-function(uniqueID){
           per_chr_data_plink2 <-read.table(paste0(out_file,".sscore"),header=F)
           score_sets[i,paste0("PART_PLINK_2_0_SCORESUM_",chr)] <- per_chr_data_plink2[1,"V5"]
         }else{
-          print("Had zero read out for plink2")
-          out6 <- system(cmd6,ignore.stdout=F, ignore.stderr =F)
-          print("omitting and continuing")
+          if(verbose>0)print(paste0(Sys.time(),": Had zero read out for plink2. Printing error."))
+          if(verbose>0)out6 <- system(cmd6,ignore.stdout=F, ignore.stderr =F)
+          if(verbose>=0)print(paste0(Sys.time(),": WARNING omitting and continuing at chr ",chr))
           score_sets[i,paste0("PART_PLINK_2_0_SCORESUM_",chr)] <- NA
         }
         
@@ -344,14 +354,14 @@ export_function<-function(uniqueID){
         #execute plink2 score/dosage command
         #Remember there is a possibility for a large computational saving by using --score-col-nums here - but we need to first get PRS in a one-file format then
         cmd7 <- paste0(plink2, " --gen ", idTempFolder,f," ref-first --sample ", temp_sample_path," --oxford-single-chr ",chr," --read-freq ", freq_file," --score ",score_file," 1 2 3 header center --out ",out_file)
-        out7 <- system(cmd7,ignore.stdout=!verbose, ignore.stderr =!verbose)
+        out7 <- system(cmd7,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
         
         #The double entry filter (try to get this out of the way later)
         if(out7 == 6){
-          if(verbose)print(paste("The double entry filter was activated for chr",chr,"score",i,"in plink 2.0 dosage"))
+          if(verbose>0)print(paste("The double entry filter was activated for chr",chr,"score",i,"in plink 2.0 dosage"))
           cmd8 <- paste0("awk -i inplace '!seen[$2]++' ",idTempFolder,f)
           out8 <- system(cmd8)
-          out7 <- system(cmd7,ignore.stdout=!verbose, ignore.stderr =!verbose)
+          out7 <- system(cmd7,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
         }
         
         
@@ -363,9 +373,9 @@ export_function<-function(uniqueID){
           score_sets[i,paste0("PART_PLINK_2_0_DOSAGE_NMISS_ALLELE_CT_",chr)] <- per_chr_data_plink2_dosage[1,"NMISS_ALLELE_CT"]
           score_sets[i,paste0("PART_PLINK_2_0_DOSAGE_NAMED_ALLELE_DOSAGE_SUM_",chr)] <- per_chr_data_plink2_dosage[1,"NAMED_ALLELE_DOSAGE_SUM"]
         }else{
-          print("Had zero read out for plink2 - re-printing last command")
-          out7 <- system(cmd7,ignore.stdout=F, ignore.stderr =F)
-          print("omitting and continuing")
+          if(verbose>0)print(paste0(Sys.time(),": Had zero read out for plink2 - re-printing last command"))
+          if(verbose>0)out7 <- system(cmd7,ignore.stdout=F, ignore.stderr =F)
+          if(verbose>=0)print(paste0(Sys.time(),": WARNING omitting and continuing at ",chr))
           score_sets[i,paste0("PART_SCORESUM_PLINK_2_0_DOSAGE_",chr)] <- NA
           score_sets[i,paste0("PART_PLINK_2_0_DOSAGE_NMISS_ALLELE_CT_",chr)] <- NA
           score_sets[i,paste0("PART_PLINK_2_0_DOSAGE_NAMED_ALLELE_DOSAGE_SUM_",chr)] <- NA
@@ -417,7 +427,7 @@ export_function<-function(uniqueID){
     gender <- pData[1,"gender"]
     
     #No need to iterate over all scores here - just set the one file
-    score_file <- "/home/ubuntu/prs_dir/2020-01-17_prs_weights.txt"
+    score_file <- "/home/ubuntu/prs_dir/2020-12-30_prs_weights.txt"
     
     #figure out how many columns in score file and check it matches with score_sets
     score_column_names<-colnames(read.table(score_file,nrows=10,sep=" ",header=T))
@@ -460,12 +470,12 @@ export_function<-function(uniqueID){
         out_subset <- system(cmd_subset)
         cmd_count_after <- paste0("wc -l ",idTempFolder,f)
         count_after <- as.numeric(sub(" .+$","",system(cmd_count_after,intern=T)))
-        if(verbose)cat(paste("\n\n\nHad the double entry filter on chr",chr,"remove",count_before-count_after,"lines\n\n\n"))
+        if(verbose>1 & count_before-count_after>0)print(paste0(Sys.time(),": The prs-double entry filter on chr ",chr," removed ",count_before-count_after," lines from the .gen file for ",uniqueID))
       }
       
       #execute plink2 score/dosage-matrix command
       cmd7 <- paste0(plink2, " --gen ", idTempFolder,f," ref-first --sample ", temp_sample_path," --oxford-single-chr ",chr," --read-freq ", freq_file," --score ",score_file," 1 2 header center --score-col-nums ",paste(indices_to_run,collapse=",")," --out ",out_file)
-      out7 <- system(cmd7,ignore.stdout=!verbose, ignore.stderr =!verbose)
+      out7 <- system(cmd7,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
       
       
       #read the scores and insert
@@ -479,9 +489,9 @@ export_function<-function(uniqueID){
         score_sets[names(indices_to_run),paste0("PART_PLINK_2_0_DOSAGE_MATRIX_NMISS_ALLELE_CT_",chr)] <- sscore[1,"NMISS_ALLELE_CT"]
         score_sets[names(indices_to_run),paste0("PART_PLINK_2_0_DOSAGE_MATRIX_NAMED_ALLELE_DOSAGE_SUM_",chr)] <- sscore[1,"NAMED_ALLELE_DOSAGE_SUM"]
       }else{
-        print("Had zero read out for plink2 - re-printing last command")
-        out7 <- system(cmd7,ignore.stdout=F, ignore.stderr =F)
-        print("omitting and continuing")
+        if(verbose>0)print(paste0(Sys.time(),": Had zero read out for plink2 - re-printing last command"))
+        if(verbose>0)out7 <- system(cmd7,ignore.stdout=F, ignore.stderr =F)
+        if(verbose>=0)print(paste0(Sys.time(),": WARNING omitting and continuing at chr ", chr))
         score_sets[names(indices_to_run),paste0("PART_SCORESUM_PLINK_2_0_DOSAGE_MATRIX_",chr)] <- NA
         score_sets[names(indices_to_run),paste0("PART_PLINK_2_0_DOSAGE_MATRIX_NMISS_ALLELE_CT_",chr)] <- NA
         score_sets[names(indices_to_run),paste0("PART_PLINK_2_0_DOSAGE_MATRIX_NAMED_ALLELE_DOSAGE_SUM_",chr)] <- NA

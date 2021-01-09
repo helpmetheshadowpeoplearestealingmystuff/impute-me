@@ -75,10 +75,12 @@ export_function<-function(uniqueID){
     dir.create(idTempFolder)
     outZip<-unzip(input_data_path, overwrite = TRUE,exdir = idTempFolder, unzip = "internal")
     cmd1 <- paste("grep -E '",paste(paste(rownames(BRCA_table),"\t",sep=""),collapse="|"),"' ",outZip,sep="")
-    input_grep<-system(cmd1,intern=T,ignore.stdout=TRUE, ignore.stderr =TRUE)    
-    snps_in_input<-sapply(strsplit(input_grep,"\t"),function(x){x[1]})
-    imputed_snps <- rownames(BRCA_table)[!is.na(BRCA_table[,"Your genotype"])]
-    output[["snps_in_input_but_not_analyzed"]] <- snps_in_input[!snps_in_input%in%imputed_snps]
+    input_grep<-suppressWarnings(try(system(cmd1,intern=T,ignore.stdout=TRUE, ignore.stderr =TRUE),silent=T))
+    if(class(input_grep)!="try-error"){
+      snps_in_input<-sapply(strsplit(input_grep,"\t"),function(x){x[1]})
+      imputed_snps <- rownames(BRCA_table)[!is.na(BRCA_table[,"Your genotype"])]
+      output[["snps_in_input_but_not_analyzed"]] <- snps_in_input[!snps_in_input%in%imputed_snps]
+    }
     unlink(idTempFolder,recursive = T)
   }
   

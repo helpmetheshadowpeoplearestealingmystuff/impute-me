@@ -34,7 +34,7 @@ export_function<-function(uniqueID){
     }
     
     rownames(d2)<-d2[,"SNP"]
-    d3<-try(get_GRS_2(d2, mean_scale=T, unit_variance=T, verbose=F))
+    d3<-try(get_GRS_2(d2, mean_scale=T, unit_variance=T))
     
     
     

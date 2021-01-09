@@ -11,7 +11,8 @@ RUN R -e "install.packages(c( \
 'mailR', \
 'openxlsx', \
 'R.utils', \
-'visNetwork' \
+'visNetwork', \
+'docstring' \
 ),dependencies=TRUE, repos = 'http://cran.rstudio.com/')"
 
 #Install basic non-problematic apt-get apps
@@ -81,7 +82,9 @@ mkdir /home/ubuntu/misc_files && \
 mkdir /home/ubuntu/data && \
 mkdir /home/ubuntu/programs && \
 mkdir /home/ubuntu/prs_dir && \
-mkdir /home/ubuntu/imputations
+mkdir /home/ubuntu/imputations && \
+mkdir /home/ubuntu/vcfs
+
 
 #get impute2
 WORKDIR /home/ubuntu/programs
@@ -139,18 +142,21 @@ rm plink2_linux_avx2.zip
 RUN touch /home/ubuntu/misc_files/fast_queue_emails.txt
 
 # Create the configuration file (just blank template. Will run, but won't mail stuff)
-RUN echo "maxImputations <- 1" > /home/ubuntu/misc_files/configuration.R && \
-echo "maxImputationsInQueue <- 200" >> /home/ubuntu/misc_files/configuration.R  && \
-echo "serverRole <- 'Hub'" >> /home/ubuntu/misc_files/configuration.R && \
-echo "hubAddress <- 'SOMEIPADRESSMANDATORYFORNODERUNNING'" >> /home/ubuntu/misc_files/configuration.R && \
-echo "email_password <- ''" >> /home/ubuntu/misc_files/configuration.R && \
-echo "email_address <- ''" >> /home/ubuntu/misc_files/configuration.R && \
-echo "routinely_delete_this <- c('link','data')"  >> /home/ubuntu/misc_files/configuration.R && \
-echo "paypal <- 'https://www.paypal.me/lfolkersenimputeme/5'" >> /home/ubuntu/misc_files/configuration.R && \
-echo "bulk_node_count <- 1"  >> /home/ubuntu/misc_files/configuration.R && \
-echo "error_report_mail <- ''" >> /home/ubuntu/misc_files/configuration.R && \
-echo "seconds_wait_before_start <- 0" >> /home/ubuntu/misc_files/configuration.R && \
-echo "running_as_docker <- TRUE" >> /home/ubuntu/misc_files/configuration.R
+RUN echo "maxImputations <- 1           #the max number of parallel imputations to run" > /home/ubuntu/misc_files/configuration.R && \
+echo "maxImputationsInQueue <- 200           #the max number of imputations allowed waiting in a queue" >> /home/ubuntu/misc_files/configuration.R  && \
+echo "serverRole <- 'Hub'           #the role of this computer, can be either Hub or Node" >> /home/ubuntu/misc_files/configuration.R && \
+echo "hubAddress <- ''           #if serverRole is Node, then the IP-address of the Hub is required" >> /home/ubuntu/misc_files/configuration.R && \
+echo "from_email_password <- ''           #optional password for sending out emails" >> /home/ubuntu/misc_files/configuration.R && \
+echo "from_email_address <- ''           #optional email-address/username for sending out emails" >> /home/ubuntu/misc_files/configuration.R && \
+echo "routinely_delete_this <- c('link','data')           #delete these parts in routine 14-day data deletion"  >> /home/ubuntu/misc_files/configuration.R && \
+echo "paypal <- 'https://www.paypal.me/lfolkersenimputeme/5'           #suggest to donate to this address in emails" >> /home/ubuntu/misc_files/configuration.R && \
+echo "bulk_node_count <- 1           #count of bulk-nodes, for calculating timings"  >> /home/ubuntu/misc_files/configuration.R && \
+echo "error_report_mail <- ''           #optional email-address to send (major)errors to" >> /home/ubuntu/misc_files/configuration.R && \
+echo "seconds_wait_before_start <- 0           #a delay that is useful only with CPU-credit systems" >> /home/ubuntu/misc_files/configuration.R && \
+echo "running_as_docker <- TRUE           #adapt to docker running" >> /home/ubuntu/misc_files/configuration.R  && \
+echo "max_imputation_chunk_size <- 3000           #how much stuff to put into the memory in each chunk" >> /home/ubuntu/misc_files/configuration.R && \
+echo "verbose <- 4           #how much info to put into logs (min 0, max 10)" >> /home/ubuntu/misc_files/configuration.R
+
 
 #Create the accepted emails list (just put "any")
 RUN echo "email   imputeok" > /home/ubuntu/misc_files/accepted_emails.txt && \
@@ -168,8 +174,8 @@ echo "source('/home/ubuntu/srv/impute-me/functions.R')" >> /home/ubuntu/.Rprofil
 echo "}" >> /home/ubuntu/.Rprofile
 
 #Write a crontab to open using supercronic, once the docker is running
-RUN echo "*/10 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-impute-cron.log 2>&1" > /home/ubuntu/misc_files/supercronic.txt && \
-echo "*/18 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/vcf_handling_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-vcf-cron.log 2>&1" >> /home/ubuntu/misc_files/supercronic.txt
+RUN echo "*/5 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-impute-cron.log 2>&1" > /home/ubuntu/misc_files/supercronic.txt && \
+echo "*/7 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/vcf_handling_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-vcf-cron.log 2>&1" >> /home/ubuntu/misc_files/supercronic.txt
 
 #clone the main github repo
 RUN git clone https://github.com/lassefolkersen/impute-me.git /home/ubuntu/srv/impute-me/
