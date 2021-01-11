@@ -748,7 +748,7 @@ prepare_individual_genome<-function(
   }else{
     algorithm_name <- "an imputation algorithm"
   } 
-  message_start <-paste0("<HTML>We received your data from file <i>", filename,"</i> at www.impute.me. It will now be processed, first through ",algorithm_name," and then trough several types of genetic-risk score calculators. This takes a little less than a day per genome.")
+  message_start <-paste0("<HTML>We received your data from file <i>", filename,"</i> at www.impute.me. It will now be processed, first through ",algorithm_name," and then through several types of genetic-risk score calculators. This takes a little less than a day per genome.")
   if(queue_length > 50){
     run_time <- 0.75 #days (was 1.6 with t2.medium, but now on c5a.large it has dropped to 0.75 days)
     servers_running <- get_conf("bulk_node_count")  #servers
