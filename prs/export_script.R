@@ -37,8 +37,8 @@ export_function<-function(uniqueID){
   #prepare output list
   output<-list()
   output[["documentation"]] <- list()
-  output[["documentation"]][["data_set_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/b693ce0136809d690f702cc01c2e4bfb60833061/prs/2019-03-05_study_list.xlsx"
-  output[["documentation"]][["export_script"]] <- "https://github.com/lassefolkersen/impute-me/blob/b693ce0136809d690f702cc01c2e4bfb60833061/prs/export_script.R"
+  output[["documentation"]][["data_set_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/4589d6823dd4b8d7deb5e48df1ceae0db7bfff97/prs/2021-02-11_study_list.xlsx"
+  output[["documentation"]][["export_script"]] <- "https://github.com/lassefolkersen/impute-me/blob/4589d6823dd4b8d7deb5e48df1ceae0db7bfff97/prs/export_script.R"
   
   
   # Select which of the different approaches to actually run.
