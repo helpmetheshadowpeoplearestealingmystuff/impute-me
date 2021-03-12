@@ -1,5 +1,5 @@
 library("shiny")
-library("plotly")
+#if(!require("plotly"))stop(safeError("Unfortunately the 3D-plotting function in plotly is not configured correctly"))
 
 # options(shiny.sanitize.errors=F)
 
@@ -8,20 +8,6 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_snps.rdata")
 load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_pca.rdata")
 ethnicity_desc<-read.table("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_descriptions.txt",sep="\t",header=T,stringsAsFactors = F,row.names=1)
-
-#local (shiny)
-# source("../functions_local.R")
-# load("2017-04-03_ethnicity_snps.rdata")
-# load("2017-04-03_ethnicity_pca.rdata")
-# ethnicity_desc<-read.table("2017-04-03_ethnicity_descriptions.txt",sep="\t",header=T,stringsAsFactors = F,row.names=1)
-# load("test_genotypes.rdata")
-
-#local
-# source("functions_local.R")
-# load("ethnicity/2017-04-03_ethnicity_snps.rdata")
-# load("ethnicity/2017-04-03_ethnicity_pca.rdata")
-# ethnicity_desc<-read.table("ethnicity/2017-04-03_ethnicity_descriptions.txt",sep="\t",header=T,stringsAsFactors = F,row.names=1)
-# load("ethnicity/test_genotypes.rdata")
 
 
 # Define server logic for a template
@@ -34,6 +20,9 @@ shinyServer(function(input, output){
       )
       
     }else{
+#	    library("shiny")
+#	    if(!require("plotly"))stop(safeError("Unfortunately the 3D-plotting function in plotly is not configured correctly"))
+
       #try to get the pre-guesssed ethnicity
       hint_message <- ""
       uniqueID<-isolate(gsub(" ","",input$uniqueID))
@@ -69,6 +58,10 @@ shinyServer(function(input, output){
       return(NULL)
     }
     
+   #library("shiny")
+   if(!require("plotly"))stop(safeError("Unfortunately the 3D-plotting function in plotly is not configured correctly"))
+
+
     #Set up progress tracker
     progress <- shiny::Progress$new()
     on.exit(progress$close())
@@ -90,6 +83,7 @@ shinyServer(function(input, output){
     uniqueID<-isolate(gsub(" ","",input$uniqueID))
     pc_selections<-isolate(input$pc_selections)
     ethnicities<-isolate(input$ethnicities)
+    scale_size<-isolate(input$scale_size)
     
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
@@ -166,24 +160,46 @@ shinyServer(function(input, output){
     #Update progress
     updateProgress(detail = "Calculate PCA, prepare 3D plot",value=2,max=4)
     
-        
     
-    #Effectuate the plot
-    plot_ly(pca, x = ~x, y = ~y, z = ~z, type = "scatter3d", mode = "markers", color= ~pop_long,
-            colors = colours, showlegend=F, size = ~sizes, marker = list(symbol = 'circle', sizemode = 'diameter'),
-            sizes = c(4, 10),hoverinfo = 'text',  text = pca[,"pop_long"]) %>%
-      layout(title = '',
-             scene = list(xaxis = list(title = pc_selections[1],
-                                       gridcolor = 'rgb(255, 255, 255)',
-                                       gridwidth = 2),
-                          yaxis = list(title = pc_selections[2],
-                                       gridcolor = 'rgb(255, 255, 255)',
-                                       gridwith = 2),
-                          zaxis = list(title = pc_selections[3],
-                                       gridcolor = 'rgb(255, 255, 255)',
-                                       gridwith = 2)),
-             paper_bgcolor = 'rgb(243, 243, 243)',
-             plot_bgcolor = 'rgb(243, 243, 243)')
+    
+    #Effectuate the plot (there's a bug in plotly when running on safari-browsers that makes the dots disappear when size-mapped. The 'no' option makes them not be.)
+    if(scale_size){
+      plot_ly(pca, x = ~x, y = ~y, z = ~z, type = "scatter3d", mode = "markers", color= ~pop_long,
+              colors = colours, showlegend=F, size = ~sizes, marker = list(symbol = 'circle', sizemode = 'diameter'),
+              sizes = c(4, 10),hoverinfo = 'text',  text = pca[,"pop_long"]) %>%
+        layout(title = '',
+               scene = list(xaxis = list(title = pc_selections[1],
+                                         gridcolor = 'rgb(255, 255, 255)',
+                                         gridwidth = 2),
+                            yaxis = list(title = pc_selections[2],
+                                         gridcolor = 'rgb(255, 255, 255)',
+                                         gridwith = 2),
+                            zaxis = list(title = pc_selections[3],
+                                         gridcolor = 'rgb(255, 255, 255)',
+                                         gridwith = 2)),
+               paper_bgcolor = 'rgb(243, 243, 243)',
+               plot_bgcolor = 'rgb(243, 243, 243)')
+      
+      
+      
+    }else{
+      plot_ly(pca, x = ~x, y = ~y, z = ~z, type = "scatter3d", mode = "markers", color= ~pop_long,
+              colors = colours, showlegend=F,  marker = list(symbol = 'circle', sizemode = 'diameter'),
+              sizes = c(4, 10),hoverinfo = 'text',  text = pca[,"pop_long"]) %>%
+        layout(title = '',
+               scene = list(xaxis = list(title = pc_selections[1],
+                                         gridcolor = 'rgb(255, 255, 255)',
+                                         gridwidth = 2),
+                            yaxis = list(title = pc_selections[2],
+                                         gridcolor = 'rgb(255, 255, 255)',
+                                         gridwith = 2),
+                            zaxis = list(title = pc_selections[3],
+                                         gridcolor = 'rgb(255, 255, 255)',
+                                         gridwith = 2)),
+               paper_bgcolor = 'rgb(243, 243, 243)',
+               plot_bgcolor = 'rgb(243, 243, 243)')
+      
+    }
               
     
     

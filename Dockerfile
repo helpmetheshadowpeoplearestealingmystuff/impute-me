@@ -24,7 +24,8 @@ tar \
 unzip \
 vim \
 curl \
-vcftools
+vcftools \
+gawk
 
 #Install kandinsky package, plus the remotes-package that is needed to get it
 RUN R -e "install.packages(c( \
@@ -93,6 +94,15 @@ gunzip impute_v2.3.2_x86_64_static.tgz && \
 tar -xvf impute_v2.3.2_x86_64_static.tar && \
 rm impute_v2.3.2_x86_64_static.tar
 
+
+#get impute2 dynamic (necessary to run in dockers on windows-machines)
+WORKDIR /home/ubuntu/programs
+RUN wget https://mathgen.stats.ox.ac.uk/impute/impute_v2.3.2_x86_64_dynamic.tgz && \
+gunzip impute_v2.3.2_x86_64_dynamic.tgz && \
+tar -xvf impute_v2.3.2_x86_64_dynamic.tar && \
+rm impute_v2.3.2_x86_64_dynamic.tar
+
+
 #get the reference from 1kgenomes
 WORKDIR /home/ubuntu/programs
 RUN wget https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute.tgz && \
@@ -148,14 +158,14 @@ echo "serverRole <- 'Hub'           #the role of this computer, can be either Hu
 echo "hubAddress <- ''           #if serverRole is Node, then the IP-address of the Hub is required" >> /home/ubuntu/misc_files/configuration.R && \
 echo "from_email_password <- ''           #optional password for sending out emails" >> /home/ubuntu/misc_files/configuration.R && \
 echo "from_email_address <- ''           #optional email-address/username for sending out emails" >> /home/ubuntu/misc_files/configuration.R && \
-echo "routinely_delete_this <- c('link','data')           #delete these parts in routine 14-day data deletion"  >> /home/ubuntu/misc_files/configuration.R && \
+echo "routinely_delete_this <- c('')           #delete these parts in routine 14-day data deletion. May put in 'link' and/or 'data', which is the default online. But docker-running defaults to not deleting anything."  >> /home/ubuntu/misc_files/configuration.R && \
 echo "paypal <- 'https://www.paypal.me/lfolkersenimputeme/5'           #suggest to donate to this address in emails" >> /home/ubuntu/misc_files/configuration.R && \
-echo "bulk_node_count <- 1           #count of bulk-nodes, for calculating timings"  >> /home/ubuntu/misc_files/configuration.R && \
-echo "error_report_mail <- ''           #optional email-address to send (major)errors to" >> /home/ubuntu/misc_files/configuration.R && \
+echo "bulk_node_count <- 1           #count of bulk-nodes, used only for calculating timings in receipt mail"  >> /home/ubuntu/misc_files/configuration.R && \
+echo "error_report_mail <- ''           #optional email-address to send (major) errors to" >> /home/ubuntu/misc_files/configuration.R && \
 echo "seconds_wait_before_start <- 0           #a delay that is useful only with CPU-credit systems" >> /home/ubuntu/misc_files/configuration.R && \
 echo "running_as_docker <- TRUE           #adapt to docker running" >> /home/ubuntu/misc_files/configuration.R  && \
-echo "max_imputation_chunk_size <- 3000           #how much stuff to put into the memory in each chunk" >> /home/ubuntu/misc_files/configuration.R && \
-echo "verbose <- 4           #how much info to put into logs (min 0, max 10)" >> /home/ubuntu/misc_files/configuration.R
+echo "max_imputation_chunk_size <- 2000           #how much stuff to put into the memory in each chunk. Lower values results in slower running with less memory-requirements." >> /home/ubuntu/misc_files/configuration.R && \
+echo "verbose <- 1           #how much info to put into logs (min 0, max 10)" >> /home/ubuntu/misc_files/configuration.R
 
 
 #Create the accepted emails list (just put "any")
@@ -175,7 +185,8 @@ echo "}" >> /home/ubuntu/.Rprofile
 
 #Write a crontab to open using supercronic, once the docker is running
 RUN echo "*/5 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/imputation_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-impute-cron.log 2>&1" > /home/ubuntu/misc_files/supercronic.txt && \
-echo "*/7 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/vcf_handling_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-vcf-cron.log 2>&1" >> /home/ubuntu/misc_files/supercronic.txt
+echo "*/7 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/vcf_handling_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-vcf-cron.log 2>&1" >> /home/ubuntu/misc_files/supercronic.txt && \
+echo "00 20 * * * Rscript /home/ubuntu/srv/impute-me/imputeme/deletion_cron_job.R > /home/ubuntu/logs/cron_logs/\`date +\%Y\%m\%d\%H\%M\%S\`-deletef-cron.log 2>&1" >> /home/ubuntu/misc_files/supercronic.txt
 
 #clone the main github repo
 RUN git clone https://github.com/lassefolkersen/impute-me.git /home/ubuntu/srv/impute-me/

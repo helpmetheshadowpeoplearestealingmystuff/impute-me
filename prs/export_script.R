@@ -11,7 +11,10 @@ export_function<-function(uniqueID){
   
   #set paths to supporting information
   prs_dir <- "/home/ubuntu/prs_dir/"
-  prs_overview_path<-"/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx"
+  prs_overview_path<-"/home/ubuntu/srv/impute-me/prs/2021-02-11_study_list.xlsx"
+  
+  #When using matrix-score files (SCORESUM_PLINK_2_0_DOSAGE_MATRIX) - just set the one file
+  matrix_score_file <- "/home/ubuntu/prs_dir/2020-12-30_prs_weights.txt"
   
   
   #Set verbosity consequences
@@ -38,6 +41,19 @@ export_function<-function(uniqueID){
   output[["documentation"]][["export_script"]] <- "https://github.com/lassefolkersen/impute-me/blob/b693ce0136809d690f702cc01c2e4bfb60833061/prs/export_script.R"
   
   
+  # Select which of the different approaches to actually run.
+  # A more complete write-up of testing is available at this DOI:
+  # https://doi.org/10.13140/RG.2.2.10081.53602/1
+    algorithms_to_run <- c(
+    "SCORESUM_PLINK_1_9",
+    "SCORESUM_PLINK_2_0",
+    "SCORESUM_PLINK_2_0_DOSAGE",
+    "SCORESUM_PLINK_2_0_DOSAGE_MATRIX"
+  )
+  algorithms_to_run <- c(
+    "SCORESUM_PLINK_2_0_DOSAGE_MATRIX"
+  )
+  
   
   #check score files exists and are ok
   score_sets<-read.xlsx(prs_overview_path,rowNames=T)
@@ -48,17 +64,43 @@ export_function<-function(uniqueID){
   score_sets[,"path"] <- paste0(prs_dir,score_sets[,"file_to_read"])
   score_sets[,"nicename"] <- score_sets[,"file_to_read"] #mostly for backward compatability
   
-  #run through score sets to check consistency (just takes few seconds)
-  for(i in 1:nrow(score_sets)){
-    if(!file.exists(score_sets[i,"path"]))stop(paste0("PRS weights files were missing, e.g. this one: ",score_sets[i,"path"]))
-    if(file.info(score_sets[i,"path"])[["isdir"]])stop(paste("This PRS weights file was actually a directory:",score_sets[i,"path"]))
-    testRead <-read.table(score_sets[i,"path"],nrows=10,header=T,stringsAsFactors = F)
-    if(ncol(testRead)<3)stop(paste("Too few columns in score file",basename(score_sets[i,"path"])))
-    if(!all(colnames(testRead)[1:2] == c("rsid","ea")))stop(paste("first two columns of a ldpred file must have rsid and ea as headers in",basename(score_sets[i,"path"])))
-    for(k in 3:ncol(testRead))if(class(testRead[,k])!="numeric")stop(paste("non-numeric column: col",k,"of file",basename(score_sets[i,"path"])))
+  #run through score sets to check consistency (for the individual file score types)
+  if( any(c("SCORESUM_PLINK_1_9","SCORESUM_PLINK_2_0","SCORESUM_PLINK_2_0_DOSAGE")%in% algorithms_to_run)){
+    for(i in 1:nrow(score_sets)){
+      if(!file.exists(score_sets[i,"path"]))stop(paste0("PRS weights files were missing, e.g. this one: ",score_sets[i,"path"]))
+      if(file.info(score_sets[i,"path"])[["isdir"]])stop(paste("This PRS weights file was actually a directory:",score_sets[i,"path"]))
+      testRead <-read.table(score_sets[i,"path"],nrows=10,header=T,stringsAsFactors = F)
+      if(ncol(testRead)<3)stop(paste("Too few columns in score file",basename(score_sets[i,"path"])))
+      if(!all(colnames(testRead)[1:2] == c("rsid","ea")))stop(paste("first two columns of a ldpred file must have rsid and ea as headers in",basename(score_sets[i,"path"])))
+      for(k in 3:ncol(testRead))if(class(testRead[,k])!="numeric")stop(paste("non-numeric column: col",k,"of file",basename(score_sets[i,"path"])))
+    }
   }
   
+  #run through score sets to check consistency (for the matrix-type file score types)
+  if( "SCORESUM_PLINK_2_0_DOSAGE_MATRIX"%in% algorithms_to_run){
+    if(!file.exists(matrix_score_file))stop(paste0("PRS weights file was missing: ",matrix_score_file," - this file is not included in the github repository, but can be downloaded separately e.g. via dockerhub instructions"))
+    if(file.info(matrix_score_file)[["isdir"]])stop(paste("This PRS weights file was actually a directory:",matrix_score_file))
+    testRead <-read.table(matrix_score_file,nrows=10,header=T,stringsAsFactors = F)
+    for(i in 1:nrow(score_sets)){
+      if(!rownames(score_sets)[i]%in%colnames(testRead))stop(paste0("Did not find the ",rownames(score_sets)[i]," score in the matrix_score_file at ",matrix_score_file," - the file is probably mismatched to a wrong version."))
+    }
+    if(ncol(testRead)<3)stop(paste("Too few columns in score file",matrix_score_file))
+    if(!all(colnames(testRead)[1:2] == c("rsid","ea")))stop(paste("first two columns of a ldpred file must have rsid and ea as headers in",matrix_score_file))
+    for(k in 3:ncol(testRead))if(!class(testRead[,k])%in%c("numeric","integer"))stop(paste("non-numeric column: col",k,"of file",matrix_score_file))
+  }
   
+  #check that the freq files are there
+  if( any(c("SCORESUM_PLINK_2_0","SCORESUM_PLINK_2_0_DOSAGE","SCORESUM_PLINK_2_0_DOSAGE_MATRIX")%in% algorithms_to_run)){
+    missing_freq_files<-vector()
+    for(chr in chromosomes){
+      for(ethnicity in c("AFR","ALL","AMR","EAS","EUR","SAS")){
+        freq_file <- paste0("/home/ubuntu/prs_dir/frequencies/2019-03-11_chr",chr,"_",ethnicity,"_freq.txt.gz")    
+        if(!file.exists(freq_file))missing_freq_files<-c(missing_freq_files,freq_file)
+      }
+    }
+    if(length(missing_freq_files)>0)stop(paste("Did not find required 1kgenomes frequency files at ~/prs_dir/frequencies/. Altogether",length(missing_freq_files),"files were missing. These are files with headers CHR,SNP,A1,A2,MAF,NCHROBS used in plink -score running."))
+  }
+    
   #creating a temp folder to use
   idTempFolder<-paste("/home/ubuntu/data",uniqueID,"temp/",sep="/")
   if(file.exists(idTempFolder)){
@@ -66,22 +108,6 @@ export_function<-function(uniqueID){
   }else{
     dir.create(idTempFolder)
   }
-  
-  # Select which of the different approaches to actually run.
-  # A more complete write-up of testing is available at this DOI:
-  # https://doi.org/10.13140/RG.2.2.10081.53602
-  
-  algorithms_to_run <- c(
-    "SCORESUM_PLINK_1_9",
-    "SCORESUM_PLINK_2_0",
-    "SCORESUM_PLINK_2_0_DOSAGE",
-    "SCORESUM_PLINK_2_0_DOSAGE_MATRIX"
-  )
-
-  algorithms_to_run <- c(
-    "SCORESUM_PLINK_1_9",
-    "SCORESUM_PLINK_2_0_DOSAGE_MATRIX"
-  )
   
   
   
@@ -426,11 +452,9 @@ export_function<-function(uniqueID){
     }
     gender <- pData[1,"gender"]
     
-    #No need to iterate over all scores here - just set the one file
-    score_file <- "/home/ubuntu/prs_dir/2020-12-30_prs_weights.txt"
     
     #figure out how many columns in score file and check it matches with score_sets
-    score_column_names<-colnames(read.table(score_file,nrows=10,sep=" ",header=T))
+    score_column_names<-colnames(read.table(matrix_score_file,nrows=10,sep=" ",header=T))
     score_column_names<-score_column_names[!score_column_names%in%c("rsid","ea")]
     if(!all(rownames(score_sets)%in%score_column_names)){
       missing<-rownames(score_sets)[!rownames(score_sets)%in%score_column_names]
@@ -474,7 +498,7 @@ export_function<-function(uniqueID){
       }
       
       #execute plink2 score/dosage-matrix command
-      cmd7 <- paste0(plink2, " --gen ", idTempFolder,f," ref-first --sample ", temp_sample_path," --oxford-single-chr ",chr," --read-freq ", freq_file," --score ",score_file," 1 2 header center --score-col-nums ",paste(indices_to_run,collapse=",")," --out ",out_file)
+      cmd7 <- paste0(plink2, " --gen ", idTempFolder,f," ref-first --sample ", temp_sample_path," --oxford-single-chr ",chr," --read-freq ", freq_file," --score ",matrix_score_file," 1 2 header center --score-col-nums ",paste(indices_to_run,collapse=",")," --out ",out_file)
       out7 <- system(cmd7,ignore.stdout=ignore.stdout, ignore.stderr = ignore.stderr)
       
       
@@ -554,29 +578,31 @@ export_function<-function(uniqueID){
       output[[nicename]][["PLINK_2_0_DOSAGE_MATRIX_NAMED_ALLELE_DOSAGE_SUM"]] <- score_sets[i,"PLINK_2_0_DOSAGE_MATRIX_NAMED_ALLELE_DOSAGE_SUM"]
     }
 
-    #ready-to-use scale to zero-mean and unit-variance (just not implemented yet)
-    #When implementing, then make a new density overview,and consider also going for 2_0 scores at the same time
-    # if(ethnicity == "ALL"){
-    #   densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_ALL.rdata"
-    # }else{
-    #   densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_",ethnicity,".rdata")
-    # }
-    # load(densityCurvePath)    
-    # GRS <- output[[nicename]][["SCORESUM_PLINK_1_9"]] #we really should start using the 2_0 version
-    # x <-densities[paste0(nicename,"_x"),]
-    # y <- densities[paste0(nicename,"_y"),]
-    # mean <- x[order(y,decreasing=T)[1]]
-    # proportion <- cumsum(y[order(y,decreasing=T)]) / sum(y)
-    # one_sd_range_index<-range(as.numeric(names(proportion[proportion < 0.6827])))
-    # sd <- mean(abs(x[one_sd_range_index] - mean))
-    # output[[nicename]][["GRS"]] <- as.numeric((GRS - mean) / sd)
     
-    #The idea here is that the [[nicename]][["GRS]] will contain best-choice GRS as a Z-score (so including the above)
-    #However, it's still testing with more scores, so for now we just insert the old stable one
-    output[[nicename]][["GRS"]]<-output[[nicename]][["SCORESUM_PLINK_1_9"]]
     
-    output[[nicename]][["alleles_checked"]] <- output[[nicename]][["PLINK_1_9_CNT1"]]
-    output[[nicename]][["alleles_observed"]] <- output[[nicename]][["PLINK_1_9_CNT2"]]
+    #Re-calculate the GRS as Z-score. This is also done on the fly, with distributions, however
+    #the motivation here is that the exact Z-score calculation will often change, as we modify the scripts
+    #hence the existence of the dozens of different list entries. However "GRS" should always be inserted as
+    #what our best guess at the time is, therefore it needs to load the distributions and correct relative
+    #to them
+    if(ethnicity == "ALL"){
+      densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_ALL.rdata"
+    }else{
+      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_",ethnicity,".rdata")
+    }
+    load(densityCurvePath)
+    GRS <- output[[nicename]][["SCORESUM_PLINK_2_0_DOSAGE_MATRIX"]] * output[[nicename]][["PLINK_2_0_DOSAGE_MATRIX_NMISS_ALLELE_CT"]]
+    x <-densities[paste0(nicename,"_x"),]
+    y <- densities[paste0(nicename,"_y"),]
+    mean <- x[order(y,decreasing=T)[1]]
+    proportion <- cumsum(y[order(y,decreasing=T)]) / sum(y)
+    one_sd_range_index<-range(as.numeric(names(proportion[proportion < 0.6827])))
+    sd <- mean(abs(x[one_sd_range_index] - mean))
+    output[[nicename]][["GRS"]] <- as.numeric((GRS - mean) / sd)
+    
+    #these two made more sense when running as plink 1.9 but are kept for compatibility
+    output[[nicename]][["alleles_checked"]] <- score_sets[i,"variant_count"]
+    output[[nicename]][["alleles_observed"]] <- NA
   }
 
   #remove temp folder and return output

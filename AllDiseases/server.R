@@ -1,12 +1,12 @@
 library("shiny")
-
+library("jsonlite")
 
 #load functions and define paths of reference files and data directory
 source("/home/ubuntu/srv/impute-me/functions.R")
 dataFolder<-"/home/ubuntu/data/"
-snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2020-04-02_snp_weights.rdata"
-trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2020-04-02_trait_overview.xlsx"
-all_snp_trait_file <- "/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx"
+snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2021-01-28_snp_weights.rdata"
+trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2021-01-28_trait_overview.xlsx"
+all_snp_trait_file <- "/home/ubuntu/srv/impute-me/prs/2021-02-11_study_list.xlsx"
 
 
 
@@ -14,12 +14,6 @@ all_snp_trait_file <- "/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx
 ethnicities_labels<-c("Automatic guess","global","African","Ad Mixed American","East Asian","European","South Asian")
 names(ethnicities_labels)<-c("automatic","global","AFR", "AMR", "EAS", "EUR", "SAS")
 
-
-#establish ordinal number ending
-ordinals<-rep("th",1,100)
-ordinals[c(1,seq(21,91,10))] <- "st"
-ordinals[c(2,seq(22,92,10))] <- "nd"
-ordinals[c(3,seq(23,93,10))] <- "rd"
 
 
 #preload data
@@ -48,26 +42,27 @@ shinyServer(function(input, output) {
   #The main data gathereing function, defined as reactive because it's used in several different calls
   get_data <- reactive({
     
-    #initial UI data gathering and user-check
+    #initial UI data gathering 
     if(input$only_show_newest){
       ui_selector <- paste0("trait_",input$trait_group,"_newest")  
     }else{
       ui_selector <- paste0("trait_",input$trait_group)
     }
     study_id<-input[[ui_selector]]
-    
     uniqueID<-gsub(" ","",input$uniqueID)
     ethnicity_group<-input$ethnicity_group
     use_all_snp_score <- input$use_all_snp_score
     plot_heritability <- input$plot_heritability
     real_dist<-input$real_dist
     
+
+    
     #If trait is not available in all_snp_traits we override the use_all_snp_score and set to FALSE
     #(this would be the most frequent case actually. For now)
     if(!study_id %in% rownames(all_snp_traits)){
       use_all_snp_score <- FALSE
     }else{
-      if(is.na(all_snp_traits[study_id,"file_to_read"])){
+      if(is.na(all_snp_traits[study_id,"file_to_read"])){ #also revert it to FALSE if there's no actual score-file
         use_all_snp_score <- FALSE
       }
     }
@@ -80,7 +75,7 @@ shinyServer(function(input, output) {
     
     
     
-    
+    #user check
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
     if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
@@ -91,54 +86,94 @@ shinyServer(function(input, output) {
     
     
     
-    
-    
-    
     #getting the relevant trait name, pmid and SNPs to analyze
     trait<-traits[study_id,"trait"]
     pmid<-traits[study_id,"pmid"]
     if(!pmid%in%data[,"pmid"])stop(paste("PMID",pmid,"was not found in system"))
     SNPs_to_analyze<-data[data[,"study_id"]%in%study_id ,]
+
+
+    #Reading in the json file     
+    json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
+    if(!file.exists(json_path))stop(safeError("Missing essential files for this uniqueID (So cannot do automatic reference population guess)"))
+    d1<-fromJSON(json_path)
+    
     
     #setting up back-ground frequency sources
     #The default behavior is to try to guess ethnicity. If this fails it should revert to 'global' distribution but prepare to make a note of it in the methods.
     if(ethnicity_group == "automatic"){
-      json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
-      if(!file.exists(json_path))stop(safeError("Json file not found (So cannot do automatic reference population guess)"))
-      library(jsonlite)
-      d1<-fromJSON(json_path)
       e<-try(d1[["ethnicity"]][["guessed_super_pop"]],silent=F)
       if(is.null(e) || is.na(e) ||  !e %in% c("AFR", "AMR", "EAS", "EUR", "SAS")){
-        # ethnicity_explanation_text<-paste0(ethnicity_explanation_text," This was done because we could not automatically guess your ethnicity, but you can use the advanced tab to set it yourself.")
         ethnicity_group<-"global"
       }else{
-        # ethnicity_explanation_text<-paste0(ethnicity_explanation_text," This was done based on an automated guess.")
         ethnicity_group <- e
       }
     }
+    
+    #select correct densityCurvePath
     if(ethnicity_group == "global"){
-      #do nothing. Note the density curve location.
-      densityCurvePath<-"/home/ubuntu/srv/impute-me/AllDiseases/2020-04-17_densities_ALL.rdata"
+      if(use_all_snp_score){
+        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_ALL.rdata"
+      }else{
+        densityCurvePath<-"/home/ubuntu/srv/impute-me/AllDiseases/2021-02-12_densities_ALL.rdata"  
+      }
     }else{
-      #then replace the MAF with the correct superpopulation group
+      if(use_all_snp_score){
+        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_",ethnicity_group,".rdata")
+      }else{
+        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/AllDiseases/2021-02-12_densities_",ethnicity_group,".rdata")  
+      }
+      
+      #Also,replace the MAF with the correct superpopulation group
       SNPs_to_analyze[,"minor_allele_freq"] <- SNPs_to_analyze[,paste0(ethnicity_group,"_AF")]
-      #note the density curve location
-      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/AllDiseases/2020-04-17_densities_",ethnicity_group,".rdata")
+    }
+    
+    #only actually load the distributions if asked for them
+    if(real_dist ){
+      load(densityCurvePath)
+      if(use_all_snp_score){ #should standardize this naming later
+        x_name<-paste0(all_snp_traits[study_id,"file_to_read"],"_x")
+        y_name<-paste0(all_snp_traits[study_id,"file_to_read"],"_y")
+      }else{
+        x_name<-paste0(study_id,"_x")
+        y_name<-paste0(study_id,"_y")
+      }
+      if(!all(c(x_name,y_name)%in% rownames(densities)))stop(safeError(paste("This",study_id,"trait was not found to have density-plotting available")))
+      distributionCurve<-list(x=densities[x_name,],y=densities[y_name,])
+    }else{
+      distributionCurve<-NULL
     }
     
     
     
     
     
+    #get SNP count
+    if(!use_all_snp_score){
+      snp_count<-nrow(SNPs_to_analyze)
+    }else{
+      snp_count<-all_snp_traits[study_id,"variant_count"]
+    }
+    
+    
+
     #gathering some background info for the study		
     link<-paste0("www.ncbi.nlm.nih.gov/pubmed/",traits[study_id,"pmid"])
     author<-traits[study_id,"first_author"]
     sampleSize<-traits[study_id,"sampleSize"]
     publication_date<-traits[study_id,"publication_date"]
-    textToReturn <- paste0("Retrieved ",nrow(SNPs_to_analyze)," SNPs from <u><a target='_blank' href='http://",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",tolower(trait),".")
+    textToReturn <- paste0("Retrieved ",snp_count," SNPs from <u><a target='_blank' href='http://",link,"'>",author," et al (PMID ",pmid,")</a></u>, which were reported to be associated with ",tolower(trait),".")
     textToReturn <- paste0(textToReturn," This study reports a total sample size of ",sampleSize,", as entered on date ",publication_date,".")
     
-    
+    #get PGS_name (if applicable)
+    if(use_all_snp_score){
+      if(!is.na(all_snp_traits[study_id,"PGS_id"])){
+        PGS<-all_snp_traits[study_id,"PGS_id"]
+        PGS_source<-paste0(" It was implemented from the <u><a href='http://www.pgscatalog.org'>PGS-catalog</a></u> ID ",PGS,".")
+      }else{
+        PGS_source<-""
+      }
+    }
     
     #if any of the SNPs are duplicated we have to merge them (this by the way is an odd situation
     #why would a SNP be listed twice in the results for the same trait - let's aim to merge only in GRS
@@ -173,34 +208,87 @@ shinyServer(function(input, output) {
     }else{
       SNPs_to_analyze_duplicates<-SNPs_to_analyze[0,]
     }
-    
-    
     rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
     genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
     SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
+    
+    
+    #calculate the polygenic risk score using get_GRS_2 (since the first step is tabulated and shown, it's done regardless whether we use_all_snp_score)
     SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T)
-    population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
-    if(population_sum_sd == 0)stop(safeError("For some reason we couldn't analyse this particular trait from your genomic data."))
+    if(!use_all_snp_score){
+      population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
+      if(population_sum_sd == 0)stop(safeError("For some reason we couldn't analyse this particular trait from your genomic data."))
+      GRS <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
+    }
+
     
-    GRS <-sum(SNPs_to_analyze[,"score_diff"],na.rm=T) / population_sum_sd
-    
-    
+    #extract the polygenic risk score from json (if using use_all_snp_score)
+    if(use_all_snp_score){
+      if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study. Try to switch off the all-SNP scoring in advanced options."))
+      file_to_read <- all_snp_traits[study_id,"file_to_read"]
+      #check and load prs
+      if(!"prs"%in%names(d1))stop(safeError("No all-SNP scores were available for this sample. It was probably uploaded before implementation."))
+      d2<-d1[["prs"]]
+      if(!file_to_read%in%names(d2))stop(safeError("No all-SNP scores were available for this study for this sample. It was probably uploaded before implementation."))
+      d3<-d2[[file_to_read]]
+      if(!all(c("SCORESUM_PLINK_2_0_DOSAGE_MATRIX","PLINK_2_0_DOSAGE_MATRIX_NMISS_ALLELE_CT")%in%names(d3)))stop(safeError("The correct all-SNP scores were not available for this study for this sample. It was probably uploaded before implementation."))
+      GRS <- signif(d3[["SCORESUM_PLINK_2_0_DOSAGE_MATRIX"]] * d3[["PLINK_2_0_DOSAGE_MATRIX_NMISS_ALLELE_CT"]]  ,3)
+    }
     
     
     #check for question marks in risk-allele
-    c1<-apply(SNPs_to_analyze[,c("minor_allele","major_allele","effect_allele","non_effect_allele")]=="?",1,sum)
-    if(sum(c1>0) & !use_all_snp_score){
-      textToReturn <- paste0(textToReturn," Also note that ",sum(c1>0)," SNP(s) had missing or discrepant allele information, meaning that risk-allele or minor/major allele could not be correctly assigned. This is indicated with a '?' in the results table and causes the SNP to be omitted from the GRS-calculation. This is likely due to strand-reporting issues, and may be fixable by checking the original study.")
+    if(!use_all_snp_score){
+      c1<-apply(SNPs_to_analyze[,c("minor_allele","major_allele","effect_allele","non_effect_allele")]=="?",1,sum)
+      if(sum(c1>0) & !use_all_snp_score){
+        if(sum(c1>0)==1){snp_or_snps<-"SNP"}else{snp_or_snps<-"SNPs"}
+        textToReturn <- paste0(textToReturn," Also note that ",sum(c1>0)," ",snp_or_snps," had missing or discrepant allele information, meaning that risk-allele or minor/major allele could not be correctly assigned. This is indicated with a '?' in the results table and causes the SNP to be omitted from the calculation. This is likely due to strand-reporting issues, and may be fixable by checking the original study.")
+      }
+    }
+    
+    
+    
+    
+    #Scale distribution if they are requested as use_all_snp_score
+    if(use_all_snp_score){
+      #scale to zero-mean and unit-variance
+      x <-distributionCurve[["x"]]
+      y <- distributionCurve[["y"]]
+      mean <- x[order(y,decreasing=T)[1]]
+      proportion <- cumsum(y[order(y,decreasing=T)]) / sum(y)
+      one_sd_range_index<-range(as.numeric(names(proportion[proportion < 0.6827])))
+      sd <- mean(abs(x[one_sd_range_index] - mean))
+      distributionCurve[["x"]] <- (distributionCurve[["x"]] - mean) / sd
+      GRS <- (GRS - mean) / sd
+    }
+    
+    
+    
+    #Add that table is just an example if it is an use_all_snp_score case
+    if(use_all_snp_score){
+      textToReturn <- paste0(textToReturn," Note that the table below shows the most significant SNPs only as a calculation example - the score is based on more than what is shown.")
+    }
+    
+    
+    #add that breast cancer PRS is no substitute for a BRCA sequencing
+    if(length(grep("breast_cancer_",study_id))>0){
+      textToReturn<-paste0(textToReturn," Note that this breast cancer PRS <b>is no substitute for a BRCA-gene sequencing</b>. It only includes info from common variation, and in breast cancer there are particularly strong nonsense-mutations in the BRCA-genes (etc) that have high impact on risk, but are not detectable with microarray data.")
+      
+    }
+    
+    #add that COVID19-severity PRS is no substitute for a mask
+    if(length(grep("covid19hg",study_id))>0){
+      textToReturn<-paste0(textToReturn," Note that this genetic covid-19 severity score <b>is no substitute for</b> careful behaviour. The best way to avoid severe Covid-19 disease is to avoid getting infected with Sars-cov-2 by e.g. keeping distance.")
+      textToReturn<-sub("http://www.ncbi.nlm.nih.gov/pubmed/00000000","https://www.covid19hg.org/results/r5/",textToReturn)
+      textToReturn<-sub("PMID 00000000","freeze 5, A2 ALL",textToReturn)
     }
     
     
     
     
     #add the overall population SD value
-    if(!use_all_snp_score){
-      textToReturn <- paste0(textToReturn,"<br><br>For you, we calculated an ethnicity-corrected trait Z-score of ",signif(GRS,2),".")  
+    if(!use_all_snp_score | use_all_snp_score){
+      textToReturn <- paste0(textToReturn,"<br><br>For you, we calculated an ancestry-corrected trait Z-score of ",signif(GRS,2),".")  
     }
-    
     
     
     #add the final summary 
@@ -217,133 +305,39 @@ shinyServer(function(input, output) {
     
     
     #return a read-out
-    if(!use_all_snp_score){
-      if(percentage > 50){
-        textToReturn <- paste0(textToReturn," This means that your genetic risk score for <b>this trait is higher than ",percentage,"% of and lower than ",100-percentage,"% of the general population</b>.",summary)
-      }else{
-        textToReturn <- paste0(textToReturn," This means that your genetic risk score for <b>this trait is lower than ",100-percentage,"% of and higher than ",percentage,"% of the general population</b>.",summary)
-      }
+    if(percentage > 50){
+      textToReturn <- paste0(textToReturn," This means that your genetic risk score for <b>this trait is higher than ",percentage,"% of and lower than ",100-percentage,"% of the general population</b>.",summary)
+    }else{
+      textToReturn <- paste0(textToReturn," This means that your genetic risk score for <b>this trait is lower than ",100-percentage,"% of and higher than ",percentage,"% of the general population</b>.",summary)
     }
+
     
-    
-    
-    #add that breast cancer PRS is no substitute for a BRCA sequencing
-    if(length(grep("breast_cancer_",study_id))>0){
-      textToReturn<-paste0(textToReturn," Note that this breast cancer PRS <b>is no substitute for a BRCA-gene sequencing</b>. It only includes info from common variation, and in breast cancer there are particularly strong nonsense-mutations in the BRCA-genes that have high impact on risk, but are not detectable with microarray data.")
-    }
     
     #write the methods text for GWAS-significant hits
-    methodsToReturn<-paste0("<small><br><b>Methods</b><br>The polygenic risk score is calculated by combining your genotype data with trait association data from ",author," et al (PMID ",pmid,"). This is done by counting how many risk-alleles you have for each SNP (column <i>'Your genotype'</i>) and multiplying that count by the reported effect-size of the SNP (column <i>'Effect Size'</i>). This gives a SNP-score for each row (column <i>'SNP-score'</i>). The SNP-score is then centered so that the <i>average</i> score in the general population would be zero (column <i>'SNP-score population normalized'</i>). All of these population normalized values are then summarized to get an overall score. This sum is further scaled so that its standard-deviation in the general population would be equal to 1 ('unit-variance'). This effectively makes it a <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-score</a></u>. The scaling and centering is based on the minor-allele frequencies (MAF) taken from the 1000 genomes project, using the ",ethnicities_labels[ethnicity_group]," frequency distribution. This gives an ethnicity-specific standard deviation of ",signif(population_sum_sd,2),". If you summarize the population normalized SNP-score column and divide by this number, you too will obtain the reported Z-score of ",signif(GRS,2),", illustrating how your score is a combination of many SNPs working together. Further details of all calculations can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/03c51c63b262f600d509469e361db35bd2a8a5fb/functions.R#L1295-L1455'>source code</a></u>. 
+    if(!use_all_snp_score){
+      methodsToReturn<-paste0("<small><br><b>Methods</b><br>The polygenic risk score is calculated by combining your genotype data with trait association data from ",author," et al (PMID ",pmid,"). This is done by counting how many risk-alleles you have for each SNP (column <i>'Your genotype'</i>) and multiplying that count by the reported effect-size of the SNP (column <i>'Effect Size'</i>). This gives a SNP-score for each row (column <i>'SNP-score'</i>). The SNP-score is then centered so that the <i>average</i> score in the general population would be zero (column <i>'SNP-score population normalized'</i>). All of these population normalized values are then summarized to get an overall score. This sum is further scaled so that its standard-deviation in the general population would be equal to 1 ('unit-variance'). This effectively makes it a <u><a href='https://en.wikipedia.org/wiki/Standard_score'>Z-score</a></u>. The scaling and centering is based on the minor-allele frequencies (MAF) taken from the 1000 genomes project, using the ",ethnicities_labels[ethnicity_group]," frequency distribution. This gives an ethnicity-specific standard deviation of ",signif(population_sum_sd,2),". If you summarize the population normalized SNP-score column and divide by this number, you too will obtain the reported Z-score of ",signif(GRS,2),", illustrating how your score is a combination of many SNPs working together. Further details of all calculations can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/03c51c63b262f600d509469e361db35bd2a8a5fb/functions.R#L1295-L1455'>source code</a></u>. 
 
                             <br><br>The advantage of this approach is that it only requires a list of GWAS-significant SNPs, their frequency, effect-size and effect-alleles.  This makes it possible to implement the calculation systematically for many diseases and traits. 
                             
                             <br><br>One weakness in this approach is that it assumes that individuals from the 1000 genomes project are a reasonably normal reference group. For some traits or diseases this may not be true. As an alternative, you can select the <i>'plot user distribution'</i> option in the advanced options sections. This will overlay the plot with distribution of all ethnicity-matched impute.me users. The weakness of that approach, however, is the assumption that most users of impute.me are reasonably normal. Another potential issue is that in some cases the term genetic <i>risk</i> score may be unclear. For example in the case of GWAS of biological quantities where it is not clear if higher values are <i>more</i> or <i>less</i> risk-related, e.g. HDL-cholesterol or vitamin-levels. In most cases, higher score means high level - but it is recommended to consult with the original GWAS publication if there is any doubt. Thirdly, it is important to note that many of these scores only explain very small proportions of the overall risk. How much is illustrated in the blue pie chart below the bell curve. The more dark blue, the more predictive the score is. In the <u><a href='https://www.impute.me/prsExplainer'>PRS-explanatory module</a></u> you can further explore what this predivtiveness means in a sandbox setting.
                             
                             <br><br>Finally, instead of scrolling through all the alphabetical entries here, then check out the <u><a href='https://www.impute.me/diseaseNetwork/'>Precision-medicine module</a></u>. The data in that module is based on the calculations made here, but the information is instead given as a view of scores relevant only to a specific disease-scope. The intention is to give relevant information for a given context, while avoiding risk-sorted lists bound to produce spurious and wrongful observations (see <u><a href='https://github.com/lassefolkersen/impute-me/issues/8'>discussion</a></u> here).</small>")		
+    }
     
+    #write the methods text for all-SNP scores
+    if(use_all_snp_score){
+      methodsToReturn<-paste0("<small><br><b>Methods</b><br>The all-SNP polygenic risk score is calculated by combining your genotype data with complete trait association data from <u><a href='",link,"'>",author," et al</a></u>.",PGS_source," This is done by counting how many risk-alleles you have for each SNP (column <i>'Your genotype'</i>) and multiplying that count by the reported effect-size of the SNP (column <i>'Effect Size'</i>). This gives a SNP-score for each row (column <i>'SNP-score'</i>). Note that the table only shows the most significant SNPs as an example, even though a total of ",snp_count," SNPs are used in the calculation. This is done according to the <u><a href='https://www.cog-genomics.org/plink2'>plink</a></u> <i>score</i> method. For missing SNPs, the average frequency for ",ethnicities_labels[ethnicity_group]," ethnicity is used, based on data from the 1000 genomes project.  Further details of all calculations can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/03c51c63b262f600d509469e361db35bd2a8a5fb/prs/export_script.R'>source code</a></u>. 
+
+                              <br><br>The all-SNP polygenic risk score works as an add-on to each existing score at impute.me. You can switch it off by un-selecting <i>'Show all-SNP score'</i> in advanced options. The main advantage of all-SNP scores is that they explain more of the risk variation than the default score types that are based only on GWAS-significant 'top' SNPs. You can see the difference as how much dark-blue there is in the pie-chart of variability explained. The difference can also be further explored in the sandbox <u><a href='https://www.impute.me/prsExplainer'>PRS-explanatory module</a></u>.
+
+                              <br><br>A main disadvantage of the all-SNP score is that it is difficult to implement it systematically for many diseases and traits, which is the reason it is only available for selected studies. This is likely to change in the future as more and more studies release their full summary-stats without access-conditions. Remaining disadvantages mainly relate to how we implement the calculations. For example, the current implementation only have the option to compare to previous ethnicity-matched users of impute.me. This is something we are working actively on.</small>")		
+    }
     
     
     #add in the (damn) duplicates
     SNPs_to_analyze<-rbind(SNPs_to_analyze,SNPs_to_analyze_duplicates)
     
     
-    #if asked for distribution then get the distribution
-    if(real_dist & !use_all_snp_score){
-      load(densityCurvePath)
-      if(!paste0(study_id,"_y") %in% rownames(densities))stop(safeError(paste("This",study_id,"trait was not found to have density-plotting available")))
-      
-      distributionCurve<-list(x=densities[paste0(study_id,"_x"),],y=densities[paste0(study_id,"_y"),])
-    }else{
-      distributionCurve<-NULL
-    }
-    
-    
-    
-    #if asked for all-SNP override then try to get that instead, modify methods text and 
-    #SNP count as relevant, but keep main table with top SNPs to illustrate
-    if(use_all_snp_score){
-      
-      
-      if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
-      
-      file_to_read <- all_snp_traits[study_id,"file_to_read"]
-      
-      #re-read json for robustness (can be optimized later)
-      if(!exists("d1")){
-        json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
-        if(!file.exists(json_path))stop(safeError("Json file not found (So cannot do automatic reference population guess)"))
-        library(jsonlite)
-        d1<-fromJSON(json_path)
-      }
-      
-      #check and load prs
-      if(!"prs"%in%names(d1))stop(safeError("No all-SNP scores were available for this sample. It was probably uploaded before implementation."))
-      d2<-d1[["prs"]]
-      
-      #check and load study
-      if(!file_to_read%in%names(d2))stop(safeError("No all-SNP scores were available for this study for this sample. It was probably uploaded before implementation."))
-      d3<-d2[[file_to_read]]
-      
-      
-      #check and react to alleles_checked
-      alleles_checked <- d3[["alleles_checked"]]
-      qc_limit <- 300000 # number determined in QC to fix the really bad outliers (it's a compeltely separate top below this, and there's none in-between)
-      if(alleles_checked < qc_limit){ 
-        stop(safeError("We detected a problem with the number of SNPs used in this all-SNP PRS score. It is available in your json file, but will not displayed here due to calculation-quality concerns. Switch off the 'show all-SNP score' option to revert to basic score plotting."))
-      }
-      
-      
-      #replace GRS
-      GRS <- d3[["SCORESUM_PLINK_1_9"]] 
-      
-      #replace SNP count
-      new_snp_count <- d3[["alleles_observed"]]
-      textToReturn<-sub("Retrieved [0-9]+ SNPs from",paste("Retrieved",new_snp_count,"SNPs from"),textToReturn)
-      
-      #replace the distribution curves
-      if(ethnicity_group == "global"){
-        #do nothing. Note the density curve location.
-        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_ALL.rdata"
-      }else{
-        #note the density curve location
-        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_",ethnicity_group,".rdata")
-      }
-
-      
-      #write the methods text for all-SNP scores
-      methodsToReturn<-paste0("<small><br><b>Methods</b><br>The all-SNP polygenic risk score is calculated by combining your genotype data with complete trait association data from <u><a href='",link,"'>",author," et al</a></u>. This is done by counting how many risk-alleles you have for each SNP (column <i>'Your genotype'</i>) and multiplying that count by the reported effect-size of the SNP (column <i>'Effect Size'</i>). This gives a SNP-score for each row (column <i>'SNP-score'</i>). Note that the table only shows the most significant SNPs as an example, even though a total of ",new_snp_count," SNPs are used in the calculation. This is done according to the <u><a href='https://www.cog-genomics.org/plink2'>plink</a></u> <i>score</i> method. For missing SNPs, the average frequency for ",ethnicities_labels[ethnicity_group]," ethnicity is used, based on data from the 1000 genomes project.  Further details of all calculations can be found in the <u><a href='https://github.com/lassefolkersen/impute-me/blob/03c51c63b262f600d509469e361db35bd2a8a5fb/prs/export_script.R#L96-L97'>source code</a></u>. 
-
-                              <br><br>The all-SNP polygenic risk score is still a semi-experimental functionality of impute.me. You can switch it off by un-selecting <i>'Show all-SNP score'</i> in advanced options. The main advantage is that explains more of the risk variation than the default score types that are based only on GWAS-significant 'top' SNPs. You can see the difference as how much dark-blue there is in the bar-plot of variability explained. The difference can also be further explored in the sandbox <u><a href='https://www.impute.me/prsExplainer'>PRS-explanatory module</a></u>.
-
-                              <br><br>A main disadvantage of the all-SNP score is that it is difficult to implement it systematically for many diseases and traits, which is the reason it is only available for few selected studies. This is likely to change in the future as more and more studies release their full summary-stats without access-conditions. Check this <u><a href='https://github.com/lassefolkersen/impute-me/issues/9'>github issue</a></u> for further perspectives. Remaining disadvantages mainly relate to how we implement the calculations. For example, the current implementation only have the option to compare to previous ethnicity-matched users of impute.me. This is something we are working actively on.</small>")		
-      
-      
-      
-      
-      
-      #get density curve      
-      load(densityCurvePath)
-      if(!paste0(file_to_read,"_y") %in% rownames(densities))stop(safeError(paste("This",study_id,"trait was not found to have density-plotting available")))
-      distributionCurve<-list(x=densities[paste0(file_to_read,"_x"),],y=densities[paste0(file_to_read,"_y"),])
-      
-
-      #scale to zero-mean and unit-variance
-      x <-distributionCurve[["x"]]
-      y <- distributionCurve[["y"]]
-      mean <- x[order(y,decreasing=T)[1]]
-      proportion <- cumsum(y[order(y,decreasing=T)]) / sum(y)
-      one_sd_range_index<-range(as.numeric(names(proportion[proportion < 0.6827])))
-      sd <- mean(abs(x[one_sd_range_index] - mean))
-      
-      #execute scaling
-      GRS <- (GRS - mean) / sd
-      distributionCurve[["x"]] <- (distributionCurve[["x"]] - mean) / sd
-      
-      
-      #Insert summary score text
-      textToReturn <- paste0(textToReturn," For you, we calculated an all-SNP polygenic risk score of ",signif(GRS,2),". You can compare this score with that of other users in above plot. The table below shows the strongest of the SNPs to illustrate the polygenic nature of the trait.")  
-      
-    }
     
     
     #write the score to the log file
@@ -381,11 +375,11 @@ shinyServer(function(input, output) {
     }else if(input$goButton > 0) {
       o<-get_data()
       SNPs_to_analyze<-o[["SNPs_to_analyze"]]
-      GRS_beta<-o[["GRS"]]
+      GRS<-o[["GRS"]]
       distributionCurve <- o[["distributionCurve"]]
       use_all_snp_score <- o[["use_all_snp_score"]]
       
-      if(is.na(GRS_beta))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
+      if(is.na(GRS))stop("Could not calculate overall GRS because all SNPs in the signature were missing information about either risk-allele, effect-size or minor-allele-frequency.")
       
       
       
@@ -396,7 +390,7 @@ shinyServer(function(input, output) {
         #since scores are mean=0 and SD=1 we draw a reference curve
         reference_mean<-0
         reference_sd<-1
-        xlim<-c(reference_mean - reference_sd*3, reference_mean + reference_sd*3)
+        xlim<-c(reference_mean - reference_sd*3, reference_mean + reference_sd*3) #ok, I suppose I could just write -3 to 3, but whatever
         reference_x<-seq(xlim[1],xlim[2],length.out=100)
         reference_y<-dnorm(reference_x,mean=reference_mean,sd=reference_sd)
         ylim <- range(reference_y)
@@ -407,17 +401,17 @@ shinyServer(function(input, output) {
         lines(x=reference_x,y=reference_y,lty=1,col="blue",lwd=2)
         
         #fill in shading
-        if(!all(!reference_x<GRS_beta)){
-          max_GRS_i<-max(which(reference_x<GRS_beta))
+        if(!all(!reference_x<GRS)){
+          max_GRS_i<-max(which(reference_x<GRS))
           upper_x<-reference_x[1:max_GRS_i]
           upper_y<-reference_y[1:max_GRS_i]
-          x_lines <- c(upper_x,GRS_beta,GRS_beta,xlim[1])
+          x_lines <- c(upper_x,GRS,GRS,xlim[1])
           y_lines <- c(upper_y,upper_y[length(upper_y)],0,0)
           polygon(x=x_lines, y = y_lines, density = NULL, angle = 45,border = NA, col = rgb(0,0,1,0.3), lty = par("lty"))
         }
         
         #draw the main line
-        abline(v=GRS_beta,lwd=3)
+        abline(v=GRS,lwd=3)
         
         #optionally add real distribution curve
         if(!is.null(distributionCurve)){
@@ -436,15 +430,14 @@ shinyServer(function(input, output) {
         
         #plotting for all-SNP scores
       }else{
-        
-        #get xlim, ylim and x and y
-        #since mean and sd is not standardized we get only according to previous users
+        #get distributions
         distributionCurve <- o[["distributionCurve"]]
         real_x <- distributionCurve[["x"]]
         real_y <- distributionCurve[["y"]]
-        xlim<-range(c(real_x,GRS_beta))
-        xlim[1] <- xlim[1]-0.1
-        xlim[2] <- xlim[2]+0.1
+        
+        
+        #get xlim, ylim and x and y
+        xlim<-range(c(-3,3,GRS))
         ylim <- c(0,max(real_y))
         
         
@@ -454,17 +447,17 @@ shinyServer(function(input, output) {
         lines(x=real_x,y=real_y,lty=2,col="black",lwd=1)
         
         #fill in shading
-        if(!all(!real_x<GRS_beta)){
-          max_GRS_i<-max(which(real_x<GRS_beta))
+        if(!all(!real_x<GRS)){
+          max_GRS_i<-max(which(real_x<GRS))
           upper_x<-real_x[1:max_GRS_i]
           upper_y<-real_y[1:max_GRS_i]
-          x_lines <- c(upper_x,GRS_beta,GRS_beta,xlim[1])
+          x_lines <- c(upper_x,GRS,GRS,xlim[1])
           y_lines <- c(upper_y,upper_y[length(upper_y)],0,0)
           polygon(x=x_lines, y = y_lines, density = NULL, angle = 45,border = NA, col = rgb(0,0,1,0.3), lty = par("lty"))
         }
         
         #draw the main line
-        abline(v=GRS_beta,lwd=3)
+        abline(v=GRS,lwd=3)
         
         legend("topleft",legend=c("Impute.me user distribution","Your genetic risk score"),lwd=c(1,3),col=c("black","black"),lty=c(2,1))
       }
@@ -493,7 +486,7 @@ shinyServer(function(input, output) {
     
     #if using all-SNP prs, then overwrite the data
     if(use_all_snp_score){
-      all_snp_traits <- read.xlsx("/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx",rowNames=T)
+      all_snp_traits <- read.xlsx(all_snp_trait_file,rowNames=T)
       if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
       known<-all_snp_traits[study_id,"known_heritability"]
       # total <-all_snp_traits[study_id,"total_heritability"]
@@ -569,9 +562,9 @@ shinyServer(function(input, output) {
       }
     }
   })
-
   
-
+  
+  
   output$text_2 <- renderText({ 
     if(input$goButton == 0){
       return("")
@@ -583,7 +576,7 @@ shinyServer(function(input, output) {
     return(m)
   })
   
-
+  
   #The table of SNPs and their effects
   output$table1 <- DT::renderDataTable({ 
     if(input$goButton == 0){
@@ -665,7 +658,7 @@ shinyServer(function(input, output) {
     plot_heritability <- input$plot_heritability
     real_dist<-input$real_dist
     
-
+    
     if(input$goButton == 0){return("")}
     
     uniqueID<-gsub(" ","",input$uniqueID)

@@ -3,8 +3,8 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 
 export_function<-function(uniqueID){
   # dataFolder<-"/home/ubuntu/data/"
-  snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2020-04-02_snp_weights.rdata"
-  trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2020-04-02_trait_overview.xlsx"
+  snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2021-01-28_snp_weights.rdata"
+  trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2021-01-28_trait_overview.xlsx"
   
   #testing
   #preload

@@ -2,6 +2,10 @@
 source("../uifunctions.R")
 initialize('gmh',TRUE)
 
+gheight_choices<-c("height_30718517","height_25282103")
+names(gheight_choices)<-c("Chung et al 2019","Wood et al 2014")
+sex_choices <- c("guess","female","male")
+names(sex_choices) <- c("Guess","Female","Male")
 
 shinyUI(bootstrapPage(
 	head(),
@@ -24,6 +28,12 @@ shinyUI(bootstrapPage(
 		condition = "input.col_provided",
 		sliderInput("blondeness", "Blondeness",min=0, max=100, value=50),
 		sliderInput("redheadness", "Red-headness",min=0, max=100, value=0)
+	),
+	checkboxInput("advanced", label ="Advanced options", value = FALSE),
+	conditionalPanel(
+	  condition = "input.advanced",
+	  selectInput("gheight_choice", "Height score:", choices = gheight_choices, selected="height_25282103"),
+	  selectInput("sex_choice", "Sex:", choices =sex_choices,selected="guess")
 	),
 	actionButton("goButton","Run analysis"),
 	endPanel(),

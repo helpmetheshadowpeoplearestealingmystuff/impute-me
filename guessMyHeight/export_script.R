@@ -1,4 +1,5 @@
 source("/home/ubuntu/srv/impute-me/functions.R")
+library("jsonlite")
 
 
 export_function<-function(uniqueID){
@@ -10,41 +11,54 @@ export_function<-function(uniqueID){
   output<-list()
   
   
-  
-  
   #############
   # First get height
   #############
+  
+  #set main choice and paths
+  gheight_choice<-"height_25282103"
+  
   
   #getting gender
   pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
   gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
   
   
-  #getting the current best predictor SNPs
-  giant_sup_path<-"/home/ubuntu/srv/impute-me/guessMyHeight/SNPs_to_analyze.txt"
-  giant_sup<-read.table(giant_sup_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
+  #get height SNPs (for Wood et al - height_25282103)
+  SNPs_to_analyze_path<-"/home/ubuntu/srv/impute-me/guessMyHeight/SNPs_to_analyze.txt"
+  SNPs_to_analyze<-read.table(SNPs_to_analyze_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
+  SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"category"]%in%c("height"),]
+  SNPs_to_analyze[,"genotype"]<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
+  height_25282103<-sum(get_GRS_2(SNPs_to_analyze,mean_scale = F, unit_variance = F)[,"personal_score"],na.rm=T)
   
   
-  #get genotypes and calculate gheight
-  genotypes<-get_genotypes(uniqueID=uniqueID,request=giant_sup)
-  gheight<-get_GRS(genotypes=genotypes,betas=giant_sup)
+  #decide which to use (left here for later, but always default to the top-SNP option because Chung et al is calculated in a different module.)
+  gheight <- get(gheight_choice)
+  
   
   #calculate auxilary info
-  gheight_snp_count <- paste(sum(!is.na(genotypes[,"genotype"])),"of",nrow(genotypes))
+  gheight_snp_count <- paste(sum(!is.na(SNPs_to_analyze[,"genotype"])),"of",nrow(SNPs_to_analyze))
   
   
   #calculating estimated_real height (note this one may need a lot of fine tuning later)
+  all_mean<-1.69
+  all_sd<-0.0799
   women_mean<-1.62
   women_sd<-0.0796
   men_mean<-1.76
   men_sd<-0.0802
-  if(gender == 1){
+  if(is.na(gender)){
+    mean_here <- all_mean
+    sd_here <- all_sd
+  }else if(gender == 1){
     mean_here <- men_mean
     sd_here <- men_sd
-  }else{
+  }else if(gender ==2){
     mean_here <- women_mean
     sd_here <- women_sd
+  }else{
+    mean_here <- all_mean
+    sd_here <- all_sd
   }
   gheight_m_estimate<-mean_here + gheight*sd_here
   
@@ -53,8 +67,8 @@ export_function<-function(uniqueID){
   output[["gheight_Z_score"]]<-gheight
   output[["gheight_snp_count"]]<-gheight_snp_count
   output[["gheight_m_estimate"]]<-gheight_m_estimate_cm
-  
-  
+  output[["gheight_choice"]]<-gheight_choice
+  output[["gheight_gender_basis"]]<-gender
   
   
   
@@ -68,11 +82,10 @@ export_function<-function(uniqueID){
   
   
   #get the gColour
-  GRS_file_name<-"/home/ubuntu/srv/impute-me/hairColour/SNPs_to_analyze.txt"
+  GRS_file_name<-"/home/ubuntu/srv/impute-me/guessMyHeight/SNPs_to_analyze.txt"
   GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F)
   for(component in c("blonde","red")){
-    # print(paste("Getting",component,"g-haircolour"))
-    s1<-GRS_file[GRS_file[,"Category"]%in%component,]
+    s1<-GRS_file[GRS_file[,"category"]%in%component,]
     rownames(s1)<-s1[,"SNP"]
     #get genotypes and calculate gHairColour
     s1[,"genotype"]<-get_genotypes(uniqueID=uniqueID,request=s1)
@@ -85,32 +98,15 @@ export_function<-function(uniqueID){
   
   blond_calibrate<-function(x){max(c(0,min(c(1, (x+1)/6))))}
   red_calibrate<-function(x){max(c(0,min(c(1, (x+1)/5))))}
-  
-  
-  
-  
   blondeness<-blond_calibrate(gColour_blonde)
   redheadness<-red_calibrate(gColour_red)
   
   
   #Calculate colour #with the line from the image map
   colour<-hsv(h=0.1 - (redheadness/10),s=min(c(1,1-blondeness + (redheadness/2))),v=blondeness)
-  
-  #to double check calculate closest colour using geometric distance
-  # d[,"distance"]<-sqrt((d[,"x"] - blondeness)^2 + (d[,"y"] - redheadness)^2)
-  # d<-d[order(d[,"distance"]),]
-  # d[1,"col"]
-  #ok for me that's comparing these two
-  # #674824
-  # #664824
-  #close enough
-  
-  # output[["hair_colour_all_colours"]] <- d
   output[["hair_colour_your_colours"]] <- colour
   
-  
-  
-  
+
   return(output)
   
 }

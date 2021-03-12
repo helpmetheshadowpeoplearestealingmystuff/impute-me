@@ -154,10 +154,15 @@ shinyServer(function(input, output) {
 	  if(is.null(a))return(NULL)
     if(length(a)>5){
       a1 <- a[1:5]
-    }else{
+      m <- paste0("Please note that ",length(a)," other relevant SNPs were measured according to your input data (e.g. ",paste(a1,collapse=", "),"). However, for <u><a href='https://github.com/lassefolkersen/impute-me/issues/28'>technical reasons</a></u> these were not included in the analysis and we cannot report on them.")
+    }else if(length(a) > 1){
       a1 <- a
+      m <- paste0("Please note that ",length(a)," other relevant SNPs were measured according to your input data (",paste(a1,collapse=", "),"). However, for <u><a href='https://github.com/lassefolkersen/impute-me/issues/28'>technical reasons</a></u> these were not included in the analysis and we cannot report on them.")
+    }else if(length(a) == 1){
+      m <- paste0("Please note that 1 other relevant SNP was measured according to your input data (",a,"). However, for <u><a href='https://github.com/lassefolkersen/impute-me/issues/28'>technical reasons</a></u> these were not included in the analysis and we cannot report on them.")
+    }else{
+      m<-""
     }
-	  m <- paste0("Please note that ",length(a)," other relevant SNPs were measured according to your input data (e.g. ",paste(a1,collapse=", "),"). However, for <u><a href='https://github.com/lassefolkersen/impute-me/issues/28'>technical reasons</a></u> these were not included in the analysis and we cannot report on them.")
 	  return(m)
 	})
 	
