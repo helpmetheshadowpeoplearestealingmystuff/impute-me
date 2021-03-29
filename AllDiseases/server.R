@@ -227,9 +227,9 @@ shinyServer(function(input, output) {
       if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study. Try to switch off the all-SNP scoring in advanced options."))
       file_to_read <- all_snp_traits[study_id,"file_to_read"]
       #check and load prs
-      if(!"prs"%in%names(d1))stop(safeError("No all-SNP scores were available for this sample. It was probably uploaded before implementation."))
+      if(!"prs"%in%names(d1))stop(safeError("No all-SNP scores were available for this sample. It was probably uploaded before implementation or the all-SNP PRS files where not available."))
       d2<-d1[["prs"]]
-      if(!file_to_read%in%names(d2))stop(safeError("No all-SNP scores were available for this study for this sample. It was probably uploaded before implementation."))
+      if(!file_to_read%in%names(d2))stop(safeError("No all-SNP scores were available for this study for this sample. It was probably uploaded before implementation or the all-SNP PRS files where not available."))
       d3<-d2[[file_to_read]]
       if(!all(c("SCORESUM_PLINK_2_0_DOSAGE_MATRIX","PLINK_2_0_DOSAGE_MATRIX_NMISS_ALLELE_CT")%in%names(d3)))stop(safeError("The correct all-SNP scores were not available for this study for this sample. It was probably uploaded before implementation."))
       GRS <- signif(d3[["SCORESUM_PLINK_2_0_DOSAGE_MATRIX"]] * d3[["PLINK_2_0_DOSAGE_MATRIX_NMISS_ALLELE_CT"]]  ,3)

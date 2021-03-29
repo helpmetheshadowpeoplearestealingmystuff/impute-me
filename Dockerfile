@@ -165,6 +165,8 @@ echo "error_report_mail <- ''           #optional email-address to send (major) 
 echo "seconds_wait_before_start <- 0           #a delay that is useful only with CPU-credit systems" >> /home/ubuntu/misc_files/configuration.R && \
 echo "running_as_docker <- TRUE           #adapt to docker running" >> /home/ubuntu/misc_files/configuration.R  && \
 echo "max_imputation_chunk_size <- 2000           #how much stuff to put into the memory in each chunk. Lower values results in slower running with less memory-requirements." >> /home/ubuntu/misc_files/configuration.R && \
+echo "block_double_uploads_by_md5sum <- FALSE           #If the upload interface should give an error when the exact same file is being uploaded twice (by md5sum)." >> /home/ubuntu/misc_files/configuration.R && \
+echo "modules_to_compute <- c('AllDiseases','autoimmuneDiseases','BRCA','drugResponse','ethnicity','rareDiseases','ukbiobank','prs')           #Select the modules to pre-run (defaults to all folders in ~/srv/impute-me/ if not set)." >> /home/ubuntu/misc_files/configuration.R && \
 echo "verbose <- 1           #how much info to put into logs (min 0, max 10)" >> /home/ubuntu/misc_files/configuration.R
 
 
@@ -175,7 +177,7 @@ echo "any   TRUE" >> /home/ubuntu/misc_files/accepted_emails.txt
 #Set ll to give long lists
 RUN echo "alias ll='ls -lh'" > /home/ubuntu/.bashrc
 
-#Customize the R opening slightly, by load ingfunctions.R as default.
+#Customize the R opening slightly, by loading functions.R as default.
 #not important for pipeline running, but nice to have when operating
 #and debugging inside the container.
 RUN echo ".First <- function(){" > /home/ubuntu/.Rprofile && \

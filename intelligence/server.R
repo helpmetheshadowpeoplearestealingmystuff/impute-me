@@ -4,7 +4,7 @@ source("/home/ubuntu/srv/impute-me/functions.R")
 dataFolder<-"/home/ubuntu/data/"
 snps_file<-"/home/ubuntu/srv/impute-me/intelligence/2019-03-04_semi_curated_version_gwas_central.rdata"
 trait_file<-"/home/ubuntu/srv/impute-me/intelligence/2019-03-04_trait_overview.xlsx"
-all_snp_trait_file <- "/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx"
+all_snp_trait_file <- "/home/ubuntu/srv/impute-me/prs/2021-02-11_study_list.xlsx"
 
 #testing
 #preload
@@ -110,12 +110,12 @@ shinyServer(function(input, output) {
     }
     if(ethnicity_group == "global"){
       #do nothing. Note the density curve location.
-      densityCurvePath<-"/home/ubuntu/srv/impute-me/intelligence/2020-04-17_densities_ALL.rdata"
+      densityCurvePath<-"/home/ubuntu/srv/impute-me/intelligence/2019-03-13_densities_ALL.rdata"
     }else{
       #then replace the MAF with the correct superpopulation group
       SNPs_to_analyze[,"minor_allele_freq"] <- SNPs_to_analyze[,paste0(ethnicity_group,"_AF")]
       #note the density curve location
-      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/intelligence/2020-04-17_densities_",ethnicity_group,".rdata")
+      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/intelligence/2019-03-13_densities_",ethnicity_group,".rdata")
     }
     #then explain which choice was made
     ethnicity_explanation_text <- sub("_CHOICE_",ethnicities_labels[ethnicity_group],ethnicity_explanation_text)
@@ -170,7 +170,7 @@ shinyServer(function(input, output) {
     rownames(SNPs_to_analyze)<-SNPs_to_analyze[,"SNP"]
     genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze, namingLabel="cached.all_gwas")
     SNPs_to_analyze[,"genotype"] <- genotypes[rownames(SNPs_to_analyze),"genotype"]
-    SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T, verbose=T)
+    SNPs_to_analyze <-get_GRS_2(SNPs_to_analyze,mean_scale=T, unit_variance=T)
     population_sum_sd<-sqrt(sum(SNPs_to_analyze[,"population_score_sd"]^2,na.rm=T))
     if(population_sum_sd == 0)stop(safeError("For some reason we couldn't analyse this particular trait from your genomic data."))
     
@@ -279,10 +279,10 @@ shinyServer(function(input, output) {
       #replace the distribution curves
       if(ethnicity_group == "global"){
         #do nothing. Note the density curve location.
-        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_ALL.rdata"
+        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_ALL.rdata"
       }else{
         #note the density curve location
-        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2019-09-17_densities_",ethnicity_group,".rdata")
+        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_",ethnicity_group,".rdata")
       }
       
       
@@ -455,7 +455,7 @@ shinyServer(function(input, output) {
     
     #if using all-SNP prs, then overwrite the data
     if(use_all_snp_score){
-      all_snp_traits <- read.xlsx("/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx",rowNames=T)
+      all_snp_traits <- read.xlsx(all_snp_trait_file,rowNames=T)
       if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
       known<-all_snp_traits[study_id,"known_heritability"]
       total <-all_snp_traits[study_id,"total_heritability"]
@@ -538,7 +538,7 @@ shinyServer(function(input, output) {
       
       #if using all-SNP prs, then overwrite the data
       if(use_all_snp_score){
-        all_snp_traits <- read.xlsx("/home/ubuntu/srv/impute-me/prs/2019-03-05_study_list.xlsx",rowNames=T)
+        all_snp_traits <- read.xlsx(all_snp_trait_file,rowNames=T)
         if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study"))
         known<-all_snp_traits[study_id,"known_heritability"]
         total <-all_snp_traits[study_id,"total_heritability"]

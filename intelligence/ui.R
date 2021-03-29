@@ -135,9 +135,9 @@ shinyUI(bootstrapPage(
 	  checkboxInput("only_show_newest", label ="Only show newest study", value = TRUE),
 	  radioButtons("trait_group", "Trait categories:", trait_groups, selected = "disease"),
 	  radioButtons("ethnicity_group", label="Reference population:", choices=ethnicities, selected = "automatic", inline = FALSE,width = NULL),
-	  checkboxInput("use_all_snp_score", label ="Show all-SNP score if possible (experimental)", value = TRUE),
+	  checkboxInput("use_all_snp_score", label ="Show all-SNP score if possible", value = TRUE),
 	  checkboxInput("plot_heritability", label ="Plot heritability", value = FALSE),
-	  checkboxInput("real_dist", label ="Plot user distribution (experimental)", value = FALSE)
+	  checkboxInput("real_dist", label ="Plot user distribution", value = FALSE)
 	  
 	),
 	

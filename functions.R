@@ -111,7 +111,7 @@ get_conf<-function(
   }else if(request == "paypal"){
     if(!exists("paypal")){
       paypal<-""
-      if(verbose>0)print(paste0(Sys.time(),": variable paypal not found in configuration.R. Setting to default value of ''. This means that the email-sent paypal link won't work, but everything else will work fine."))
+      if(verbose>2)print(paste0(Sys.time(),": variable paypal not found in configuration.R. Setting to default value of ''. This means that the email-sent paypal link won't work, but everything else will work fine."))
     }
     if(!is.character(paypal))stop("paypal not character")
     if(length(paypal)!=1)stop("paypal not length 1")
@@ -156,9 +156,25 @@ get_conf<-function(
     }
     if(!is.numeric(max_imputation_chunk_size))stop("max_imputation_chunk_size not numeric")
     if(length(max_imputation_chunk_size)!=1)stop("max_imputation_chunk_size not length 1")
+    
+  }else if(request == "block_double_uploads_by_md5sum"){
+    if(!exists("block_double_uploads_by_md5sum")){
+      block_double_uploads_by_md5sum<-TRUE
+      if(verbose>0)print(paste0(Sys.time(),": variable block_double_uploads_by_md5sum not found in configuration.R. Setting to default value of TRUE"))
+    }
+    if(!is.logical(block_double_uploads_by_md5sum))stop("block_double_uploads_by_md5sum not logical")
+    if(length(block_double_uploads_by_md5sum)!=1)stop("block_double_uploads_by_md5sum not length 1")
+
+  }else if(request == "modules_to_compute"){
+    if(!exists("modules_to_compute")){
+      modules_to_compute<-list.files("/home/ubuntu/srv/impute-me/")
+      if(verbose>0)print(paste0(Sys.time(),": variable modules_to_compute not found in configuration.R. Setting to default value of all existing modules: ",paste(modules_to_compute,collapse=", ")))
+    }
+    if(!is.character(modules_to_compute))stop("modules_to_compute not character")
+    if(!all(modules_to_compute%in%list.files("/home/ubuntu/srv/impute-me/")))stop(paste("A request was made for modules_to_compute that were not found in /home/ubuntu/srv/impute-me/:",paste(modules_to_compute,collapse=", ")))
   }else{
     stop(paste("Unknown request:",request))
-  }  
+  }    
   #export the request
   return(get(request))
 }
@@ -475,7 +491,7 @@ prepare_individual_genome<-function(
     
     
     #checking if it is a consistent file
-    if(verbose>0)print(paste0(Sys.time(),":checking if it is a consistent file"))
+    if(verbose>0)print(paste0(Sys.time(),": checking if it is a consistent file"))
     testRead<-try(read.table(path,nrow=100,stringsAsFactors=F))
     if(class(testRead)=="try-error"){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"general_data_file_problem_vcf",email,uniqueID,filename)
@@ -586,7 +602,7 @@ prepare_individual_genome<-function(
     format<-try(strsplit(testRead[1,9],":")[[1]])
     depth_index <- try(which(format%in%"DP"))
     depths<-try(as.numeric(sapply(strsplit(testRead[,10],":"),function(x,depth_index){x[depth_index]},depth_index)))
-    if(any(is.na(depths)) || class(depths) == "try-error" || mean(depths,na.rm=T) < minimum_mean_depth_of_first_hundred_reads  && !escape_checks){
+    if((any(is.na(depths)) || class(depths) == "try-error" || mean(depths,na.rm=T) < minimum_mean_depth_of_first_hundred_reads)  && !escape_checks){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_low_vcf_depth",email,uniqueID,filename)
       m<-paste(m,collapse="\t")
       write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)
@@ -689,20 +705,21 @@ prepare_individual_genome<-function(
   
   
   ##checking if this job has not actually been run before
-  if(verbose>0)print(paste0(Sys.time(),": checking if this job has not actually been run before"))
-  this_person_md5sum <- md5sum(path)
-  all_md5sums_path<-"/home/ubuntu/misc_files/md5sums.txt"
-  if(!file.exists(all_md5sums_path)){write("md5sums",file="/home/ubuntu/misc_files/md5sums.txt")}
-  all_md5sums<-read.table(all_md5sums_path,sep="\t",stringsAsFactors = F)[,1]
-  if(this_person_md5sum %in% all_md5sums){
-    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum,filename)
-    m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
-    if(!protect_from_deletion)unlink(homeFolder,recursive=T)
-    stop(safeError("A person with this genome was already analyzed by the system. If this is an error, you can try to re-upload a new version of your DNA-data, e.g. you can go to your data provider (23andme, ancestry.com) and re-download the data you are interested. Then try that file. There will be no block flag for such new file, because any edits to the file will make the system unable to recognize it as a previously analyzed genome."))
+  if(get_conf("block_double_uploads_by_md5sum")){
+    if(verbose>0)print(paste0(Sys.time(),": checking if this job has not actually been run before"))
+    this_person_md5sum <- md5sum(path)
+    all_md5sums_path<-"/home/ubuntu/misc_files/md5sums.txt"
+    if(!file.exists(all_md5sums_path)){write("md5sums",file="/home/ubuntu/misc_files/md5sums.txt")}
+    all_md5sums<-read.table(all_md5sums_path,sep="\t",stringsAsFactors = F)[,1]
+    if(this_person_md5sum %in% all_md5sums){
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum,filename)
+      m<-paste(m,collapse="\t")
+      write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
+      if(!protect_from_deletion)unlink(homeFolder,recursive=T)
+      stop(safeError("A person with this genome was already analyzed by the system. If this is an error, you can try to re-upload a new version of your DNA-data, e.g. you can go to your data provider (23andme, ancestry.com) and re-download the data you are interested. Then try that file. There will be no block flag for such new file, because any edits to the file will make the system unable to recognize it as a previously analyzed genome."))
+    }
+    write(this_person_md5sum,file="/home/ubuntu/misc_files/md5sums.txt",append=TRUE)			
   }
-  write(this_person_md5sum,file="/home/ubuntu/misc_files/md5sums.txt",append=TRUE)			
-  
   
   #finalizing: 
   #1) saving the small job_status.txt that just shows a status for the node/hub setup to read quickly over ssh
@@ -787,7 +804,7 @@ prepare_individual_genome<-function(
         Sys.sleep(0.1)
       }
     }
-    if(!file.exists("/home/ubuntu/misc_files/supercronic.txt"))stop(safeError("Code was found to be running as docker container, but with no misc_files/supercronic.txt file ready for launch. The job will likely never execute."))
+    if(verbose>=0 & !file.exists("/home/ubuntu/misc_files/supercronic.txt"))print(paste0(Sys.time(),": Code was found to be running as docker container, but with no misc_files/supercronic.txt file ready for launch. The job will likely never execute."))
     #it's possible that the ending ampersand is not a good idea. The problem is that when the
     #docker is running as a web-interface it works well. But when the function is called from outside of
     #the docker, with docker exec - then supercronic deletes itself after a few seconds. It can be
@@ -914,7 +931,7 @@ prepare_imputemany_genome<-function(
   
   
   #check for too many ongoing imputations
-  print("check for too many ongoing imputations")
+  if(verbose>0)print(paste0(Sys.time(),": Check for too many ongoing imputations"))
   s<-list.files("/home/ubuntu/imputations/")
   if(length(grep("^imputation_folder",s)) >= get_conf("maxImputationsInQueue")){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
@@ -926,19 +943,20 @@ prepare_imputemany_genome<-function(
   
   
   ##checking if this job has not actually been run before
-  print("checking if this job has not actually been run before")
-  this_person_md5sum <- md5sum(path)
-  all_md5sums_path<-"/home/ubuntu/misc_files/md5sums.txt"
-  if(!file.exists(all_md5sums_path)){write("md5sums",file="/home/ubuntu/misc_files/md5sums.txt")}
-  all_md5sums<-read.table(all_md5sums_path,sep="\t",stringsAsFactors = F)[,1]
-  if(this_person_md5sum %in% all_md5sums){
-    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
-    m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
-    stop(safeError(paste0("This file was already analyzed by the system. Write an email if you wish to clear this flag (or make a small change in your file so it doesn't have the same md5sum, i.e. ",this_person_md5sum,").")))
+  if(get_conf("block_double_uploads_by_md5sum")){
+    if(verbose>0)print(paste0(Sys.time(),": checking if this job has not actually been run before"))
+    this_person_md5sum <- md5sum(path)
+    all_md5sums_path<-"/home/ubuntu/misc_files/md5sums.txt"
+    if(!file.exists(all_md5sums_path)){write("md5sums",file="/home/ubuntu/misc_files/md5sums.txt")}
+    all_md5sums<-read.table(all_md5sums_path,sep="\t",stringsAsFactors = F)[,1]
+    if(this_person_md5sum %in% all_md5sums){
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"md5sum_match",email,this_person_md5sum)
+      m<-paste(m,collapse="\t")
+      write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
+      stop(safeError(paste0("This file was already analyzed by the system. Write an email if you wish to clear this flag (or make a small change in your file so it doesn't have the same md5sum, i.e. ",this_person_md5sum,").")))
+    }
+    write(this_person_md5sum,file="/home/ubuntu/misc_files/md5sums.txt",append=TRUE)			
   }
-  write(this_person_md5sum,file="/home/ubuntu/misc_files/md5sums.txt",append=TRUE)			
-  
   
   #check if it should be moved to the non-impute server:
   if(should_be_imputed){
@@ -3501,7 +3519,7 @@ special_error_check<-function(
   line_count_cmd<-paste0("wc -l ",rawdata_file)
   line_count_0<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
   
-  #Common problem 1: mitochondrial SNPs (not used in any analysis anyway)
+  #Common problem 1: mitochondrial SNPs (not used in any analysis anyway -)
   cmd_special_1<-paste("sed -i.bak1 '/\\tMT\\t/d'",rawdata_file)
   system(cmd_special_1)
   line_count_1<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
@@ -3529,36 +3547,41 @@ special_error_check<-function(
     file.rename(paste0(runDir,"/step_1_temp_indel_02.txt"),rawdata_file)
   }
   line_count_3<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
-  if(line_count_1-line_count_3>0)special_error_status <- c(special_error_status, paste0("INDEL removals (",line_count_1-line_count_3,")"))
+  if(line_count_1-line_count_3>1)special_error_status <- c(special_error_status, paste0("INDEL removals (",line_count_1-line_count_3,")"))
   
   
   
   
-  #Common problem 4: lack of sorting (first re-check if this is a problem after MT removal)
+  #Common problem 4: lack of sorting
   cmd_special_3<-paste0(plink," --noweb --23file ",rawdata_file," ",uniqueID," ",uniqueID," --recode --out ",runDir,"/step_1_",uniqueID,"_sorting_check")
-  system(cmd_special_3,intern=T)
+  system(cmd_special_3,intern=T,ignore.stdout = T, ignore.stderr = T)
   sorting_check<-readLines(paste0(runDir,"/step_1_",uniqueID,"_sorting_check.log"))
   if(length(grep("are out of order",sorting_check))>0){
-    #sorting by chr then pos
-    cmd_sort_1<-paste0("sort -k2 -k3 -g -o ",runDir,"/temp01.txt ",rawdata_file)
+    #replace X with 23
+    cmd_sort_1<-paste0("sed 's/\\tX\\t/\\t23\t/' ",rawdata_file," > ",runDir,"/temp01.txt")
     system(cmd_sort_1)
-    
-    #removing Y, xY, 23 chr (too risky to keep in after a sort)
-    cmd_sort_2<-paste0("sed -e '/\\tY\\t/d' -e '/\\t23\\t/d' -e '/\\tYX\\t/d' -e '/\\tXY\\t/d' ",runDir,"/temp01.txt > ",runDir,"/temp02.txt")
+
+    #remove non-numeric chromosomes
+    cmd_sort_2<-paste0("awk '$2 == ($2+0)' ",runDir,"/temp01.txt > ",runDir,"/temp02.txt")
     system(cmd_sort_2)
     
-    #switching X chr and the rest (because X gets sorted first)
-    cmd_sort_3<-paste0("grep -v \tX\t ",runDir,"/temp02.txt > ",runDir,"/temp03.txt")
+    
+    #sorting by chr then pos
+    cmd_sort_3<-paste0("sort -k2 -k3 -g -o ",runDir,"/temp03.txt ",runDir,"/temp02.txt")
     system(cmd_sort_3)
-    cmd_sort_4<-paste0("grep \tX\t ",runDir,"/temp02.txt >> ",runDir,"/temp03.txt")
-    system(cmd_sort_4)
     
-    #replace X with 23
-    cmd_sort_5<-paste0("sed 's/\\tX\\t/\\t23\t/' ",runDir,"/temp03.txt > ",rawdata_file)
-    system(cmd_sort_5)
+    #then copy back
+    file.copy(paste0(runDir,"/temp03.txt"),rawdata_file,overwrite=T)
     
-    line_count_4<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
-    special_error_status<- c(special_error_status,paste0("sorting required (",line_count_3-line_count_4," lines removed)"))
+    #re-check
+    suppressWarnings(system(cmd_special_3,intern=T,ignore.stdout = T, ignore.stderr = T))
+    sorting_check_2<-readLines(paste0(runDir,"/step_1_",uniqueID,"_sorting_check.log"))
+    if(length(grep("are out of order",sorting_check_2))==0){
+      line_count_4<-as.integer(sub(" .+$","",system(line_count_cmd,intern=T)))
+      special_error_status<- c(special_error_status,paste0("sorting required (",line_count_3-line_count_4," lines removed)"))
+    }else{
+      special_error_status<- c(special_error_status,paste0("sorting check failed"))
+    }
   }
   
   
@@ -3582,7 +3605,7 @@ special_error_check<-function(
   #First - for the special case that no plink run have been successful so far - 
   #we re-run plink because the map file is needed. Then we check using a specialized
   #check_genome_build function
-  cmd_special_3<-system(cmd_special_3,intern=T)
+  cmd_special_3_out<-system(cmd_special_3,intern=T)
   map_file1 <- paste0(runDir,"/step_1_",uniqueID,".map") #source: a started bulk run
   map_file2 <- paste0(runDir,"/step_1.map")  #source: a started individual run
   map_file3 <- paste0(runDir,"/step_1_",uniqueID,"_sorting_check.map") #source: post-plink run after
@@ -3607,7 +3630,11 @@ special_error_check<-function(
   if(md5_before != md5sum(rawdata_file))special_error_status<-c(special_error_status, "hashtags in rsids")
   
   
-  #then re-check and decide future action (note, it's a little silly, but we have to run it twice because bulk running has step_1_[uniqueID] naming and single running just has step_1 naming. And we don't know which this is, and it's more cumbersome to set up a check for it. In the future, maybe just have all runs do step_1_[uniqueID] naming. At least silence it so it don't clutter logs... it takes just a half second)
+  #then re-check and decide future action (note, it's a little silly, but we have to run it twice because 
+  #bulk running has step_1_[uniqueID] naming and single running just has step_1 naming. And we don't know 
+  #which this is and there absolutely needs to be a map file, and it's more cumbersome to set up a check for 
+  #it. In the future, maybe just have all runs do step_1_[uniqueID] naming. At least silence it so it don't 
+  #clutter logs... it takes just a half second)
   cmd_final1<-paste0(plink," --noweb --23file ",rawdata_file," ",uniqueID," ",uniqueID," --recode --out step_1_",uniqueID)  
   cmd_final2<-paste0(plink," --noweb --23file ",rawdata_file," ",uniqueID," ",uniqueID," --recode --out step_1")  
   out_final1<-system(cmd_final1,ignore.stdout = T, ignore.stderr = T)
@@ -3619,7 +3646,7 @@ special_error_check<-function(
   }else{
     #however if still failing, we have to send a mail
     library("mailR")
-    error1<-system(cmd_final1,intern=T)
+    error1 <- system(cmd_final1,intern=T)
     error1 <- gsub("\b","",error1)
     message <- paste0("<HTML>",uniqueID," failed all attempts at starting imputation. It came with special error status:<br><b>", paste(special_error_status,collapse="<br>"),".</b><br><br>The last error message was this: <br><br><small>",paste(error1,collapse="<br>"),"</small><br></HTML>")
     if(verbose>=0)print(paste0(Sys.time(),": Sending error mail and giving up. This is the error:"))
@@ -4655,7 +4682,8 @@ run_export_script<-function(
   }
   
   if(is.null(modules)){
-    modules<-list.files("/home/ubuntu/srv/impute-me/")
+    modules<-get_conf("modules_to_compute")
+    if(verbose>2)print(paste0(Sys.time(),": modules wasn't explictly specified in the run_export_script, using the default from configuration.R instead: ",paste(modules,collapse=", ")))
   }else{
     if(class(modules)!="character")stop("modules must be of class character")
     if(!all(file.exists(paste("/home/ubuntu/srv/impute-me/",modules,sep=""))))stop("Not all modules given were found")
