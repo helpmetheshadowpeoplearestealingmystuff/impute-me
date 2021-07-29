@@ -214,7 +214,6 @@ prepare_individual_genome<-function(
   #loading libraries
   library("tools")
   suppressWarnings(library("shiny"))
-  library("gmailr",warn.conflicts = FALSE)
   
   
   #set logging level
@@ -774,6 +773,7 @@ prepare_individual_genome<-function(
     
     
     #Send receipt mail
+    library("gmailr",warn.conflicts = FALSE)
     gm_auth_configure( path ="~/misc_files/mailchecker.json")
     gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
     prepared_email <- try(gm_mime() %>%
@@ -864,7 +864,6 @@ prepare_imputemany_genome<-function(
 
   library("tools")
   suppressWarnings(library("shiny"))
-  library("gmailr",warn.conflicts = FALSE)
   
   #set logging level
   verbose <- get_conf("verbose")
@@ -1160,6 +1159,7 @@ prepare_imputemany_genome<-function(
   #if possible, admin-mail a notification that an imputemany upload has happened
   if(get_conf("from_email_address") != "" & get_conf("from_email_password") != "" & get_conf("error_report_mail")!= ""){
     message<-paste0("<html><body>A data set with name ",upload_time," was uploaded to the server by ",email," (imputation was set to ",should_be_imputed,")</body></html>")
+    library("gmailr",warn.conflicts = FALSE)
     gm_auth_configure( path ="~/misc_files/mailchecker.json")
     gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
     prepared_email <- try(gm_mime() %>%
@@ -1957,7 +1957,6 @@ run_bulk_imputation<-function(
 
   #load libraries
   library(tools)
-  library("gmailr",warn.conflicts = FALSE)
   
   
   #set logging level
@@ -2171,6 +2170,7 @@ run_bulk_imputation<-function(
             
 
             message<-paste0("<html><body>",paste(messages,collapse="<br>"),"</body></html>")
+            library("gmailr",warn.conflicts = FALSE)
             gm_auth_configure( path ="~/misc_files/mailchecker.json")
             gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
             prepared_email <- try(gm_mime() %>%
@@ -3189,8 +3189,6 @@ transfer_cleanup_and_mailout<-function(
   #' 
   #' @param uniqueID The uniqueID to perform transfer cleanup and mailout for
   
-  #libraries
-  library("gmailr",warn.conflicts = FALSE)
   
   #get logging level and other global variables
   verbose <- get_conf("verbose")
@@ -3330,7 +3328,7 @@ transfer_cleanup_and_mailout<-function(
     if(get_conf("from_email_address") != "" & get_conf("from_email_password") != ""){
       for(tryCount in 1:3){
         print(paste0(Sys.time(),": Trying to mail to ",email))
-
+        library("gmailr",warn.conflicts = FALSE)
         gm_auth_configure( path ="~/misc_files/mailchecker.json")
         gm_auth(email=get_conf("from_email_address"), cache="~/misc_files/mail_secret")
         prepared_email <- try(gm_mime() %>%
@@ -3570,9 +3568,6 @@ special_error_check<-function(
   #set logging level
   verbose <- get_conf("verbose")
 
-  #libraries
-  library("gmailr",warn.conflicts = FALSE)  
-
   #other checks
   if(class(uniqueID)!="character")stop(paste("uniqueID must be a character, not",class(uniqueID)))
   if(length(uniqueID)!=1)stop(paste("uniqueID must be length 1, not",length(uniqueID)))
@@ -3731,17 +3726,19 @@ special_error_check<-function(
     if(verbose>=0)print(paste0(Sys.time(),": Sending error mail and giving up. This is the error:"))
     print(special_error_status)
     
-
-    gm_auth_configure( path ="~/misc_files/mailchecker.json")
-    gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
-    prepared_email <- try(gm_mime() %>%
-                            gm_to(get_conf("error_report_mail")) %>%
-                            gm_from(get_conf("from_email_address")) %>%
-                            gm_subject("An impute-me run has problem") %>%
-                            gm_html_body(message))
-    mailingResult<-try(gm_send_message(prepared_email))
-    if(class(mailingResult)=="try-error" & verbose > 2)print(paste0(Sys.time(),": Mailing failed for special error check, but output has been logged."))
-    stop("Special error check failed")
+    if(get_conf("from_email_address") != "" & get_conf("from_email_password") != ""){
+      library("gmailr",warn.conflicts = FALSE)  
+      gm_auth_configure( path ="~/misc_files/mailchecker.json")
+      gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
+      prepared_email <- try(gm_mime() %>%
+                              gm_to(get_conf("error_report_mail")) %>%
+                              gm_from(get_conf("from_email_address")) %>%
+                              gm_subject("An impute-me run has problem") %>%
+                              gm_html_body(message))
+      mailingResult<-try(gm_send_message(prepared_email))
+      if(class(mailingResult)=="try-error" & verbose > 2)print(paste0(Sys.time(),": Mailing failed for special error check, but output has been logged."))
+      stop("Special error check failed")
+    }
   }
   return(special_error_status)
 }  
@@ -5217,7 +5214,6 @@ check_for_rare_nonbiallic_snps<-function(
   
   #load libraries
   library("tools")
-  library("gmailr",warn.conflicts = FALSE)  
   
   #check input
   if(class(uniqueID)!="character")stop(paste("uniqueID must be class character, not",class(uniqueID)))
@@ -5345,6 +5341,7 @@ check_for_rare_nonbiallic_snps<-function(
     if(verbose>=0)print(paste0(Sys.time(),": Sending error mail."))
     
     message<-paste0("<html><body>",paste(messages,collapse="<br>"),"</body></html>")
+    library("gmailr",warn.conflicts = FALSE)  
     gm_auth_configure( path ="~/misc_files/mailchecker.json")
     gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
     prepared_email <- try(gm_mime() %>%
@@ -5386,9 +5383,6 @@ count_x_chr_entries<-function(
   #' 
   #' @param chr the chromosome to check. Will almost always be the X-chromosome, "X", but can be others as well.
 
-  #libraries
-  library("gmailr",warn.conflicts = FALSE)
-  
   #verbose doesn't matter, this should always be printed.
   print(paste0(Sys.time(),": ERROR. Starting count_x_chr_entries for chr",chr," - this will result in failure, but hopefully will give informative output."))
 
@@ -5424,6 +5418,7 @@ count_x_chr_entries<-function(
     
     
     message<-paste0("<html><body>",paste(messages,collapse="<br>"),"</body></html>")
+    library("gmailr",warn.conflicts = FALSE)
     gm_auth_configure( path ="~/misc_files/mailchecker.json")
     gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
     prepared_email <- try(gm_mime() %>%

@@ -39,6 +39,12 @@ RUN R -e "remotes::install_github('gsimchoni/kandinsky')"
 # 'plotly' \
 # ),dependencies=TRUE, repos = 'http://cran.rstudio.com/')"
 
+
+#Install gmailr - makes some trouble if installed together with the other R-packages
+RUN R -e "install.packages(c( \
+ 'gmailr' \
+ ),dependencies=TRUE)"
+
 #configure the shiny_server.conf
 RUN sed -i 's=run_as shiny=run_as ubuntu=' /etc/shiny-server/shiny-server.conf && \
 sed -i 's=site_dir /srv/shiny-server=site_dir /home/ubuntu/srv/impute-me/=' /etc/shiny-server/shiny-server.conf && \
