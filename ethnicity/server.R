@@ -14,8 +14,8 @@ ethnicity_desc<-read.table("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethn
 shinyServer(function(input, output){
   output$text_1 <- renderText({ 
     if(input$goButton == 0){
-      m<-paste0("There are several ways to investigate genotype-based ethnicity, many center around assigning country-of-ancestry percentage. This ethnicity module takes a different, but more simple, approach. Starting from the large <u><a href='http://www.internationalgenome.org/'>1000 genomes project</a></u>, it identifies the ~1000 SNPs that are most ethnicity dependent. The module then performs a cluster analysis (<u><a href='https://en.wikipedia.org/wiki/Principal_component_analysis'>'PCA'</a></u>) of each of the 1000 genomes-project samples, as well as your sample.<br><br>
-                This is particularly useful in our analytical approach, because the information can be used to ethnicity-correct the calculations in other modules, such as the <u><a href='https://www.impute.me/AllDiseases/'>complex disease</a></u> module. You can then investigate which known ethnicity your genome is most similar to.<br><br> 
+      m<-paste0("There are several ways to investigate genotype-based ancestry, many center around assigning country-of-ancestry percentage. This ancestry module takes a different, but more simple, approach. Starting from the large <u><a href='http://www.internationalgenome.org/'>1000 genomes project</a></u>, it identifies the ~1000 SNPs that are most ancestry dependent. The module then performs a cluster analysis (<u><a href='https://en.wikipedia.org/wiki/Principal_component_analysis'>'PCA'</a></u>) of each of the 1000 genomes-project samples, as well as your sample.<br><br>
+                This is particularly useful in our analytical approach, because the information can be used to ancestry-correct the calculations in other modules, such as the <u><a href='https://www.impute.me/AllDiseases/'>complex disease</a></u> module. You can then investigate which known ancestry your genome is most similar to.<br><br> 
                 Your genome is indicated as a slightly larger black dot in the resulting plot, you may have to zoom in to see it.<br>"
       )
       
@@ -23,7 +23,7 @@ shinyServer(function(input, output){
 #	    library("shiny")
 #	    if(!require("plotly"))stop(safeError("Unfortunately the 3D-plotting function in plotly is not configured correctly"))
 
-      #try to get the pre-guesssed ethnicity
+      #try to get the pre-guesssed ancestry
       hint_message <- ""
       uniqueID<-isolate(gsub(" ","",input$uniqueID))
       json_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
@@ -111,7 +111,7 @@ shinyServer(function(input, output){
     #get missing SNP counts
     found <- sum(!is.na(ethnicity_snps[,"genotype"]))
     if(found < 1500){
-      stop(safeError(paste("Only found",found,"of",nrow(ethnicity_snps),"relevant ethnicity SNPs for this sample. This could indicate a problem with the data input. It is not advised to base ethnicity calculations on this data.")))
+      stop(safeError(paste("Only found",found,"of",nrow(ethnicity_snps),"relevant ancestry SNPs for this sample. This could indicate a problem with the data input. It is not advised to base ancestry calculations on this data.")))
     }
     
     

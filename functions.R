@@ -2,7 +2,7 @@
 
 get_conf<-function(
   request,
-  configuration_file="/home/ubuntu/misc_files/configuration.R"
+  configuration_file="/home/ubuntu/configuration/configuration.R"
 ){
   #' get configurationfile
   #' 
@@ -212,10 +212,10 @@ prepare_individual_genome<-function(
   #' @return A short text string with a ready message. Additionally, the file provided as path will be available for processing in the standard-file structure, either in ~/imputations or in ~/vcfs as relevant.
   
   #loading libraries
-  library("mailR")
-  library("rJava")
   library("tools")
   suppressWarnings(library("shiny"))
+  library("gmailr",warn.conflicts = FALSE)
+  
   
   #set logging level
   verbose <- get_conf("verbose")
@@ -383,15 +383,15 @@ prepare_individual_genome<-function(
     updateProgress(detail = "Consistency checks",value=2,max=4)
     
     
-    #checking if there is at least 10k lines (otherwise imputation wouldn't be possible anyway)
+    #checking if there is at least 100k lines (otherwise imputation wouldn't be possible anyway)
     cmd1 <- paste0("wc -l ",path)
     lines<- as.numeric(sub(" .+$","",system(cmd1,intern=T)))
-    if(lines < 10000){
+    if(lines < 100000){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_few_lines_error",email,uniqueID)
       m<-paste(m,collapse="\t")
       write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
       if(!protect_from_deletion)unlink(homeFolder,recursive=T)
-      stop(safeError(paste0("Your file only had ",lines," lines. That doesn't look like a genome-wide microarray input file. Genome-wide microarray files have many formats and come from many places (23andme, myheritage, ancestry, geneplaza, etc), but they always have hundreds of thousands of measurements")))
+      stop(safeError(paste0("Your file only had ",lines," lines. That doesn't look like a genome-wide microarray input file. Genome-wide microarray files have many formats and come from many places (23andme, myheritage, ancestrycom, etc), but they always have hundreds of thousands of measurements")))
     }
     
     #running the alternative format converters
@@ -585,8 +585,6 @@ prepare_individual_genome<-function(
     # it seems the data is of ok quality otherwise. Possibly one could write a GT-only
     # catching mechanism for them. For now we just fail them. At the benefit of not majorly
     # messing up some low-pass or exon-seq submission.
-    #
-    #
     allowed_formats <- c("GT:AD:AF:DP:F1R2:F2R1:GQ:PL:GP:PRI:SB:MB","GT:AD:DP:GQ:PGT:PID:PL:PS","GT:AD:DP:GQ:PL")
     if(!testRead[1,9] %in% allowed_formats  && !escape_checks){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"wrong_starting_vcf_line",email,uniqueID,filename,testRead[1,9])
@@ -738,59 +736,59 @@ prepare_individual_genome<-function(
   
   
   
-  #Send off a mail as a receipt of data
-  queue_length <- length(list.files("/home/ubuntu/imputations/"))
-  if(is_vcf_file){
-    algorithm_name <- "a vcf-extraction algorithm"
-  }else{
-    algorithm_name <- "an imputation algorithm"
-  } 
-  message_start <-paste0("<HTML>We received your data from file <i>", filename,"</i> at www.impute.me. It will now be processed, first through ",algorithm_name," and then through several types of genetic-risk score calculators. This takes a little less than a day per genome.")
-  if(queue_length > 50){
-    run_time <- 0.75 #days (was 1.6 with t2.medium, but now on c5a.large it has dropped to 0.75 days)
-    servers_running <- get_conf("bulk_node_count")  #servers
-    genomes_per_server <- 10 #genomes
-    genomes_per_day <- servers_running * genomes_per_server / run_time
-    days_left <- queue_length / genomes_per_day
-    days_left_lower <- round(days_left*1.2) #because always have at least some paid ones skipping the line
-    days_left_upper <- round(days_left*2.5)
-    queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect approximately ",days_left_lower,"-",days_left_upper," days of waiting.")
-  }else if(queue_length > 5){
-    queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect several days of waiting.")
-  }else{
-    queue_message<-""
+  #If possible, send off a mail as a receipt of data
+  if(get_conf("from_email_address") != "" & get_conf("from_email_password") != "" & get_conf("error_report_mail")!= ""){
+    queue_length <- length(list.files("/home/ubuntu/imputations/"))
+    if(is_vcf_file){
+      algorithm_name <- "a vcf-extraction algorithm"
+    }else{
+      algorithm_name <- "an imputation algorithm"
+    } 
+    message_start <-paste0("<HTML>We received your data from file <i>", filename,"</i> at www.impute.me. It will now be processed, first through ",algorithm_name," and then through several types of genetic-risk score calculators. This takes a little less than a day per genome.")
+    if(queue_length > 50){
+      run_time <- 0.75 #days (was 1.6 with t2.medium, but now on c5a.large it has dropped to 0.75 days)
+      servers_running <- get_conf("bulk_node_count")  #servers
+      genomes_per_server <- 10 #genomes
+      genomes_per_day <- servers_running * genomes_per_server / run_time
+      days_left <- queue_length / genomes_per_day
+      days_left_lower <- round(days_left*1.2) #because always have at least some paid ones skipping the line
+      days_left_upper <- round(days_left*2.5)
+      queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect approximately ",days_left_lower,"-",days_left_upper," days of waiting.")
+    }else if(queue_length > 5){
+      queue_message<-paste0(" Currently ",queue_length," other genomes are waiting in queue, so expect several days of waiting.")
+    }else{
+      queue_message<-""
+    }
+    message_end1 <- paste0(" The service is non-profit, but because of heavy computing-requirements for the imputation analysis it is not free to run. We therefore strongly encourage you to pay a contribution to keep the servers running (<u><a href='",get_conf("paypal"),"'>paypal</a></u>, suggested 5 USD). Also, if you do this and put your unique ID, (<i>",uniqueID,"</i>) as payment-message, you'll be moved to priority queue. Either way, once the analysis is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using this uniqueID.<br><br> ")
+    
+    #assign the right language book to people (Swedes and Norwegians can get the Danish language one too)
+    if(length(grep("\\.dk$",email))==1 | length(grep("\\.no$",email))==1 | length(grep("\\.se$",email))==1){
+      booklink<-"https://www.saxo.com/dk/forstaa-dit-dna_lasse-westergaard-folkersen_haeftet_9788770170154"
+    }else{
+      booklink<-"https://www.worldscientific.com/worldscibooks/10.1142/11070"
+    }
+    message_end2 <- paste0("In the meantime, may we recommend the book <u><a href='",booklink,"'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br></HTML>")
+    
+    #send the mail
+    message <- paste0(message_start,queue_message,message_end1,message_end2)
+    
+    
+    #Send receipt mail
+    gm_auth_configure( path ="~/misc_files/mailchecker.json")
+    gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
+    prepared_email <- try(gm_mime() %>%
+                            gm_to(email) %>%
+                            gm_from(get_conf("from_email_address")) %>%
+                            gm_subject("Imputation is queued") %>%
+                            gm_html_body(message))
+    mailingResult<-try(gm_send_message(prepared_email))
+    
+    if(class(mailingResult)=="try-error"){
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"mailing_error",email,uniqueID,filename)
+      m<-paste(m,collapse="\t")
+      write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
+    }
   }
-  message_end1 <- paste0(" The service is non-profit, but because of heavy computing-requirements for the imputation analysis it is not free to run. We therefore strongly encourage you to pay a contribution to keep the servers running (<u><a href='",get_conf("paypal"),"'>paypal</a></u>, suggested 5 USD). Also, if you do this and put your unique ID, (<i>",uniqueID,"</i>) as payment-message, you'll be moved to priority queue. Either way, once the analysis is finished you'll receive a mail containing download links for the imputed data. You will also be able to browse the analytics-interface using this uniqueID.<br><br> ")
-  
-  #assign the right language book to people (Swedes and Norwegians can get the Danish language one too)
-  if(length(grep("\\.dk$",email))==1 | length(grep("\\.no$",email))==1 | length(grep("\\.se$",email))==1){
-    booklink<-"https://www.saxo.com/dk/forstaa-dit-dna_lasse-westergaard-folkersen_haeftet_9788770170154"
-  }else{
-    booklink<-"https://www.worldscientific.com/worldscibooks/10.1142/11070"
-  }
-  message_end2 <- paste0("In the meantime, may we recommend the book <u><a href='",booklink,"'>'Understand your DNA'</a></u> that serves as a guide for the underlying concepts of this analysis.<br></HTML>")
-  
-  #send the mail
-  message <- paste0(message_start,queue_message,message_end1,message_end2)
-  mailingResult<-try(send.mail(from = get_conf("from_email_address"),
-                               to = email,
-                               subject = "Imputation is queued",
-                               body = message,
-                               html=T,
-                               smtp = list(
-                                 host.name = "smtp.gmail.com", 
-                                 port = 465, 
-                                 user.name = get_conf("from_email_address"), 
-                                 passwd = get_conf("from_email_password"), 
-                                 ssl = TRUE),
-                               authenticate = TRUE,
-                               send = TRUE),silent=T)
-  if(class(mailingResult)=="try-error"){
-    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"mailing_error",email,uniqueID,filename)
-    m<-paste(m,collapse="\t")
-    write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
-  }
-  
   
   #if running as docker, then kill previous supercronic jobs and restart
   if(get_conf("running_as_docker")){
@@ -863,10 +861,10 @@ prepare_imputemany_genome<-function(
   #' @return A short text string with a completion message. In addition all submitted samples will be available for processing in the standard impute-me file-structure, at ~/imputations
   
   
-  library("mailR")
+
   library("tools")
   suppressWarnings(library("shiny"))
-  
+  library("gmailr",warn.conflicts = FALSE)
   
   #set logging level
   verbose <- get_conf("verbose")
@@ -960,8 +958,7 @@ prepare_imputemany_genome<-function(
   
   #check if it should be moved to the non-impute server:
   if(should_be_imputed){
-    
-    
+
     #unpacking
     if(!file.exists("/home/ubuntu/uploads_for_imputemany/"))dir.create("/home/ubuntu/uploads_for_imputemany/")
     newUnzippedPath <- paste0("/home/ubuntu/uploads_for_imputemany/",upload_time,"_input.txt")
@@ -985,9 +982,7 @@ prepare_imputemany_genome<-function(
     
     #updating progress
     updateProgress(detail = "Check mail, check queue, check md5sum")
-    
-    
-    
+
     
     #checking if it is a consistent file
     print("checking if it is a consistent file")
@@ -996,9 +991,7 @@ prepare_imputemany_genome<-function(
       stop(safeError("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
     }
     
-    
-    
-    
+
     #reading and checking
     print("checking if it is a consistent file")
     d<-try(read.table(path,stringsAsFactors=F,header=T,sep="\t"))
@@ -1164,12 +1157,18 @@ prepare_imputemany_genome<-function(
   }  
   
   
-  #always admin-mail a notification that an imputemany upload has happened
-  mailingResult<-try(send.mail(from = get_conf("from_email_address"),to = get_conf("error_report_mail"),
-                               subject = "Impute-many data set uploaded",
-                               body = paste0("A data set with name ",upload_time," was uploaded to the server by ",email," (imputation was set to ",should_be_imputed,")"),
-                               html=T,
-                               smtp = list(host.name = "smtp.gmail.com",port = 465,user.name = get_conf("from_email_address"),passwd = get_conf("from_email_password"),ssl = TRUE),authenticate = TRUE,send = TRUE))
+  #if possible, admin-mail a notification that an imputemany upload has happened
+  if(get_conf("from_email_address") != "" & get_conf("from_email_password") != "" & get_conf("error_report_mail")!= ""){
+    message<-paste0("<html><body>A data set with name ",upload_time," was uploaded to the server by ",email," (imputation was set to ",should_be_imputed,")</body></html>")
+    gm_auth_configure( path ="~/misc_files/mailchecker.json")
+    gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
+    prepared_email <- try(gm_mime() %>%
+                            gm_to(get_conf("error_report_mail")) %>%
+                            gm_from(get_conf("from_email_address")) %>%
+                            gm_subject("Impute-many data set uploaded") %>%
+                            gm_html_body(message))
+    mailingResult<-try(gm_send_message(prepared_email))
+  }
   
   
   
@@ -1210,9 +1209,9 @@ check_for_cron_ready_jobs<-function(
 ){
   #' check for cron ready jobs
   #'
-  #' Checks what jobs to run. In the simplest form, this function simply just returns 
-  #' the uniqueID of the next jobs in line, sorted jobs in line, by submission-time 
-  #' and mark that job as 'Job is running' in the job_status.txt. However, with further 
+  #' Checks what jobs to run. In the simplest form, this function just returns 
+  #' the uniqueID of the next job in line, sorted from all in queue, by submission-time 
+  #' and mark it as 'Job is running' in the job_status.txt. However, with further 
   #' complexities (Node-running, priority queue,  timing delay, vcf-jobs etc)
   #' this core function needs more complex handling, including transferring the 
   #' files from Hub to Node computer and marking them as remote-running in 
@@ -1252,7 +1251,7 @@ check_for_cron_ready_jobs<-function(
     if(runningJobCount>(get_conf("maxImputations")-1)){
       stop(paste("Found",runningJobCount,"running jobs, which is more than maxImputations so doing nothing"))
     }else{
-      if(verbose>0)print(paste0(Sys.time(),": Waiting ",seconds_wait_before_start/(60)," minutes before re-checking. Set seconds_wait_before_start variable in ~/misc_files/configuration.R if this is not ok."))
+      if(verbose>0)print(paste0(Sys.time(),": Waiting ",seconds_wait_before_start/(60)," minutes before re-checking. Set seconds_wait_before_start variable in ~/configuration/configuration.R if this is not ok."))
       Sys.sleep(seconds_wait_before_start)
     }
     #After sleeping period, wake up and re-check (equal to the seconds_wait_before_start=0 setting)
@@ -1261,19 +1260,33 @@ check_for_cron_ready_jobs<-function(
   
   
   
-  #Then, after optional-wait, we check if enough stuff is already running, and abort if so
+  
+  
+  
+  #This block checks if enough stuff is already running, and abort if so
   foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
-  runningJobCount<-0
+  runningImputationCount<-0
   for(folderToCheck in foldersToCheck){
     job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
     if(file.exists(job_status_file)){
       job_status<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
-      if(job_status=="Job is running"){runningJobCount<-runningJobCount+1}
+      if(job_status=="Job is running"){runningImputationCount<-runningImputationCount+1}
     }
   }
-  if(runningJobCount>(get_conf("maxImputations")-1)){
-    stop(paste("Found",runningJobCount,"running jobs, which is more than maxImputations, so doing nothing"))
+  foldersToCheck<-grep("^vcf_folder",list.files("/home/ubuntu/vcfs/"),value=T)
+  runningVcfCount<-0
+  for(folderToCheck in foldersToCheck){
+    job_status_file<-paste("/home/ubuntu/vcfs/",folderToCheck,"/job_status.txt",sep="")
+    if(file.exists(job_status_file)){
+      job_status<-read.table(job_status_file,stringsAsFactors=FALSE,header=FALSE,sep="\t")[1,1]
+      if(job_status=="Job is running"){runningVcfCount<-runningVcfCount+1}
+    }
   }
+  if(runningVcfCount + runningImputationCount >(get_conf("maxImputations")-1)){
+    stop(paste0("Found ",runningVcfCount + runningImputationCount," running jobs (",runningImputationCount," imputations, ",runningVcfCount," vcfs), which is more than the maxImputations setting. Aborting and doing nothing"))
+  }
+  
+  
   
   
   if(job_type=="single"){
@@ -1285,6 +1298,7 @@ check_for_cron_ready_jobs<-function(
       remotedata<-system(cmd1,intern=T)
       Sys.sleep(0.2)
       remotedata_df<-as.data.frame(do.call(rbind,strsplit(remotedata,"\\s+")),stringsAsFactors=F)
+      if(ncol(remotedata_df)==0)stop("Nothing found at hub server. Exit, stop and wait.")
       remotedata_df<-remotedata_df[order(remotedata_df[,6]),]
       remoteFoldersToCheck<-remotedata_df[,7]
       
@@ -1325,13 +1339,13 @@ check_for_cron_ready_jobs<-function(
           break
         }
       }
-      #Update the local foldersToCheck to reflect new arrivals
-      foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
     }
-    
+
+        
     
     #Then - no matter the role - we check locally which, if any, folders are ready to run
     imputeThisFolder<-NA
+    foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
     for(folderToCheck in foldersToCheck){
       job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
       if(!file.exists(job_status_file)){
@@ -1445,6 +1459,7 @@ check_for_cron_ready_jobs<-function(
     
     #Then - no matter the role - we check locally which, if any, folders are ready to run
     imputeThisFolder<-vector()
+    foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
     for(folderToCheck in foldersToCheck){
       job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
       
@@ -1473,7 +1488,7 @@ check_for_cron_ready_jobs<-function(
     
     #Stop if none are found
     if(length(imputeThisFolder)!= length_requested){
-      stop(paste0(length(imputeThisFolder)," impute-queue folders were found to be ready for imputation. The requested number is ",length_requested,".")) #here we could easily have a mechanism for proceeded if the found number is <10, but for now we just fail so we can sort it out later. It's not applicable in node-running-setups anyway, because they always take 10.
+      stop(paste0("The impute-queue folders did not contain enough jobs ready for imputation. The requested number is ",length_requested,".")) #here we could easily have a mechanism for proceeded if the found number is <10, but for now we just fail so we can sort it out later. It's not applicable in node-running-setups anyway, because they always take 10.
     }else{
       print(paste0(Sys.time(),": Found ",length_requested," ready sets to impute"))
     }
@@ -1484,12 +1499,62 @@ check_for_cron_ready_jobs<-function(
     
   }else if(job_type =="vcf"){
     
-    #Currently not tested for node-running. Only hub. Mainly because there has been no need, since the requirements are lower for a seq-handling
+    #First handle the Node running code - which will later merge into local/hub running after a scp step
     if(get_conf("serverRole")== "Node"){
-      stop("The vcf job_type has not been tested for node running at all, because it has been sufficient to run it as hub so far.")
+      
+      #sort checking order by time entered
+      cmd1 <- paste("ssh ubuntu@",hubAddress," ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' /home/ubuntu/vcfs/  | tail -n +2",sep="")
+      remotedata<-system(cmd1,intern=T)
+      Sys.sleep(0.2)
+      remotedata_df<-as.data.frame(do.call(rbind,strsplit(remotedata,"\\s+")),stringsAsFactors=F)
+      if(ncol(remotedata_df)==0)stop("Nothing found at hub server. Exit, stop and wait.")
+      remotedata_df<-remotedata_df[order(remotedata_df[,6]),]
+      remoteFoldersToCheck<-remotedata_df[,7]
+      
+      
+      #check if there's any fast-queue jobs to put up-front. The fast-queue jobs is just a file with uniqueID
+      #and then TRUE or FALSE. The TRUE or FALSE means if a bulk impute is allowed to take it or not
+      #which is not relevant here in single-running.
+      cmd0 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/misc_files/fast_queue_emails.txt
+                ",sep="")
+      f1<-system(cmd0,intern=T)
+      Sys.sleep(0.2)
+      if(length(f1)>0){ #if there is a fast-queue file, we handle it
+        f2<-do.call(rbind,strsplit(f1,"\t"))
+        f3<-f2[,1]
+        remoteFoldersToCheck<-c(remoteFoldersToCheck[remoteFoldersToCheck%in%f3],remoteFoldersToCheck[!remoteFoldersToCheck%in%f3])
+      }  
+      
+      #then loop over all remote folders
+      for(remoteFolderToCheck in remoteFoldersToCheck){
+        cmd2 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/vcfs/",remoteFolderToCheck,"/job_status.txt",sep="")
+        job_status<-system(cmd2,intern=T)
+        #Check if the job is ready
+        if(job_status=="Job is ready"){
+          if(verbose>0)print(paste0(Sys.time(),": Found remote job-status file and job is ready ",remoteFolderToCheck," - will copy to local Node"))
+          
+          #First write to job-status that now the job is off to a remote server
+          cmd3 <- paste("ssh ubuntu@",hubAddress," 'echo Job is remote-running > /home/ubuntu/vcfs/",remoteFolderToCheck,"/job_status.txt'",sep="")
+          system(cmd3)
+          
+          #then copy all the files to here
+          cmd4 <- paste("scp -r ubuntu@",hubAddress,":/home/ubuntu/vcfs/",remoteFolderToCheck," /home/ubuntu/vcfs/",remoteFolderToCheck,sep="")
+          system(cmd4)
+          
+          #Then write locally that job is ready
+          job_status_file<-paste("/home/ubuntu/vcfs/",remoteFolderToCheck,"/job_status.txt",sep="")
+          unlink(job_status_file)
+          write.table("Job is ready",file=job_status_file,col.names=F,row.names=F,quote=F)
+          break
+        }
+      }
+      #Update the local foldersToCheck to reflect new arrivals
+      foldersToCheck<-grep("^vcf_folder",list.files("/home/ubuntu/vcfs/"),value=T)
     }
     
-    #sort checking order by time entered
+    
+    #From here on local processing is assumed, in the sense that regardless of the
+    #function being executed on a node or hub it will be in the same state.
     cmd1 <- paste("ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' /home/ubuntu/vcfs/  | tail -n +2",sep="")
     localdata<-system(cmd1,intern=T)
     Sys.sleep(0.2)
@@ -1827,7 +1892,7 @@ run_imputation<-function(
         if(step_7_log == 137){
           re_run_chunk <- TRUE
           divisions<-3
-          print(paste0(Sys.time(),": restart impute2 run at ",i," with new subset to avoid memory-lack bug. This was done because of impute2-error-137. Chunk_lines_length was ",chunk_lines_length, ". If this error is observed often or around the time of known pipeline failures, it may be smart to reduce the max_imputation_chunk_size in the ~/misc_files/configuration.R to a lower number." ))
+          print(paste0(Sys.time(),": restart impute2 run at ",i," with new subset to avoid memory-lack bug. This was done because of impute2-error-137. Chunk_lines_length was ",chunk_lines_length, ". If this error is observed often or around the time of known pipeline failures, it may be smart to reduce the max_imputation_chunk_size in the ~/configuration/configuration.R to a lower number." ))
         }else{
           re_run_chunk <- FALSE
         }
@@ -1855,7 +1920,7 @@ run_imputation<-function(
           
           cmd7<-paste(impute2," -m /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start_2," ",end_2," -Ne 20000 -o step_7_chr",chr,"_",i,"-",j,sep="")
           step_7_log_2<-system(cmd7,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
-          if(step_7_log_2 == 137)stop("the memory problem was still active after second round. It may be smart to reduce the max_imputation_chunk_size in the ~/misc_files/configuration.R to a lower number.")
+          if(step_7_log_2 == 137)stop("the memory problem was still active after second round. It may be smart to reduce the max_imputation_chunk_size in the ~/configuration/configuration.R to a lower number.")
           
         }
       }
@@ -1892,6 +1957,8 @@ run_bulk_imputation<-function(
 
   #load libraries
   library(tools)
+  library("gmailr",warn.conflicts = FALSE)
+  
   
   #set logging level
   verbose <- get_conf("verbose")
@@ -2066,7 +2133,7 @@ run_bulk_imputation<-function(
       if(out2==3){
         missnp<-read.table(paste0("step_2m_chr",chr,".missnp"),stringsAsFactors = F)[,1]
         if(length(missnp) > 500) {
-          messages<-paste0(Sys.time(),": ERROR The missnp>500 error was triggered. Outputting debug info.")
+          messages<-paste0(Sys.time(),": ERROR The missnp>500 error was triggered. Outputting debug info. To fix this error it is usually sufficient to find the sample with odd-out set of alleles and queue that for single-running.")
           debug_info<-list()
           for(uniqueID in uniqueIDs){
             cmd5<-paste0(plink," --bfile step_2_",uniqueID,"_chr",chr," --recode --out step_2_",uniqueID,"_chr",chr,"_missnp_hunt --extract step_2m_chr",chr,".missnp")
@@ -2100,20 +2167,18 @@ run_bulk_imputation<-function(
           #Then sending as error mail (if possible)
           if(get_conf("from_email_address") != "" & get_conf("from_email_password") != "" & get_conf("error_report_mail")!= ""){
             if(verbose>=0)print(paste0(Sys.time(),": Sending error mail."))
-            library("mailR")
-            mailingResult<-try(send.mail(from = get_conf("from_email_address"),
-                                         to = get_conf("error_report_mail"),
-                                         subject = "An impute-me run has problem",
-                                         body = paste(messages,collapse="<br>"),
-                                         html=T,
-                                         smtp = list(
-                                           host.name = "smtp.gmail.com", 
-                                           port = 465, 
-                                           user.name = get_conf("from_email_address"), 
-                                           passwd = get_conf("from_email_password"), 
-                                           ssl = TRUE),
-                                         authenticate = TRUE,
-                                         send = TRUE),silent=T)
+            
+            
+
+            message<-paste0("<html><body>",paste(messages,collapse="<br>"),"</body></html>")
+            gm_auth_configure( path ="~/misc_files/mailchecker.json")
+            gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
+            prepared_email <- try(gm_mime() %>%
+                                    gm_to(get_conf("error_report_mail")) %>%
+                                    gm_from(get_conf("from_email_address")) %>%
+                                    gm_subject("An impute-me run has problem") %>%
+                                    gm_html_body(message))
+            mailingResult<-try(gm_send_message(prepared_email))
             if(class(mailingResult)=="try-error" & verbose > 2)print(paste0(Sys.time(),": Mailing failed."))
             
           }
@@ -2257,7 +2322,7 @@ run_bulk_imputation<-function(
         if(step_7_log == 137){
           re_run_chunk <- TRUE
           divisions<-3
-          if(verbose>=0)print(paste0(Sys.time(),": restart impute2 run at ",i," with new subset to avoid memory-lack bug. This was done because of impute2-error-137. Chunk_lines_length was ",chunk_lines_length, ". If this error is observed often or around the time of known pipeline failures, it may be smart to reduce the max_imputation_chunk_size in the ~/misc_files/configuration.R to a lower number." ))
+          if(verbose>=0)print(paste0(Sys.time(),": restart impute2 run at ",i," with new subset to avoid memory-lack bug. This was done because of impute2-error-137. Chunk_lines_length was ",chunk_lines_length, ". If this error is observed often or around the time of known pipeline failures, it may be smart to reduce the max_imputation_chunk_size in the ~/configuration/configuration.R to a lower number." ))
         }else{
           re_run_chunk <- FALSE
         }
@@ -2285,7 +2350,7 @@ run_bulk_imputation<-function(
           
           cmd15<-paste(impute2," -m /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start_2," ",end_2," -Ne 20000 -o step_7_chr",chr,"_",i,"-",j,sep="")
           step_7_log_2<-system(cmd15,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
-          if(step_7_log_2 == 137)stop("the memory problem was still active after second round. It may be smart to reduce the max_imputation_chunk_size in the ~/misc_files/configuration.R to a lower number.")
+          if(step_7_log_2 == 137)stop("the memory problem was still active after second round. It may be smart to reduce the max_imputation_chunk_size in the ~/configuration/configuration.R to a lower number.")
         }
       }
     }
@@ -2346,7 +2411,7 @@ run_bulk_imputation<-function(
     }
     Sys.sleep(0.5) #take a break
     
-    #clean up files afterwards (or else we break the 30GB limit)
+    #clean up files afterwards (or else we break the 17G  limit)
     unlink(step7Files) 
   }
   setwd(start_wd)
@@ -2557,6 +2622,8 @@ convert_vcfs_to_simple_format<-function(
     chr=bed[w1,"chr"],
     pos=bed[w1,"grch37_start"],
     genotype=paste0(bed[w1,"ref"],bed[w1,"ref"]),
+    ref=bed[w1,"ref"],
+    alt=bed[w1,"alt"],
     stringsAsFactors=F)
   
   
@@ -2567,7 +2634,14 @@ convert_vcfs_to_simple_format<-function(
     chr=bed[w2,"chr"],
     pos=bed[w2,"grch37_start"],
     genotype=apply(tped[rownames(bed)[w2],c(5,6)],1,paste,collapse=""),
+    ref=bed[w2,"ref"],
+    alt=bed[w2,"alt"],
     stringsAsFactors=F)
+  
+  
+  #clean up for memory reasons (this is peak)
+  rm("tped","bed","w1","w2")
+  gc(verbose=verbose>4)
   
   
   #switch allele order (alphabetical, we don't know the phase anyway)
@@ -2580,10 +2654,14 @@ convert_vcfs_to_simple_format<-function(
   non_homozygote_refs[,"genotype"] <- switch_alleles(non_homozygote_refs[,"genotype"])
   
   
-  #merge and sort by pos
+  
+  #merge and sort by pos (and clean!)
   output <- rbind(non_homozygote_refs,homozygote_refs)
+  rm("non_homozygote_refs","homozygote_refs")
+  gc(verbose=verbose>4)
   output[,"chr"]<-factor(output[,"chr"], levels=c(1:22,"X","Y"))
   output <- output[order(output[,"chr"], output[,"pos"]),]
+  
   
   
   #determine sex,with custom trained approach that counts the heterozygote fraction
@@ -2642,16 +2720,17 @@ convert_vcfs_to_simple_format<-function(
   
   
   #write a simple-format-type file.
-  files_for_zipping <- vector()
-  for(chr in chromosomes){
-    filename <- sub("__CHR__",chr,out_temp_simple_per_chr_path)
-    o <- output[output[,"chr"]%in%chr,]
-    write.table(o, file=filename,sep="\t",row.names=F,col.names=F,quote=F)
-    files_for_zipping <- c(files_for_zipping, filename)
-  }
-  setwd(out_temp_path)
-  zip(out_simple_path, basename(files_for_zipping), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-  
+  #Disabled - it's optional now even for imputation, and for vcf it just doesn't make sense
+  #since it's essentially going to be a copy of the "input"-data (zip, not vcf), only split by chromosome 
+  # files_for_zipping <- vector()
+  # for(chr in chromosomes){
+  #   filename <- sub("__CHR__",chr,out_temp_simple_per_chr_path)
+  #   o <- output[output[,"chr"]%in%chr,]
+  #   write.table(o, file=filename,sep="\t",row.names=F,col.names=F,quote=F)
+  #   files_for_zipping <- c(files_for_zipping, filename)
+  # }
+  # setwd(out_temp_path)
+  # zip(out_simple_path, basename(files_for_zipping), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
   
   
   
@@ -2660,68 +2739,66 @@ convert_vcfs_to_simple_format<-function(
   #e.g.
   # --- rs149201999 16050408 T C 0.947 0.053 0
   # --- rs146752890 16050612 C G 0.946 0.054 0
-  # This is a bit more complicated. The output object currently don't contain ref/alt info.
-  #the easiest and most proximal source for that is the bed-file already loaded,
   #(note, in a sense this is a silly excercise - we shouldn't convert vcf-measurements back to 
   #a probabilistic imputation-output format - but we have to, to make sure everything don't crash
   #downstream)
   files_for_zipping <- vector()
   for(chr in chromosomes){
+    if(verbose>3)print(paste0(Sys.time(),": Generating pseudo-.gen file from the vcf-data, at chr ",chr))
+    
     filename <- sub("__CHR__",chr,out_temp_gen_per_chr_path)
     files_for_zipping <- c(files_for_zipping, filename)
-    
-    #subset to relevant chromosome  - both tped genotypes and the input bed
-    o1 <- output[output[,"chr"]%in%chr,]
-    bed_here <- bed[bed[,1]%in%chr,]
-    if(!all(o1[,"pos"] == bed_here[,2]))stop(paste("Very odd error when comparing bed and output for chr",chr,uniqueID))#This is probably waste-ful, there's absolutely no reason the bed and the output wouldn't be identical.
-    
+    w1<-which(output[,"chr"]%in%chr)
+
     #generate new output format emulating gen format
-    o2<-data.frame(
-      chr=rep("---",nrow(o1)),
-      rsid=o1[,"rsid"],
-      pos=o1[,"pos"],
-      ref=bed_here[,5],
-      alt=bed_here[,6],
+    o<-data.frame(
+      chr=rep("---",length(w1)),
+      rsid=output[w1,"rsid"],
+      pos=output[w1,"pos"],
+      ref=output[w1,"ref"],
+      alt=output[w1,"alt"],
       prob1=NA,
       prob2=NA,
       prob3=NA,
-      genotype=o1[,"genotype"],
+      genotype=output[w1,"genotype"],
       stringsAsFactors = F
     )
     
     
     
     #insert probabilities - homozygote refs
-    w1<-which(o1[,"genotype"] == paste0(o2[,"ref"],o2[,"ref"]))
-    o2[w1,"prob1"] <- 1
-    o2[w1,"prob2"] <- 0
-    o2[w1,"prob3"] <- 0
+    w2<-which(o[,"genotype"] == paste0(o[,"ref"],o[,"ref"]))
+    o[w2,"prob1"] <- 1
+    o[w2,"prob2"] <- 0
+    o[w2,"prob3"] <- 0
     
     
     #insert probabilities - heterozygotes
-    w2<-which(o1[,"genotype"] == paste0(o2[,"alt"],o2[,"ref"]) | o1[,"genotype"] == paste0(o2[,"ref"],o2[,"alt"]))
-    o2[w2,"prob1"] <- 0
-    o2[w2,"prob2"] <- 1
-    o2[w2,"prob3"] <- 0
+    w3<-which(o[,"genotype"] == paste0(o[,"alt"],o[,"ref"]) | o[,"genotype"] == paste0(o[,"ref"],o[,"alt"]))
+    o[w3,"prob1"] <- 0
+    o[w3,"prob2"] <- 1
+    o[w3,"prob3"] <- 0
     
     
     
     #insert probabilities - homozygote alts
-    w3<-which(o1[,"genotype"] == paste0(o2[,"alt"],o2[,"alt"]))
-    o2[w3,"prob1"] <- 0
-    o2[w3,"prob2"] <- 0
-    o2[w3,"prob3"] <- 1
+    w4<-which(o[,"genotype"] == paste0(o[,"alt"],o[,"alt"]))
+    o[w4,"prob1"] <- 0
+    o[w4,"prob2"] <- 0
+    o[w4,"prob3"] <- 1
     
     
     #check how many are missing still (typically just a few, due to odd alt-notation)
-    w4<-which(apply(is.na(o2[,c("prob1","prob2","prob3")]),1,sum)>0)
-    o2[w4,"prob1"] <- 0
-    o2[w4,"prob2"] <- 0
-    o2[w4,"prob3"] <- 0
-    if(verbose>2)print(paste0(Sys.time(),": When generating pseudo-.gen file from the vcf-data, there was ",length(w4)," missing variants assigned a 0-0-0 score at chr ",chr))
+    w5<-which(apply(is.na(o[,c("prob1","prob2","prob3")]),1,sum)>0)
+    o[w5,"prob1"] <- 0
+    o[w5,"prob2"] <- 0
+    o[w5,"prob3"] <- 0
+    if(verbose>2)print(paste0(Sys.time(),": When generating pseudo-.gen file from the vcf-data, there was ",length(w5)," missing variants assigned a 0-0-0 score at chr ",chr))
     
-    #then write.out
-    write.table(o2, file=filename,sep=" ",row.names=F,col.names=F,quote=F)
+    #then write.out (and clean)
+    write.table(o, file=filename,sep=" ",row.names=F,col.names=F,quote=F)
+    rm("o")
+    gc(verbose=verbose>8)
   }
   setwd(out_temp_path)
   zip(out_gen_path, basename(files_for_zipping), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
@@ -2729,7 +2806,6 @@ convert_vcfs_to_simple_format<-function(
   
   
   #deleting working folders and reset wd folder
-  # if(!protect_from_deletion)unlink(vcf_folder,recursive = T)
   unlink(out_temp_path,recursive=T)
   setwd(start_wd)
   
@@ -3113,10 +3189,8 @@ transfer_cleanup_and_mailout<-function(
   #' 
   #' @param uniqueID The uniqueID to perform transfer cleanup and mailout for
   
-  
   #libraries
-  library("mailR")
-  library("rJava")
+  library("gmailr",warn.conflicts = FALSE)
   
   #get logging level and other global variables
   verbose <- get_conf("verbose")
@@ -3171,24 +3245,29 @@ transfer_cleanup_and_mailout<-function(
   }
   
   
-  #making a link out to where the data can be retrieved	(different on hub and node)
-  if(serverRole== "Node" & !is_vcf_file){
+  #making a link out to where the data can be retrieved	(different on hub and node, and also depends on vcf-file or not)
+  if(serverRole== "Node" ){
     
-    if(export_simple_format){
-      cmd6 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".simple_format.zip /home/ubuntu/srv/impute-me/www/",uniqueID,".simple_format.zip'",sep="")
-      out6<-system(cmd6)
+    if(!is_vcf_file){
+      if(export_simple_format){
+        cmd6 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".simple_format.zip /home/ubuntu/srv/impute-me/www/",uniqueID,".simple_format.zip'",sep="")
+        out6<-system(cmd6)
+      }else{
+        out6<-0
+      }
+      
+      cmd7 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip /home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip'",sep="")
+      out7<-system(cmd7)
+      
     }else{
-      out6<-0
+      out6<-out7<-0
     }
-    
-    cmd7 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip /home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip'",sep="")
-    out7<-system(cmd7)
     
     cmd8 <- paste("ssh ubuntu@",hubAddress," 'ln -s /home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json /home/ubuntu/srv/impute-me/www/",uniqueID,"_data.json'",sep="")
     out8<-system(cmd8)
     
     if(out6+out7+out8 > 0)stop(paste0("Problem with symlink-creation on Hub for ",uniqueID,". Possible connection error. Aborting."))
-    
+
   }else if(serverRole== "Hub" & is_vcf_file){
     file.symlink(
       from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json",sep=""),
@@ -3251,19 +3330,16 @@ transfer_cleanup_and_mailout<-function(
     if(get_conf("from_email_address") != "" & get_conf("from_email_password") != ""){
       for(tryCount in 1:3){
         print(paste0(Sys.time(),": Trying to mail to ",email))
-        mailingResult<-try(send.mail(from = get_conf("from_email_address"),
-                                     to = email,
-                                     subject = "Imputation is ready",
-                                     body = message,
-                                     html=T,
-                                     smtp = list(
-                                       host.name = "smtp.gmail.com", 
-                                       port = 465, 
-                                       user.name = get_conf("from_email_address"), 
-                                       passwd = get_conf("from_email_password"), 
-                                       ssl = TRUE),
-                                     authenticate = TRUE,
-                                     send = TRUE))
+
+        gm_auth_configure( path ="~/misc_files/mailchecker.json")
+        gm_auth(email=get_conf("from_email_address"), cache="~/misc_files/mail_secret")
+        prepared_email <- try(gm_mime() %>%
+                                gm_to(email) %>%
+                                gm_from(get_conf("from_email_address")) %>%
+                                gm_subject("Imputation is ready") %>%
+                                gm_html_body(message))
+        mailingResult<-try(gm_send_message(prepared_email))
+        
         Sys.sleep(5)
         if(class(mailingResult)!="try-error")break
         if(tryCount == 3)stop("MAILING FAILED. THIS SHOULD BE FOLLOWED UP")
@@ -3282,7 +3358,7 @@ transfer_cleanup_and_mailout<-function(
   
   #also clear the hub imputation_folder if running as node
   if(serverRole== "Node"){
-    cmd9 <- paste("ssh ubuntu@",hubAddress," 'rm -r /home/ubuntu/imputations/imputation_folder_",uniqueID,"'",sep="")
+    cmd9 <- paste("ssh ubuntu@",hubAddress," 'rm -r ",summary_folder,"'",sep="")
     out9<-system(cmd9)
     
     #also don't leave the finished data here, if running as Node
@@ -3294,6 +3370,7 @@ transfer_cleanup_and_mailout<-function(
   }
   
 }
+
 
 
 
@@ -3492,8 +3569,11 @@ special_error_check<-function(
   
   #set logging level
   verbose <- get_conf("verbose")
-  
 
+  #libraries
+  library("gmailr",warn.conflicts = FALSE)  
+
+  #other checks
   if(class(uniqueID)!="character")stop(paste("uniqueID must be a character, not",class(uniqueID)))
   if(length(uniqueID)!=1)stop(paste("uniqueID must be length 1, not",length(uniqueID)))
   
@@ -3645,25 +3725,22 @@ special_error_check<-function(
     #and move on
   }else{
     #however if still failing, we have to send a mail
-    library("mailR")
     error1 <- system(cmd_final1,intern=T)
     error1 <- gsub("\b","",error1)
-    message <- paste0("<HTML>",uniqueID," failed all attempts at starting imputation. It came with special error status:<br><b>", paste(special_error_status,collapse="<br>"),".</b><br><br>The last error message was this: <br><br><small>",paste(error1,collapse="<br>"),"</small><br></HTML>")
+    message <- paste0("<HTML><body>",uniqueID," failed all attempts at starting imputation. It came with special error status:<br><b>", paste(special_error_status,collapse="<br>"),".</b><br><br>The last error message was this: <br><br><small>",paste(error1,collapse="<br>"),"</small><br></body></HTML>")
     if(verbose>=0)print(paste0(Sys.time(),": Sending error mail and giving up. This is the error:"))
     print(special_error_status)
-    mailingResult<-try(send.mail(from = get_conf("from_email_address"),
-                                 to = get_conf("error_report_mail"),
-                                 subject = "An impute-me sample has problem",
-                                 body = message,
-                                 html=T,
-                                 smtp = list(
-                                   host.name = "smtp.gmail.com", 
-                                   port = 465, 
-                                   user.name = get_conf("from_email_address"), 
-                                   passwd = get_conf("from_email_password"), 
-                                   ssl = TRUE),
-                                 authenticate = TRUE,
-                                 send = TRUE),silent=T)
+    
+
+    gm_auth_configure( path ="~/misc_files/mailchecker.json")
+    gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
+    prepared_email <- try(gm_mime() %>%
+                            gm_to(get_conf("error_report_mail")) %>%
+                            gm_from(get_conf("from_email_address")) %>%
+                            gm_subject("An impute-me run has problem") %>%
+                            gm_html_body(message))
+    mailingResult<-try(gm_send_message(prepared_email))
+    if(class(mailingResult)=="try-error" & verbose > 2)print(paste0(Sys.time(),": Mailing failed for special error check, but output has been logged."))
     stop("Special error check failed")
   }
   return(special_error_status)
@@ -4868,6 +4945,7 @@ reset_runs_from_node<-function(
   #define server-role
   serverRole <- get_conf("serverRole")
   hubAddress <- get_conf("hubAddress")
+  verbose <- get_conf("verbose")
   if(serverRole!="Node")stop("This function only works when running on nodes")
   
   
@@ -4908,9 +4986,9 @@ reset_runs_from_node<-function(
   
   
   if(length(folders_data)>0){
-    print(paste("Note that there was",length(folders_data),"folders in ~/data which will also be deleted and reset:",paste(folders_data,collapse=", ")))
+    if(verbose>0)print(paste0(Sys.time(),": Note that there was ",length(folders_data)," folders in ~/data which will also be deleted and reset: ",paste(folders_data,collapse=", ")))
   }else{
-    print(paste("Deleting",length(uniqueIDs),"uniqueIDs from local ~/imputation folder."))
+    if(verbose>0)print(paste0(Sys.time(),": Deleting ",length(uniqueIDs)," uniqueIDs from local ~/imputation folder."))
   }
   
   
@@ -4919,14 +4997,14 @@ reset_runs_from_node<-function(
   #check the bulk_imputations folder (can always be deleted)
   bulk_to_delete<-list.files("~/bulk_imputations/")
   if(length(bulk_to_delete)==1){
-    print("Also deleting one folder in ~/bulk_imputations")
+    if(verbose>0)print(paste0(Sys.time(),": Also deleting one folder in ~/bulk_imputations"))
   }else{
-    print(paste("Deleting",length(bulk_to_delete),"folders in ~/bulk_imputations:",paste(bulk_to_delete,collapse=", ")))
+    if(verbose>0)print(paste0(Sys.time(),"Deleting ",length(bulk_to_delete)," folders in ~/bulk_imputations: ",paste(bulk_to_delete,collapse=", ")))
   }
   unlink(paste0("~/bulk_imputations/",bulk_to_delete),recursive=T)  
   
   #set job ready tag
-  print(paste("Setting Job ready tag for",length(uniqueIDs),"uniqueIDs on hub at:",hubAddress))
+  if(verbose>0)print(paste0(Sys.time(),": Setting Job ready tag for ",length(uniqueIDs)," uniqueIDs on hub at: ",hubAddress))
   for(uniqueID in uniqueIDs){
     cmd2 <- paste0("ssh ubuntu@",hubAddress," 'echo Job is ready > /home/ubuntu/imputations/imputation_folder_",uniqueID,"/job_status.txt'")
     system(cmd2)
@@ -5099,22 +5177,36 @@ summarize_imputemany_json<-function(
 
 
 check_for_rare_nonbiallic_snps<-function(
-  uniqueID
+  uniqueID,
+  chromosomes=NULL
   ){
   #' check for rare nonbiallic snps
   #' 
   #' There's a rare error type that we've seen maybe 10-11 times now
   #' where a few, like less than 20, rows of the input data have mismatch in
-  #' allele-types. Not strand-flip - impossible mis-match. If those rows
+  #' allele-types. Not just strand-flips - impossible mis-match. If those rows
   #' are removed it'll process fine, and if audited it typically turns out
   #' it's either updated dbsnp (very rare) or else just seems like typos
   #' in the input. 
+  #' 
   #' This is so rare and so bad that it shouldn't be allowed to run 
   #' by auto-pilot, but the function here should be able to give a better
-  #' error output so it can be easily fixed if need be
+  #' error output so it can be easily fixed if need be. 
+  #' 
+  #' The function can also be run interactively, which is useful for persistent
+  #' problems
+  #' 
+  #' @param uniqueID The uniqueID to check
+  #' @param chromosomes The chromosomes to check. Optional. Defaults to 1-22 and X.
+  #' 
+  #' @return always end in an error, because it needs to stop the processing.
+  
+  
+  #define constants
+  verbose <- get_conf("verbose")
   
   #verbose doesn't matter, this should always be printed.
-  print(paste0(Sys.time(),": ERROR. Starting check_for_rare_nonbiallic_snps for ",uniqueID," - this will result in failure, but hopefully will give informative output."))
+  if(verbose>=0)print(paste0(Sys.time(),": ERROR. Starting check_for_rare_nonbiallic_snps for ",uniqueID," - this will result in failure, but hopefully will give informative output."))
   
   #define program paths
   shapeit="/home/ubuntu/programs/shapeit.v2.904.3.10.0-693.11.6.el7.x86_64/bin/shapeit"
@@ -5125,8 +5217,7 @@ check_for_rare_nonbiallic_snps<-function(
   
   #load libraries
   library("tools")
-  library("mailR")
-  library("rJava")
+  library("gmailr",warn.conflicts = FALSE)  
   
   #check input
   if(class(uniqueID)!="character")stop(paste("uniqueID must be class character, not",class(uniqueID)))
@@ -5142,13 +5233,43 @@ check_for_rare_nonbiallic_snps<-function(
     impute2 <- "/home/ubuntu/programs/impute_v2.3.2_x86_64_dynamic/impute2"
   }
   
+  
+  #set chromosomes if not given - or check
+  if(is.null(chromosomes)){
+    chromosomes <- c("X",as.character(1:22))  
+  }else{
+    if(class(chromosomes)!="character")stop(paste("chromosomes must be class character, not",class(chromosomes)))
+    if(length(chromosomes)>23)stop(paste("chromosomes must be maximally length 23, not",length(chromosomes)))
+    unknown<-chromosomes[!chromosomes%in%c("X",as.character(1:22))]
+    if(length(unknown)>0)stop(paste("chromosomes contained unknown entries:",paste(unknown,collapse=", ")))
+  }
+  
+  
+  #this blocks allows the check_for_rare_nonbiallic_snps script to be run also on new samples, not halfway through processing
+  #(useful when suspecting many non-biallelic alleles. Most often the block is skipped however.)
+  required_files<-c("step_2_exclusions","step_2_chrX.ped")
+  if(any(!file.exists(required_files))){
+    if(verbose>=0)print(paste0(Sys.time(),": Re-running first parts of imputation script in preparation for check_for_rare_nonbiallic_snps from scratch."))
+    cmd1<-paste0(plink," --23file ",inputfile_path," ",uniqueID," ",uniqueID," --recode --out step_1")
+    out1<-system(cmd1,ignore.stderr=T, ignore.stdout=T)
+    map<-read.table('step_1.map',sep='\t',stringsAsFactors=F,comment.char="")
+    exclude<-map[duplicated(map[,4]),2]
+    if(verbose>1)print(paste0(Sys.time(),': Removed ',length(exclude),' SNPs that were duplicated'))
+    write.table(exclude,file='step_2_exclusions',sep='\t',row.names=FALSE,col.names=F,quote=F)
+  }
+  
+  
+  
   #loop over chromosomes
   messages <- vector()
-  for(chr in c("X",as.character(1:22))){
+  for(chr in chromosomes){
+    if(verbose>2)print(paste0(Sys.time(),": Checking chr ",chr," for rare non-biallelic variants."))
+    
+    
     #This is a copy of the real impute run - but with detailed error collection
     #First in loop - extract only one specific chromosome
     cmd2<-paste(plink," --file step_1 --chr ",chr," --recode --out step_2_chr",chr," --exclude step_2_exclusions",sep="")
-    out2<-system(cmd2,ignore.stdout = TRUE, ignore.stderr = TRUE)
+    out2<-system(cmd2,ignore.stdout = T, ignore.stderr = T)
     
     #if X chromosome is missing it is allowed to skip forward
     if(out2 %in% c(12,13) & chr == "X"){
@@ -5158,7 +5279,7 @@ check_for_rare_nonbiallic_snps<-function(
     
     #Then check for strand flips etc. 
     cmd3<-paste(shapeit," -check --input-ped step_2_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_2_chr",chr,"_shapeit_log",sep="")
-    system(cmd3,ignore.stdout = TRUE, ignore.stderr = TRUE)
+    system(cmd3,ignore.stdout = T, ignore.stderr = T)
     
     #Many homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
     logFile<-read.table(paste("step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1)
@@ -5222,22 +5343,20 @@ check_for_rare_nonbiallic_snps<-function(
   #Then sending as error mail (if possible)
   if(get_conf("from_email_address") != "" & get_conf("from_email_password") != "" & get_conf("error_report_mail")!= ""){
     if(verbose>=0)print(paste0(Sys.time(),": Sending error mail."))
-    mailingResult<-try(send.mail(from = get_conf("from_email_address"),
-                                 to = get_conf("error_report_mail"),
-                                 subject = "An impute-me run has problem",
-                                 body = paste(messages,collapse="<br>"),
-                                 html=T,
-                                 smtp = list(
-                                   host.name = "smtp.gmail.com", 
-                                   port = 465, 
-                                   user.name = get_conf("from_email_address"), 
-                                   passwd = get_conf("from_email_password"), 
-                                   ssl = TRUE),
-                                 authenticate = TRUE,
-                                 send = TRUE),silent=T)
+    
+    message<-paste0("<html><body>",paste(messages,collapse="<br>"),"</body></html>")
+    gm_auth_configure( path ="~/misc_files/mailchecker.json")
+    gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
+    prepared_email <- try(gm_mime() %>%
+                            gm_to(get_conf("error_report_mail")) %>%
+                            gm_from(get_conf("from_email_address")) %>%
+                            gm_subject("An impute-me run has problem") %>%
+                            gm_html_body(message))
+    mailingResult<-try(gm_send_message(prepared_email))
     if(class(mailingResult)=="try-error" & verbose > 2)print(paste0(Sys.time(),": Mailing failed."))
     
   }
+  
   
   stop("Ended check_for_rare_nonbiallic_snps run")
   
@@ -5266,9 +5385,9 @@ count_x_chr_entries<-function(
   #' Note - it'll always result in a fail in the end
   #' 
   #' @param chr the chromosome to check. Will almost always be the X-chromosome, "X", but can be others as well.
-  
-  library("mailR")
-  library("rJava")
+
+  #libraries
+  library("gmailr",warn.conflicts = FALSE)
   
   #verbose doesn't matter, this should always be printed.
   print(paste0(Sys.time(),": ERROR. Starting count_x_chr_entries for chr",chr," - this will result in failure, but hopefully will give informative output."))
@@ -5302,19 +5421,17 @@ count_x_chr_entries<-function(
   #Then sending as error mail (if possible)
   if(get_conf("from_email_address") != "" & get_conf("from_email_password") != "" & get_conf("error_report_mail")!= ""){
     if(verbose>=0)print(paste0(Sys.time(),": Sending error mail."))
-    mailingResult<-try(send.mail(from = get_conf("from_email_address"),
-                                 to = get_conf("error_report_mail"),
-                                 subject = "An impute-me run has problem",
-                                 body = paste(messages,collapse="<br>"),
-                                 html=T,
-                                 smtp = list(
-                                   host.name = "smtp.gmail.com", 
-                                   port = 465, 
-                                   user.name = get_conf("from_email_address"), 
-                                   passwd = get_conf("from_email_password"), 
-                                   ssl = TRUE),
-                                 authenticate = TRUE,
-                                 send = TRUE),silent=T)
+    
+    
+    message<-paste0("<html><body>",paste(messages,collapse="<br>"),"</body></html>")
+    gm_auth_configure( path ="~/misc_files/mailchecker.json")
+    gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
+    prepared_email <- try(gm_mime() %>%
+                            gm_to(get_conf("error_report_mail")) %>%
+                            gm_from(get_conf("from_email_address")) %>%
+                            gm_subject("An impute-me run has problem") %>%
+                            gm_html_body(message))
+    mailingResult<-try(gm_send_message(prepared_email))
     
     if(class(mailingResult)=="try-error" & verbose > 2)print(paste0(Sys.time(),": Mailing failed."))
     

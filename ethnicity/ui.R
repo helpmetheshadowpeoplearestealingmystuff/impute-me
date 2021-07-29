@@ -14,11 +14,10 @@ names(ethnicities)<-c('African','Ad Mixed American','East Asian','European','Sou
 shinyUI(bootstrapPage(
 	head(),
 	navigation(),
-	# titlePanel("Ethnicity and race"),
-	titlePanel("Ethnicity Profile"),
+	titlePanel("Ancestry Profile"),
 	beginPage(),
 	beginPanel('1/3'),
-	HTML("This module investigates the ethnicity profile. You can use the ID id_613z86871 to test the function"),
+	HTML("This module investigates the ancestry profile. You can use the ID id_613z86871 to test the function"),
 
 	
 	textInput(inputId="uniqueID", label = "Unique ID", value = "id_XXXXXXXXX"),

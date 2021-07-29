@@ -8,7 +8,7 @@ RUN R -e "install.packages(c( \
 'DT', \
 'igraph',  \
 'jsonlite', \
-'mailR', \
+'gmailr', \
 'openxlsx', \
 'R.utils', \
 'visNetwork', \
@@ -32,15 +32,6 @@ RUN R -e "install.packages(c( \
 'remotes' \
 ),dependencies=TRUE, repos = 'http://cran.rstudio.com/')"
 RUN R -e "remotes::install_github('gsimchoni/kandinsky')"
-
-#Install the mailR, plus the java environment required for it
-RUN apt-get -y update && apt-get install -y \
-default-jdk \
-r-cran-rjava 
-RUN R -e "install.packages(c( \
-'rJava', \
-'mailR' \
-),dependencies=TRUE, repos = 'http://cran.rstudio.com/')"
 
 #Install plotly - takes forever and often fails in non-deterministic ways. 
 #All it affects is the 3D-plotting of ancestry. Doesn't affect calculations at all.
@@ -80,6 +71,7 @@ mkdir /home/ubuntu/logs/cron_logs && \
 mkdir /home/ubuntu/logs/shiny && \
 mkdir /home/ubuntu/logs/submission && \
 mkdir /home/ubuntu/misc_files && \
+mkdir /home/ubuntu/configuration && \
 mkdir /home/ubuntu/data && \
 mkdir /home/ubuntu/programs && \
 mkdir /home/ubuntu/prs_dir && \
@@ -152,22 +144,22 @@ rm plink2_linux_avx2.zip
 RUN touch /home/ubuntu/misc_files/fast_queue_emails.txt
 
 # Create the configuration file (just blank template. Will run, but won't mail stuff)
-RUN echo "maxImputations <- 1           #the max number of parallel imputations to run" > /home/ubuntu/misc_files/configuration.R && \
-echo "maxImputationsInQueue <- 200           #the max number of imputations allowed waiting in a queue" >> /home/ubuntu/misc_files/configuration.R  && \
-echo "serverRole <- 'Hub'           #the role of this computer, can be either Hub or Node" >> /home/ubuntu/misc_files/configuration.R && \
-echo "hubAddress <- ''           #if serverRole is Node, then the IP-address of the Hub is required" >> /home/ubuntu/misc_files/configuration.R && \
-echo "from_email_password <- ''           #optional password for sending out emails" >> /home/ubuntu/misc_files/configuration.R && \
-echo "from_email_address <- ''           #optional email-address/username for sending out emails" >> /home/ubuntu/misc_files/configuration.R && \
-echo "routinely_delete_this <- c('')           #delete these parts in routine 14-day data deletion. May put in 'link' and/or 'data', which is the default online. But docker-running defaults to not deleting anything."  >> /home/ubuntu/misc_files/configuration.R && \
-echo "paypal <- 'https://www.paypal.me/lfolkersenimputeme/5'           #suggest to donate to this address in emails" >> /home/ubuntu/misc_files/configuration.R && \
-echo "bulk_node_count <- 1           #count of bulk-nodes, used only for calculating timings in receipt mail"  >> /home/ubuntu/misc_files/configuration.R && \
-echo "error_report_mail <- ''           #optional email-address to send (major) errors to" >> /home/ubuntu/misc_files/configuration.R && \
-echo "seconds_wait_before_start <- 0           #a delay that is useful only with CPU-credit systems" >> /home/ubuntu/misc_files/configuration.R && \
-echo "running_as_docker <- TRUE           #adapt to docker running" >> /home/ubuntu/misc_files/configuration.R  && \
-echo "max_imputation_chunk_size <- 2000           #how much stuff to put into the memory in each chunk. Lower values results in slower running with less memory-requirements." >> /home/ubuntu/misc_files/configuration.R && \
-echo "block_double_uploads_by_md5sum <- FALSE           #If the upload interface should give an error when the exact same file is being uploaded twice (by md5sum)." >> /home/ubuntu/misc_files/configuration.R && \
-echo "modules_to_compute <- c('AllDiseases','autoimmuneDiseases','BRCA','drugResponse','ethnicity','rareDiseases','ukbiobank','prs')           #Select the modules to pre-run (defaults to all folders in ~/srv/impute-me/ if not set)." >> /home/ubuntu/misc_files/configuration.R && \
-echo "verbose <- 1           #how much info to put into logs (min 0, max 10)" >> /home/ubuntu/misc_files/configuration.R
+RUN echo "maxImputations <- 1           #the max number of parallel imputations to run" > /home/ubuntu/configuration/configuration.R && \
+echo "maxImputationsInQueue <- 200           #the max number of imputations allowed waiting in a queue" >> /home/ubuntu/configuration/configuration.R  && \
+echo "serverRole <- 'Hub'           #the role of this computer, can be either Hub or Node" >> /home/ubuntu/configuration/configuration.R && \
+echo "hubAddress <- ''           #if serverRole is Node, then the IP-address of the Hub is required" >> /home/ubuntu/configuration/configuration.R && \
+echo "from_email_password <- ''           #optional password for sending out emails" >> /home/ubuntu/configuration/configuration.R && \
+echo "from_email_address <- ''           #optional email-address/username for sending out emails" >> /home/ubuntu/configuration/configuration.R && \
+echo "routinely_delete_this <- c('')           #delete these parts in routine 14-day data deletion. May put in 'link' and/or 'data', which is the default online. But docker-running defaults to not deleting anything."  >> /home/ubuntu/configuration/configuration.R && \
+echo "paypal <- 'https://www.paypal.me/lfolkersenimputeme/5'           #suggest to donate to this address in emails" >> /home/ubuntu/configuration/configuration.R && \
+echo "bulk_node_count <- 1           #count of bulk-nodes, used only for calculating timings in receipt mail"  >> /home/ubuntu/configuration/configuration.R && \
+echo "error_report_mail <- ''           #optional email-address to send (major) errors to" >> /home/ubuntu/configuration/configuration.R && \
+echo "seconds_wait_before_start <- 0           #a delay that is useful only with CPU-credit systems" >> /home/ubuntu/configuration/configuration.R && \
+echo "running_as_docker <- TRUE           #adapt to docker running" >> /home/ubuntu/configuration/configuration.R  && \
+echo "max_imputation_chunk_size <- 2000           #how much stuff to put into the memory in each chunk. Lower values results in slower running with less memory-requirements." >> /home/ubuntu/configuration/configuration.R && \
+echo "block_double_uploads_by_md5sum <- FALSE           #If the upload interface should give an error when the exact same file is being uploaded twice (by md5sum)." >> /home/ubuntu/configuration/configuration.R && \
+echo "modules_to_compute <- c('AllDiseases','autoimmuneDiseases','BRCA','drugResponse','ethnicity','rareDiseases','ukbiobank','prs')           #Select the modules to pre-run (defaults to all folders in ~/srv/impute-me/ if not set)." >> /home/ubuntu/configuration/configuration.R && \
+echo "verbose <- 1           #how much info to put into logs (min 0, max 10)" >> /home/ubuntu/configuration/configuration.R
 
 
 #Create the accepted emails list (just put "any")

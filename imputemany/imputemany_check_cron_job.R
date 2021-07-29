@@ -2,12 +2,10 @@
 # crontab -e
 # 00 20 * * * Rscript /home/ubuntu/srv/impute-me/imputemany/imputemany_check_cron_job.R > /home/ubuntu/logs/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-imputemany-check-cron.log 2>&1
 
-library("mailR")
-library("rJava")
+#library("mailR")
+#library("rJava")
 library("tools")
-source("/home/ubuntu/srv/impute-me/functions.R")
-
-
+library("gmailr",warn.conflicts = FALSE)
 
 
 emails_to_send <- list()
@@ -24,7 +22,7 @@ if(!file.exists(imputemany_registry_path)){
 #upload time, has-been-sent, error_sent, length, email, uniqueIDs
 d <- read.table(imputemany_registry_path,sep="\t",header=T,stringsAsFactors = F)
 # Header are c("upload_time","has_been_sent","error_sent","length","email","uniqueIDs")
-d[,"date"] <- as.POSIXct(d[,"upload_time"],tryFormats="%Y-%m-%d_%Hh-%Mm-%Ss")
+d[,"date"] <- as.POSIXct(d[,"upload_time"],tryFormats="%Y-%m-%d-%H-%M-%S")
 d[,"age_days"] <- difftime(Sys.time(), d[,"date"], units = "days")
 rownames(d) <- d[,"upload_time"]
 
@@ -93,20 +91,16 @@ if(length(emails_to_send)==0)stop("Didn't find any finished imputemany runs to r
 
 for(j in 1:length(emails_to_send)){
   print(paste("Send mail to",emails_to_send[[j]][["to"]],"with subject:",emails_to_send[[j]][["subject"]]))
-  mailingResult<-try(send.mail(from = get_conf("from_email_address"),
-                               to = emails_to_send[[j]][["to"]],
-                               subject = emails_to_send[[j]][["subject"]],
-                               body = emails_to_send[[j]][["text"]],
-                               html=T,
-                               smtp = list(
-                                 host.name = "smtp.gmail.com",
-                                 port = 465,
-                                 user.name = get_conf("from_email_address"),
-                                 passwd = get_conf("from_email_password"),
-                                 ssl = TRUE),
-                               authenticate = TRUE,
-                               send = TRUE))
   
+  
+  gm_auth_configure( path ="~/misc_files/mailchecker.json")
+  gm_auth(email=get_conf("from_email_address"), cache="~/misc_files/mail_secret")
+  prepared_email <- try(gm_mime() %>%
+                          gm_to(emails_to_send[[j]][["to"]]) %>%
+                          gm_from(get_conf("from_email_address")) %>%
+                          gm_subject(emails_to_send[[j]][["subject"]]) %>%
+                          gm_html_body(emails_to_send[[j]][["text"]]))
+  mailingResult<-try(gm_send_message(prepared_email))
   Sys.sleep(0.5)
   
   
