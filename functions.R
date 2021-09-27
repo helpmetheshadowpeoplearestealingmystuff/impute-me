@@ -5026,7 +5026,7 @@ run_export_script<-function(
       coderepository="https://github.com/lassefolkersen/impute-me",
       mainarticle="https://doi.org/10.3389/fgene.2020.00578",
       releaseupdates="https://twitter.com/imputeme",
-      version="Winter 2021 (v1.0.3)"
+      version="Winter 2021 (v1.0.6)"
     )
     
     

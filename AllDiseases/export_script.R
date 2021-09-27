@@ -19,8 +19,8 @@ export_function<-function(uniqueID){
   
   output<-list()
   output[["documentation"]] <- list()
-  output[["documentation"]][["trait_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/4589d6823dd4b8d7deb5e48df1ceae0db7bfff97/AllDiseases/2021-01-28_trait_overview.xlsx"
-  output[["documentation"]][["snp_file"]] <- "https://github.com/lassefolkersen/impute-me/blob/4589d6823dd4b8d7deb5e48df1ceae0db7bfff97/AllDiseases/2021-01-28_snp_weights.rdata"
+  output[["documentation"]][["trait_overview"]] <- "https://github.com/lassefolkersen/impute-me/blob/5a31c3d703281a511e5f750d1ba05601b6ac2c36/AllDiseases/2021-01-28_trait_overview.xlsx"
+  output[["documentation"]][["snp_file"]] <- "https://github.com/lassefolkersen/impute-me/blob/5a31c3d703281a511e5f750d1ba05601b6ac2c36/AllDiseases/2021-01-28_snp_weights.rdata"
   
   #get ethnicity parameter
   pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
