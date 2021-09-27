@@ -53,6 +53,9 @@ shinyUI(bootstrapPage(
 	     </table>
 	     <br>
 	     <br>
+ 	     <b>Format-2</b><br>
+       <i>Plink ped + map file, zipped. Please upload a zip file containing only two files, one &#8804;prefix&#62;.bed file and one &#8804;prefix&#62;.map file. &#8804;prefix&#62; must be the same and the zip file cannot contain other files.</i><br><br>
+
 	     "),
 	htmlOutput("text"),
 	endPanel(),

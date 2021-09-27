@@ -712,7 +712,7 @@ shinyServer(function(input, output) {
     ###################
     
     
-    if(sample(1:3,1)==1){
+    if(sample(1:5,1)==1){
       survey_log_file<-"/home/ubuntu/logs/submission/personalitygenie_survey.txt"
       if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"personalitygenie_survey",uniqueID,study_id)

@@ -2,8 +2,7 @@
 # crontab -e
 # 00 20 * * * Rscript /home/ubuntu/srv/impute-me/imputemany/imputemany_check_cron_job.R > /home/ubuntu/logs/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-imputemany-check-cron.log 2>&1
 
-#library("mailR")
-#library("rJava")
+
 library("tools")
 library("gmailr",warn.conflicts = FALSE)
 
@@ -24,6 +23,7 @@ d <- read.table(imputemany_registry_path,sep="\t",header=T,stringsAsFactors = F)
 # Header are c("upload_time","has_been_sent","error_sent","length","email","uniqueIDs")
 d[,"date"] <- as.POSIXct(d[,"upload_time"],tryFormats="%Y-%m-%d-%H-%M-%S")
 d[,"age_days"] <- difftime(Sys.time(), d[,"date"], units = "days")
+if(any(duplicated(d[,"upload_time"])))stop("Error in imputemany registry handler: duplicated upload_time-stamps")
 rownames(d) <- d[,"upload_time"]
 
 
@@ -95,25 +95,38 @@ for(j in 1:length(emails_to_send)){
   
   gm_auth_configure( path ="~/misc_files/mailchecker.json")
   gm_auth(email=get_conf("from_email_address"), cache="~/misc_files/mail_secret")
-  prepared_email <- try(gm_mime() %>%
+  prepared_email <- gm_mime() %>%
                           gm_to(emails_to_send[[j]][["to"]]) %>%
                           gm_from(get_conf("from_email_address")) %>%
                           gm_subject(emails_to_send[[j]][["subject"]]) %>%
-                          gm_html_body(emails_to_send[[j]][["text"]]))
-  mailingResult<-try(gm_send_message(prepared_email))
+                          gm_html_body(emails_to_send[[j]][["text"]])
+  mailingResult<-gm_send_message(prepared_email)
   Sys.sleep(0.5)
+}
+
+
+#For some collaborations we need to check the accepted_emails list and see if 
+#an imputemany-run needs to be sent off in a special way (curl POST, separate-email, 
+#different normalization, etc). This will be done with a dedicated non-github 
+#function because some of the collaborators don't like their name or methods on github
+send_of_handler_path<-"/home/ubuntu/misc_files/send_off_handler.R"
+if(file.exists(send_of_handler_path)){
+  source(send_of_handler_path)
+  for(j in 1:length(emails_to_send)){
+    email <- emails_to_send[[j]][["to"]]
+    subject <- emails_to_send[[j]][["subject"]]
+    uniqueIDs <- emails_to_send[[j]][["uniqueIDs"]]
+    upload_time <- sub("mail_","",names(emails_to_send)[j])
+    
+    #only for the cases where the pipeline finished (not e.g. error mails)
+    if(subject != "Imputation and PRS pipeline finished")next
+    
+    #activate non-public function
+    special_send_off_handler(email, uniqueIDs, jobname=upload_time)  
+  }
   
-  
-  
-  #For some collaborations we need to check the accepted_emails list and see if 
-  #an imputemany-run needs to be sent off in a special way (curl POST, separate-email, 
-  #different normalization, etc). This will be done with a dedicated non-github 
-  #function because some of the collaborators don't like their name or methods on github
-  email <- emails_to_send[[j]][["to"]]
-  uniqueIDs <- emails_to_send[[j]][["uniqueIDs"]]
-  source("/home/ubuntu/misc_files/send_off_handler.R")
-  special_send_off_handler(email, uniqueIDs)  
-  
+}else{
+  if(get_conf("verbose")>2)print(paste0(Sys.time(),": Skipped opportunity to add custom send-off script at ",send_of_handler_path))
 }
 
 

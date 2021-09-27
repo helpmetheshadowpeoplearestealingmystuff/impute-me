@@ -8,7 +8,6 @@ RUN R -e "install.packages(c( \
 'DT', \
 'igraph',  \
 'jsonlite', \
-'gmailr', \
 'openxlsx', \
 'R.utils', \
 'visNetwork', \

@@ -339,6 +339,32 @@ shinyServer(function(input, output) {
     
     
     
+    #special for sanogenetics collaboration - decide if they are shown message
+    #or not. Logic: always show on matching genotype, otherwise randomly show
+    #at a low(er) percentage, to make sure the banner doesn't reveal
+    #deterministic genotype information to anyone who doesn't want to know.
+    show_sanogenetics_banner <- FALSE
+    snp1 <- "rs17580" 
+    snp2 <- "rs28929474"
+    cheapconstantchecksum<-sum(as.numeric(unlist(strsplit(gsub("[a-zA-Z]","",sub("^id_","",uniqueID)),"")))) #keep choice constant for one uniqueID
+    if(uniqueID=="id_613z86871"){
+      show_sanogenetics_banner <- FALSE
+    }else if(cheapconstantchecksum==28){
+      show_sanogenetics_banner <- TRUE
+    }else{
+      r1<-try(d1[["rareDiseases"]][["all_findings"]])
+      if(class(r1)!="try-error" && !is.null(r1)){
+        if(
+          r1[r1[,"SNP"] %in% snp1,"Your genotype"] %in% c("A/A", "T/A") |
+          r1[r1[,"SNP"] %in% snp2,"Your genotype"] %in% c("C/T","T/T")
+        ){
+          show_sanogenetics_banner<-TRUE
+        }
+      }
+    }
+  
+    
+        
     
     #write the score to the log file
     log_function<-function(uniqueID,study_id,genotypes){
@@ -362,7 +388,8 @@ shinyServer(function(input, output) {
       distributionCurve=distributionCurve,
       study_id=study_id,
       use_all_snp_score=use_all_snp_score,
-      ethnicity_group=ethnicity_group))
+      ethnicity_group=ethnicity_group,
+      show_sanogenetics_banner=show_sanogenetics_banner))
   })
   
   
@@ -668,6 +695,9 @@ shinyServer(function(input, output) {
     if(!file.exists(user_log_path))return("")
     
     
+    
+    
+    
     cmd1 <- paste0("wc -l ",user_log_path)
     total_entries <- as.numeric(sub(" .+$","",system(cmd1,intern=T)))
     
@@ -704,26 +734,26 @@ shinyServer(function(input, output) {
     #This is the logic for the personality genie
     #
     ###################
-    show_on_these_study_ids<- c("agreeableness_21173776","conscientiousness_21173776","extroversion_21173776","neuroticism_21173776","openness_to_experience_21173776","anger_24489884","conscientiousness_27918536","feeling_fed-up_29500382","feeling_guilty_29500382","feeling_hurt_29500382","feeling_lonely_29500382","feeling_miserable_29500382","feeling_nervous_29500382","feeling_tense_29500382","feeling_worry_29500382","gambling_22780124","life_satisfaction_27089181","irritable_mood_29500382","worry_29942085","worry_too_long_after_an_embarrassing_experience_29500382","openness_to_experience_21173776","extroversion_21173776","self-reported_risk-taking_behaviour_30181555","self-reported_risk-taking_behaviour_30271922","temperament_22832960","eudaimonic_well-being_30279531","hedonic_well-being_30279531","subjective_well-being_mtag_29292387","subjective_well-being_multi-trait_analysis_29292387","subjective_well-being_27089181","subjective_well-being_29292387")
-    if(study_id %in% show_on_these_study_ids){
-      survey_log_file<-"/home/ubuntu/logs/submission/personalitygenie_survey.txt"
-      if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
-      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"personalitygenie_survey",uniqueID,study_id)
-      m<-paste(m,collapse="\t")
-      write(m,file=survey_log_file,append=TRUE)
-      out <- paste0("<div style='background-color: #cfc ; padding: 10px; border: 1px solid green;'>
+    if(sample(1:5,1)==1){
+      show_on_these_study_ids<- c("agreeableness_21173776","conscientiousness_21173776","extroversion_21173776","neuroticism_21173776","openness_to_experience_21173776","anger_24489884","conscientiousness_27918536","feeling_fed-up_29500382","feeling_guilty_29500382","feeling_hurt_29500382","feeling_lonely_29500382","feeling_miserable_29500382","feeling_nervous_29500382","feeling_tense_29500382","feeling_worry_29500382","gambling_22780124","life_satisfaction_27089181","irritable_mood_29500382","worry_29942085","worry_too_long_after_an_embarrassing_experience_29500382","openness_to_experience_21173776","extroversion_21173776","self-reported_risk-taking_behaviour_30181555","self-reported_risk-taking_behaviour_30271922","temperament_22832960","eudaimonic_well-being_30279531","hedonic_well-being_30279531","subjective_well-being_mtag_29292387","subjective_well-being_multi-trait_analysis_29292387","subjective_well-being_27089181","subjective_well-being_29292387")
+      if(study_id %in% show_on_these_study_ids){
+        survey_log_file<-"/home/ubuntu/logs/submission/personalitygenie_survey.txt"
+        if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
+        m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"personalitygenie_survey",uniqueID,study_id)
+        m<-paste(m,collapse="\t")
+        write(m,file=survey_log_file,append=TRUE)
+        out <- paste0("<div style='background-color: #cfc ; padding: 10px; border: 1px solid green;'>
 <p>Dear user<br></p>
 <p><img style='padding: 0 15px; float: right;' src='../www/personalitygenielogo.png'>Since you are interested in this trait, perhaps you would also be interested in the Personality Genie study, run by Dr. Denise Cook. The study investigates human personality and the potential genetic associations linked with it. You can read more about it at this link, as well as participate:<br><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u><a href='https://www.personalitygenie.com/'>www.personalitygenie.com</a></u></b><br><br>
                     The study involves (re)-upload of your raw DNA data outside of the impute-me site, there is no data transfer from here.</p></div>")
-      return(out)
+        return(out)
+      }
     }
     
     
     ###################
-    #This is the logic for the UBC study. It's after the personality genie because only few traits
-    #will go to the personality genie box.
-    #now we can go to plot/no-plot logic, because each step will be more rare and won't slow down so much
+    #This is the logic for the sanogenetics study. 
     show_box <- FALSE
     if(length(q) >= minimum_level & length(q)<10) show_box <- TRUE
     if(length(q)>=15 & length(q)<20) show_box <- TRUE
@@ -734,19 +764,63 @@ shinyServer(function(input, output) {
     if(length(q)>=100 & length(q)<105) show_box <- TRUE
     if(length(q)>=120 & length(q)<125) show_box <- TRUE
     if(length(q)>=150) show_box <- TRUE
-    if(show_box){
-      survey_log_file<-"/home/ubuntu/logs/submission/ubc_survey.txt"
+    o<-get_data()
+    if(o[["show_sanogenetics_banner"]] & show_box){
+      survey_log_file<-"/home/ubuntu/logs/submission/sanogenetics_survey.txt"
       if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
-      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ubc_survey",uniqueID,length(q))
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"sanogenetics_survey",uniqueID,length(q))
       m<-paste(m,collapse="\t")
       write(m,file=survey_log_file,append=TRUE)
       out <- paste0("<div style='background-color: #cfc ; padding: 10px; border: 1px solid green;'>
-<p>Dear user<br></p>
-<p><img style='padding: 0 15px; float: right;' src='../www/ubc_logo.png'>In collaboration with the University of British Columbia, we are currently conducting a study on motivations, perceptions and reactions in consumer genomics. We would therefore like to invite you to participate:<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u><a href='https://rc.bcchr.ca/redcap/surveys/?s=LAP43CYXTL'>Survey-link</a></u></b><br><br>
-The results of this survey is intended for scientific publication and by participating you will therefore help by contributing important knowledge to the genetics field.</p></div>")
+<p><img style='padding: 0 15px; float: right;' src='../www/sano_logo.png'>Dear user<br>
+You may be eligible to take part in a new clinical trial, supported by Sano Genetics. Why take part?<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;Help contribute to the development a potential new treatment for a rare disease called alpha-1-antitrypsin deficiency<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;Receive payment of £2,600 for completing the study<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;Travel expenses will be reimbursed or arranged by the trial-site on your behalf<br><br>
+
+It’s easy to find out if you’re eligible to take part - click the button below to sign up to Sano Genetics and see if you qualify for next steps (it takes less than 10 minutes).<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u><a href='https://sanogenetics.com/land/zf874?utm_source=imputeme&utm_medium=referral&utm_campaign=zf874'>See if I qualify</a></u><br><br>
+<i>The study involves (re)-upload of your raw DNA data outside of the impute-me site, there is no data transfer from here and the link is not tracked with your ID and this is not an affiliate link, since impute.me is not paid.</i></p></div>")
       return(out)
     }
+    
+    
+    
+    
+    ###################
+    #This is the logic for the UBC study. It's after the personality genie because only few traits
+    #will go to the personality genie box.
+    #now we can go to plot/no-plot logic, because each step will be more rare and won't slow down so much
+#     show_box <- FALSE
+#     if(length(q) >= minimum_level & length(q)<10) show_box <- TRUE
+#     if(length(q)>=15 & length(q)<20) show_box <- TRUE
+#     if(length(q)>=25 & length(q)<30) show_box <- TRUE
+#     if(length(q)>=40 & length(q)<45) show_box <- TRUE
+#     if(length(q)>=60 & length(q)<75) show_box <- TRUE
+#     if(length(q)>=80 & length(q)<85) show_box <- TRUE
+#     if(length(q)>=100 & length(q)<105) show_box <- TRUE
+#     if(length(q)>=120 & length(q)<125) show_box <- TRUE
+#     if(length(q)>=150) show_box <- TRUE
+#     if(show_box){
+#       survey_log_file<-"/home/ubuntu/logs/submission/ubc_survey.txt"
+#       if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
+#       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ubc_survey",uniqueID,length(q))
+#       m<-paste(m,collapse="\t")
+#       write(m,file=survey_log_file,append=TRUE)
+#       out <- paste0("<div style='background-color: #cfc ; padding: 10px; border: 1px solid green;'>
+# <p>Dear user<br></p>
+# <p><img style='padding: 0 15px; float: right;' src='../www/ubc_logo.png'>In collaboration with the University of British Columbia, we are currently conducting a study on motivations, perceptions and reactions in consumer genomics. We would therefore like to invite you to participate:<br><br>
+# &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u><a href='https://rc.bcchr.ca/redcap/surveys/?s=LAP43CYXTL'>Survey-link</a></u></b><br><br>
+# The results of this survey is intended for scientific publication and by participating you will therefore help by contributing important knowledge to the genetics field.</p></div>")
+#       return(out)
+#     }
+    
+    
+    
+    
+    
+    
     
   })
   

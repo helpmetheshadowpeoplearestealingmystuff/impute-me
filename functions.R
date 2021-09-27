@@ -164,7 +164,7 @@ get_conf<-function(
     }
     if(!is.logical(block_double_uploads_by_md5sum))stop("block_double_uploads_by_md5sum not logical")
     if(length(block_double_uploads_by_md5sum)!=1)stop("block_double_uploads_by_md5sum not length 1")
-
+    
   }else if(request == "modules_to_compute"){
     if(!exists("modules_to_compute")){
       modules_to_compute<-list.files("/home/ubuntu/srv/impute-me/")
@@ -180,7 +180,7 @@ get_conf<-function(
 }
 
 
-  
+
 
 
 prepare_individual_genome<-function(
@@ -222,7 +222,7 @@ prepare_individual_genome<-function(
   
   #check that input path is ok and accesible
   if(class(path)!="character")stop(paste("path must be character, not",class(path)))
-  if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
+  if(length(path)!=1)stop(paste("path must be length 1, not",length(path)))
   if(!file.exists(path))stop(paste("Did not find file at path:",path))
   if(substr(path,1,1)!="/")path<-normalizePath(path)
   
@@ -232,13 +232,13 @@ prepare_individual_genome<-function(
   #for storing and mailing back to users
   if(is.null(filename))filename<-basename(path)
   if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
-  if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
+  if(length(filename)!=1)stop(paste("filename must be length 1, not",length(filename)))
   filename<-gsub("\\ ","_",filename)
   filename<-gsub("[\\$\\&\\+\\,\\:\\;\\=\\?\\@\\#\\\"\\\']","",filename)
   
   #check if this sample should be protected_from_deletion
   if(class(protect_from_deletion)!="logical")stop(paste("protect_from_deletion must be logical, not",class(protect_from_deletion)))
-  if(length(protect_from_deletion)!=1)stop(paste("protect_from_deletion must be lengh 1, not",length(protect_from_deletion)))
+  if(length(protect_from_deletion)!=1)stop(paste("protect_from_deletion must be length 1, not",length(protect_from_deletion)))
   
   #check the updateProgress object - set to a NULL-returning function if not given.
   if(is.null(updateProgress))updateProgress<-function(detail,value,max){return(NULL)}
@@ -247,7 +247,7 @@ prepare_individual_genome<-function(
   #check the user-inputted email, set to the default error_report_mail if not given
   if(is.null(email))email<-get_conf("error_report_mail")
   if(class(email)!="character")stop(paste("email must be character, not",class(email)))
-  if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
+  if(length(email)!=1)stop(paste("email must be length 1, not",length(email)))
   if(!get_conf("running_as_docker")){
     if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
       stop(safeError(paste("a real email adress is needed:",email)))
@@ -432,13 +432,13 @@ prepare_individual_genome<-function(
       if(!protect_from_deletion)unlink(homeFolder,recursive=T)
       stop(safeError("Your file didn't have 4 columns (or 5 for ancestry.com data). If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection."))
     }
-    if(unique(sub("[0-9]+$","",testRead2[,1])[1])!="rs"){
+    if(unique(sub("[0-9]+$","",testRead2[,1])[2])!="rs"){
       if(!protect_from_deletion)unlink(homeFolder,recursive=T)
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"test_read_no_rs_id",email,uniqueID,filename)
       m<-paste(m,collapse="\t")
       write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
       if(!protect_from_deletion)unlink(homeFolder,recursive=T)
-      stop(safeError("Your file didn't have rs IDs in column 1. If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection."))
+      stop(safeError("Your file didn't have rs IDs in column 1, line 2. If you think this data type should be supported, then you are welcome to write an email and attach a snippet of the data for our inspection."))
     }
     
     
@@ -455,7 +455,7 @@ prepare_individual_genome<-function(
     dir.create(homeFolder)
     setwd(homeFolder)
     write.table("Job is not ready yet",file="job_status.txt",col.names=F,row.names=F,quote=F)
-
+    
     
     #unzipping (or not) and moving to new place
     if(verbose>0)print(paste0(Sys.time(),": unzipping (or not) and moving to new place"))
@@ -773,7 +773,7 @@ prepare_individual_genome<-function(
     
     
     #Send receipt mail
-    library("gmailr",warn.conflicts = FALSE)
+    suppressWarnings(library("gmailr",warn.conflicts = FALSE))
     gm_auth_configure( path ="~/misc_files/mailchecker.json")
     gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
     prepared_email <- try(gm_mime() %>%
@@ -823,10 +823,9 @@ prepare_individual_genome<-function(
     return(paste("Genome files succesfully submitted. <b>The processing of your genome will take several days to run</b>. Typically between 1 and 5 days, depending on server-queue. When the processing is finished you will receive an email to",email,"with uniqueID and download-instructions. Look in your spam filter if not. You can close this browser window."))
   }
   
-    
+  
   
 }
-
 
 
 
@@ -861,27 +860,39 @@ prepare_imputemany_genome<-function(
   #' @return A short text string with a completion message. In addition all submitted samples will be available for processing in the standard impute-me file-structure, at ~/imputations
   
   
-
+  #set programs
   library("tools")
   suppressWarnings(library("shiny"))
+  plink="/home/ubuntu/programs/plink" 
   
   #set logging level
   verbose <- get_conf("verbose")
-  
+  if(class(verbose)!="numeric")stop(paste("verbose must be numeric, not",class(verbose)))
+  if(length(verbose)!=1)stop(paste("verbose must be length 1, not",length(verbose)))
+  if(verbose > 2){
+    ignore.stdout <- FALSE 
+  }else{
+    ignore.stdout<- TRUE
+  }
+  if(verbose > 1){
+    ignore.stderr <- FALSE 
+  }else{
+    ignore.stderr<- TRUE
+  }
   
   #check path
   if(class(path)!="character")stop(paste("path must be character, not",class(path)))
-  if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
+  if(length(path)!=1)stop(paste("path must be length 1, not",length(path)))
   if(!file.exists(path))stop(paste("Did not find file at path:",path))
   
   #Check filename is ok - set to basename(path) if not given
   if(is.null(filename))filename<-basename(path)
   if(class(filename)!="character")stop(paste("filename must be character, not",class(filename)))
-  if(length(filename)!=1)stop(paste("filename must be lengh 1, not",length(filename)))
+  if(length(filename)!=1)stop(paste("filename must be length 1, not",length(filename)))
   
   #check if this sample should be protected_from_deletion
   if(class(protect_from_deletion)!="logical")stop(paste("protect_from_deletion must be logical, not",class(protect_from_deletion)))
-  if(length(protect_from_deletion)!=1)stop(paste("protect_from_deletion must be lengh 1, not",length(protect_from_deletion)))
+  if(length(protect_from_deletion)!=1)stop(paste("protect_from_deletion must be length 1, not",length(protect_from_deletion)))
   
   
   #check the updateProgress object - set to a NULL-returning function if not given.
@@ -892,14 +903,14 @@ prepare_imputemany_genome<-function(
   #check the user-inputted email, set to the default error_report_mail if not given
   if(is.null(email))email<-get_conf("error_report_mail")
   if(class(email)!="character")stop(paste("email must be character, not",class(email)))
-  if(length(email)!=1)stop(paste("email must be lengh 1, not",length(email)))
+  if(length(email)!=1)stop(paste("email must be length 1, not",length(email)))
   if( email == "" | sub("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}","",toupper(email)) != ""){
     stop(safeError(paste("a real email adress is needed:",email)))
   }
   
   #check if should_be_imputed is ok
   if(class(should_be_imputed)!="logical")stop(paste("should_be_imputed must be logical, not",class(should_be_imputed)))
-  if(length(should_be_imputed)!=1)stop(paste("should_be_imputed must be lengh 1, not",length(should_be_imputed)))
+  if(length(should_be_imputed)!=1)stop(paste("should_be_imputed must be length 1, not",length(should_be_imputed)))
   
   
   
@@ -912,7 +923,7 @@ prepare_imputemany_genome<-function(
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"not_accepted_email",email,path)
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
-    stop(safeError("Email was not in the accepted-emails list, and/or the entry 'any' was not found in the accepted emails list. Your data will not be processed and have already been deleted."))
+    stop(safeError(paste0("Email ",email," was not in the accepted-emails list, and/or the entry 'any' was not found in the accepted emails list. Your data will not be processed and have already been deleted.")))
   }
   if(should_be_imputed ){
     if(!"any" %in% acceptedMails[,"email"]){
@@ -935,7 +946,7 @@ prepare_imputemany_genome<-function(
     m<-paste(m,collapse="\t")
     write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
     
-    stop(safeError(paste("Too many imputations are already in progress. Cannot start a new one. Limited server capacity was the reason for our kickstarter campaign. Supporters were first in line: kck.st/1VlrTlf")))
+    stop(safeError(paste("Too many imputations are already in progress. Cannot start a new one.")))
   }
   
   
@@ -955,184 +966,363 @@ prepare_imputemany_genome<-function(
     write(this_person_md5sum,file="/home/ubuntu/misc_files/md5sums.txt",append=TRUE)			
   }
   
-  #check if it should be moved to the non-impute server:
+  #Start handling logic. There's many different paths in and out of this interface
+  #because it both has to handle various input formats, but also be able to either
+  #send the data to the main imputation algorithm, or elsewhere for later
+  #manual handling - depending on user choice
+  
+  #if the 'should be imputed" switch is not on, we just leave them in a folder for 
+  #later (manual) inspection and downstream processing. This is the most 'robust'
+  #choice in the sense that virtually nothing is done automatically.
+  if(!should_be_imputed){
+    outfolder <- "/home/ubuntu/exports_for_imputemany/"
+    if(!file.exists(outfolder))dir.create(outfolder)
+    file.copy(path,paste0(outfolder,upload_time,".zip") )
+  }
+    
+  #if the 'should be imputed" switch is on, a lot more overhead code is required to
+  #handle different file-types - because this will be done at (slow) web-speed, hence the progress-tracker
   if(should_be_imputed){
-
-    #unpacking
+    #unpacking and file-submission logic
     if(!file.exists("/home/ubuntu/uploads_for_imputemany/"))dir.create("/home/ubuntu/uploads_for_imputemany/")
     newUnzippedPath <- paste0("/home/ubuntu/uploads_for_imputemany/",upload_time,"_input.txt")
     gunzipResults<-unzip(path,exdir="/home/ubuntu/uploads_for_imputemany/")
     gunzipResults<-grep("_MACOSX",gunzipResults,invert=T,value=T)
     if(length(gunzipResults)==1){ #then its a zip file
       file.rename(gunzipResults, newUnzippedPath)		
-    }else if(length(gunzipResults)>1){
-      stop(safeError("Don't submit zip files with more than one file in"))
+      submission_type <- "illumina"
+    }else if(length(gunzipResults)==2){
+      if(!all(c("ped","map")%in%gsub("^.+\\.","",gunzipResults))){
+        stop(safeError("If submitting zip files with two files in them, their endings must be .ped and .map"))
+      }else{
+        submission_type <- "plink-ped"
+      }
+    }else if(length(gunzipResults)==3){
+      if(!all(c("bed","fam","bim")%in%gsub("^.+\\.","",gunzipResults))){
+        stop(safeError("If submitting zip files with their files in them, their endings must be bed and fam and bim"))
+      }else{
+        submission_type <- "plink-bed"
+      }
+    }else if(length(gunzipResults)>3){
+      stop(safeError("Don't submit zip files with more than two files in them"))
     }else{ #then it's probably not
       #check if it is a gz file
       filetype<-system(paste("file ", path),intern=T)
       if(length(grep("gzip compressed",filetype))==1){
         stop(safeError("Don't submit gz-files. Only uncompressed text or zip-files. If you already know what a gz file is, this should be easy for you. Please format as tab separated text files."))
       }else{
-        #otherwise just rename
+        #otherwise just rename without unzipping - and assume it's the illumina-format
         file.rename(path, newUnzippedPath)		
+        submission_type <- "plink-ped"
       }
     }
     path <- newUnzippedPath
     
     #updating progress
-    updateProgress(detail = "Check mail, check queue, check md5sum")
+    updateProgress(detail = "Checking formatting of input")
+    
+    
+    if(submission_type == "plink-bed"){
+      stop(safeError("Not implemented yet, used plink ped-files instead - also, very easy to do, just put in and test a converter")) 
+    }
 
     
-    #checking if it is a consistent file
-    print("checking if it is a consistent file")
-    testRead<-try(read.table(path,nrow=10,stringsAsFactors=F,sep="\t"))
-    if(class(testRead)=="try-error"){
-      stop(safeError("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
-    }
-    
+    if(submission_type == "plink-ped"){
+      pedfile<-gunzipResults[gsub("^.+\\.","",gunzipResults)=="ped"]
+      mapfile<-gunzipResults[gsub("^.+\\.","",gunzipResults)=="map"]
+      runDir <- "/home/ubuntu/uploads_for_imputemany/"
+      outfile<-sub("\\.ped$","",basename(pedfile))
+      
+      
+      
+      #convert to ped (faster)
+      cmd1 <- paste0(plink," --ped ",pedfile," --map ",mapfile," --make-bed --out ",runDir,"/",outfile)
+      system(cmd1, ignore.stdout= ignore.stdout, ignore.stderr=ignore.stderr)
+      
+      bedfile<-paste0(runDir,outfile,".bed")
+      famfile<-paste0(runDir,outfile,".fam")
+      bimfile<-paste0(runDir,outfile,".bim")
+      
+      # #check build
+      build_check<-check_genome_build(mapfile)
+      
+      
+      #if build check fails, the following 20 lines is a specialized rescue mechanism for Infinium GSA
+      #arrays, since that's what we've seen so far. It'll fail for other hg38-formats however and needs
+      #to be generalized if this is required.
+      if(length(grep("failed built check",build_check))>0){
+        #patch to cover hg38 for a set type of files
+        if(verbose>0)print(paste0(Sys.time(),": handling liftover from hg38. This is a special liftover that only works on one tested-array type (a bigger, more generalizable one is too computationally expensive"))
+        updateProgress(detail = "handling lift over")
+        ped_convert_path<-"/home/ubuntu/misc_files/2021-08-31_ped_converter.txt"
+        
+        #get subset of variants to extract (needs lot of sleeps here otherwise it fails)
+        cmd2 <- paste0("cut -f 1 ",ped_convert_path," > ",runDir,outfile,".temp_extract.txt")
+        system(cmd2)
 
-    #reading and checking
-    print("checking if it is a consistent file")
-    d<-try(read.table(path,stringsAsFactors=F,header=T,sep="\t"))
-    
-    if(class(d)=="try-error"){
-      stop(safeError(paste("Problem with reading data. This was the error:",d)))
-    }
-    
-    updateProgress(detail = "Check test-reads")
-    
-    
-    #check header
-    if(!all(colnames(d)[1:3] == c("RsID","Chr","Position")))stop(safeError("First three column headers must be RsID, Chr, and Position"))
-    
-    
-    #check max-size
-    if(ncol(d)>100){
-      stop(safeError("The file contained more than 100 individuals. This is currently not allowed. It is very easy to lift the ceiling, however, it's just a precaution to not overload servers. Write an email if you need to upload more."))
-    }
-    
-    
-    #check sample names
-    sampleNames<-colnames(d)[4:ncol(d)]
-    if(length(sampleNames)<2)stop(safeError("Have to upload at least data with two samples"))
-    
-    #removing theempty ones RsIDs (have happened in several upload types)
-    d<-d[d[,"RsID"] != "" & d[,"RsID"] != ".",]
-    
-    
-    
-    
-    updateProgress(detail = "Check sample splits")
-    
-    
-    
-    #split the , separated
-    splitLines <- grep(",",d[,"RsID"])
-    if(length(splitLines)>0){
-      print("have to split ,")  
+        #get original bimfile length for matches
+        old_bim_length<-as.numeric(sub(" .+$","",system(paste0("wc -l ",bimfile), intern=T)))
+        
+        #get extract
+        updateProgress(detail = paste0("Doing variant extraction"))
+        cmd3 <- paste0(plink," --bed ",bedfile," --fam ",famfile," --bim ",bimfile," --extract ",runDir,"/",outfile,".temp_extract.txt --make-bed --out ",runDir,"/",outfile)
+        system(cmd3, ignore.stdout= ignore.stdout, ignore.stderr=ignore.stderr)
+
+        
+        #check rsids are the same (just use top-1000 otherwise too slow)
+        old_bim<-read.table(bimfile,stringsAsFactors = F,nrows=1000)
+        new_bim<-read.table(ped_convert_path,header=T,stringsAsFactors = F,nrows=1000)
+        problems<-which(old_bim[,"V2"] != new_bim[,"originalid"])
+        if(length(problems)>0)stop
+        
+        #replace bimfile with the updated and lifted-over version
+        cmd4 <- paste0("cut -f 2-7 ",ped_convert_path," | tail -n +2 > ",bimfile)
+        system(cmd4)
+
+        #check lengths are the same (fail if not - this is the GSA specific part)
+        new_bim_length<-as.numeric(sub(" .+$","",system(paste0("wc -l ",bimfile), intern=T)))
+        expect_length<-as.numeric(sub(" .+$","",system(paste0("wc -l ",ped_convert_path), intern=T)))-1
+        if(length(new_bim_length)==0 || length(old_bim_length)==0 ||  new_bim_length != expect_length)stop(safeError(paste0("HG38 builds are not fully implemented, only specific arrays are tested. This input had ",old_bim_length," variants before conversion, ",new_bim_length," after, and ",expect_length," were expected, so it's probably not the same array.")))
+        
+        updateProgress(detail = paste0("Updating bim file - new variant count: ",new_bim_length))
+        
+        unlink(paste0(runDir,"/",outfile,".temp_extract.txt"))
+        unlink(paste0(runDir,"/",outfile,".bed~"))
+        unlink(paste0(runDir,"/",outfile,".bim~"))
+        unlink(paste0(runDir,"/",outfile,".fam~"))
+      }
       
-      d0 <- d[0,]
-      for(splitLine in splitLines){
-        snps<-gsub(" ","",unlist(strsplit(d[splitLine,"RsID"],",")[[1]]))
-        for(snp in snps){
-          d0<-rbind(d0, d[splitLine,])
-          d0[nrow(d0),"RsID"] <- snp
+      
+      
+      
+      #get sampleNames
+      fam<-read.table(famfile,stringsAsFactors = F)
+      sampleNames <- fam[,2]
+      
+      
+      # Create uniqueID for each sample
+      existing_uniqueIDs<-list.files("/home/ubuntu/data/")
+      for(sampleName in sampleNames){
+        uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
+        numberOfLetters<-sample(c(1,1,2,3),1)
+        if(numberOfLetters>0){
+          positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
+          l<-c(LETTERS,letters)
+          l<-l[!l%in%c("o","O")] #I hate it when O is in
+          for(x in positionsToInsertLetter){
+            substr(uniqueID,x,x)<-sample(l,1)
+          }
+        }
+        if(verbose>2)print(paste0(Sys.time(),": created uniqueID for ",sampleName," which is now called ",uniqueID))
+        names(sampleNames)[sampleNames%in%sampleName] <- uniqueID
+        
+        #check that the ID doesn't already exists (never happened though)
+        if(uniqueID%in%existing_uniqueIDs){
+          m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
+          m<-paste(m,collapse="\t")
+          write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
+          stop(safeError("Problem with unique ID generation. Please re-load and try again."))
         }
       }
-      d<-rbind(d[grep(",",d[,"RsID"],invert=T),],d0)
-    }
-    
-    
-    
-    #check duplicate
-    if(any(duplicated(d[,"RsID"]))){
-      m<-unique(d[duplicated(d[,"RsID"]),"RsID"])
-      if(length(m)>10)m<-c(m[1:10],"...")
-      print(paste("Some SNPs were duplicated:",paste(m,collapse=", "),"Note if you want an automatic removal of duplicated SNP, just say, keep first occurence - then it's very easy to implement. Could be sharpened."))
-      #But for now, just dump them
-      d<-d[!duplicated(d[,"RsID"]),]
-      updateProgress(detail = "Remove duplicate SNPs")
-    }
-    
-    
-    
-    
-    #check pos chr and sort
-    expect_alphabetical<-c('1','10','11','12','13','14','15','16','17','18','19','2','20','21','22','3','4','5','6','7','8','9','MT','X','XY','Y')
-    wanted_alphabetical<-c('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','X','Y','XY','MT')
-    if(all(sort(unique(d[,"Chr"])) != wanted_alphabetical)){
-      if(all(sort(unique(d[,"Chr"])) != expect_alphabetical)){
-        stop(safeError(paste("Chromosomes were not all as expected. Expect all these to be present:",paste(expect_alphabetical,collapse=", "))))
+      
+      #check and export each sample to the main impute-me queue
+      for(uniqueID in names(sampleNames)){
+        sampleName <- sampleNames[uniqueID]
+        
+        #updating progress
+        text <- paste0("Sample: ",sampleName," - ",which(names(sampleNames)%in%uniqueID)," of ",length(sampleNames))
+        updateProgress(detail = text,max=length(sampleNames))
+        
+        #create imputation folder and output data folder
+        if(verbose>2)print(paste0(Sys.time(),": create imputation folder and output data folder for ",uniqueID," sample ",sampleName))
+        if(uniqueID%in%existing_uniqueIDs){
+          m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
+          m<-paste(m,collapse="\t")
+          write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)
+          stop(safeError("Problem with unique ID generation. Please re-load and try again."))
+        }
+        
+        homeFolder<-paste("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/",sep="")
+        dir.create(homeFolder)
+        write.table("Job is not ready yet",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
+        fileout_name <- paste0(homeFolder,uniqueID,"_raw_data.txt" )
+        
+        #Extract this particular individual
+        w<-which(names(sampleNames)%in%uniqueID)
+        
+        cmd2 <- paste0("sed -n '",w," p' ",famfile," > ",runDir,"temp_",uniqueID,"_file.txt")
+        system(cmd2)
+        
+        cmd3 <- paste0(plink," --bed ",bedfile," --fam ",famfile," --bim ",bimfile," --keep ",runDir,"/temp_",uniqueID,"_file.txt --recode --transpose --tab --out ",runDir,"temp_",uniqueID)
+        system(cmd3, ignore.stdout= ignore.stdout, ignore.stderr=ignore.stderr)
+        
+        cmd4 <- paste0("sed 's/ //g' ",runDir,"/temp_",uniqueID,".tped | cut -f 1,4,5 > ",runDir,"/temp_",uniqueID,".temp1.txt")
+        system(cmd4)
+        
+        cmd5 <- paste0("cut -f 2 ",runDir,"/temp_",uniqueID,".tped > ",runDir,"/temp_",uniqueID,".temp2.txt")
+        system(cmd5)
+        
+        cmd6 <- paste0("paste ",runDir,"/temp_",uniqueID,".temp2.txt ",runDir,"/temp_",uniqueID,".temp1.txt  > ",fileout_name)
+        system(cmd6)
+        
+        should_be_imputed<-TRUE
+        filename <- sampleName
+        imputemany_upload <- TRUE
+        save(uniqueID,email,filename,protect_from_deletion,sampleNames,upload_time,should_be_imputed,imputemany_upload,file=paste(homeFolder,"variables.rdata",sep=""))
+        
+        write.table("Job is ready",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
+        
+        unlink(paste0(runDir,"/temp_",uniqueID,".temp1.txt"))
+        unlink(paste0(runDir,"/temp_",uniqueID,".temp2.txt"))
+        unlink(paste0(runDir,"/temp_",uniqueID,".hh"))
+        unlink(paste0(runDir,"/temp_",uniqueID,".log"))
+        unlink(paste0(runDir,"/temp_",uniqueID,".map"))
+        unlink(paste0(runDir,"/temp_",uniqueID,".tfam"))
+        unlink(paste0(runDir,"/temp_",uniqueID,".tped"))
+        unlink(paste0(runDir,"/temp_",uniqueID,"_file.txt"))
       }
+      
+      unlink(paste0(runDir,"/",outfile,".bed"))
+      unlink(paste0(runDir,"/",outfile,".bim"))
+      unlink(paste0(runDir,"/",outfile,".fam"))
+      unlink(paste0(runDir,"/",outfile,".hh"))
+      unlink(paste0(runDir,"/",outfile,".log"))
+      # unlink(paste0(runDir,"/",outfile,".ped"))
+      # unlink(paste0(runDir,"/",outfile,".map"))
     }
-    if(class(d[,"Position"])!="integer")stop(safeError(paste("Position expect to be only integers")))
-    d<-d[order(factor(d[,"Chr"],levels=wanted_alphabetical),d[,"Position"]),]
     
     
     
-    
-    # Create uniqueID for each sample
-    for(sampleName in sampleNames){
-      uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
-      numberOfLetters<-sample(c(1,1,2,3),1)
-      if(numberOfLetters>0){
-        positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
-        l<-c(LETTERS,letters)
-        l<-l[!l%in%c("o","O")] #I hate it when O is in
-        for(x in positionsToInsertLetter){
-          substr(uniqueID,x,x)<-sample(l,1)
+    # This is the Illumina (quite a lot of upfront checks required, because it's esssentially
+    # just a text file - and needs to be quite sharp on what format it has)
+    if(submission_type == "illumina"){
+      #checking if it is a consistent file
+      print("checking if it is a consistent file")
+      testRead<-try(read.table(path,nrow=10,stringsAsFactors=F,sep="\t"))
+      if(class(testRead)=="try-error"){
+        stop(safeError("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
+      }
+
+      #reading and checking
+      print("checking if it is a consistent file")
+      d<-try(read.table(path,stringsAsFactors=F,header=T,sep="\t"))
+      if(class(d)=="try-error"){
+        stop(safeError(paste("Problem with reading data. This was the error:",d)))
+      }
+      updateProgress(detail = "Check test-reads")
+      
+      
+      #check header and max-size
+      if(!all(colnames(d)[1:3] == c("RsID","Chr","Position")))stop(safeError("First three column headers must be RsID, Chr, and Position"))
+      if(ncol(d)-3 > 100){
+        stop(safeError("The file contained more than 100 individuals. This is currently not allowed. It is very easy to lift the ceiling, however, it's just a precaution to not overload servers. Write an email if you need to upload more."))
+      }
+      
+      
+      #check sample names
+      sampleNames<-colnames(d)[4:ncol(d)]
+      if(length(sampleNames)<2)stop(safeError("Have to upload at least data with two samples"))
+      
+      #removing the empty RsIDs (have happened in several upload types and they are not used in this format anyway)
+      d<-d[d[,"RsID"] != "" & d[,"RsID"] != ".",]
+      updateProgress(detail = "Check sample splits")
+
+      #split the , separated
+      splitLines <- grep(",",d[,"RsID"])
+      if(length(splitLines)>0){
+        print("have to split ,")  
+        d0 <- d[0,]
+        for(splitLine in splitLines){
+          snps<-gsub(" ","",unlist(strsplit(d[splitLine,"RsID"],",")[[1]]))
+          for(snp in snps){
+            d0<-rbind(d0, d[splitLine,])
+            d0[nrow(d0),"RsID"] <- snp
+          }
+        }
+        d<-rbind(d[grep(",",d[,"RsID"],invert=T),],d0)
+      }
+
+      #check duplicate
+      if(any(duplicated(d[,"RsID"]))){
+        m<-unique(d[duplicated(d[,"RsID"]),"RsID"])
+        if(length(m)>10)m<-c(m[1:10],"...")
+        print(paste("Some SNPs were duplicated:",paste(m,collapse=", "),"Note if you want an automatic removal of duplicated SNP, just say, keep first occurence - then it's very easy to implement. Could be sharpened."))
+        #But for now, just dump them
+        d<-d[!duplicated(d[,"RsID"]),]
+        updateProgress(detail = "Remove duplicate SNPs")
+      }
+      
+      #check pos chr and sort (we want the chromosomes to be in a particular order)
+      expect_alphabetical<-c('1','10','11','12','13','14','15','16','17','18','19','2','20','21','22','3','4','5','6','7','8','9','MT','X','XY','Y')
+      wanted_alphabetical<-c('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','X','Y','XY','MT')
+      if(all(sort(unique(d[,"Chr"])) != wanted_alphabetical)){
+        if(all(sort(unique(d[,"Chr"])) != expect_alphabetical)){
+          stop(safeError(paste("Chromosomes were not all as expected. Expect all these to be present:",paste(expect_alphabetical,collapse=", "))))
         }
       }
-      print(paste("created uniqueID for",sampleName,"which is now called",uniqueID))
-      names(sampleNames)[sampleNames%in%sampleName] <- uniqueID
+      if(class(d[,"Position"])!="integer")stop(safeError(paste("Position expect to be only integers")))
+      d<-d[order(factor(d[,"Chr"],levels=wanted_alphabetical),d[,"Position"]),]
+
       
-      #check that the ID doesn't already exists (never happened though)
-      if(uniqueID%in%list.files("/home/ubuntu/data/")){
-        m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
-        m<-paste(m,collapse="\t")
-        write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
-        stop(safeError("Problem with unique ID generation. Please re-load and try again."))
+      # Create uniqueID for each sample
+      existing_uniqueIDs<-list.files("/home/ubuntu/data/")
+      for(sampleName in sampleNames){
+        uniqueID <- paste("id_",sample(1000:9000,1),sample(10000:90000,1),sep="")
+        numberOfLetters<-sample(c(1,1,2,3),1)
+        if(numberOfLetters>0){
+          positionsToInsertLetter<-sample(5:(nchar(uniqueID)-1),numberOfLetters)
+          l<-c(LETTERS,letters)
+          l<-l[!l%in%c("o","O")] #I hate it when O is in
+          for(x in positionsToInsertLetter){
+            substr(uniqueID,x,x)<-sample(l,1)
+          }
+        }
+        if(verbose>2)print(paste0(Sys.time(),": created uniqueID for ",sampleName," which is now called ",uniqueID))
+        names(sampleNames)[sampleNames%in%sampleName] <- uniqueID
+        
+        #check that the ID doesn't already exists (never happened though)
+        if(uniqueID%in%existing_uniqueIDs){
+          m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
+          m<-paste(m,collapse="\t")
+          write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)			
+          stop(safeError("Problem with unique ID generation. Please re-load and try again."))
+        }
       }
       
-    }
-    
-    #check and export each sample
-    for(uniqueID in names(sampleNames)){
-      sampleName <- sampleNames[uniqueID]
-      
-      #updating progress
-      text <- paste0("Sample: ",sampleName," - ",which(names(sampleNames)%in%uniqueID)," of ",length(sampleNames))
-      updateProgress(detail = text,max=length(sampleNames))
-      
-      
-      #create imputation folder and output data folder
-      print(paste("create imputation folder and output data folder for",uniqueID,"sample",sampleName))
-      if(uniqueID%in%list.files("/home/ubuntu/data/")){
-        m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
-        m<-paste(m,collapse="\t")
-        write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)
-        stop(safeError("Problem with unique ID generation. Please re-load and try again."))
+      #check and export each sample to the main impute-me queue
+      for(uniqueID in names(sampleNames)){
+        sampleName <- sampleNames[uniqueID]
+        
+        #updating progress
+        text <- paste0("Sample: ",sampleName," - ",which(names(sampleNames)%in%uniqueID)," of ",length(sampleNames))
+        updateProgress(detail = text,max=length(sampleNames))
+        
+        #create imputation folder and output data folder
+        if(verbose>2)print(paste0(Sys.time(),": create imputation folder and output data folder for ",uniqueID," sample ",sampleName))
+        if(uniqueID%in%existing_uniqueIDs){
+          m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"double_id",email,uniqueID)
+          m<-paste(m,collapse="\t")
+          write(m,file="/home/ubuntu/logs/submission/submission_log.txt",append=TRUE)
+          stop(safeError("Problem with unique ID generation. Please re-load and try again."))
+        }
+        
+        homeFolder<-paste("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/",sep="")
+        dir.create(homeFolder)
+        write.table("Job is not ready yet",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
+        
+        #check all is double digit
+        if(length(unique(nchar(d[,sampleName])))!=1)stop(safeError(paste("All genotypes must be of two characters. This was not the case for",sampleName)))
+
+        #export
+        o<-data.frame(rsid=d[,"RsID"],chromosome=d[,"Chr"],position=d[,"Position"],genotype=d[,sampleName],stringsAsFactors=F)
+        fileout_name <- paste0(homeFolder,uniqueID,"_raw_data.txt" )
+        write.table(o,file=fileout_name, row.names=F,col.names=F, quote=F, sep ="\t")
+        filename <- sampleName
+        imputemany_upload <- TRUE
+        save(uniqueID,email,filename,protect_from_deletion,sampleNames,upload_time,should_be_imputed,imputemany_upload,file=paste(homeFolder,"variables.rdata",sep=""))
+        unlink(paste0(homeFolder,"job_status.txt"))
+        write.table("Job is ready",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
       }
-      
-      homeFolder<-paste("/home/ubuntu/imputations/imputation_folder_",uniqueID,"/",sep="")
-      dir.create(homeFolder)
-      write.table("Job is not ready yet",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
-      
-      #check all is double digit
-      if(length(unique(nchar(d[,sampleName])))!=1)stop(safeError(paste("All genotypes must be of two characters. This was not the case for",sampleName)))
-      
-      
-      #export
-      o<-data.frame(rsid=d[,"RsID"],chromosome=d[,"Chr"],position=d[,"Position"],genotype=d[,sampleName],stringsAsFactors=F)
-      fileout_name <- paste0(homeFolder,uniqueID,"_raw_data.txt" )
-      write.table(o,file=fileout_name, row.names=F,col.names=F, quote=F, sep ="\t")
-      
-      filename <- sampleName
-      imputemany_upload <- TRUE
-      save(uniqueID,email,filename,protect_from_deletion,sampleNames,upload_time,should_be_imputed,imputemany_upload,file=paste(homeFolder,"variables.rdata",sep=""))
-      unlink(paste0(homeFolder,"job_status.txt"))
-      write.table("Job is ready",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
-      
     }
     
     
@@ -1148,18 +1338,14 @@ prepare_imputemany_genome<-function(
     write(registry_entry,file=imputemany_registry_path,append=TRUE)			
     
     
-  }else{
-    outfolder <- "/home/ubuntu/exports_for_imputemany/"
-    if(!file.exists(outfolder))dir.create(outfolder)
-    file.copy(path,paste0(outfolder,upload_time,".zip") )
-    
-  }  
+  }
   
   
   #if possible, admin-mail a notification that an imputemany upload has happened
+  #doesn't matter too much if an admin-email is actually sent or not, it'll run either way
   if(get_conf("from_email_address") != "" & get_conf("from_email_password") != "" & get_conf("error_report_mail")!= ""){
     message<-paste0("<html><body>A data set with name ",upload_time," was uploaded to the server by ",email," (imputation was set to ",should_be_imputed,")</body></html>")
-    library("gmailr",warn.conflicts = FALSE)
+    suppressWarnings(library("gmailr",warn.conflicts = FALSE))
     gm_auth_configure( path ="~/misc_files/mailchecker.json")
     gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
     prepared_email <- try(gm_mime() %>%
@@ -1192,7 +1378,7 @@ prepare_imputemany_genome<-function(
   
   
   
-  #then send in interface (doesn't matter too much if an admin-email was sent or not, it'll run either way)
+  #then post in web-interface 
   return(paste("<b>Genome files succesfully submitted</b>. The processing of your genome will take some time to run. We will email you at",email,"with download-instructions during the next days."))
   
   
@@ -1332,7 +1518,7 @@ check_for_cron_ready_jobs<-function(
           cmd4 <- paste("scp -r ubuntu@",hubAddress,":/home/ubuntu/imputations/",remoteFolderToCheck," /home/ubuntu/imputations/",remoteFolderToCheck,sep="")
           system(cmd4)
           
-          #Then write locally that job is ready
+          #Then write locally that job is ready (and break, because we only need one)
           job_status_file<-paste("/home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
           unlink(job_status_file)
           write.table("Job is ready",file=job_status_file,col.names=F,row.names=F,quote=F)
@@ -1340,8 +1526,8 @@ check_for_cron_ready_jobs<-function(
         }
       }
     }
-
-        
+    
+    
     
     #Then - no matter the role - we check locally which, if any, folders are ready to run
     imputeThisFolder<-NA
@@ -1379,7 +1565,9 @@ check_for_cron_ready_jobs<-function(
   }else if(job_type =="bulk"){
     #bulk running parameter (never tested with anything else than 10)
     length_requested <- 10
-    #If the computer is not too busy and the serverRole is node - we fetch 10 jobs
+    
+    #If the computer is not too busy (per above checks) and the serverRole is node - we fetch 10 jobs, 
+    #copying them to local and marking them as running on hub.
     if(serverRole== "Node"){
       #sort checking order by time entered
       cmd1 <- paste("ssh ubuntu@",hubAddress," ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' /home/ubuntu/imputations/  | tail -n +2",sep="")
@@ -1422,6 +1610,7 @@ check_for_cron_ready_jobs<-function(
         if(length(remoteFoldersToRun)>=length_requested)break
         cmd2 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
         job_status<-system(cmd2,intern=T)
+        
         #Check if the job is ready
         if(job_status=="Job is ready"){
           if(verbose > 1)print(paste0(Sys.time(),": Found remote job-status file and job is ready ",remoteFolderToCheck," - will copy to local"))
@@ -1429,7 +1618,8 @@ check_for_cron_ready_jobs<-function(
         }
       }
       
-      #if exactly 'length_requested' - then we copy the files from hub to node
+      #if exactly 'length_requested' - then we copy the files from hub to node 
+      #(because if not we don't want any hub-side modifications)
       if(length(remoteFoldersToRun)==length_requested){
         #Then write to job-status that now the job is off to a remote server
         for(remoteFolderToRun in remoteFoldersToRun){
@@ -1448,18 +1638,25 @@ check_for_cron_ready_jobs<-function(
           write.table("Job is ready",file=job_status_file,col.names=F,row.names=F,quote=F)
         }
         
-        #Update the local foldersToCheck to reflect new arrivals
-        # foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
         #Update the local folder file, but keeping the original order to reflect priority runs
         foldersToCheck<-remoteFoldersToRun
+      }
+    }else{
+      
+      #on hub-running we just grep the folders and take 10
+      #checking priority queue is not implemented yet for this run type, too rare
+      foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
+      if(length(foldersToCheck)>10){
+        foldersToCheck <- foldersToCheck[1:10]
       }
     }
     
     
     
-    #Then - no matter the role - we check locally which, if any, folders are ready to run
+    #Then - no matter the role - we check locally which, if any, 
+    #folders are ready to run. Should be 10 copied from hub, if running as node, 
+    #or else just check what is present locally (since it's hub-running)
     imputeThisFolder<-vector()
-    foldersToCheck<-grep("^imputation_folder",list.files("/home/ubuntu/imputations/"),value=T)
     for(folderToCheck in foldersToCheck){
       job_status_file<-paste("/home/ubuntu/imputations/",folderToCheck,"/job_status.txt",sep="")
       
@@ -1488,7 +1685,7 @@ check_for_cron_ready_jobs<-function(
     
     #Stop if none are found
     if(length(imputeThisFolder)!= length_requested){
-      stop(paste0("The impute-queue folders did not contain enough jobs ready for imputation. The requested number is ",length_requested,".")) #here we could easily have a mechanism for proceeded if the found number is <10, but for now we just fail so we can sort it out later. It's not applicable in node-running-setups anyway, because they always take 10.
+      stop(paste0("The impute-queue folders did not contain enough jobs ready for imputation. The requested number is ",length_requested,". The found number is: ",length(imputeThisFolder))) #here we could easily have a mechanism for proceeding if the found number is <10, but for now we just fail so we can sort it out later. It's not applicable in node-running-setups anyway, because they always take 10.
     }else{
       print(paste0(Sys.time(),": Found ",length_requested," ready sets to impute"))
     }
@@ -1653,7 +1850,7 @@ run_imputation<-function(
   #' @param uniqueID The uniqueID with a folder at ~/imputations/imputation_folder_<uniqueID>
   #' 
   #' @return No return value, but on completion the runDir will contain imputed chunks of genomic data.
-
+  
   
   #load libraries
   library(tools)
@@ -1671,50 +1868,50 @@ run_imputation<-function(
   
   #check uniqueID is ok
   if(class(uniqueID)!="character")stop(paste("uniqueID must be character, not",class(uniqueID)))
-  if(length(uniqueID)!=1)stop(paste("uniqueID must be lengh 1, not",length(uniqueID)))
+  if(length(uniqueID)!=1)stop(paste("uniqueID must be length 1, not",length(uniqueID)))
   
   
   #set runDir and check that it exists
   start_wd<-getwd()
   runDir <- paste0("/home/ubuntu/imputations/imputation_folder_",uniqueID)
   if(class(runDir)!="character")stop(paste("runDir must be character, not",class(runDir)))
-  if(length(runDir)!=1)stop(paste("runDir must be lengh 1, not",length(runDir)))
+  if(length(runDir)!=1)stop(paste("runDir must be length 1, not",length(runDir)))
   if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
   if(length(grep("/$",runDir))!=0)runDir <- sub("/$","",runDir) #remove trailing slash
   setwd(runDir)
   load(paste(runDir,"/variables.rdata",sep=""))
   rawdata<-paste(runDir,"/",uniqueID,"_raw_data.txt",sep="")
-
+  
   #test that impute2 static can run (or switch to dynamic)
   impute2_blank_run_out <- suppressWarnings(system(impute2,intern=T,ignore.stderr = T) )
   if(attr(impute2_blank_run_out,"status")==139){
     impute2 <- "/home/ubuntu/programs/impute_v2.3.2_x86_64_dynamic/impute2"
     if(verbose>2)print(paste0(Sys.time(),": Problem with impute_v2.3.2_x86_64_static detected. Switching to impute_v2.3.2_x86_64_dynamic."))
   }
-   
+  
   #check other arguments 
   if(class(rawdata)!="character")stop(paste("rawdata must be character, not",class(rawdata)))
-  if(length(rawdata)!=1)stop(paste("rawdata must be lengh 1, not",length(rawdata)))
+  if(length(rawdata)!=1)stop(paste("rawdata must be length 1, not",length(rawdata)))
   if(!file.exists(rawdata))stop(paste("Did not find rawdata at path:",rawdata))
   
   if(class(shapeit)!="character")stop(paste("shapeit must be character, not",class(shapeit)))
-  if(length(shapeit)!=1)stop(paste("shapeit must be lengh 1, not",length(shapeit)))
+  if(length(shapeit)!=1)stop(paste("shapeit must be length 1, not",length(shapeit)))
   if(!file.exists(shapeit))stop(paste("Did not find shapeit at path:",shapeit))
   
   if(class(plink)!="character")stop(paste("plink must be character, not",class(plink)))
-  if(length(plink)!=1)stop(paste("plink must be lengh 1, not",length(plink)))
+  if(length(plink)!=1)stop(paste("plink must be length 1, not",length(plink)))
   if(!file.exists(plink))stop(paste("Did not find plink at path:",plink))
   
   if(class(impute2)!="character")stop(paste("impute2 must be character, not",class(impute2)))
-  if(length(impute2)!=1)stop(paste("impute2 must be lengh 1, not",length(impute2)))
+  if(length(impute2)!=1)stop(paste("impute2 must be length 1, not",length(impute2)))
   if(!file.exists(impute2))stop(paste("Did not find impute2 at path:",impute2))
   
   if(class(sample_ref)!="character")stop(paste("sample_ref must be character, not",class(sample_ref)))
-  if(length(sample_ref)!=1)stop(paste("sample_ref must be lengh 1, not",length(sample_ref)))
+  if(length(sample_ref)!=1)stop(paste("sample_ref must be length 1, not",length(sample_ref)))
   if(!file.exists(sample_ref))stop(paste("Did not find sample_ref at path:",sample_ref))
   
   if(class(verbose)!="numeric")stop(paste("verbose must be numeric, not",class(verbose)))
-  if(length(verbose)!=1)stop(paste("verbose must be lengh 1, not",length(verbose)))
+  if(length(verbose)!=1)stop(paste("verbose must be length 1, not",length(verbose)))
   if(verbose > 3){
     ignore.stdout <- FALSE 
   }else{
@@ -1759,7 +1956,7 @@ run_imputation<-function(
   #loop over chromosomes
   for(chr in c("X",as.character(1:22))){
     if(verbose>0)print(paste0(Sys.time(),": Starting run on chromosome ",chr))  
-  
+    
     
     #First in loop - extract only one specific chromosome
     cmd2<-paste(plink," --file step_1 --chr ",chr," --recode --out step_2_chr",chr," --exclude step_2_exclusions",sep="")
@@ -1799,7 +1996,7 @@ run_imputation<-function(
     #This removes any duplicates there might be
     forceHomozygoteTable<-forceHomozygoteTable[!duplicated(forceHomozygoteTable[,4]),]
     map<-read.table(paste("step_2_chr",chr,".map",sep=""),sep="\t",stringsAsFactors=F,comment.char = "")
-
+    
     #This loads the ped file, and doubles it
     ped2<-ped1<-strsplit(readLines(paste("step_2_chr",chr,".ped",sep=""))," ")[[1]]
     
@@ -1874,7 +2071,7 @@ run_imputation<-function(
       cmd_special_1 <- paste0("awk '$3>",start," && $3<",end,"' step_5_chr",chr,".haps")
       chunk_lines_length<-length(system(cmd_special_1,intern=T))
       if(verbose>1)print(paste0(Sys.time(),": initiating impute2 run with a chunk of ",chunk_lines_length," lines, i is ",i))
-
+      
       
       #This block checks the size of the chunk being prepared and executes the impute2 step accordingly.
       #If we know it's a big chunk, we split it up. If not we run it, but carefully catching errors and
@@ -1883,11 +2080,11 @@ run_imputation<-function(
         if(verbose>2)print(paste0(Sys.time(),": skip impute2 run at ",i," with because chunk_lines_length was ",chunk_lines_length ))
         next
         
-      #if the chunk is smaller than the max_imputation_chunk_size we try to run it, but catch any errors in preparation for re-run
+        #if the chunk is smaller than the max_imputation_chunk_size we try to run it, but catch any errors in preparation for re-run
       }else if(chunk_lines_length < get_conf("max_imputation_chunk_size")){
         cmd7<-paste(impute2," -m /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start," ",end," -Ne 20000 -o step_7_chr",chr,"_",i,sep="")
         step_7_log<-system(cmd7,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
-          
+        
         #test for memory-lack bug (step_7_log will be 137 if killed, otherwise 0)
         if(step_7_log == 137){
           re_run_chunk <- TRUE
@@ -1897,7 +2094,7 @@ run_imputation<-function(
           re_run_chunk <- FALSE
         }
         
-      #if we already know the chunk is too big to handle, we demand a split of it  
+        #if we already know the chunk is too big to handle, we demand a split of it  
       }else{
         re_run_chunk <- TRUE
         
@@ -1954,7 +2151,7 @@ run_bulk_imputation<-function(
   #' 
   #' @return No return value, but on completion the runDir will contain imputed chunks of genomic data for each of the submitted bulk samples
   
-
+  
   #load libraries
   library(tools)
   
@@ -1973,12 +2170,12 @@ run_bulk_imputation<-function(
   
   #check uniqueID
   if(class(uniqueIDs)!="character")stop(paste("uniqueIDs must be character, not",class(uniqueIDs)))
-  if(length(uniqueIDs)!=10)stop(paste("rawdata must be lengh 10, not",length(uniqueIDs)))
+  if(length(uniqueIDs)!=10)stop(paste("rawdata must be length 10, not",length(uniqueIDs)))
   
   #Check and set runDir
   start_wd <- getwd()
   if(class(runDir)!="character")stop(paste("runDir must be character, not",class(runDir)))
-  if(length(runDir)!=1)stop(paste("runDir must be lengh 1, not",length(runDir)))
+  if(length(runDir)!=1)stop(paste("runDir must be length 1, not",length(runDir)))
   if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
   if(length(grep("/$",runDir))!=0)stop("Please don't use a trailing slash in the runDir")
   setwd(runDir)
@@ -1993,24 +2190,24 @@ run_bulk_imputation<-function(
   
   #check other arguments
   if(class(shapeit)!="character")stop(paste("shapeit must be character, not",class(shapeit)))
-  if(length(shapeit)!=1)stop(paste("shapeit must be lengh 1, not",length(shapeit)))
+  if(length(shapeit)!=1)stop(paste("shapeit must be length 1, not",length(shapeit)))
   if(!file.exists(shapeit))stop(paste("Did not find shapeit at path:",shapeit))
   
   if(class(plink)!="character")stop(paste("plink must be character, not",class(plink)))
-  if(length(plink)!=1)stop(paste("plink must be lengh 1, not",length(plink)))
+  if(length(plink)!=1)stop(paste("plink must be length 1, not",length(plink)))
   if(!file.exists(plink))stop(paste("Did not find plink at path:",plink))
   
   if(class(impute2)!="character")stop(paste("impute2 must be character, not",class(impute2)))
-  if(length(impute2)!=1)stop(paste("impute2 must be lengh 1, not",length(impute2)))
+  if(length(impute2)!=1)stop(paste("impute2 must be length 1, not",length(impute2)))
   if(!file.exists(impute2))stop(paste("Did not find impute2 at path:",impute2))
   
   if(class(sample_ref)!="character")stop(paste("sample_ref must be character, not",class(sample_ref)))
-  if(length(sample_ref)!=1)stop(paste("sample_ref must be lengh 1, not",length(sample_ref)))
+  if(length(sample_ref)!=1)stop(paste("sample_ref must be length 1, not",length(sample_ref)))
   if(!file.exists(sample_ref))stop(paste("Did not find sample_ref at path:",sample_ref))
   
   
   if(class(verbose)!="numeric")stop(paste("verbose must be numeric, not",class(verbose)))
-  if(length(verbose)!=1)stop(paste("verbose must be lengh 1, not",length(verbose)))
+  if(length(verbose)!=1)stop(paste("verbose must be length 1, not",length(verbose)))
   if(verbose > 3){
     ignore.stdout <- FALSE 
   }else{
@@ -2168,9 +2365,9 @@ run_bulk_imputation<-function(
             if(verbose>=0)print(paste0(Sys.time(),": Sending error mail."))
             
             
-
+            
             message<-paste0("<html><body>",paste(messages,collapse="<br>"),"</body></html>")
-            library("gmailr",warn.conflicts = FALSE)
+            suppressWarnings(library("gmailr",warn.conflicts = FALSE))
             gm_auth_configure( path ="~/misc_files/mailchecker.json")
             gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
             prepared_email <- try(gm_mime() %>%
@@ -2182,8 +2379,8 @@ run_bulk_imputation<-function(
             if(class(mailingResult)=="try-error" & verbose > 2)print(paste0(Sys.time(),": Mailing failed."))
             
           }
-            
-            
+          
+          
           stop("Too many non-biallelic SNPs. This must be investigated. Check above debugging info")
           
         }
@@ -2202,7 +2399,7 @@ run_bulk_imputation<-function(
       map<-read.table(paste0("step_2m_chr",chr,".map"),stringsAsFactors = F,comment.char = "")
       if(sum(duplicated(map[,4]))>10000){
         duplicates_found <- sum(duplicated(map[,4]))
-        stop(paste("Found",duplicates_found,"duplicate positions, and the current threshold is 10000"))
+        stop(paste0("Found ",duplicates_found," duplicate positions at chr",chr,", and the current threshold is 10000. Suggested fix is to open ",runDir,"/step_2m_chr",chr,".map and look for odd variant-IDs found at similar positions as rs-IDs. Then search for these variant names and run the containing sample outside of bulk-run (e.g. grep <odd-variant-id> imputations/imputation_folder_id_*/id*)"))
       }
       exclude<-unique(map[duplicated(map[,4]),2])
       write.table(exclude,file=paste0('step_2_overall_exclusions_chr',chr),sep='\t',row.names=FALSE,col.names=F,quote=F)
@@ -2422,7 +2619,8 @@ run_bulk_imputation<-function(
 
 
 convert_vcfs_to_simple_format<-function(
-  uniqueID
+  uniqueID,
+  protect_from_deletion=FALSE
 ){
   #' convert vcfs to simple format
   #' 
@@ -2441,6 +2639,7 @@ convert_vcfs_to_simple_format<-function(
   #' here: https://doi.org/10.13140/RG.2.2.34644.42883)
   #' 
   #' @param uniqueID The uniqueID to process. Most be found in ~/vcfs/vcf_folder_<uniqueID>
+  #' @param protect_from_deletion A switch carried down the analysis, that can be set as TRUE for debugging purposes
   #' 
   #' @return No return value, but on completion the specified vcf-files from ~/vcfs will have been imported to the internal impute-me common-SNP format and placed at ~/data/<uniqueID>
   
@@ -2464,7 +2663,7 @@ convert_vcfs_to_simple_format<-function(
   #set paths (there's quite a few!)
   if(verbose>0)print(paste0(Sys.time(),": Converting the VCF-file from ",uniqueID," to internal standard files"))
   vcf_folder <- paste0("/home/ubuntu/vcfs/vcf_folder_",uniqueID,"/")
-  bed_path<-"/home/ubuntu/srv/impute-me/imputeme/2021-01-03_common_snps.txt.gz"
+  bed_path<-"/home/ubuntu/srv/impute-me/imputeme/2021-08-13_common_snps.txt.gz"
   applied_bed_path <- paste0(vcf_folder,"temporary_bed.txt")
   vcf_path<-paste0(vcf_folder,uniqueID,"_raw_data.vcf.gz")
   variables_path <- paste0(vcf_folder,"variables.rdata")
@@ -2480,8 +2679,10 @@ convert_vcfs_to_simple_format<-function(
   minimum_required_variant_count <- 200000
   start_wd<-getwd()
   
-  #checks
+  #checks of input
   if(!file.exists(vcf_folder))stop(paste0("For ",uniqueID," did not find a vcf_folder at: ",vcf_folder))
+  if(class(protect_from_deletion)!="logical")stop(paste("protect_from_deletion must be logical, not",class(protect_from_deletion)))
+  if(length(protect_from_deletion)!=1)stop(paste("protect_from_deletion must be length 1, not",length(protect_from_deletion)))
   
   
   #check if it possible to determine grch37/grch38 format
@@ -2612,6 +2813,20 @@ convert_vcfs_to_simple_format<-function(
   }
   
   
+  #if the build is hg38 we to flip a few of the ref/alts as indicated in the common-snps bed file (these are the
+  #variants where ref and alt flips on liftover.)
+  if(build_guess == "grch38"){
+    bed[,"temp_ref"]<-bed[,"ref"]
+    bed[,"temp_alt"]<-bed[,"alt"]
+    w0<-which(bed[,"ref_switched_in_hg38"])
+    bed[w0,"temp_ref"]<-bed[w0,"alt"]
+    bed[w0,"temp_alt"]<-bed[w0,"ref"]
+    bed[,"ref"]<-bed[,"temp_ref"]
+    bed[,"alt"]<-bed[,"temp_alt"]
+    bed[,"temp_alt"]<-bed[,"temp_ref"]<-NULL
+    if(verbose>1)print(paste0(Sys.time(),": Flipped ",length(w0)," ref and alt alleles known to differ between hg19 and hg38"))
+  }
+  
   
   #Now all relevant SNPs have been exported to a tped, we have ensured that the bed-file has matching information
   #and both GRCh37 and GRCh38 locations, and there is a key to extract the alt/ref info from the bed file.
@@ -2712,7 +2927,7 @@ convert_vcfs_to_simple_format<-function(
   f<-file(out_pdata_path,"w")
   writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion","should_be_imputed","imputemany_upload","upload_time","imputation_type"),collapse="\t"),f)
   # writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,sex,protect_from_deletion,should_be_imputed,imputemany_upload,upload_time,imputation_type),collapse="\t"),f)
-  writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,sex,TRUE,should_be_imputed,imputemany_upload,upload_time,imputation_type),collapse="\t"),f)
+  writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,sex,protect_from_deletion,should_be_imputed,imputemany_upload,upload_time,imputation_type),collapse="\t"),f)
   
   close(f)
   
@@ -2749,7 +2964,7 @@ convert_vcfs_to_simple_format<-function(
     filename <- sub("__CHR__",chr,out_temp_gen_per_chr_path)
     files_for_zipping <- c(files_for_zipping, filename)
     w1<-which(output[,"chr"]%in%chr)
-
+    
     #generate new output format emulating gen format
     o<-data.frame(
       chr=rep("---",length(w1)),
@@ -2843,7 +3058,7 @@ summarize_imputation<-function(
   #' @param export_simple_format A logical indicating whether the simple format script should be run (23andme-like format, based on hard-calls on .gen file)
   #' 
   #' @return The two paths to the downloadble .gen and simple-format zip-files. In addition these will be available in the ~/data/<uniqueID> folder
-
+  
   #Set libraries
   library(tools)
   
@@ -2857,24 +3072,24 @@ summarize_imputation<-function(
   
   start_wd<-getwd()
   if(class(runDir)!="character")stop(paste("runDir must be character, not",class(runDir)))
-  if(length(runDir)!=1)stop(paste("runDir must be lengh 1, not",length(runDir)))
+  if(length(runDir)!=1)stop(paste("runDir must be length 1, not",length(runDir)))
   if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
   if(length(grep("/$",runDir))!=0)stop("Please don't use a trailing slash in the runDir")
   setwd(runDir)
   
   if(class(uniqueID)!="character")stop(paste("uniqueID must be character, not",class(uniqueID)))
-  if(length(uniqueID)!=1)stop(paste("uniqueID must be lengh 1, not",length(uniqueID)))
- 
+  if(length(uniqueID)!=1)stop(paste("uniqueID must be length 1, not",length(uniqueID)))
+  
   if(class(export_simple_format)!="logical")stop(paste("export_simple_format must be logical, not",class(export_simple_format)))
-  if(length(export_simple_format)!=1)stop(paste("export_simple_format must be lengh 1, not",length(export_simple_format)))
-   
+  if(length(export_simple_format)!=1)stop(paste("export_simple_format must be length 1, not",length(export_simple_format)))
+  
   if(class(destinationDir)!="character")stop(paste("destinationDir must be character, not",class(destinationDir)))
-  if(length(destinationDir)!=1)stop(paste("destinationDir must be lengh 1, not",length(destinationDir)))
+  if(length(destinationDir)!=1)stop(paste("destinationDir must be length 1, not",length(destinationDir)))
   if(!file.exists(destinationDir))stop(paste("Did not find destinationDir at path:",destinationDir))
   if(length(grep("/$",destinationDir))!=0)stop("Please don't use a trailing slash in the destinationDir")
   
   if(class(verbose)!="numeric")stop(paste("verbose must be numeric, not",class(verbose)))
-  if(length(verbose)!=1)stop(paste("verbose must be lengh 1, not",length(verbose)))
+  if(length(verbose)!=1)stop(paste("verbose must be length 1, not",length(verbose)))
   if(verbose > 2){
     ignore.stdout <- FALSE 
   }else{
@@ -2887,11 +3102,11 @@ summarize_imputation<-function(
   }
   
   if(class(gtools)!="character")stop(paste("gtools must be character, not",class(gtools)))
-  if(length(gtools)!=1)stop(paste("gtools must be lengh 1, not",length(gtools)))
+  if(length(gtools)!=1)stop(paste("gtools must be length 1, not",length(gtools)))
   if(!file.exists(gtools))stop(paste("Did not find gtools at path:",gtools))
   
   if(class(plink)!="character")stop(paste("plink must be character, not",class(plink)))
-  if(length(plink)!=1)stop(paste("plink must be lengh 1, not",length(plink)))
+  if(length(plink)!=1)stop(paste("plink must be length 1, not",length(plink)))
   if(!file.exists(plink))stop(paste("Did not find plink at path:",plink))
   
   if(file.exists(paste0(destinationDir,"/",uniqueID))){
@@ -2996,7 +3211,7 @@ summarize_imputation<-function(
   prepDestinationDir<-paste(destinationDir,"/",uniqueID,sep="")
   if(!file.exists(prepDestinationDir))dir.create(prepDestinationDir)
   
-
+  
   #Optional - export to simple format
   if(export_simple_format){
     for(genFile in genFiles){
@@ -3108,7 +3323,7 @@ summarize_imputation<-function(
   unlink(list.files(runDir,pattern="^step_2_",full.names=T))
   unlink(list.files(runDir,pattern="^step_3_",full.names=T))
   unlink(list.files(runDir,pattern="^step_4_",full.names=T))
-
+  
   #zipping gen files
   if(verbose>0)print(paste0(Sys.time(),": Zipping files for gen-format export"))
   zipFileGen<-paste(runDir,paste(uniqueID,".gen.zip",sep=""),sep="/")
@@ -3150,7 +3365,7 @@ summarize_imputation<-function(
   writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion","should_be_imputed","imputemany_upload","upload_time","imputation_type"),collapse="\t"),f)
   writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,sex,protect_from_deletion,should_be_imputed,imputemany_upload,upload_time,imputation_type),collapse="\t"),f)
   close(f)
-
+  
   
   #return paths
   if(export_simple_format){
@@ -3198,8 +3413,8 @@ transfer_cleanup_and_mailout<-function(
   
   #check arguments
   if(class(uniqueID)!="character")stop(paste("uniqueID must be character, not",class(uniqueID)))
-  if(length(uniqueID)!=1)stop(paste("uniqueID must be lengh 1, not",length(uniqueID)))
-
+  if(length(uniqueID)!=1)stop(paste("uniqueID must be length 1, not",length(uniqueID)))
+  
   #get sample specific variables
   pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
   pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
@@ -3265,7 +3480,7 @@ transfer_cleanup_and_mailout<-function(
     out8<-system(cmd8)
     
     if(out6+out7+out8 > 0)stop(paste0("Problem with symlink-creation on Hub for ",uniqueID,". Possible connection error. Aborting."))
-
+    
   }else if(serverRole== "Hub" & is_vcf_file){
     file.symlink(
       from=paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json",sep=""),
@@ -3328,7 +3543,7 @@ transfer_cleanup_and_mailout<-function(
     if(get_conf("from_email_address") != "" & get_conf("from_email_password") != ""){
       for(tryCount in 1:3){
         print(paste0(Sys.time(),": Trying to mail to ",email))
-        library("gmailr",warn.conflicts = FALSE)
+        suppressWarnings(library("gmailr",warn.conflicts = FALSE))
         gm_auth_configure( path ="~/misc_files/mailchecker.json")
         gm_auth(email=get_conf("from_email_address"), cache="~/misc_files/mail_secret")
         prepared_email <- try(gm_mime() %>%
@@ -3387,10 +3602,10 @@ format_ancestry_com_as_23andme<-function(
   #'
   #' @param path The path of the file to reformat
   #' 
-
+  
   
   if(class(path)!="character")stop(paste("path must be character, not",class(path)))
-  if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
+  if(length(path)!=1)stop(paste("path must be length 1, not",length(path)))
   if(!file.exists(path))stop(paste("Did not find file at path:",path))
   
   testRead<-read.table(path,nrow=10,stringsAsFactors=F,header=T)
@@ -3456,7 +3671,7 @@ format_myheritage_as_23andme<-function(
   #' @param path The path of the file to reformat
   
   if(class(path)!="character")stop(paste("path must be character, not",class(path)))
-  if(length(path)!=1)stop(paste("path must be lengh 1, not",length(path)))
+  if(length(path)!=1)stop(paste("path must be length 1, not",length(path)))
   if(!file.exists(path))stop(paste("Did not find file at path:",path))
   
   
@@ -3514,7 +3729,7 @@ genes_for_good_cleaner<-function(
   #' 
   #' @param uniqueID The uniqueID of the sample to check
   #' @param runDir The folder where the imputation is found. Will set to standard location at ~/imputations/imputation_folder_<uniqueID> if left un-specified
-
+  
   plink="/home/ubuntu/programs/plink"
   
   
@@ -3561,13 +3776,13 @@ special_error_check<-function(
   #' 
   #' @param uniqueID The uniqueID of the sample to check
   #' @param runDir The folder where the imputation is found. Will set to standard location at ~/imputations/imputation_folder_<uniqueID> if left un-specified
-
+  
   #set plink path
   plink="/home/ubuntu/programs/plink"
   
   #set logging level
   verbose <- get_conf("verbose")
-
+  
   #other checks
   if(class(uniqueID)!="character")stop(paste("uniqueID must be a character, not",class(uniqueID)))
   if(length(uniqueID)!=1)stop(paste("uniqueID must be length 1, not",length(uniqueID)))
@@ -3585,7 +3800,7 @@ special_error_check<-function(
   if(!file.exists(plink))stop(paste("Did not find plink at path:",plink))
   
   if(class(verbose)!="numeric")stop(paste("verbose must be numeric, not",class(verbose)))
-  if(length(verbose)!=1)stop(paste("verbose must be lengh 1, not",length(verbose)))
+  if(length(verbose)!=1)stop(paste("verbose must be length 1, not",length(verbose)))
   
   if(verbose>=0)print(paste0(Sys.time(),": The special_error_check was activated"))
   
@@ -3635,7 +3850,7 @@ special_error_check<-function(
     #replace X with 23
     cmd_sort_1<-paste0("sed 's/\\tX\\t/\\t23\t/' ",rawdata_file," > ",runDir,"/temp01.txt")
     system(cmd_sort_1)
-
+    
     #remove non-numeric chromosomes
     cmd_sort_2<-paste0("awk '$2 == ($2+0)' ",runDir,"/temp01.txt > ",runDir,"/temp02.txt")
     system(cmd_sort_2)
@@ -3727,7 +3942,7 @@ special_error_check<-function(
     print(special_error_status)
     
     if(get_conf("from_email_address") != "" & get_conf("from_email_password") != ""){
-      library("gmailr",warn.conflicts = FALSE)  
+      suppressWarnings(library("gmailr",warn.conflicts = FALSE))  
       gm_auth_configure( path ="~/misc_files/mailchecker.json")
       gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
       prepared_email <- try(gm_mime() %>%
@@ -3772,20 +3987,20 @@ get_genotypes<-function(
   #' @param ignore_indels is the most programmatic-robust setting (because it gives the letter-based genotypes, not just e.g. 1/1), but obviously not very smart for some things, like BRCA.
   #' 
   #' @return A data.frame containing the genotypes of the requested SNPs for the requested uniqueID
-
+  
   gtools="/home/ubuntu/programs/gtool"
   
   #set logging level
   verbose <- get_conf("verbose")
   suppressWarnings(library("shiny"))
-
+  
   #checking namingLabel
   if(class(namingLabel)!="character")stop(paste("namingLabel must be character, not",class(namingLabel)))
-  if(length(namingLabel)!=1)stop(paste("namingLabel must be lengh 1, not",length(namingLabel)))
+  if(length(namingLabel)!=1)stop(paste("namingLabel must be length 1, not",length(namingLabel)))
   
   #checking verbosity
   if(class(verbose)!="numeric")stop(paste("verbose must be numeric, not",class(verbose)))
-  if(length(verbose)!=1)stop(paste("verbose must be lengh 1, not",length(verbose)))
+  if(length(verbose)!=1)stop(paste("verbose must be length 1, not",length(verbose)))
   if(verbose > 2){
     ignore.stdout <- FALSE 
   }else{
@@ -3796,11 +4011,11 @@ get_genotypes<-function(
   }else{
     ignore.stderr<- TRUE
   }
-
+  
   
   #checking data in uniqueID's home folder
   if(class(uniqueID)!="character")stop(paste("uniqueID must be character, not",class(uniqueID)))
-  if(length(uniqueID)!=1)stop(paste("uniqueID must be lengh 1, not",length(uniqueID)))
+  if(length(uniqueID)!=1)stop(paste("uniqueID must be length 1, not",length(uniqueID)))
   idFolder<-paste("/home/ubuntu/data",uniqueID,sep="/")
   if(!file.exists(idFolder))stop(paste0(Sys.time(),": Did not find an idFolder at ",idFolder))
   genZipFile<-paste(idFolder,"/",uniqueID,".gen.zip",sep="")
@@ -3808,11 +4023,11 @@ get_genotypes<-function(
   cachedGenotypeFile<-paste(idFolder,"/",uniqueID,".",namingLabel,".gz",sep="")
   
   #start message
-  if(file.exists(cachedGenotypeFile) & verbose>1)print(paste0(Sys.time(),": Found quick-access cache-file for label ",namingLabel,", getting required variants."))  
+  if(file.exists(cachedGenotypeFile) & verbose>2)print(paste0(Sys.time(),": Found quick-access cache-file for label ",namingLabel,", getting required variants."))  
   if(!file.exists(cachedGenotypeFile) & verbose>0)print(paste0(Sys.time(),": Extracting variants in label ",namingLabel," directly from genome-wide data and saving them."))  
-    
-    
-    
+  
+  
+  
   #creating a temp folder to use
   idTempFolder<-paste("/home/ubuntu/data",uniqueID,"temp",sep="/")
   if(file.exists(idTempFolder))stop(safeError(paste("Temp folder exists, this could indicate that",uniqueID,"is already worked on. Wait a little, or write administrators if you think this is a mistake")))
@@ -3820,10 +4035,10 @@ get_genotypes<-function(
   
   #checking other variables
   if(class(gtools)!="character")stop(paste("gtools must be character, not",class(gtools)))
-  if(length(gtools)!=1)stop(paste("gtools must be lengh 1, not",length(gtools)))
+  if(length(gtools)!=1)stop(paste("gtools must be length 1, not",length(gtools)))
   if(!file.exists(gtools))stop(paste("Did not find gtools at path:",gtools))
   if(class(ignore_indels)!="logical")stop(paste("ignore_indels must be ignore_indels, not",class(ignore_indels)))
-  if(length(ignore_indels)!=1)stop(paste("ignore_indels must be lengh 1, not",length(ignore_indels)))
+  if(length(ignore_indels)!=1)stop(paste("ignore_indels must be length 1, not",length(ignore_indels)))
   if(class(request)!="data.frame")stop(paste("request must be data.frame, not",class(request)))
   if(!"chr_name"%in%colnames(request))stop("request object must have a column 'chr_name'")
   if(length(grep("^chr",request[,"chr_name"]))>0)stop("Don't precede chromosomes by chr")
@@ -3875,7 +4090,7 @@ get_genotypes<-function(
           input_genotypes[,4]<-sub("\r$","",input_genotypes[,4])
         }
         if(any(nchar(input_genotypes[,4])!=2))stop("Input data must have length 2 genotypes")
-          
+        
         
         input_genotypes[,4]<-paste(substr(input_genotypes[,4],1,1),substr(input_genotypes[,4],2,2),sep="/")
         genotypes<-data.frame(rsids=input_genotypes[,1],genotype=input_genotypes[,4],stringsAsFactors=F)
@@ -3940,8 +4155,8 @@ get_genotypes<-function(
             genotypes_here<-try(data.frame(row.names=map[,2],genotype=sub(" ","/",ped),stringsAsFactors=F))
             #error where there's duplicate row names
             if(class(genotypes_here)=="try-error"){
-              if(verbose>0)print(paste0(Sys.time(),": WARNING Found a duplicate row names error. Removing it."))
               include_these<-which(!duplicated(map[,2]))
+              if(verbose>0)print(paste0(Sys.time(),": WARNING Found ",length(include_these)," duplicate row names errors for chr",chr,". Removing them. If this happens a lot, you should check that the correct genome-build is being used."))
               genotypes_here<-try(data.frame(row.names=map[include_these,2],genotype=sub(" ","/",ped[include_these]),stringsAsFactors=F))
             }						
             break
@@ -4239,8 +4454,8 @@ crawl_for_snps_to_analyze<-function(
   #' @param uniqueIDs Optional vector of uniqueIDs to check. Otherwise all uniqueIDs in ~/data are checked - which may take a very long time.
   #' 
   #' @return No return value, but on completion the ~/data/<uniqueID> folder will contain cache-versions of relevant SNPS, available for quick-access 
-
-
+  
+  
   #set libraries
   suppressWarnings(library("shiny"))
   
@@ -4434,7 +4649,9 @@ make_overview_of_samples<-function(
 
 
 remove_snps_from_cache<-function(
-  snps
+  snps,
+  uniqueIDs=NULL,
+  namingLabel="cached"
 ){
   #' remove snps from cache
   #' 
@@ -4446,8 +4663,10 @@ remove_snps_from_cache<-function(
   #'  
   #' 
   #' @param snps a character vector of SNPs to remove
+  #' @param uniqueIDs Optional vector of uniqueIDs to check. Otherwise all uniqueIDs in ~/data are checked.
+  #' @param namingLabel should default to cached, but it's a way of separately saving larger cached sets in a different file
   #' 
-
+  
   
   #set logging level
   verbose <- get_conf("verbose")
@@ -4458,21 +4677,31 @@ remove_snps_from_cache<-function(
   if(class(verbose)!="numeric")stop("verbose must be class numeric")
   if(length(verbose)!=1)stop("verbose must be length 1")
   
+  if(!is.null(uniqueIDs)){
+    if(!all(uniqueIDs%in%list.files("/home/ubuntu/data/")))stop("Did not find all uniqueIDs in ~/data")
+  }else{
+    uniqueIDs<-list.files("/home/ubuntu/data/")  
+  }
   
-  uniqueIDs<-list.files("/home/ubuntu/data/")
+  if(length(uniqueIDs)>1000){
+    if(verbose>=0)print(paste0(Sys.time(),": This will remove ",length(snps)," variants from ",length(uniqueIDs)," samples - abort now if you are unsure of this. You have three seconds.")	)
+    Sys.sleep(3)
+  }
+  
+  
   
   for(uniqueID in uniqueIDs){
-    cacheFile<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.gz",sep="")
+    cacheFile<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".",namingLabel,".gz",sep="")
     if(file.exists(cacheFile)){
       cache<-read.table(cacheFile,header=T,stringsAsFactors=F,row.names=1)
     }else{
-      if(verbose>0)print(paste("Didn't find a cache file for",uniqueID))	
+      if(verbose>0)print(paste0(Sys.time(),": Didn't find a cache file for ",uniqueID," with namingLabel ",namingLabel))	
       next
     }
     if(any(snps%in%rownames(cache))){
       snpsFound<-snps[snps%in%rownames(cache)]
       if(verbose>0){
-        print(paste("removing",	length(snpsFound),"snps from",uniqueID,"- they are:",paste(snpsFound,collapse=","),"and have values",paste(cache[snpsFound,"genotype"],collapse=", ")))
+        print(paste0(Sys.time(),": removing ",	length(snpsFound)," snps from ",uniqueID,"- they are: ",paste(snpsFound,collapse=",")," and have values ",paste(cache[snpsFound,"genotype"],collapse=", ")))
       }
       
       cache<-cache[!rownames(cache)%in%snps,,drop=F]
@@ -4720,7 +4949,7 @@ run_export_script<-function(
   uniqueIDs=NULL,
   modules=NULL, 
   delay=0
-  ){
+){
   #' run export script
   #' 
   #' The function that will crawl all module directories and execute the export script if present. This is the linker that makes sure that all modules are calculated
@@ -4745,7 +4974,7 @@ run_export_script<-function(
   
   #check variables ok
   if(class(delay)!="numeric")stop(paste("delay must be numeric, not",class(delay)))
-  if(length(delay)!=1)stop(paste("delay must be lengh 1, not",length(delay)))
+  if(length(delay)!=1)stop(paste("delay must be length 1, not",length(delay)))
   
   
   if(is.null(uniqueIDs)){
@@ -4951,11 +5180,11 @@ reset_runs_from_node<-function(
   if(!all(nchar(uniqueIDs)==12))stop("uniqueIDs must be of length 12")
   if(length(grep("^id_",uniqueIDs)) != length(uniqueIDs))stop("all uniqueIDs must start with id_")
   
-
+  
   #check what exists locally  
   folders_imputation<-sub("imputation_folder_","",list.files("~/imputations/"))
   folders_data<-list.files("~/data/")
-
+  
   #check if we are requesting uniqueIDs to be deleted even when they are not found on this node. Stop if so.  
   if(!all(uniqueIDs %in% c(folders_data,folders_imputation))){
     missing<-uniqueIDs[!uniqueIDs %in% c(folders_data,folders_imputation)]
@@ -4996,7 +5225,7 @@ reset_runs_from_node<-function(
   if(length(bulk_to_delete)==1){
     if(verbose>0)print(paste0(Sys.time(),": Also deleting one folder in ~/bulk_imputations"))
   }else{
-    if(verbose>0)print(paste0(Sys.time(),"Deleting ",length(bulk_to_delete)," folders in ~/bulk_imputations: ",paste(bulk_to_delete,collapse=", ")))
+    if(verbose>0)print(paste0(Sys.time()," Deleting ",length(bulk_to_delete)," folders in ~/bulk_imputations: ",paste(bulk_to_delete,collapse=", ")))
   }
   unlink(paste0("~/bulk_imputations/",bulk_to_delete),recursive=T)  
   
@@ -5006,7 +5235,7 @@ reset_runs_from_node<-function(
     cmd2 <- paste0("ssh ubuntu@",hubAddress," 'echo Job is ready > /home/ubuntu/imputations/imputation_folder_",uniqueID,"/job_status.txt'")
     system(cmd2)
   }
-
+  
   
   #doing deletion
   if(length(folders_imputation)>0){
@@ -5029,7 +5258,7 @@ reset_runs_from_node<-function(
 summarize_imputemany_json<-function(
   uniqueIDs, 
   name
-  ){
+){
   #' function to check if a given uniqueID is the last in a batch upload, 
   #' and if so summarize all of the uniqueIDs in that batch and send it off
   #' 
@@ -5045,7 +5274,7 @@ summarize_imputemany_json<-function(
   
   #check uniqueIDs are ok
   if(class(uniqueIDs)!="character")stop(paste("uniqueIDs must be character, not",class(uniqueIDs)))
-  if(length(uniqueIDs)<=1)stop(paste("uniqueIDs must be lengh more than 1, not",length(uniqueIDs)))
+  if(length(uniqueIDs)<=1)stop(paste("uniqueIDs must be length more than 1, not",length(uniqueIDs)))
   missing_files <- vector()
   for(uniqueID in uniqueIDs){
     if(!file.exists(paste0("/home/ubuntu/data/",uniqueID)))missing_files<-c(missing_files,uniqueID)
@@ -5059,7 +5288,8 @@ summarize_imputemany_json<-function(
   if(length(missing_json)>0)  stop(paste("JSON files were missing for these",length(missing_json),"uniqueIDs:",paste(missing_json,collapse=", ")))
   
   
-  
+  #get hubAddress
+  hubAddress <- get_conf("hubAddress")
   
   #in this for-loop we read in all the json data.
   #the strategy is to start with a data.frame with uniqueIDs as rows (since that is constant), and then just add on
@@ -5069,7 +5299,7 @@ summarize_imputemany_json<-function(
     data<-fromJSON(json_path)
     o1[uniqueID,"ethnicity"]<-data[["ethnicity"]][["guessed_super_pop"]]
     
-
+    
     #get the original filename from pData
     pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
     pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
@@ -5122,7 +5352,7 @@ summarize_imputemany_json<-function(
         }
       }
     }
-
+    
     
     #appearance
     for(entry_id in names(data[["guessMyHeight"]])){
@@ -5176,7 +5406,7 @@ summarize_imputemany_json<-function(
 check_for_rare_nonbiallic_snps<-function(
   uniqueID,
   chromosomes=NULL
-  ){
+){
   #' check for rare nonbiallic snps
   #' 
   #' There's a rare error type that we've seen maybe 10-11 times now
@@ -5317,7 +5547,7 @@ check_for_rare_nonbiallic_snps<-function(
     #running the shapeit command (with two people, the right one and a placeholder heterozygote
     cmd4<-paste(shapeit," -check --input-ped step_3_chr",chr,".ped step_2_chr",chr,".map -M /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz /home/ubuntu/programs/ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_4_chr",chr,"_shapeit_log --exclude-snp step_3_chr",chr,"_exclusions",sep="")
     system(cmd4,ignore.stdout = T, ignore.stderr = T)
-
+    
     #This is the error collection part
     log<-readLines(paste("step_4_chr",chr,"_shapeit_log.log",sep=""))
     log_end<-log[[length(log)]]
@@ -5341,7 +5571,7 @@ check_for_rare_nonbiallic_snps<-function(
     if(verbose>=0)print(paste0(Sys.time(),": Sending error mail."))
     
     message<-paste0("<html><body>",paste(messages,collapse="<br>"),"</body></html>")
-    library("gmailr",warn.conflicts = FALSE)  
+    suppressWarnings(library("gmailr",warn.conflicts = FALSE))  
     gm_auth_configure( path ="~/misc_files/mailchecker.json")
     gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
     prepared_email <- try(gm_mime() %>%
@@ -5371,7 +5601,7 @@ check_for_rare_nonbiallic_snps<-function(
 
 count_x_chr_entries<-function(
   chr
-  ){
+){
   #' count x chr entries
   #' 
   #' This is the error where a few of the bulk-imputation run samples
@@ -5382,13 +5612,13 @@ count_x_chr_entries<-function(
   #' Note - it'll always result in a fail in the end
   #' 
   #' @param chr the chromosome to check. Will almost always be the X-chromosome, "X", but can be others as well.
-
+  
   #verbose doesn't matter, this should always be printed.
   print(paste0(Sys.time(),": ERROR. Starting count_x_chr_entries for chr",chr," - this will result in failure, but hopefully will give informative output."))
-
+  
   if(class(chr)!="character")stop(paste("chr must be class character, not ",class(chr)))
   if(length(chr)!=1)stop(paste("chr must be length 1, not ",length(chr)))
-
+  
   bulk_folder<-list.files("/home/ubuntu/bulk_imputations",full.names=T)
   if(length(bulk_folder)!=1)stop(paste("Found",length(bulk_folder),"bulk folders. The count_x_chr_entries script can only run if there is exactly one."))
   
@@ -5418,7 +5648,7 @@ count_x_chr_entries<-function(
     
     
     message<-paste0("<html><body>",paste(messages,collapse="<br>"),"</body></html>")
-    library("gmailr",warn.conflicts = FALSE)
+    suppressWarnings(library("gmailr",warn.conflicts = FALSE))
     gm_auth_configure( path ="~/misc_files/mailchecker.json")
     gm_auth(email=get_conf("from_email_address"),cache="~/misc_files/mail_secret")
     prepared_email <- try(gm_mime() %>%
@@ -5454,7 +5684,7 @@ check_genome_build<-function(map_file){
   
   #checking map file
   if(class(map_file)!="character")stop(paste("map_file must be character, not",class(map_file)))
-  if(length(map_file)!=1)stop(paste("map_file must be lengh 1, not",length(map_file)))
+  if(length(map_file)!=1)stop(paste("map_file must be length 1, not",length(map_file)))
   if(!file.exists(map_file))stop(paste("Did not find an map_file at ",map_file))
   
   
@@ -5527,5 +5757,308 @@ check_genome_build<-function(map_file){
 }
 
 
+
+
+
+
+
+
+
+
+convert_gen_file<-function(
+  path, 
+  export_type, 
+  convert=TRUE, 
+  quality_threshold=0.8, 
+  split_by_chr=FALSE, 
+  runDir="/home/ubuntu/gens"
+  ){
+  #' convert gen file
+  #' 
+  #' A function that can convert the .gen files that are the main genomic impute-me-output
+  #' into various other commonly used formats. This function is exposed to users, since they may
+  #' want to convert their results
+  #' 
+  #' @param path The path to the file that needs conversion
+  #' @param export_type The fily-type requested, e.g. vcf, simple, (plink?)
+  #' @param convert logical - wheter to actually perform the conversions, or just the initial checkups
+  #' @param quality_threshold The dosage threshold beneath which variants are not included in conversion
+  #' @param split_by_chr A logical that specifies if the output should still be split by chromosome (standard within impute.me and lighter on memory). If FALSE, the file will be concatenated.
+  #' @param runDir A path where output files are placed as well as temporary files during the conversion process
+  #' 
+  #' @return The path of the converted file
+  
+  # path="/home/ubuntu/gens/gen_73606sR63/gen_73606sR63_raw_data.gen.zip"
+  # convert=TRUE
+  # export_type<-"vcf"
+  # quality_threshold<-0.7
+  # split_by_chr=FALSE
+  # runDir<-"/home/ubuntu/gens"
+
+  
+  #define programs
+  gtools="/home/ubuntu/programs/gtool"
+  plink="/home/ubuntu/programs/plink" 
+  suppressMessages(library("data.table"))
+  suppressWarnings(library("shiny"))
+  
+  #set verbose level
+  verbose <- get_conf("verbose")
+  if(class(verbose)!="numeric")stop(safeError(paste("verbose must be numeric, not",class(verbose))))
+  if(length(verbose)!=1)stop(safeError(paste("verbose must be length 1, not",length(verbose))))
+  if(verbose > 2){
+    ignore.stdout <- FALSE 
+  }else{
+    ignore.stdout<- TRUE
+  }
+  if(verbose > 1){
+    ignore.stderr <- FALSE 
+  }else{
+    ignore.stderr<- TRUE
+  }
+  
+  
+  
+  #checking convert
+  if(class(convert)!="logical")stop(safeError(paste("convert must be logical, not",class(convert))))
+  if(length(convert)!=1)stop(safeError(paste("convert must be length 1, not",length(convert))))
+  
+  
+  #checking quality_threshold
+  if(class(quality_threshold)!="numeric")stop(safeError(paste("quality_threshold must be numeric, not",class(quality_threshold))))
+  if(length(quality_threshold)!=1)stop(safeError(paste("quality_threshold must be length 1, not",length(quality_threshold))))
+  if(quality_threshold < 0.3 | quality_threshold > 1)stop(safeError(paste("quality_threshold must be between 0.3 and 1, not",quality_threshold)))
+  
+  #checking export_type
+  allowed_types <- c("vcf","simple")
+  if(class(export_type)!="character")stop(safeError(paste("export_type must be character, not",class(export_type))))
+  if(length(export_type)!=1)stop(safeError(paste("export_type must be length 1, not",length(export_type))))
+  if(!export_type%in%c(allowed_types))stop(safeError(paste("export_type must be between among:",paste(allowed_types,collapse=", "))))
+  
+  #checking split_by_chr
+  if(class(split_by_chr)!="logical")stop(safeError(paste("split_by_chr must be logical, not",class(split_by_chr))))
+  if(length(split_by_chr)!=1)stop(safeError(paste("split_by_chr must be length 1, not",length(split_by_chr))))
+  
+  #checking runDir
+  if(class(runDir)!="character")stop(safeError(paste("runDir must be character, not",class(runDir))))
+  if(length(runDir)!=1)stop(safeError(paste("runDir must be length 1, not",length(runDir))))
+  if(!file.exists(runDir))stop(safeError(paste0("Did not find the requested runDir at ",runDir)))
+  if(length(grep("/$",runDir))!=0)runDir <- sub("/$","",runDir) #remove trailing slash
+  
+  #extensive checking of input file type and content
+  if(class(path)!="character")stop(safeError(paste("path must be character, not",class(path))))
+  if(length(path)!=1)stop(safeError(paste("path must be lenght 1, not",length(path))))
+  if(!file.exists(path))stop(safeError(paste0("Did not find the requested path at ",path)))
+  if(substr(path,nchar(path)-7,nchar(path))!=".gen.zip" & convert)stop(safeError(paste0("All accepted files must be of impute.me standard .gen format which ends in .gen.zip, not ",substr(path,nchar(path)-7,nchar(path)))))
+  zip_contents_list<-unzip(path,list=T)[,"Name"]
+  zip_content_problems<-vector()
+  zip_file_content_by_chromosome <- vector()
+  for(required_file in paste0("_chr",1:22,".gen")){
+    if(length(grep(required_file,zip_contents_list))!=1){
+      zip_content_problems<-c(zip_content_problems,required_file)
+    }else{
+      zip_file_content_by_chromosome<-c(zip_file_content_by_chromosome,grep(required_file,zip_contents_list,value=T))
+    }
+  }
+  if(length(zip_content_problems)>0){
+    stop(safeError(paste0("Found a problem with the contents of ",path,": ",length(zip_content_problems)," expected endings were not found: ",paste(zip_content_problems,collapse=", "))))
+  }
+  if(length(grep("_chrX.gen",zip_contents_list))==1){
+    x_included<-TRUE
+    zip_file_content_by_chromosome<-c(zip_file_content_by_chromosome, grep("_chrX.gen",zip_contents_list,value=T))
+  }else{
+    x_included<-FALSE
+  }
+  if(any(!zip_contents_list%in%zip_file_content_by_chromosome)){
+    extra_files<-zip_contents_list[!zip_contents_list%in%zip_file_content_by_chromosome]
+    stop(safeError(paste0("There were ",length(extra_files)," files in ",path," that were not recognised and does not match with standard impute.me gen.zip files: ",paste(extra_files, collapse=", "))))
+  }
+  
+  
+  #set a sample ID from the basename, but without any special characters
+  sampleID <- gsub("[\\$\\&\\+\\,\\:\\;\\=\\?\\@\\#\\\"\\\']","",gsub("\\ ","_",sub(".gen.zip","",basename(path))))
+  
+  
+  #unpack and light check of contents from each chromosome
+  unzipResults<-unzip(path,exdir=runDir)
+  if(!all(basename(unzipResults)%in%zip_file_content_by_chromosome) | !all(zip_file_content_by_chromosome%in%basename(unzipResults))){
+    stop(safeError("Problems with unzipped content not matching expected content"))
+  }
+  for(chr_file in zip_file_content_by_chromosome){
+    testRead<-read.table(paste0(runDir,"/",chr_file),sep=" ",nrows=10)
+    if(ncol(testRead)!=8)stop(safeError(paste("Didn't find 8 columns in",chr_file)))
+    if(class(testRead[,5])!="character" | !class(testRead[,6])%in%c("integer","numeric") | !class(testRead[,7])%in%c("integer","numeric") ){
+      stop(safeError(paste0("Some of the columns in ",chr_file," did not have expected class. Column 5 is expected to be character, it was ",class(testRead[,5]),". Column 6 is expected to be numeric, it was ",class(testRead[,6]),". Column 7 is expected to be numeric, it was, ",class(testRead[,7]))))
+    }
+  }
+  
+  #break if not convert
+  if(!convert){
+    unlink(paste0(runDir,"/",zip_file_content_by_chromosome))
+    return(TRUE)
+  }else{
+    if(verbose>2)print(paste0(Sys.time(),": completed initial checks and proceeding to real conversion"))
+  }
+  
+  
+  #Export to simple format
+  if(export_type=="simple"){
+    
+    #make sampleFile
+    sampleFile<- paste(runDir,"/",sampleID,"_samples.txt",sep="")
+    f<-file(sampleFile,"w")
+    writeLines("ID_1 ID_2 missing sex",f)
+    writeLines("0 0 0 D",f)
+    writeLines(paste(sampleID,sampleID,"0.0 2 "),f)#gender probably doesn't matter here
+    close(f)
+    
+    for(genFile in zip_file_content_by_chromosome){
+      chr <- sub("\\.gen$","",sub("^.+_chr","",genFile))
+      
+      #catching some odd observations of empty 'chr' handles, seen when running low on memory
+      if(nchar(chr)==0){
+        if(verbose>0)print(paste0(Sys.time(),": Observed an odd length-0 chromosome genFiles with filename: ",genFile,". It was skipped, but may want to investigate logs closer."))
+        next
+      }
+      
+      #Else continue
+      if(verbose>1)print(paste0(Sys.time(),": Creating simple-format data from chromosome ",chr))
+
+      #make list of indels
+      cmd2<-paste0("awk -F' ' '{ if ((length($4) > 1 ) || (length($5) > 1 ) || $4 == \"-\" || $5 == \"-\") print $2 }' ",runDir,"/",genFile,"> ",runDir,"/step_8_chr",chr,"_snps_to_exclude")
+      system(cmd2)
+      
+      #exclude indels
+      cmd3 <- paste0(gtools," -S --g ",runDir,"/",genFile," --s ",sampleFile," --exclusion ",runDir,"/step_8_chr",chr,"_snps_to_exclude --og ",runDir,"/step_8_chr",chr,".gen")
+      system(cmd3,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
+      
+      #Convert to ped format
+      cmd4 <- paste(gtools," --threshold ",call_threshold," -G --g ",runDir,"/step_8_chr",chr,".gen --s ",sampleFile," --chr ",chr," --snp",sep="")
+      system(cmd4,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
+      
+      #reform to plink fam/bim/bed file
+      cmd5 <- paste(plink," --file ",runDir,"/step_8_chr",chr,".gen --recode --transpose --noweb --out ",runDir,"/step_9_chr",chr,sep="")
+      system(cmd5,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
+      
+      #re-order to 23andme format
+      cmd6<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' ",runDir,"/step_9_chr",chr,".tped  > ",runDir,"/step_10_chr",chr,".txt",sep="")
+      system(cmd6)
+      
+      #The step 8 and also 9 sometime fails for no apparent reason. Probably memory. We therefore make a checkup, where
+      #it is checked if the file actually exists and if not - a more complicated step splits it up in chunks.
+      #It's not looking nice, but at least the split-up only needs to run in very low memory settings
+      fileExists<-file.exists(paste(runDir,"/step_10_chr",chr,".txt",sep=""))
+      if(fileExists){
+        size<-file.info(paste(runDir,"/step_10_chr",chr,".txt",sep=""))["size"]
+      }else{
+        size<-0
+      }
+      
+      #	re-run if it's less than 100 bytes (fair to assume something was wrong then)
+      if(size<100 ){
+        if(verbose>0)print(paste0("retrying step 8-9 command for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
+        cmd7 <- paste("split --lines 5000000 ",runDir,"/step_8_chr",chr,".gen ",runDir,"/step_8_extra_chr",chr,".gen",sep="")
+        system(cmd7)
+        chunks<-grep(paste("step_8_extra_chr",chr,"\\.gena[a-z]$",sep=""),list.files(runDir),value=T)
+        for(chunk in chunks){
+          ch<-sub("^.+\\.","",chunk)
+          cmd8 <- paste(gtools," --threshold ",quality_threshold," -G --g ",runDir,"/",chunk," --s ",sampleFile," --chr ",chr," --snp",sep="")
+          system(cmd8,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
+          #reform to plink fam/bim/bed file
+          cmd9 <- paste(plink," --file ",runDir,"/",chunk," --recode --transpose --noweb --out ",runDir,"/step_9_chr",chr,"_",ch,sep="")
+          system(cmd9,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
+          #re-order to 23andme format
+          cmd10<-paste("awk '{ print $2 \"\t\" $1 \"\t\"$4\"\t\" $5 $6}' ",runDir,"/step_9_chr",chr,"_",ch,".tped  > ",runDir,"/step_9_chr",chr,"_split_",ch,".txt",sep="")
+          system(cmd10)
+        }
+        cmd11<-paste("cat ",paste(paste(runDir,"/step_9_chr",chr,"_split_",sub("^.+\\.","",chunks),".txt",sep=""),collapse=" ")," > ",runDir,"/step_10_chr",chr,".txt",sep="")
+        system(cmd11)
+      }
+      
+      #remove NN
+      cmd12 <- paste("awk '{ if($4 != \"NN\") print}' ",runDir,"/step_10_chr",chr,".txt  > ",runDir,"/step_11_chr",chr,".txt",sep="")
+      system(cmd12)
+      
+      
+      #remove duplicates
+      cmd13 <- paste("awk -F',' '!seen[$1]++' ",runDir,"/step_11_chr",chr,".txt > ", runDir,"/",sub("\\.gen$","",genFile),".simple_format.txt",sep="")
+      system(cmd13)
+      
+      
+      #removing some particularly big temporary files
+      # unlink(list.files(runDir,pattern=paste0("^step_8_chr",chr),full.names=T))
+      # unlink(list.files(runDir,pattern=paste0("^step_9_chr",chr),full.names=T))
+      # unlink(list.files(runDir,pattern=paste0("^step_10_chr",chr),full.names=T))
+    }
+    
+    
+    #removing a bunch of remaining half-way files from simple-format generation -
+    #all smaller size (that were still nice to have if the above loop failed)
+    # unlink(list.files(runDir,pattern="^step_5_",full.names=T))
+    # unlink(list.files(runDir,pattern="^step_6_",full.names=T))
+    # unlink(list.files(runDir,pattern="^step_7_",full.names=T))
+    # unlink(list.files(runDir,pattern="^step_11_",full.names=T))
+    
+    stop("Made it to here. Decide what to do, depending on split_by_chr")
+    
+    #zipping and moving simple_format files
+    # chromosomes<-sub(".gen","",sub("^.+_chr","",zip_file_content_by_chromosome))
+    # if(verbose>0)print(paste0(Sys.time(),": Zipping files for simple-format export"))
+    # zipFile_simpleformat<-paste(runDir,paste(sampleID,".simple_format.zip",sep=""),sep="/")
+    # simpleformatFiles<-paste(sampleID,"_chr",chromosomes,".simple_format.txt",sep="")
+    # zip(zipFile_simpleformat, simpleformatFiles, flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+    # zipFile_simpleformat_destination <- paste(runDir,basename(zipFile_simpleformat),sep="/")
+    # move_result <- suppressWarnings(file.rename(zipFile_simpleformat, zipFile_simpleformat_destination))
+    # if(!move_result){ #this would fail, for example if data is on another volume. But we can still copy
+    #   file.copy(zipFile_simpleformat, zipFile_simpleformat_destination)
+    #   unlink(zipFile_simpleformat)
+    # }
+
+    
+  }
+  
+  
+  #Export to vcf format
+  if(export_type=="vcf"){
+    #Code adapted from gen2vcf by Tokhir Dadaev (Thanks!)
+    #https://rdrr.io/github/oncogenetics/oncofunco/src/R/gen2vcf.R
+    
+    outVCFHeader = "##fileformat=VCFv4.1"
+    
+    for(genFile in zip_file_content_by_chromosome){
+      if(verbose > 4)print(paste0(Sys.time(),": Processing gen-file ",genFile))
+      
+      chr<-sub(".gen","",gsub(".+_chr","",genFile))
+      out_chr_path <- paste0(runDir,"/",sampleID,"_chr",chr,".vcf")
+      
+      gen <- data.table::fread(genFile)
+      
+      MAP <- cbind(chrom = chr, gen[, 1:5 ])
+      AB <- gen[, seq(7, ncol(gen), 3),drop=F]
+      BB <- gen[, seq(8, ncol(gen), 3),drop=F] * 2
+      AB <- gen[,7]
+      BB <- gen[, 8] * 2
+      AB_BB <- AB + BB
+      colnames(AB_BB) <- sampleID
+      dose <- cbind(MAP, AB_BB)
+      d1 <- dose[, c(4, 3, 5, 6)]
+      colnames(d1) <- c("POS", "ID", "REF", "ALT")
+      d2 <- data.table::data.table(QUAL = 100,
+                                   FILTER = "PASS",
+                                   INFO = "INFO",
+                                   FORMAT = "DS")
+      out <- cbind("#CHROM" = chr, d1, d2, dose[, 7:ncol(dose), with = FALSE])
+      
+      if(split_by_chr){
+        write(outVCFHeader, file = out_chr_path)
+        write.table(out, file = out_chr_path,
+                    append = TRUE, quote = FALSE, sep = "\t", row.names = FALSE)
+      }else{
+        write.table(out, file = out_chr_path,
+                    append = FALSE, quote = FALSE, sep = "\t", row.names = FALSE,col.names=FALSE)
+      }
+    }
+  }
+}
 
 
