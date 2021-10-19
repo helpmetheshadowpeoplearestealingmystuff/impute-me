@@ -1,10 +1,9 @@
 library("shiny")
 
-source("/home/ubuntu/srv/impute-me/functions.R")
-source("/home/ubuntu/srv/impute-me/prsExplainer/support_functions.R")
+source(paste0(get_conf("code_path"),"prsExplainer/support_functions.R"))
 
 
-load("/home/ubuntu/srv/impute-me/prsExplainer/2019-07-27_commonmind_test_data.rdata")
+load(paste0(get_conf("code_path"),"prsExplainer/2019-07-27_commonmind_test_data.rdata"))
 
 
 
@@ -259,11 +258,11 @@ shinyServer(function(input, output) {
     triangles_end <- (environment_z_score+2) / (max_total_score - min_total_score) + triangles_start
     
     #define paths of images
-    jar_path <-('/home/ubuntu/srv/impute-me/prsExplainer/jar.png')
-    ball_path <-('/home/ubuntu/srv/impute-me/prsExplainer/yellowball.png')
-    triangle_path_1 <-('/home/ubuntu/srv/impute-me/prsExplainer/orangetriangle1.png')
-    triangle_path_2 <-('/home/ubuntu/srv/impute-me/prsExplainer/orangetriangle2.png')
-    triangle_path_3 <-('/home/ubuntu/srv/impute-me/prsExplainer/orangetriangle3.png')
+    jar_path <-paste0(get_conf("code_path"),'prsExplainer/jar.png')
+    ball_path <-paste0(get_conf("code_path"),'prsExplainer/yellowball.png')
+    triangle_path_1 <-paste0(get_conf("code_path"),'prsExplainer/orangetriangle1.png')
+    triangle_path_2 <-paste0(get_conf("code_path"),'prsExplainer/orangetriangle2.png')
+    triangle_path_3 <-paste0(get_conf("code_path"),'prsExplainer/orangetriangle3.png')
     
     #load images    
     jar = readPNG(jar_path, native=T) 

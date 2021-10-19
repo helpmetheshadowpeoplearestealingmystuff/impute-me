@@ -6,7 +6,7 @@ shinyServer(function(input, output) {
   
   
   output$text_1 <- renderText({ 
-    external_material_path <- "~/misc_files/external_material.txt"
+    external_material_path <- paste0(get_conf("misc_files_path"),"external_material.txt")
     if(file.exists(external_material_path)){
         m <- "<br><br><br><b>Related media and web-resources</b><br>"
         return(m)
@@ -22,7 +22,7 @@ shinyServer(function(input, output) {
   
 	
   output$table_1 <- DT::renderDataTable({ 
-	  external_material_path <- "~/misc_files/external_material.txt"
+	  external_material_path <- paste0(get_conf("misc_files_path"),"external_material.txt")
 	  
 	  required_headers <- c("short_title",	"long_title",	"year",	"author",	"language",	"url",	"url2","display")
 	  used_headers <- c("short_title",	"long_title",	"year",	"language",	"url")

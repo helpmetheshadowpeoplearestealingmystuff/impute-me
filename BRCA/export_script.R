@@ -1,17 +1,16 @@
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 export_function<-function(uniqueID){
   #start check ups
   
   
-  if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+  if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
     stop("Did not find a user with this id")
   }
   
   
   
-  BRCA_table_file <-"/home/ubuntu/srv/impute-me/BRCA/SNPs_to_analyze.txt"
+  BRCA_table_file <-paste0(get_conf("code_path"),"BRCA/SNPs_to_analyze.txt")
   BRCA_table<-read.table(BRCA_table_file,sep="\t",header=T,stringsAsFactors=F)
   
   rownames(BRCA_table)<-BRCA_table[,"SNP"]
@@ -70,7 +69,7 @@ export_function<-function(uniqueID){
   
   #checking for SNPs that are measured in input, but didn't make it through imputation (issue #28)
   input_data_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".input_data.zip")
-  idTempFolder<-paste("/home/ubuntu/data",uniqueID,"temp/",sep="/")
+  idTempFolder<-paste(get_conf("data_path"),uniqueID,"temp/",sep="/")
   if(file.exists(input_data_path) & !file.exists(idTempFolder)){
     dir.create(idTempFolder)
     outZip<-unzip(input_data_path, overwrite = TRUE,exdir = idTempFolder, unzip = "internal")

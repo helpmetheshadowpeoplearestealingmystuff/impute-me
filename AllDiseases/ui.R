@@ -4,7 +4,7 @@ initialize('gmh',TRUE)
 
 #load functions and define paths of reference files and data directory
 library(openxlsx)
-trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2021-01-28_trait_overview.xlsx"
+trait_file<-paste0(get_conf("code_path"),"AllDiseases/2021-01-28_trait_overview.xlsx")
 traits <- read.xlsx(trait_file,rowNames=F)
 rownames(traits) <- traits[,"study_id"]
 traits<-traits[!is.na(traits[,"omit"]) & !traits[,"omit"],]

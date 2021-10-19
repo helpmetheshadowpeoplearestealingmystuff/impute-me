@@ -1,7 +1,6 @@
 library("shiny")
 
 
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 shinyServer(function(input, output) {
@@ -30,7 +29,7 @@ shinyServer(function(input, output) {
 	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+		if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
 			stop(safeError("Did not find a user with this id"))
 		}
@@ -38,12 +37,12 @@ shinyServer(function(input, output) {
 	  
 	  
 	  #Get vcf-class and abort module if TRUE
-	  pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+	  pDataFile<-paste(get_conf("data_path"),uniqueID,"/pData.txt",sep="")
 	  is_vcf<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"imputation_type"]=="vcf")
 	  if(!is.na(is_vcf) && class(is_vcf)!="try-error" && length(is_vcf) == 1 && is_vcf)stop(safeError("This module has been disabled for users submitting vcf files. That's because vcf files usually are derived from DNA-sequencing, but the investigations made in this module are tailored to microarray-data. Directly analyzing the vcf file itself, outside of impute.me, is likely to be more informative for you in context of the questions asked by this module."))
 	  
 	  #Get list of rare-variants feasible to analyse with imputed microarrays
-		table_file <-"/home/ubuntu/srv/impute-me/rareDiseases/SNPs_to_analyze.txt"
+		table_file <-paste0(get_conf("code_path"),"rareDiseases/SNPs_to_analyze.txt")
 		request <- table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")
     
 		request<-request[!duplicated(request[,"SNP"]),]
@@ -133,7 +132,7 @@ shinyServer(function(input, output) {
 		
 		#write the query to the log file
 		log_function<-function(uniqueID,diseases_of_interest){
-			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+			user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
 			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"rareDiseases",uniqueID,paste(diseases_of_interest,collapse=";"))
 			m<-paste(m,collapse="\t")
 			if(file.exists(user_log_file)){

@@ -1,11 +1,10 @@
 library("shiny")
 library("jsonlite")
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 #this is for the background "cloud" - it's from the Wood et al study
-heights_pre_registered_file<-"/home/ubuntu/srv/impute-me/guessMyHeight/background_heights.txt"
+heights_pre_registered_file<-paste0(get_conf("code_path"),"guessMyHeight/background_heights.txt")
 #this is a on-the-fly file for saving user height info
-all_heights_file<-"/home/ubuntu/misc_files/all_heights.txt"
+all_heights_file<-paste0(get_conf("misc_files_path"),"all_heights.txt")
 
 #create the image map
 edge<-20
@@ -80,7 +79,7 @@ shinyServer(function(input, output) {
 		  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 			if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 			if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-			if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+			if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
 				Sys.sleep(3) #wait a little to prevent raw-force fishing	
 				stop(safeError("Did not find a user with this id"))
 			}
@@ -88,8 +87,8 @@ shinyServer(function(input, output) {
 			#get advanced options and file paths
 			gheight_choice<-isolate(input$gheight_choice)
 			sex_choice<-isolate(input$sex_choice)
-			pData_path<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
-			json_path<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json",sep="")
+			pData_path<-paste(get_conf("data_path"),uniqueID,"/pData.txt",sep="")
+			json_path<-paste(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json",sep="")
 			if(!file.exists(pData_path) | !file.exists(json_path))stop(safeError("Essential sample-files missing. This could indicate a problem with the completion of your data processing."))
 			
 			
@@ -142,7 +141,7 @@ shinyServer(function(input, output) {
 			}else{stop("Odd")}
 			
 			#get height SNPs (for Wood et al - height_25282103)
-			SNPs_to_analyze_path<-"/home/ubuntu/srv/impute-me/guessMyHeight/SNPs_to_analyze.txt"
+			SNPs_to_analyze_path<-paste0(get_conf("code_path"),"guessMyHeight/SNPs_to_analyze.txt")
 			SNPs_to_analyze<-read.table(SNPs_to_analyze_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
 			SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"category"]%in%c("height"),]
 			SNPs_to_analyze[,"genotype"]<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
@@ -231,7 +230,7 @@ shinyServer(function(input, output) {
 			
 			#write the score to the log file
 			log_function<-function(uniqueID,gheight,gender){
-				user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+				user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
 				m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"guessMyHeight",uniqueID,gheight,gender,real_height,real_age,gheight_choice,sex_choice)
 				m<-paste(m,collapse="\t")
 				if(file.exists(user_log_file)){
@@ -289,8 +288,8 @@ shinyServer(function(input, output) {
 		  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 			if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 			if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-			pData_path<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
-			if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+			pData_path<-paste(get_conf("data_path"),uniqueID,"/pData.txt",sep="")
+			if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
 				Sys.sleep(3) #wait a little to prevent raw-force fishing	
 				stop(safeError("Did not find a user with this id"))
 			}
@@ -310,7 +309,7 @@ shinyServer(function(input, output) {
 			
 			
 			#get the gColour
-			GRS_file_name<-"/home/ubuntu/srv/impute-me/guessMyHeight/SNPs_to_analyze.txt"
+			GRS_file_name<-paste0(get_conf("code_path"),"guessMyHeight/SNPs_to_analyze.txt")
 			GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F)
 			GRS_file<-GRS_file[GRS_file[,"category"]%in%c("blonde","red"),]
 			for(component in c("blonde","red")){

@@ -2,9 +2,6 @@ library("shiny")
 library("kandinsky")
 library("jsonlite")
 
-source("/home/ubuntu/srv/impute-me/functions.R")
-
-dataFolder<-"/home/ubuntu/data/"
 
 
 
@@ -17,14 +14,14 @@ shinyServer(function(input, output) {
     uniqueID<-gsub(" ","",input$uniqueID)
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-    if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+    if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
       Sys.sleep(3) #wait a little to prevent raw-force fishing	
       stop(safeError("Did not find a user with this id"))
     }      
     
     
     #json file loading
-    json_file<-paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
+    json_file<-paste0(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json")
     if(!file.exists(json_file))stop(safeError("Didn't find a json data file. Maybe data was from before implementation of this?"))
     d<-fromJSON(json_file)
     
@@ -83,17 +80,17 @@ shinyServer(function(input, output) {
       uniqueID<-isolate(gsub(" ","",input$uniqueID))
       if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
       if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-      if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
+      if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
         Sys.sleep(3) #wait a little to prevent raw-force fishing	
         stop(safeError(paste("Did not find a user with this id",uniqueID)))
       }
-      gwas_snps_path<-paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.all_gwas.gz")
+      gwas_snps_path<-paste0(get_conf("data_path"),uniqueID,"/",uniqueID,".cached.all_gwas.gz")
       if(!file.exists(gwas_snps_path))stop(safeError("Didn't find a gwas cached file for this user"))
       genotypes<-read.table(gwas_snps_path,sep="\t",stringsAsFactors = F,header=T)
       if(nrow(genotypes)==0)stop(safeError("Found an empty gwas cached file for this user"))
       
       #making sure it's a set number of SNP, to ensure same picture even after updates
-      original_snp_set_path <- "/home/ubuntu/srv/impute-me/kandinsky/2019-03-04_original_snp_set.txt.gz"
+      original_snp_set_path <- paste0(get_conf("code_path"),"kandinsky/2019-03-04_original_snp_set.txt.gz")
       original_snp_set <- read.table(original_snp_set_path,stringsAsFactors = F,sep="\t")[,1]
       if(any(!genotypes[,"X"] %in% original_snp_set)){
         genotypes<-genotypes[genotypes[,"X"] %in% original_snp_set ,]
@@ -106,7 +103,7 @@ shinyServer(function(input, output) {
       
       #write the score to the log file
       log_function<-function(uniqueID,study_id,genotypes){
-        user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+        user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
         m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"kandinsky",uniqueID)
         m<-paste(m,collapse="\t")
         if(file.exists(user_log_file)){
@@ -129,18 +126,18 @@ shinyServer(function(input, output) {
       uniqueID<-isolate(gsub(" ","",input$uniqueID))
       if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
       if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-      if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
+      if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
         Sys.sleep(3) #wait a little to prevent raw-force fishing	
         stop(safeError(paste("Did not find a user with this id",uniqueID)))
       }
       
-      gwas_snps_path<-paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.all_gwas.gz")
+      gwas_snps_path<-paste0(get_conf("data_path"),uniqueID,"/",uniqueID,".cached.all_gwas.gz")
       if(!file.exists(gwas_snps_path))stop(safeError("Didn't find a gwas cached file for this user"))
       genotypes<-read.table(gwas_snps_path,sep="\t",stringsAsFactors = F,header=T)
       if(nrow(genotypes)==0)stop(safeError("Found an empty gwas cached file for this user"))
       
       #making sure it's a set number of SNP, to ensure same picture even after updates
-      original_snp_set_path <- "/home/ubuntu/srv/impute-me/kandinsky/2019-03-04_original_snp_set.txt.gz"
+      original_snp_set_path <- paste0(get_conf("code_path"),"kandinsky/2019-03-04_original_snp_set.txt.gz")
       original_snp_set <- read.table(original_snp_set_path,stringsAsFactors = F,sep="\t")[,1]
       if(any(!genotypes[,"X"] %in% original_snp_set)){
         genotypes<-genotypes[genotypes[,"X"] %in% original_snp_set ,]
@@ -171,7 +168,7 @@ shinyServer(function(input, output) {
     
     if(sample(1:3,1) != 1){return("..")}
 
-    survey_log_file<-"/home/ubuntu/logs/submission/art_survey.txt"
+    survey_log_file<-paste0(get_conf("submission_logs_path"),"art_survey.txt")
     if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"art_survey",uniqueID)
     m<-paste(m,collapse="\t")

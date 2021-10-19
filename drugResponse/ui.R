@@ -1,6 +1,6 @@
 
 
-table_file <-"/home/ubuntu/srv/impute-me/drugResponse/SNPs_to_analyze.txt"
+table_file <-paste0(get_conf("code_path"),"drugResponse/SNPs_to_analyze.txt")
 # table_file <-"SNPs_to_analyze.txt"
 SNPs_to_analyze<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F)
 

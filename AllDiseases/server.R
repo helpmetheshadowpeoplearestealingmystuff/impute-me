@@ -2,11 +2,10 @@ library("shiny")
 library("jsonlite")
 
 #load functions and define paths of reference files and data directory
-source("/home/ubuntu/srv/impute-me/functions.R")
-dataFolder<-"/home/ubuntu/data/"
-snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2021-01-28_snp_weights.rdata"
-trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2021-01-28_trait_overview.xlsx"
-all_snp_trait_file <- "/home/ubuntu/srv/impute-me/prs/2021-02-11_study_list.xlsx"
+
+snps_file<-paste0(get_conf("code_path"),"AllDiseases/2021-01-28_snp_weights.rdata")
+trait_file<-paste0(get_conf("code_path"),"AllDiseases/2021-01-28_trait_overview.xlsx")
+all_snp_trait_file <- paste0(get_conf("code_path"),"prs/2021-02-11_study_list.xlsx")
 
 
 
@@ -78,7 +77,7 @@ shinyServer(function(input, output) {
     #user check
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-    if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
+    if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
       Sys.sleep(3) #wait a little to prevent raw-force fishing	
       stop(safeError(paste("Did not find a user with this id",uniqueID)))
     }
@@ -94,7 +93,7 @@ shinyServer(function(input, output) {
 
 
     #Reading in the json file     
-    json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
+    json_path<-paste0(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json")
     if(!file.exists(json_path))stop(safeError("Missing essential files for this uniqueID (So cannot do automatic reference population guess)"))
     d1<-fromJSON(json_path)
     
@@ -113,15 +112,15 @@ shinyServer(function(input, output) {
     #select correct densityCurvePath
     if(ethnicity_group == "global"){
       if(use_all_snp_score){
-        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_ALL.rdata"
+        densityCurvePath<-paste0(get_conf("code_path"),"prs/2021-02-11_densities_ALL.rdata")
       }else{
-        densityCurvePath<-"/home/ubuntu/srv/impute-me/AllDiseases/2021-02-12_densities_ALL.rdata"  
+        densityCurvePath<-paste0(get_conf("code_path"),"AllDiseases/2021-02-12_densities_ALL.rdata")
       }
     }else{
       if(use_all_snp_score){
-        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_",ethnicity_group,".rdata")
+        densityCurvePath<-paste0(get_conf("code_path"),"prs/2021-02-11_densities_",ethnicity_group,".rdata")
       }else{
-        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/AllDiseases/2021-02-12_densities_",ethnicity_group,".rdata")  
+        densityCurvePath<-paste0(get_conf("code_path"),"AllDiseases/2021-02-12_densities_",ethnicity_group,".rdata")  
       }
       
       #Also,replace the MAF with the correct superpopulation group
@@ -368,7 +367,7 @@ shinyServer(function(input, output) {
     
     #write the score to the log file
     log_function<-function(uniqueID,study_id,genotypes){
-      user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+      user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"AllDisease",uniqueID,study_id,GRS,ethnicity_group,use_all_snp_score,real_dist,plot_heritability)
       m<-paste(m,collapse="\t")
       if(file.exists(user_log_file)){
@@ -691,7 +690,7 @@ shinyServer(function(input, output) {
     uniqueID<-gsub(" ","",input$uniqueID)
     if(uniqueID == "id_613z86871"){return("")}
     
-    user_log_path <- paste0("~/data/",uniqueID,"/user_log_file.txt")
+    user_log_path <- paste0(get_conf("data_path"),uniqueID,"/user_log_file.txt")
     if(!file.exists(user_log_path))return("")
     
     
@@ -715,7 +714,7 @@ shinyServer(function(input, output) {
     ###################
     show_on_these_study_ids<- c("prostate-specific_antigen_levels_conditioned_on_lead_snps_28139693","prostate-specific_antigen_levels_28139693","male-pattern_baldness_30573740","male-pattern_baldness_29146897","male-pattern_baldness_28272467","male-pattern_baldness_28196072","male-pattern_baldness_22693459","dehydroepiandrosterone_sulphate_levels_21533175","androgen_levels_22936694","remission_after_ssri_treatment_in_mdd_or_neuroticism_29559929","remission_after_ssri_treatment_in_mdd_or_openness_29559929","response_to_ssri_in_mdd_or_openness_29559929","depressive_symptoms_ssri_exposure_interaction_25649181")
     if(study_id %in% show_on_these_study_ids){
-      survey_log_file<-"/home/ubuntu/logs/submission/propecia_survey.txt"
+      survey_log_file<-paste0(get_conf("submission_logs_path"),"propecia_survey.txt")
       if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"propecia_survey",uniqueID,study_id)
       m<-paste(m,collapse="\t")
@@ -737,7 +736,7 @@ shinyServer(function(input, output) {
     if(sample(1:5,1)==1){
       show_on_these_study_ids<- c("agreeableness_21173776","conscientiousness_21173776","extroversion_21173776","neuroticism_21173776","openness_to_experience_21173776","anger_24489884","conscientiousness_27918536","feeling_fed-up_29500382","feeling_guilty_29500382","feeling_hurt_29500382","feeling_lonely_29500382","feeling_miserable_29500382","feeling_nervous_29500382","feeling_tense_29500382","feeling_worry_29500382","gambling_22780124","life_satisfaction_27089181","irritable_mood_29500382","worry_29942085","worry_too_long_after_an_embarrassing_experience_29500382","openness_to_experience_21173776","extroversion_21173776","self-reported_risk-taking_behaviour_30181555","self-reported_risk-taking_behaviour_30271922","temperament_22832960","eudaimonic_well-being_30279531","hedonic_well-being_30279531","subjective_well-being_mtag_29292387","subjective_well-being_multi-trait_analysis_29292387","subjective_well-being_27089181","subjective_well-being_29292387")
       if(study_id %in% show_on_these_study_ids){
-        survey_log_file<-"/home/ubuntu/logs/submission/personalitygenie_survey.txt"
+        survey_log_file<-paste0(get_conf("submission_logs_path"),"personalitygenie_survey.txt")
         if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
         m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"personalitygenie_survey",uniqueID,study_id)
         m<-paste(m,collapse="\t")
@@ -766,7 +765,7 @@ shinyServer(function(input, output) {
     if(length(q)>=150) show_box <- TRUE
     o<-get_data()
     if(o[["show_sanogenetics_banner"]] & show_box){
-      survey_log_file<-"/home/ubuntu/logs/submission/sanogenetics_survey.txt"
+      survey_log_file<-paste0(get_conf("submission_logs_path"),"sanogenetics_survey.txt")
       if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"sanogenetics_survey",uniqueID,length(q))
       m<-paste(m,collapse="\t")

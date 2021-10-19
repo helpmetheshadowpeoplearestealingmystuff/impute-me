@@ -1,15 +1,14 @@
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 export_function<-function(uniqueID){
   #start check ups
   
   
-  if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+  if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
     stop("Did not find a user with this id")
   }
   
-  table_file <-"/home/ubuntu/srv/impute-me/rareDiseases/SNPs_to_analyze.txt"
+  table_file <-paste0(get_conf("code_path"),"rareDiseases/SNPs_to_analyze.txt")
   request <- table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")
   
   #get data

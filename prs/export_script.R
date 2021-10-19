@@ -1,20 +1,19 @@
 library("openxlsx")
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 export_function<-function(uniqueID){
   
   
   #set correct plink version (that's v1.90b1g being refered here first, and then plink 2.00 alpha)
-  plink="/home/ubuntu/programs/plink"
-  plink2="/home/ubuntu/programs/plink2/plink2"
+  plink=paste0(get_conf("programs_path"),"plink")
+  plink2=paste0(get_conf("programs_path"),"/plink2/plink2")
   
   #set paths to supporting information
-  prs_dir <- "/home/ubuntu/prs_dir/"
-  prs_overview_path<-"/home/ubuntu/srv/impute-me/prs/2021-02-11_study_list.xlsx"
+  prs_dir <- get_conf("prs_dir_path")
+  prs_overview_path<-paste0(get_conf("code_path"),"prs/2021-02-11_study_list.xlsx")
   
   #When using matrix-score files (SCORESUM_PLINK_2_0_DOSAGE_MATRIX) - just set the one file
-  matrix_score_file <- "/home/ubuntu/prs_dir/2020-12-30_prs_weights.txt"
+  matrix_score_file <- paste0(get_conf("prs_dir_path"),"2020-12-30_prs_weights.txt")
   
   
   #Set verbosity consequences
@@ -94,7 +93,7 @@ export_function<-function(uniqueID){
     missing_freq_files<-vector()
     for(chr in chromosomes){
       for(ethnicity in c("AFR","ALL","AMR","EAS","EUR","SAS")){
-        freq_file <- paste0("/home/ubuntu/prs_dir/frequencies/2019-03-11_chr",chr,"_",ethnicity,"_freq.txt.gz")    
+        freq_file <- paste0(get_conf("prs_dir_path"),"frequencies/2019-03-11_chr",chr,"_",ethnicity,"_freq.txt.gz")    
         if(!file.exists(freq_file))missing_freq_files<-c(missing_freq_files,freq_file)
       }
     }
@@ -102,7 +101,7 @@ export_function<-function(uniqueID){
   }
     
   #creating a temp folder to use
-  idTempFolder<-paste("/home/ubuntu/data",uniqueID,"temp/",sep="/")
+  idTempFolder<-paste(get_conf("data_path"),uniqueID,"temp/",sep="/")
   if(file.exists(idTempFolder)){
     stop(paste("Temp folder exists already, this could indicate that",uniqueID,"is already worked on."))
   }else{
@@ -125,7 +124,7 @@ export_function<-function(uniqueID){
   if("SCORESUM_PLINK_1_9"%in%algorithms_to_run){
     
     #check simple_format data exists (would be good to move to dosages when plink 2.0 is ready for that)
-    simple_format_zip_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".simple_format.zip")
+    simple_format_zip_path <- paste0(get_conf("data_path"),uniqueID,"/",uniqueID,".simple_format.zip")
     if(!file.exists(simple_format_zip_path))stop("Did not find simple_format_zip_path for this user")
     
     #unpack and check contents
@@ -231,7 +230,7 @@ export_function<-function(uniqueID){
     
     
     #check simple_format data exists (would be good to move to dosages when plink 2.0 is ready for that)
-    simple_format_zip_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".simple_format.zip")
+    simple_format_zip_path <- paste0(get_conf("data_path"),uniqueID,"/",uniqueID,".simple_format.zip")
     if(!file.exists(simple_format_zip_path))stop("Did not find simple_format_zip_path for this user")
     
     #unpack and check contents
@@ -276,7 +275,7 @@ export_function<-function(uniqueID){
         out_file<-paste0(idTempFolder,"score_file",i,"_chr",chr,".txt")
         
         #first get ethnicity and set relevant freq file
-        pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+        pDataFile<-paste(get_conf("data_path"),uniqueID,"/pData.txt",sep="")
         pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
         if(class(pData)!="try-error" && "ethnicity" %in% colnames(pData)){
           ethnicity <-pData[1,"ethnicity"]
@@ -284,7 +283,7 @@ export_function<-function(uniqueID){
         }else{
           ethnicity <-"ALL"
         }
-        freq_file <- paste0("/home/ubuntu/prs_dir/frequencies/2019-03-11_chr",chr,"_",ethnicity,"_freq.txt.gz")
+        freq_file <- paste0(get_conf("prs_dir_path"),"frequencies/2019-03-11_chr",chr,"_",ethnicity,"_freq.txt.gz")
         
         #then run the score calculation in plink with freq correction
         out_file<-paste0(idTempFolder,"score_file",i,"_chr",chr,".plink2.txt")
@@ -340,11 +339,11 @@ export_function<-function(uniqueID){
     
     
     #check existence of dosage files  
-    gen_format_zip_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip")
+    gen_format_zip_path <- paste0(get_conf("data_path"),uniqueID,"/",uniqueID,".gen.zip")
     if(!file.exists(gen_format_zip_path))stop("Did not find gen_format_zip_path for this user")
     
     #get ethnicity and gender
-    pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+    pDataFile<-paste(get_conf("data_path"),uniqueID,"/pData.txt",sep="")
     pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
     if(class(pData)!="try-error" && "ethnicity" %in% colnames(pData)){
       ethnicity <-pData[1,"ethnicity"]
@@ -357,7 +356,7 @@ export_function<-function(uniqueID){
     #iterate over all chromosomes
     for(chr in chromosomes){
       #Set frequency file
-      freq_file <- paste0("/home/ubuntu/prs_dir/frequencies/2019-03-11_chr",chr,"_",ethnicity,"_freq.txt.gz")
+      freq_file <- paste0(get_conf("prs_dir_path"),"frequencies/2019-03-11_chr",chr,"_",ethnicity,"_freq.txt.gz")
       
       #unpack and check contents
       outZip<-unzip(gen_format_zip_path, files = paste0(uniqueID,"_chr",chr,".gen"), overwrite = TRUE,exdir = idTempFolder, unzip = "internal")
@@ -438,11 +437,11 @@ export_function<-function(uniqueID){
   if("SCORESUM_PLINK_2_0_DOSAGE_MATRIX"%in%algorithms_to_run){
     
     #check existence of dosage files  
-    gen_format_zip_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip")
+    gen_format_zip_path <- paste0(get_conf("data_path"),uniqueID,"/",uniqueID,".gen.zip")
     if(!file.exists(gen_format_zip_path))stop("Did not find gen_format_zip_path for this user")
     
     #get ethnicity and gender
-    pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+    pDataFile<-paste(get_conf("data_path"),uniqueID,"/pData.txt",sep="")
     pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
     if(class(pData)!="try-error" && "ethnicity" %in% colnames(pData)){
       ethnicity <-pData[1,"ethnicity"]
@@ -468,7 +467,7 @@ export_function<-function(uniqueID){
     for(chr in chromosomes){
       
       #Set frequency file
-      freq_file <- paste0("/home/ubuntu/prs_dir/frequencies/2019-03-11_chr",chr,"_",ethnicity,"_freq.txt.gz")
+      freq_file <- paste0(get_conf("prs_dir_path"),"frequencies/2019-03-11_chr",chr,"_",ethnicity,"_freq.txt.gz")
       
       #unpack and check contents
       outZip<-unzip(gen_format_zip_path, files = paste0(uniqueID,"_chr",chr,".gen"), overwrite = TRUE,exdir = idTempFolder, unzip = "internal")
@@ -586,9 +585,9 @@ export_function<-function(uniqueID){
     #what our best guess at the time is, therefore it needs to load the distributions and correct relative
     #to them
     if(ethnicity == "ALL"){
-      densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_ALL.rdata"
+      densityCurvePath<-paste0(get_conf("code_path"),"prs/2021-02-11_densities_ALL.rdata")
     }else{
-      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_",ethnicity,".rdata")
+      densityCurvePath<-paste0(get_conf("code_path"),"prs/2021-02-11_densities_",ethnicity,".rdata")
     }
     load(densityCurvePath)
     GRS <- output[[nicename]][["SCORESUM_PLINK_2_0_DOSAGE_MATRIX"]] * output[[nicename]][["PLINK_2_0_DOSAGE_MATRIX_NMISS_ALLELE_CT"]]

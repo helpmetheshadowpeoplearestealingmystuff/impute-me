@@ -1,9 +1,7 @@
 library("shiny")
 
-source("/home/ubuntu/srv/impute-me/functions.R")
-dataFolder<-"/home/ubuntu/data/"
-snps_file<-"/home/ubuntu/srv/impute-me/ukbiobank/2017-09-28_semi_curated_version_ukbiobank.rdata"
-trait_file<-"/home/ubuntu/srv/impute-me/ukbiobank/2017-09-28_trait_overoverview.rdata"
+snps_file<-paste0(get_conf("code_path"),"ukbiobank/2017-09-28_semi_curated_version_ukbiobank.rdata")
+trait_file<-paste0(get_conf("code_path"),"ukbiobank/2017-09-28_trait_overoverview.rdata")
 
 
 
@@ -42,7 +40,7 @@ shinyServer(function(input, output) {
     
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-    if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
+    if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
       Sys.sleep(3) #wait a little to prevent raw-force fishing	
       stop(safeError(paste("Did not find a user with this id",uniqueID)))
     }
@@ -64,7 +62,7 @@ shinyServer(function(input, output) {
     ethnicity_explanation_text <- "All scaling was done using the minor-allele frequency (MAF) for each SNP, as taken from the 1000 genomes project v3, using a _CHOICE_ frequency distribution."
     
     if(ethnicity_group == "automatic"){
-      json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
+      json_path<-paste0(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json")
       if(!file.exists(json_path))stop(safeError("Automatic guess of ethnicity not possible (json not found)"))
       library(jsonlite)
       d1<-fromJSON(json_path)
@@ -226,7 +224,7 @@ shinyServer(function(input, output) {
     
     #write the score to the log file
     log_function<-function(uniqueID,study_id,genotypes){
-      user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+      user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ukbiobank",uniqueID,study_id,GRS,ethnicity_group)
       m<-paste(m,collapse="\t")
       if(file.exists(user_log_file)){

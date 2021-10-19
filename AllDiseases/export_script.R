@@ -1,10 +1,8 @@
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 export_function<-function(uniqueID){
-  # dataFolder<-"/home/ubuntu/data/"
-  snps_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2021-01-28_snp_weights.rdata"
-  trait_file<-"/home/ubuntu/srv/impute-me/AllDiseases/2021-01-28_trait_overview.xlsx"
+  snps_file<-paste0(get_conf("code_path"),"AllDiseases/2021-01-28_snp_weights.rdata")
+  trait_file<-paste0(get_conf("code_path"),"AllDiseases/2021-01-28_trait_overview.xlsx")
   
   #testing
   #preload
@@ -13,7 +11,7 @@ export_function<-function(uniqueID){
   traits <- read.xlsx(trait_file,rowNames=T)
   traits<-traits[!is.na(traits[,"omit"]) & !traits[,"omit"],]  
   
-  if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+  if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
     stop("Did not find a user with this id")
   }
   
@@ -23,7 +21,7 @@ export_function<-function(uniqueID){
   output[["documentation"]][["snp_file"]] <- "https://github.com/lassefolkersen/impute-me/blob/5a31c3d703281a511e5f750d1ba05601b6ac2c36/AllDiseases/2021-01-28_snp_weights.rdata"
   
   #get ethnicity parameter
-  pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+  pDataFile<-paste(get_conf("data_path"),uniqueID,"/pData.txt",sep="")
   pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
   if(class(pData)!="try-error" && "ethnicity" %in% colnames(pData)){
     ethnicity <-pData[1,"ethnicity"]

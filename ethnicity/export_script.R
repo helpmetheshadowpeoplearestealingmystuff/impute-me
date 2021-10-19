@@ -1,12 +1,9 @@
-source("/home/ubuntu/srv/impute-me/functions.R")
-
-
 
 
 export_function<-function(uniqueID){
   
   
-  if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+  if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
     stop("Did not find a user with this id")
   }
   
@@ -14,10 +11,9 @@ export_function<-function(uniqueID){
   
   
   #get input constants
-  source("/home/ubuntu/srv/impute-me/functions.R")
-  load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_snps.rdata")
-  load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_pca.rdata")
-  ethnicity_desc<-read.table("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_descriptions.txt",sep="\t",header=T,stringsAsFactors = F,row.names=1)
+  load(paste0(get_conf("code_path"),"ethnicity/2017-04-03_ethnicity_snps.rdata"))
+  load(paste0(get_conf("code_path"),"ethnicity/2017-04-03_ethnicity_pca.rdata"))
+  ethnicity_desc<-read.table(paste0(get_conf("code_path"),"ethnicity/2017-04-03_ethnicity_descriptions.txt"),sep="\t",header=T,stringsAsFactors = F,row.names=1)
   
   
   

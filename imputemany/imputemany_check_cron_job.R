@@ -8,7 +8,7 @@ library("gmailr",warn.conflicts = FALSE)
 
 
 emails_to_send <- list()
-imputemany_registry_path <-"/home/ubuntu/misc_files/imputemany_registry.txt"
+imputemany_registry_path <-paste0(get_conf("misc_files_path"),"imputemany_registry.txt")
 
 
 #check if registry exists and create it if not
@@ -58,7 +58,7 @@ d3 <- d[d[,"age_days"] <= day_split & !d[,"has_been_sent"],]
 if(nrow(d3)>0){
   for(upload_time in rownames(d3)){
     uniqueIDs <- strsplit(d3[upload_time,"uniqueIDs"],",")[[1]]
-    if(all(uniqueIDs%in%list.files("/home/ubuntu/data"))){
+    if(all(uniqueIDs%in%list.files(get_conf("data_path")))){
       
       
       file_out_web <- summarize_imputemany_json(uniqueIDs,upload_time)
@@ -93,8 +93,8 @@ for(j in 1:length(emails_to_send)){
   print(paste("Send mail to",emails_to_send[[j]][["to"]],"with subject:",emails_to_send[[j]][["subject"]]))
   
   
-  gm_auth_configure( path ="~/misc_files/mailchecker.json")
-  gm_auth(email=get_conf("from_email_address"), cache="~/misc_files/mail_secret")
+  gm_auth_configure( path =paste0(get_conf("misc_files_path"),"mailchecker.json"))
+  gm_auth(email=get_conf("from_email_address"), cache=paste0(get_conf("misc_files_path"),"mail_secret"))
   prepared_email <- gm_mime() %>%
                           gm_to(emails_to_send[[j]][["to"]]) %>%
                           gm_from(get_conf("from_email_address")) %>%
@@ -109,7 +109,7 @@ for(j in 1:length(emails_to_send)){
 #an imputemany-run needs to be sent off in a special way (curl POST, separate-email, 
 #different normalization, etc). This will be done with a dedicated non-github 
 #function because some of the collaborators don't like their name or methods on github
-send_of_handler_path<-"/home/ubuntu/misc_files/send_off_handler.R"
+send_of_handler_path<-paste0(get_conf("misc_files_path"),"send_off_handler.R")
 if(file.exists(send_of_handler_path)){
   source(send_of_handler_path)
   for(j in 1:length(emails_to_send)){

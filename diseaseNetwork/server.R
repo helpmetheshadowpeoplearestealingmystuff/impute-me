@@ -6,9 +6,8 @@ library("visNetwork")
 
 
 #for real run
-source("/home/ubuntu/srv/impute-me/functions.R")
-load("/home/ubuntu/srv/impute-me/diseaseNetwork/2018-02-21_igraph_object.rdata")
-link_file<-"/home/ubuntu/srv/impute-me/diseaseNetwork/2020-04-11_link_file.xlsx"
+load(paste0(get_conf("code_path"),"diseaseNetwork/2018-02-21_igraph_object.rdata"))
+link_file<-paste0(get_conf("code_path"),"diseaseNetwork/2020-04-11_link_file.xlsx")
 link_all<-read.xlsx(link_file)  
 
 
@@ -24,13 +23,13 @@ shinyServer(function(input, output) {
     uniqueID<-isolate(gsub(" ","",input$uniqueID))
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-    if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+    if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
       Sys.sleep(3) #wait a little to prevent raw-force fishing
       stop(safeError("Did not find a user with this id"))
     }
     
     #json file
-    json_file<-paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
+    json_file<-paste0(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json")
     # json_file<-paste0("id_613z86871_data.json")
     if(!file.exists(json_file))stop(safeError("Didn't find a json data file. Maybe data was from before implementation of this?"))
     d<-fromJSON(json_file)
@@ -314,7 +313,7 @@ shinyServer(function(input, output) {
     
     #write the score to the log file
     log_function<-function(uniqueID,focus_node){
-      user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+      user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"diseaseNetworks",uniqueID,focus_node)
       m<-paste(m,collapse="\t")
       if(file.exists(user_log_file)){

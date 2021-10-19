@@ -1,5 +1,3 @@
-# stop(getwd())
-setwd("/home/ubuntu/srv/impute-me/imputeme")
 source("../uifunctions.R")
 initialize('hc',TRUE)
 
@@ -54,7 +52,7 @@ shinyUI(bootstrapPage(
 	     <br>
 	     <br>
  	     <b>Format-2</b><br>
-       <i>Plink ped + map file, zipped. Please upload a zip file containing only two files, one &#8804;prefix&#62;.bed file and one &#8804;prefix&#62;.map file. &#8804;prefix&#62; must be the same and the zip file cannot contain other files.</i><br><br>
+       <i>Plink ped + map file, zipped. Please upload a zip file containing only two files, one &#60;prefix&#62;.bed file and one &#60;prefix&#62;.map file. &#60;prefix&#62; must be the same and the zip file cannot contain other files.</i><br><br>
 
 	     "),
 	htmlOutput("text"),

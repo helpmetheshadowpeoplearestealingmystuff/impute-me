@@ -1,10 +1,9 @@
 library("shiny")
 
-source("/home/ubuntu/srv/impute-me/functions.R")
-dataFolder<-"/home/ubuntu/data/"
-snps_file<-"/home/ubuntu/srv/impute-me/intelligence/2019-03-04_semi_curated_version_gwas_central.rdata"
-trait_file<-"/home/ubuntu/srv/impute-me/intelligence/2019-03-04_trait_overview.xlsx"
-all_snp_trait_file <- "/home/ubuntu/srv/impute-me/prs/2021-02-11_study_list.xlsx"
+
+snps_file<-paste0(get_conf("code_path"),"intelligence/2019-03-04_semi_curated_version_gwas_central.rdata")
+trait_file<-paste0(get_conf("code_path"),"intelligence/2019-03-04_trait_overview.xlsx")
+all_snp_trait_file <- paste0(get_conf("code_path"),"prs/2021-02-11_study_list.xlsx")
 
 #testing
 #preload
@@ -73,7 +72,7 @@ shinyServer(function(input, output) {
     
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-    if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
+    if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
       Sys.sleep(3) #wait a little to prevent raw-force fishing	
       stop(safeError(paste("Did not find a user with this id",uniqueID)))
     }
@@ -95,7 +94,7 @@ shinyServer(function(input, output) {
     ethnicity_explanation_text <- "All scaling was done using the minor-allele frequency (MAF) for each SNP, as taken from the 1000 genomes project v3, using a _CHOICE_ frequency distribution."
     
     if(ethnicity_group == "automatic"){
-      json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
+      json_path<-paste0(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json")
       if(!file.exists(json_path))stop(safeError("Json file not found (So cannot do automatic guess)"))
       library(jsonlite)
       d1<-fromJSON(json_path)
@@ -110,12 +109,12 @@ shinyServer(function(input, output) {
     }
     if(ethnicity_group == "global"){
       #do nothing. Note the density curve location.
-      densityCurvePath<-"/home/ubuntu/srv/impute-me/intelligence/2019-03-13_densities_ALL.rdata"
+      densityCurvePath<-paste0(get_conf("code_path"),"intelligence/2019-03-13_densities_ALL.rdata")
     }else{
       #then replace the MAF with the correct superpopulation group
       SNPs_to_analyze[,"minor_allele_freq"] <- SNPs_to_analyze[,paste0(ethnicity_group,"_AF")]
       #note the density curve location
-      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/intelligence/2019-03-13_densities_",ethnicity_group,".rdata")
+      densityCurvePath<-paste0(get_conf("code_path"),"intelligence/2019-03-13_densities_",ethnicity_group,".rdata")
     }
     #then explain which choice was made
     ethnicity_explanation_text <- sub("_CHOICE_",ethnicities_labels[ethnicity_group],ethnicity_explanation_text)
@@ -246,7 +245,7 @@ shinyServer(function(input, output) {
       
       #re-read json for robustness (can be optimized later)
       if(!exists("d1")){
-        json_path<-paste0(dataFolder,uniqueID,"/",uniqueID,"_data.json")
+        json_path<-paste0(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json")
         if(!file.exists(json_path))stop(safeError("Json file not found (So cannot do automatic guess)"))
         library(jsonlite)
         d1<-fromJSON(json_path)
@@ -273,16 +272,19 @@ shinyServer(function(input, output) {
       GRS <- d3[["GRS"]]
       
       #replace SNP count
-      new_snp_count <- d3[["alleles_observed"]]
+      new_snp_count <- all_snp_traits[study_id,"variant_count"]
+      
+
+
       textToReturn<-sub("Retrieved [0-9]+ SNPs from",paste("Retrieved",new_snp_count,"SNPs from"),textToReturn)
       
       #replace the distribution curves
       if(ethnicity_group == "global"){
         #do nothing. Note the density curve location.
-        densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_ALL.rdata"
+        densityCurvePath<-paste0(get_conf("code_path"),"prs/2021-02-11_densities_ALL.rdata")
       }else{
         #note the density curve location
-        densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_",ethnicity_group,".rdata")
+        densityCurvePath<-paste0(get_conf("code_path"),"prs/2021-02-11_densities_",ethnicity_group,".rdata")
       }
       
       
@@ -310,7 +312,7 @@ shinyServer(function(input, output) {
     
     #write the score to the log file
     log_function<-function(uniqueID,study_id,genotypes){
-      user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+      user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"intelligence",uniqueID,study_id,GRS,ethnicity_group,use_all_snp_score,real_dist,plot_heritability)
       m<-paste(m,collapse="\t")
       if(file.exists(user_log_file)){
@@ -713,7 +715,7 @@ shinyServer(function(input, output) {
     
     
     if(sample(1:5,1)==1){
-      survey_log_file<-"/home/ubuntu/logs/submission/personalitygenie_survey.txt"
+      survey_log_file<-paste0(get_conf("submission_logs_path"),"personalitygenie_survey.txt")
       if(!file.exists(survey_log_file))system(paste("touch",survey_log_file))
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"personalitygenie_survey",uniqueID,study_id)
       m<-paste(m,collapse="\t")

@@ -2,9 +2,6 @@
 #Setup this to run every hour.  It will check for jobs to handle in the /home/ubuntu/vcfs queueing area 
 #and if present it will execute the relevant scripts, e.g. convert_vcfs_to_simple_format, and also the 
 #PRS-calculation scripts run_export_scripts
-#
-# Suggested setup for cronjob (edit with crontab -e)
-# 50 * * * * Rscript /home/ubuntu/srv/impute-me/imputeme/vcf_handling_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-impute-cron.log 2>&1
 
 
 #check if anything is ready for single run imputation

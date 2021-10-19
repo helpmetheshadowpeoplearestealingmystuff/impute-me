@@ -1,6 +1,5 @@
 library("shiny")
 library("jsonlite")
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 
@@ -31,13 +30,13 @@ shinyServer(function(input, output) {
     
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-    if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+    if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
       Sys.sleep(3) #wait a little to prevent raw-force fishing	
       stop(safeError("Did not find a user with this id"))
     }
     
     #json file loading
-    json_file<-paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
+    json_file<-paste0(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json")
     if(!file.exists(json_file))stop(safeError("Didn't find a json data file. Maybe data was from before implementation of this?"))
     d<-fromJSON(json_file)
     
@@ -63,10 +62,10 @@ shinyServer(function(input, output) {
     }
     if(ethnicity_group == "global"){
       #do nothing. Note the density curve location.
-      densityCurvePath<-"/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_ALL.rdata"
+      densityCurvePath<-paste0(get_conf("code_path"),"prs/2021-02-11_densities_ALL.rdata")
     }else{
       #note the density curve location
-      densityCurvePath<-paste0("/home/ubuntu/srv/impute-me/prs/2021-02-11_densities_",ethnicity_group,".rdata")
+      densityCurvePath<-paste0(get_conf("code_path"),"prs/2021-02-11_densities_",ethnicity_group,".rdata")
     }
     
     
@@ -79,7 +78,7 @@ shinyServer(function(input, output) {
     
     #write the score to the log file
     log_function<-function(uniqueID){
-      user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+      user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"prs",uniqueID,study_id,signif(d1[["GRS"]],3))
       m<-paste(m,collapse="\t")
       if(file.exists(user_log_file)){

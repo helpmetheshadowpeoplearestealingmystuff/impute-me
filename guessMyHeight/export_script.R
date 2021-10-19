@@ -1,11 +1,10 @@
-source("/home/ubuntu/srv/impute-me/functions.R")
 library("jsonlite")
 
 
 export_function<-function(uniqueID){
 
   
-  if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+  if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
     stop("Did not find a user with this id")
   }
   output<-list()
@@ -20,12 +19,12 @@ export_function<-function(uniqueID){
   
   
   #getting gender
-  pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+  pDataFile<-paste(get_conf("data_path"),uniqueID,"/pData.txt",sep="")
   gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
   
   
   #get height SNPs (for Wood et al - height_25282103)
-  SNPs_to_analyze_path<-"/home/ubuntu/srv/impute-me/guessMyHeight/SNPs_to_analyze.txt"
+  SNPs_to_analyze_path<-paste0(get_conf("code_path"),"guessMyHeight/SNPs_to_analyze.txt")
   SNPs_to_analyze<-read.table(SNPs_to_analyze_path,sep="\t",header=T,stringsAsFactors=F,row.names=1)
   SNPs_to_analyze<-SNPs_to_analyze[SNPs_to_analyze[,"category"]%in%c("height"),]
   SNPs_to_analyze[,"genotype"]<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
@@ -82,7 +81,7 @@ export_function<-function(uniqueID){
   
   
   #get the gColour
-  GRS_file_name<-"/home/ubuntu/srv/impute-me/guessMyHeight/SNPs_to_analyze.txt"
+  GRS_file_name<-paste0(get_conf("code_path"),"guessMyHeight/SNPs_to_analyze.txt")
   GRS_file<-read.table(GRS_file_name,sep="\t",header=T,stringsAsFactors=F)
   for(component in c("blonde","red")){
     s1<-GRS_file[GRS_file[,"category"]%in%component,]

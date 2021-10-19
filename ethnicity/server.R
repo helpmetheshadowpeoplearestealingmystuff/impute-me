@@ -4,10 +4,9 @@ library("shiny")
 # options(shiny.sanitize.errors=F)
 
 #real
-source("/home/ubuntu/srv/impute-me/functions.R")
-load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_snps.rdata")
-load("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_pca.rdata")
-ethnicity_desc<-read.table("/home/ubuntu/srv/impute-me/ethnicity/2017-04-03_ethnicity_descriptions.txt",sep="\t",header=T,stringsAsFactors = F,row.names=1)
+load(paste0(get_conf("code_path"),"ethnicity/2017-04-03_ethnicity_snps.rdata"))
+load(paste0(get_conf("code_path"),"ethnicity/2017-04-03_ethnicity_pca.rdata"))
+ethnicity_desc<-read.table(paste0(get_conf("code_path"),"ethnicity/2017-04-03_ethnicity_descriptions.txt"),sep="\t",header=T,stringsAsFactors = F,row.names=1)
 
 
 # Define server logic for a template
@@ -26,7 +25,7 @@ shinyServer(function(input, output){
       #try to get the pre-guesssed ancestry
       hint_message <- ""
       uniqueID<-isolate(gsub(" ","",input$uniqueID))
-      json_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
+      json_path <- paste0(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json")
       if(file.exists(json_path)){
         library(jsonlite)
         d1<-fromJSON(json_path)
@@ -87,7 +86,7 @@ shinyServer(function(input, output){
     
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-    if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+    if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
       Sys.sleep(3) #wait a little to prevent raw-force fishing
       stop(safeError("Did not find a user with this id"))
     }
@@ -146,7 +145,7 @@ shinyServer(function(input, output){
     
     #write the score to the log file
     log_function<-function(uniqueID){
-      user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+      user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"ethnicity",paste(signif(c(pca[nrow(pca),"x"],pca[nrow(pca),"y"],pca[nrow(pca),"z"]),4),collapse="-"),uniqueID,paste(pc_selections,collapse="-"),paste(ethnicities,collapse="-"))
       m<-paste(m,collapse="\t")
       if(file.exists(user_log_file)){

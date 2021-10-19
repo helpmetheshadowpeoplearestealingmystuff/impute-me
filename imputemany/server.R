@@ -1,9 +1,8 @@
 library("shiny")
 
 
-options(shiny.maxRequestSize=50*1024^2) 
+options(shiny.maxRequestSize=150*1024^2) 
 
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 

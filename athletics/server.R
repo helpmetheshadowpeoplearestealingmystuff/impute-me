@@ -1,7 +1,6 @@
 library("shiny")
 
 
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 
@@ -18,12 +17,12 @@ shinyServer(function(input, output) {
     uniqueID<-gsub(" ","",input$uniqueID)
     if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
     if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-    if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+    if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
       Sys.sleep(3) #wait a little to prevent raw-force fishing	
       stop(safeError("Did not find a user with this id"))
     }      
     
-    table_file <-"/home/ubuntu/srv/impute-me/athletics/SNPs_to_analyze.txt"
+    table_file <-paste0(get_conf("code_path"),"athletics/SNPs_to_analyze.txt")
     request<-table<-read.table(table_file,sep="\t",header=T,stringsAsFactors=F,comment.char="",quote="")
   
     
@@ -44,7 +43,7 @@ shinyServer(function(input, output) {
     
     #write the score to the log file
     log_function<-function(uniqueID){
-      user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+      user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"athletics",uniqueID)
       m<-paste(m,collapse="\t")
       if(file.exists(user_log_file)){

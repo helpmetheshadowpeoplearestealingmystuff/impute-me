@@ -1,6 +1,5 @@
 library("shiny")
 
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 shinyServer(function(input, output) {
@@ -33,7 +32,7 @@ shinyServer(function(input, output) {
 		
 		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+		if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
 			stop(safeError(paste("Did not find a user with this id",uniqueID)))
 		}
@@ -42,12 +41,12 @@ shinyServer(function(input, output) {
 		if(is.na(real_age))stop("Must give your age to participate")
 		if(real_age < 1 | real_age > 120)stop("Must your current real age in years to participate")
 		
-		pDataFile<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+		pDataFile<-paste(get_conf("data_path"),uniqueID,"/pData.txt",sep="")
 		gender<-read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t")[1,"gender"]
 		
 		
 		#getting the relevant trait name, pmid and SNPs to analyze
-		SNPs_to_analyze<-read.table("/home/ubuntu/srv/impute-me/opinions/SNPs_to_analyze.txt",sep="\t",stringsAsFactors = F,row.names=1,header=T)
+		SNPs_to_analyze<-read.table(paste0(get_conf("code_path"),"opinions/SNPs_to_analyze.txt"),sep="\t",stringsAsFactors = F,row.names=1,header=T)
 		
 		genotypes<-get_genotypes(uniqueID=uniqueID,request=SNPs_to_analyze)
 		
@@ -69,7 +68,7 @@ shinyServer(function(input, output) {
 		
 		#load database for comparison
 		#this is a file that contains the GWAS opinions
-		all_opinions_file<-"/home/ubuntu/misc_files/all_opinions.txt"
+		all_opinions_file<-paste0(get_conf("misc_files_path"),"all_opinions.txt")
 		opinions_in_data<-try(read.table(all_opinions_file,sep="\t",stringsAsFactors=F,header=T))
 		
 		#make robust against non-initialized files
@@ -83,7 +82,7 @@ shinyServer(function(input, output) {
 		
 		#also store this in the all_opinions_file file (for faster loading)
 		line<-paste(c(uniqueID,GRS_beta,real_opinion,real_age,gender,"interactive",format(Sys.time(),"%Y-%m-%d-%H-%M-%S")),collapse="\t")
-		all_opinions_file<-"/home/ubuntu/misc_files/all_opinions.txt"
+		all_opinions_file<-paste(get_conf("misc_files_path"),"all_opinions.txt")
 		if(!is.na(GRS_beta) & !is.na(real_age) & !is.na(real_opinion) & uniqueID != "id_613z86871"){ #only save if height is given and it is not the test user
 		  write(line,file=all_opinions_file,append=TRUE)  
 		}
@@ -105,7 +104,7 @@ shinyServer(function(input, output) {
 		
 		#write the score to the log file
 		log_function<-function(uniqueID,study_id,genotypes){
-			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+			user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
 			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"opinions",uniqueID,GRS_beta,gender,real_age,real_opinion)
 			m<-paste(m,collapse="\t")
 			if(file.exists(user_log_file)){

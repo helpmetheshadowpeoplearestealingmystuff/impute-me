@@ -4,7 +4,7 @@ initialize('gmh',TRUE)
 
 
 
-load("/home/ubuntu/srv/impute-me/ukbiobank/2017-09-28_trait_overoverview.rdata")
+load(paste0(get_conf("code_path"),"ukbiobank/2017-09-28_trait_overoverview.rdata"))
 
 
 #omit traits

@@ -1,11 +1,9 @@
-source("/home/ubuntu/srv/impute-me/functions.R")
 
-
-poem_py_path <- "/home/ubuntu/prs_dir/poetry-generator/poem.py"
+poem_py_path <- paste0(get_conf("prs_dir_path"),"poetry-generator/poem.py")
 
 export_function<-function(uniqueID){
   
-  gwas_snps_path<-paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.all_gwas.gz")
+  gwas_snps_path<-paste0(get_conf("data_path"),uniqueID,"/",uniqueID,".cached.all_gwas.gz")
   if(!file.exists(gwas_snps_path))stop(safeError("Didn't find a gwas cached file for this user"))
   genotypes<-read.table(gwas_snps_path,sep="\t",stringsAsFactors = F,header=T)
   if(nrow(genotypes)==0)stop(safeError("Found an empty gwas cached file for this user"))
@@ -19,7 +17,7 @@ export_function<-function(uniqueID){
   
   
   
-  original_snp_set_path <- "/home/ubuntu/srv/impute-me/kandinsky/2019-03-04_original_snp_set.txt.gz"
+  original_snp_set_path <- paste0(get_conf("code_path"),"kandinsky/2019-03-04_original_snp_set.txt.gz")
   original_snp_set <- read.table(original_snp_set_path,stringsAsFactors = F,sep="\t")[,1]
   if(any(!genotypes[,"X"] %in% original_snp_set)){
     genotypes<-genotypes[genotypes[,"X"] %in% original_snp_set ,]
