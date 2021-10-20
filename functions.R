@@ -206,7 +206,7 @@ get_conf<-function(
       if(verbose>0)print(paste0(Sys.time(),": variable modules_to_compute not found in configuration.R. Setting to default value of all existing modules: ",paste(modules_to_compute,collapse=", ")))
     }
     if(!is.character(modules_to_compute))stop("modules_to_compute not character")
-    if(!all(modules_to_compute%in%list.files(get_conf("code_path"))))stop(paste("A request was made for modules_to_compute that were not found in /home/ubuntu/srv/impute-me/:",paste(modules_to_compute,collapse=", ")))
+    if(!all(modules_to_compute%in%list.files(get_conf("code_path"))))stop(paste("A request was made for modules_to_compute that were not found in ",get_conf("code_path"),":",paste(modules_to_compute,collapse=", ")))
   }else if(request == "cron_logs_path"){
     if(!exists("cron_logs_path")){
       cron_logs_path<-"/home/ubuntu/"
@@ -637,7 +637,7 @@ prepare_individual_genome<-function(
     
     
     #check header
-    if(!testReadHeader[1] %in% c("##fileformat=VCFv4.2","##fileformat=VCFv4.1")){
+    if(!testReadHeader[1] %in% c("##fileformat=VCFv4.2","##fileformat=VCFv4.1","##fileformat=VCFv4.0")){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"wrong_starting_vcf_header",email,uniqueID,filename)
       m<-paste(m,collapse="\t")
       write(m,file=paste0(get_conf("submission_logs_path"),"submission_log.txt"),append=TRUE)
@@ -826,7 +826,7 @@ prepare_individual_genome<-function(
         Sys.sleep(0.1)
       }
     }
-    if(verbose>=0 & !file.exists(paste0(get_conf("code_path"),"supercronic.txt")))print(paste0(Sys.time(),": Code was found to be running as docker container, but with no misc_files/supercronic.txt file ready for launch. The job will likely never execute."))
+    if(verbose>=0 & !file.exists(paste0(get_conf("programs_path"),"supercronic.txt")))print(paste0(Sys.time(),": Code was found to be running as docker container, but with no supercronic.txt file ready for launch. The job needs to be executed manually."))
     #it's possible that the ending ampersand is not a good idea. The problem is that when the
     #docker is running as a web-interface it works well. But when the function is called from outside of
     #the docker, with docker exec - then supercronic deletes itself after a few seconds. It can be
@@ -834,8 +834,8 @@ prepare_individual_genome<-function(
     #and there's no easy way to tell which place invoked the command. So right now the web
     #interface "wins" because that's for more casual users. Then super users can
     #separately call and start the supercronic
-    supercronic_out<-try(system(paste0("supercronic ",get_conf("code_path"),"supercronic.txt &")))
-    if(supercronic_out != 0)stop(safeError("Code was found to be running as docker container, but gave an error when trying to start supercronic. The job will likely not start"))
+    supercronic_out<-try(system(paste0("supercronic ",get_conf("programs_path"),"supercronic.txt &")))
+    if(supercronic_out != 0)stop(safeError("Code was found to be running as docker container, but gave an error when trying to start supercronic. The job must be started manually."))
   }
   
   
