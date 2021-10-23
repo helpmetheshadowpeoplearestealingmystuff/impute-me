@@ -226,7 +226,7 @@ shinyServer(function(input, output) {
       if(!study_id %in% rownames(all_snp_traits))stop(safeError("All SNP trait data not available for this study. Try to switch off the all-SNP scoring in advanced options."))
       file_to_read <- all_snp_traits[study_id,"file_to_read"]
       #check and load prs
-      if(!"prs"%in%names(d1))stop(safeError("No all-SNP scores were available for this sample. It was probably uploaded before implementation or the all-SNP PRS files where not available."))
+      if(!"prs"%in%names(d1))stop(safeError("No all-SNP scores were available for this sample. It was probably uploaded before implementation or the all-SNP PRS files where not available. Try switching off 'show all-SNP scores' in advanced options."))
       d2<-d1[["prs"]]
       if(!file_to_read%in%names(d2))stop(safeError("No all-SNP scores were available for this study for this sample. It was probably uploaded before implementation or the all-SNP PRS files where not available."))
       d3<-d2[[file_to_read]]

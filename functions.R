@@ -1,290 +1,219 @@
 
 
-get_conf<-function(
+
+set_conf<-function(
   request,
-  configuration_file="~/configuration.R"
+  value=NULL
 ){
-  #' get configurationfile
+  #' set configuration parameters
   #' 
-  #' Function that reads the configuration file and makes choices wether to stop for missing values or to 
-  #' insert default values, for less important variables. This function is called on a read of the functions.R
-  #' to make sure all variables are available.
+  #' Function that sets the environment variables, either from defaults
+  #' individually or from a file ()
+  #' 
+  #' @param request the name of the requested variable to set. Special values are 'defaults' and 'set_from_file'.
+  #' @param value the value to assign to the requested variable. For set_from_file it is the path of the file to read in.
+  #' 
+  
+  default_configuration<-list(
+    "max_imputations_per_node"=1,           #the max number of parallel imputations to run
+    "max_imputations_in_queue" =200,           #the max number of imputations allowed waiting in a queue
+    "server_role"='Hub',           #the role of this computer, can be either Hub or Node
+    "hub_address"='',           #if server_role is Node, then the IP-address of the Hub is required
+    "from_email_password"='',           #optional password for sending out emails
+    "from_email_address"='',           #optional email-address/username for sending out emails
+    "routinely_delete_this"='',           #delete these parts in routine 14-day data deletion. May put in 'link' and/or 'data', which is the default online. But docker-running defaults to not deleting anything.
+    "paypal"='https://www.paypal.me/lfolkersenimputeme/5',           #suggest to donate to this address in emails
+    "bulk_node_count"=1,           #count of bulk-nodes, used only for calculating timings in receipt mail
+    "error_report_mail"='',           #optional email-address to send (major) errors to
+    "seconds_wait_before_start"=0,           #a delay that is useful only with CPU-credit systems
+    "running_as_docker"=TRUE,           #adapt to docker running
+    "max_imputation_chunk_size"=1000,           #how much stuff to put into the memory in each chunk. Lower values results in slower running with less memory-requirements.
+    "block_double_uploads_by_md5sum"=FALSE,           #If the upload interface should give an error when the exact same file is being uploaded twice (by md5sum).
+    "plink_algorithms_to_run"='SCORESUM_PLINK_2_0_DOSAGE_MATRIX',           #What types of plink algorithms to run (see prs module export_script.R for details)
+    "modules_to_compute"='AllDiseases,autoimmuneDiseases,BRCA,drugResponse,ethnicity,rareDiseases,ukbiobank,prs',           #Select the modules to pre-run (defaults to all folders in the repo if set to NULL).
+    "cron_logs_path"='/home/ubuntu/logs/cron_logs/',           #Path to write cron-logs to. Can be empty.
+    "submission_logs_path"='/home/ubuntu/logs/submission/',           #Path to write submission logs to (information about user errors, etc). Can be empty.
+    "shiny_logs_path"='/home/ubuntu/logs/shiny/',           #Path to write shiny-logs to (the shiny-server system's logs). Can be empty.
+    "misc_files_path"='/home/ubuntu/misc_files/',           #Path to misc-files to (e.g. md5sums, height-scores, imputemany-registry etc).  Can be empty, but then the default configuration.R will be written.
+    "data_path"='/home/ubuntu/data/',           #Path to write processed final data (imputed bulk data, prs-jsons, etc)
+    "programs_path"='/imputeme/programs/',           #Path where to look for programs and imputation-reference. Is not changed during processing and rarely in updates, and must be pre-loaded.
+    "prs_dir_path"='/imputeme/prs_dir/',           #Path where to look for prs-weights and frequency data. Is not changed during processing but often in updates, and must be pre-loaded.
+    "imputations_path"='/home/ubuntu/imputations/',           #Landing folder for microarray data to be imputed. Can be empty, must be writeable.
+    "vcfs_path"='/home/ubuntu/vcfs/',           #Landing folder for sequencing data to be processed without imputation. Can be empty, must be writeable.
+    "code_path"='/imputeme/code/impute-me/',           #Path of the entire impute-me github code repository. Cannot be empty. Must be writeable for the ./www/ folder exposition-system through the shiny-server to work, otherwise immutable.
+    "uploads_for_imputemany_path"='/home/ubuntu/uploads_for_imputemany/',           #Path to where uploads to imputemany are saved before being split
+    "bulk_imputations_path"='/home/ubuntu/bulk_imputations/',           #Working folder for bulk imputation
+    "verbose"=1           #how much info to put into logs (min 0, max 10)
+  )
+
+  #set all according to list above  
+  if(request == "defaults"){
+    if(!is.null(value))stop("When setting defaults, value must be given as NULL")
+
+    do.call(Sys.setenv, default_configuration)
+    
+    if(default_configuration[["verbose"]]>1){
+      print(paste0(Sys.time(),": Setting ",length(default_configuration)," environment variables. Any previous values were overwritten."))
+    }
+    
+  #set all according to file given as value  
+  }else if(request == "set_from_file"){
+    if(!file.exists(value))stop("Setting defaults from file, but can't find the file at the path given by value")
+    source(value)    
+    missing<-vector()
+    #loop over read in parameters, register which is missing and change the rest in default list from above 
+    for(i in 1:length(default_configuration)){
+      if(exists(names(default_configuration)[i])){
+        default_configuration[[i]] <- get(names(default_configuration)[i])  
+      }else{
+        missing<-c(missing,names(default_configuration)[i])    
+      }
+    }
+    do.call(Sys.setenv, default_configuration)
+    
+    #report changes
+    if(default_configuration[["verbose"]]>3){
+      if(length(missing)>0){
+        print(paste0(Sys.time(),": Setting ",length(default_configuration)-length(missing)," environment variables from file ",value,". Setting ",length(missing)," values to hard-coded defaults because they were missing: ",paste(missing,collapse=", ")))  
+      }else{
+        print(paste0(Sys.time(),": Setting ",length(default_configuration)-length(missing)," environment variables from file ",value))
+      }
+    }
+    
+  }else{
+    if(is.null(value))stop("Can't set_conf a value of NULL")
+    if(!request %in% names(default_configuration))stop(paste("Didn't recognize",request,"as a imputeme environment variable"))
+    previous_value<-Sys.getenv(request)
+    names(value)<-request
+    do.call(Sys.setenv, as.list(value))
+    print(paste0(Sys.time(),": Setting environment variable ",request," to ",value,". Previous value was ",previous_value))
+  }
+}
+
+get_conf<-function(
+  request
+){
+  #' get configuration parameters
+  #' 
+  #' Function that reads the environment variables, reformats to R-classes, and
+  #' makes choices wether to stop for missing values 
+  #' 
   #' 
   #' @param request the name of the requested variable
-  #' @param configuration_file path to where the figure file is.
   #' 
   #' @return The value of the requested variable, either from the configuration_file or as a default value if not available in configuration file.
-  
-  if(!is.vector(request))stop("request not numeric")
-  if(length(request)!=1)stop("request not length 1")
-  
-  if(!is.character(configuration_file))stop("configuration_file not character")
-  if(length(configuration_file)!=1)stop("configuration_file not length 1")
 
-  #check if the configuration file exists at requested path. If not, the function will write a new one with default parameters  
-  if(file.exists(configuration_file)){
-    source(configuration_file)
-  }else{
-    # Create the configuration file with default values (then a user would presumably just understand to edit this, e.g. when it appears in the docker-home folder)
-    default_configuration<-c(
-      "maxImputations <- 1           #the max number of parallel imputations to run",
-      "maxImputationsInQueue <- 200           #the max number of imputations allowed waiting in a queue",
-      "serverRole <- 'Hub'           #the role of this computer, can be either Hub or Node",
-      "hubAddress <- ''           #if serverRole is Node, then the IP-address of the Hub is required",
-      "from_email_password <- ''           #optional password for sending out emails",
-      "from_email_address <- ''           #optional email-address/username for sending out emails",
-      "routinely_delete_this <- c('')           #delete these parts in routine 14-day data deletion. May put in 'link' and/or 'data', which is the default online. But docker-running defaults to not deleting anything.",
-      "paypal <- 'https://www.paypal.me/lfolkersenimputeme/5'           #suggest to donate to this address in emails",
-      "bulk_node_count <- 1           #count of bulk-nodes, used only for calculating timings in receipt mail",
-      "error_report_mail <- ''           #optional email-address to send (major) errors to",
-      "seconds_wait_before_start <- 0           #a delay that is useful only with CPU-credit systems",
-      "running_as_docker <- TRUE           #adapt to docker running",
-      "max_imputation_chunk_size <- 1000           #how much stuff to put into the memory in each chunk. Lower values results in slower running with less memory-requirements.",
-      "block_double_uploads_by_md5sum <- FALSE           #If the upload interface should give an error when the exact same file is being uploaded twice (by md5sum).",
-      "modules_to_compute <- c('AllDiseases','autoimmuneDiseases','BRCA','drugResponse','ethnicity','rareDiseases','ukbiobank','prs')           #Select the modules to pre-run (defaults to all folders in the repo if not set).",
-      "cron_logs_path <- '/home/ubuntu/'           #Path to write cron-logs to. Can be empty.",
-      "submission_logs_path <- '/home/ubuntu/'           #Path to write submission logs to (information about user errors, etc). Can be empty.",
-      "shiny_logs_path <- '/home/ubuntu/'           #Path to write shiny-logs to (the shiny-server system's logs). Can be empty.",
-      "misc_files_path <- '/home/ubuntu/'           #Path to misc-files to (e.g. md5sums, height-scores, imputemany-registry etc).  Can be empty, but then the default configuration.R will be written.",
-      "data_path <- '/home/ubuntu/data/'           #Path to write processed final data (imputed bulk data, prs-jsons, etc)",
-      "programs_path <- '/imputeme/programs/'           #Path where to look for programs and imputation-reference. Is not changed during processing and rarely in updates, and must be pre-loaded.",
-      "prs_dir_path <- '/imputeme/prs_dir/'           #Path where to look for prs-weights and frequency data. Is not changed during processing but often in updates, and must be pre-loaded.",
-      "imputations_path <- '/home/ubuntu/imputations/'           #Landing folder for microarray data to be imputed. Can be empty, must be writeable.",
-      "vcfs_path <- '/home/ubuntu/vcfs/'           #Landing folder for sequencing data to be processed without imputation. Can be empty, must be writeable.",
-      "code_path <- '/imputeme/code/impute-me/'           #Path of the entire impute-me github code repository. Cannot be empty. Must be writeable for the ./www/ folder exposition-system through the shiny-server to work, otherwise immutable.",
-      "verbose <- 1           #how much info to put into logs (min 0, max 10)"
-    )
-    f<-file(configuration_file,"w")
-    writeLines(default_configuration,f)
-    close(f)
-    source(configuration_file)
-    print(paste0(Sys.time(),": Didn't find configuration file at: ",configuration_file," so wrote a default configuration-version and loaded it in."))
-  }
 
   #always import verbose
-  if(!exists("verbose")){
-    verbose<-1
-    print(paste0(Sys.time(),": variable verbose not found in configuration.R. Setting to default value of 1"))
-  }
-  if(!is.numeric(verbose))stop("verbose not numeric")
-  if(length(verbose)!=1)stop("verbose not length 1")
+  verbose<-as.numeric(Sys.getenv("verbose"))
   
-  #then ask for each of the variables
+  #reform class as necessary
+  #numeric
+  if(request %in% c("max_imputations_per_node","max_imputations_in_queue","bulk_node_count","seconds_wait_before_start","max_imputation_chunk_size","verbose")){
+    assign(request,as.numeric(Sys.getenv(request)))
+  #logical
+    }else if(request %in% c("running_as_docker","block_double_uploads_by_md5sum")){
+    assign(request,as.logical(Sys.getenv(request)))
+  }else if(request %in% c("modules_to_compute","plink_algorithms_to_run","routinely_delete_this")){
+  #comma-separated lists to vectors
+    assign(request,strsplit(Sys.getenv(request),",")[[1]])
+  #character
+  }else(
+    assign(request,Sys.getenv(request))
+  )
+  
+    
+  #then do checkups for each of the variables (could probably be skipped later, but checks were already
+  #written)
   if(request == "verbose"){
     #already done
-  }else if(request == "maxImputations"){
-    if(!exists("maxImputations")){
-      maxImputations <- 1
-      if(verbose>0)print(paste0(Sys.time(),": variable maxImputations not found in configuration.R. Setting to default value of 1"))
-    }
-    if(!is.numeric(maxImputations))stop("maxImputations not numeric")
-    if(length(maxImputations)!=1)stop("maxImputations not length 1")
-    if(maxImputations <= 0 | maxImputations > 1000)stop("maxImputations must be between 1 and 1000")
-    
-    
-  }else if(request == "maxImputationsInQueue"){
-    if(!exists("maxImputationsInQueue")){
-      maxImputationsInQueue<-200
-      if(verbose>0)print(paste0(Sys.time(),": variable maxImputationsInQueue not found in configuration.R. Setting to default value of 200"))
-    }
-    if(!is.numeric(maxImputationsInQueue))stop("maxImputationsInQueue not numeric")
-    if(length(maxImputationsInQueue)!=1)stop("maxImputationsInQueue not length 1")
-    if(maxImputationsInQueue <= 0 | maxImputationsInQueue > 100000)stop("maxImputationsInQueue must be between 1 and 100000")
-    
-  }else if(request == "serverRole"){
-    if(!exists("serverRole")){
-      serverRole<-"Hub"
-      if(verbose>0)print(paste0(Sys.time(),": variable serverRole not found in configuration.R. Setting to default value of 'Hub'"))
-    }
-    if(!is.character(serverRole))stop("serverRole not character")
-    if(length(serverRole)!=1)stop("serverRole not length 1")
-    if(!serverRole%in%c("Hub","Node"))stop("serverRole not Hub or Node")
-    
-  }else if(request == "hubAddress"){
-    if(!exists("hubAddress")){
-      if(!exists("serverRole") ||   serverRole=="Node"){
-        stop("variable hubAddress was not found, and serverRole was set to Node. It is not allowed to default hubAdress when serverRole is set to Node")
-      }else{
-        hubAddress<-""
-        if(verbose>0)print(paste0(Sys.time(),": variable hubAddress not found in configuration.R. Setting to default value of ''"))
-      }
-    }
-    if(!is.character(hubAddress))stop("hubAddress not character")
-    if(length(hubAddress)!=1)stop("hubAddress not length 1")
+  }else if(request == "max_imputations_per_node"){
+    if(!is.numeric(max_imputations_per_node))stop("max_imputations_per_node not numeric")
+    if(length(max_imputations_per_node)!=1)stop("max_imputations_per_node not length 1")
+    if(max_imputations_per_node <= 0 | max_imputations_per_node > 1000)stop("max_imputations_per_node must be between 1 and 1000")
+  }else if(request == "max_imputations_in_queue"){
+    if(!is.numeric(max_imputations_in_queue))stop("max_imputations_in_queue not numeric")
+    if(length(max_imputations_in_queue)!=1)stop("max_imputations_in_queue not length 1")
+    if(max_imputations_in_queue <= 0 | max_imputations_in_queue > 100000)stop("max_imputations_in_queue must be between 1 and 100000")
+  }else if(request == "server_role"){
+    if(!is.character(server_role))stop("server_role not character")
+    if(length(server_role)!=1)stop("server_role not length 1")
+    if(!server_role%in%c("Hub","Node"))stop("server_role not Hub or Node")
+  }else if(request == "hub_address"){
+    if(!is.character(hub_address))stop("hub_address not character")
+    if(length(hub_address)!=1)stop("hub_address not length 1")
   }else if(request == "from_email_password"){
-    if(!exists("from_email_password")){
-      if(!exists("running_as_docker") ||   running_as_docker==FALSE){
-        stop("variable from_email_password was not found, and running_as_docker was set to FALSE It is not allowed to default from_email_password when running_as_docker is set to FALSE")
-      }else{
-        from_email_password<-""
-        if(verbose>0)print(paste0(Sys.time(),": variable from_email_password not found in configuration.R. This is used to log into an email-sender. Setting to default value of '', which means no emails will be sent out"))
-      }
-    }
     if(!is.character(from_email_password ))stop("from_email_password  not character")
     if(length(from_email_password )!=1)stop("from_email_password  not length 1")
-    
   }else if(request == "from_email_address"){
-    if(!exists("from_email_address")){
-      if(!exists("running_as_docker") ||   running_as_docker==FALSE){
-        stop("variable from_email_address was not found, and running_as_docker was set to FALSE It is not allowed to default from_email_address when running_as_docker is set to FALSE")
-      }else{
-        from_email_address<-""
-        if(verbose>0)print(paste0(Sys.time(),": variable from_email_address not found in configuration.R. This is used to log into an email-sender. Setting to default value of '', which means no emails will be sent out"))
-      }
-    }
     if(!is.character(from_email_address))stop("from_email_address not character")
     if(length(from_email_address)!=1)stop("from_email_address not length 1")
-    # str_match(from_email_address,"^[[:alnum:].-_]+@[[:alnum:].-]+$")
-    
   }else if(request == "routinely_delete_this"){
-    if(!exists("routinely_delete_this")){
-      routinely_delete_this<-c("link","data")
-      if(verbose>0)print(paste0(Sys.time(),": variable routinely_delete_this not found in configuration.R. Setting to default value of c('link','data'), meaning all genome-wide data will be deleted after 14 days."))
-    }
     if(!is.character(routinely_delete_this))stop("routinely_delete_this not character")
-    
+    if(!all(routinely_delete_this%in%c("link","data")))stop("routinely_delete_this not equal to link, data or both")
   }else if(request == "paypal"){
-    if(!exists("paypal")){
-      paypal<-""
-      if(verbose>2)print(paste0(Sys.time(),": variable paypal not found in configuration.R. Setting to default value of ''. This means that the email-sent paypal link won't work, but everything else will work fine."))
-    }
     if(!is.character(paypal))stop("paypal not character")
     if(length(paypal)!=1)stop("paypal not length 1")
-    
   }else if(request == "bulk_node_count"){
-    if(!exists("bulk_node_count")){
-      bulk_node_count<-1
-      if(verbose>0)print(paste0(Sys.time(),": variable bulk_node_count not found in configuration.R. Setting to default value of 1"))
-    }
     if(!is.numeric(bulk_node_count ))stop("bulk_node_count not numeric")
     if(length(bulk_node_count)!=1)stop("bulk_node_count not length 1")
     if(bulk_node_count <= 0 | bulk_node_count > 100)stop("bulk_node_count must be between 1 and 100")
-    
   }else if(request == "error_report_mail"){
-    if(!exists("error_report_mail")){
-      error_report_mail<-""
-      if(verbose>0)print(paste0(Sys.time(),": variable error_report_mail not found in configuration.R. Setting to default value of ''. This means that even if email is configured, no error-reports will be sent out."))
-    }
     if(!is.character(error_report_mail))stop("error_report_mail not character")
     if(length(error_report_mail)!=1)stop("error_report_mail not length 1")
-    
   }else if(request == "seconds_wait_before_start"){
-    if(!exists("seconds_wait_before_start")){
-      seconds_wait_before_start<-0
-      if(verbose>0)print(paste0(Sys.time(),": variable seconds_wait_before_start not found in configuration.R. Setting to default value of 0"))
-    }
     if(!is.numeric(seconds_wait_before_start))stop("seconds_wait_before_start not numeric")
     if(length(seconds_wait_before_start)!=1)stop("seconds_wait_before_start not length 1")
-    
   }else if(request == "running_as_docker"){
-    if(!exists("running_as_docker")){
-      running_as_docker<-TRUE
-      if(verbose>0)print(paste0(Sys.time(),": variable running_as_docker not found in configuration.R. Setting to default value of FALSE"))
-    }
     if(!is.logical(running_as_docker))stop("running_as_docker not logical")
     if(length(running_as_docker)!=1)stop("running_as_docker not length 1")
-    
   }else if(request == "max_imputation_chunk_size"){
-    if(!exists("max_imputation_chunk_size")){
-      max_imputation_chunk_size<-1000
-      if(verbose>0)print(paste0(Sys.time(),": variable max_imputation_chunk_size not found in configuration.R. Setting to default value of 3000"))
-    }
     if(!is.numeric(max_imputation_chunk_size))stop("max_imputation_chunk_size not numeric")
     if(length(max_imputation_chunk_size)!=1)stop("max_imputation_chunk_size not length 1")
-    
   }else if(request == "block_double_uploads_by_md5sum"){
-    if(!exists("block_double_uploads_by_md5sum")){
-      block_double_uploads_by_md5sum<-FALSE
-      if(verbose>0)print(paste0(Sys.time(),": variable block_double_uploads_by_md5sum not found in configuration.R. Setting to default value of TRUE"))
-    }
     if(!is.logical(block_double_uploads_by_md5sum))stop("block_double_uploads_by_md5sum not logical")
     if(length(block_double_uploads_by_md5sum)!=1)stop("block_double_uploads_by_md5sum not length 1")
-    
   }else if(request == "modules_to_compute"){
-    if(!exists("modules_to_compute")){
-      modules_to_compute<-list.files(get_conf("code_path"))
-      if(verbose>0)print(paste0(Sys.time(),": variable modules_to_compute not found in configuration.R. Setting to default value of all existing modules: ",paste(modules_to_compute,collapse=", ")))
-    }
     if(!is.character(modules_to_compute))stop("modules_to_compute not character")
     if(!all(modules_to_compute%in%list.files(get_conf("code_path"))))stop(paste("A request was made for modules_to_compute that were not found in ",get_conf("code_path"),":",paste(modules_to_compute,collapse=", ")))
+  }else if(request == "plink_algorithms_to_run"){
+    if(!is.character(plink_algorithms_to_run))stop("plink_algorithms_to_run not character")
   }else if(request == "cron_logs_path"){
-    if(!exists("cron_logs_path")){
-      cron_logs_path<-"/home/ubuntu/"
-      if(verbose>2)print(paste0(Sys.time(),": variable cron_logs_path not found in configuration.R. Setting to default value of '', meaning that it will be taken as a relative path."))
-    }
     if(!is.character(cron_logs_path))stop("cron_logs_path not character")
     if(length(cron_logs_path)!=1)stop("cron_logs_path not length 1")
   }else if(request == "submission_logs_path"){
-    if(!exists("submission_logs_path")){
-      submission_logs_path<-"/home/ubuntu/"
-      if(verbose>2)print(paste0(Sys.time(),": submission_logs_path not found in configuration.R. Setting to default value of '', meaning that it will be taken as a relative path."))
-    }
     if(!is.character(submission_logs_path))stop("submission_logs_path not character")
     if(length(submission_logs_path)!=1)stop("submission_logs_path not length 1")
   }else if(request == "shiny_logs_path"){
-    if(!exists("shiny_logs_path")){
-      shiny_logs_path<-"/home/ubuntu/"
-      if(verbose>2)print(paste0(Sys.time(),": variable shiny_logs_path not found in configuration.R. Setting to default value of '', meaning that it will be taken as a relative path."))
-    }
     if(!is.character(shiny_logs_path))stop("shiny_logs_path not character")
     if(length(shiny_logs_path)!=1)stop("shiny_logs_path not length 1")
-    
   }else if(request == "misc_files_path"){
-    if(!exists("misc_files_path")){
-      misc_files_path<-"/home/ubuntu/misc_files/"
-      if(verbose>2)print(paste0(Sys.time(),": variable misc_files_path not found in configuration.R. Setting to default value of '', meaning that it will be taken as a relative path."))
-    }
     if(!is.character(misc_files_path))stop("misc_files_path not character")
     if(length(misc_files_path)!=1)stop("misc_files_path not length 1")
-    if(substr(misc_files_path,nchar(misc_files_path),nchar(misc_files_path))!="/")misc_files_path<-paste0(misc_files_path,"/")
   }else if(request == "data_path"){
-    if(!exists("data_path")){
-      data_path<-"/home/ubuntu/data/"
-      if(verbose>2)print(paste0(Sys.time(),": variable data_path not found in configuration.R. Setting to default value of: ",data_path))
-    }
     if(!is.character(data_path))stop("data_path not character")
     if(length(data_path)!=1)stop("data_path not length 1")
-    if(substr(data_path,nchar(data_path),nchar(data_path))!="/")data_path<-paste0(data_path,"/")
   }else if(request == "programs_path"){
-    if(!exists("programs_path")){
-      programs_path<-"/imputeme/programs/"
-      if(verbose>2)print(paste0(Sys.time(),": variable programs_path not found in configuration.R. Setting to default value of: ",programs_path))
-    }
     if(!is.character(programs_path))stop("programs_path not character")
     if(length(programs_path)!=1)stop("programs_path not length 1")
-    if(substr(programs_path,nchar(programs_path),nchar(programs_path))!="/")programs_path<-paste0(programs_path,"/")
   }else if(request == "prs_dir_path"){
-    if(!exists("prs_dir_path")){
-      prs_dir_path<-"/imputeme/prs_dir/"
-      if(verbose>2)print(paste0(Sys.time(),": variable prs_dir_path not found in configuration.R. Setting to default value of: ",prs_dir_path))
-    }
     if(!is.character(prs_dir_path))stop("prs_dir_path not character")
     if(length(prs_dir_path)!=1)stop("prs_dir_path not length 1")
-    if(substr(prs_dir_path,nchar(prs_dir_path),nchar(prs_dir_path))!="/")prs_dir_path<-paste0(prs_dir_path,"/")
   }else if(request == "imputations_path"){
-    if(!exists("imputations_path")){
-      imputations_path<-"/home/ubuntu/imputations/"
-      if(verbose>2)print(paste0(Sys.time(),": variable imputations_path not found in configuration.R. Setting to default value of: ",imputations_path))
-    }
     if(!is.character(imputations_path))stop("imputations_path not character")
     if(length(imputations_path)!=1)stop("imputations_path not length 1")
-    if(substr(imputations_path,nchar(imputations_path),nchar(imputations_path))!="/")imputations_path<-paste0(imputations_path,"/")
   }else if(request == "vcfs_path"){
-    if(!exists("vcfs_path")){
-      vcfs_path<-"/home/ubuntu/vcfs/"
-      if(verbose>2)print(paste0(Sys.time(),": variable vcfs_path not found in configuration.R. Setting to default value of: ",vcfs_path))
-    }
     if(!is.character(vcfs_path))stop("vcfs_path not character")
     if(length(vcfs_path)!=1)stop("vcfs_path not length 1")
-    if(substr(vcfs_path,nchar(vcfs_path),nchar(vcfs_path))!="/")vcfs_path<-paste0(vcfs_path,"/")
   }else if(request == "code_path"){
-    if(!exists("code_path")){
-      code_path<-"/imputeme/code/impute-me/"
-      if(verbose>2)print(paste0(Sys.time(),": variable code_path not found in configuration.R. Setting to default value of: ",code_path))
-    }
     if(!is.character(code_path))stop("code_path not character")
     if(length(code_path)!=1)stop("code_path not length 1")
-    if(substr(code_path,nchar(code_path),nchar(code_path))!="/")code_path<-paste0(code_path,"/")
+  }else if(request == "uploads_for_imputemany_path"){
+    if(!is.character(uploads_for_imputemany_path))stop("uploads_for_imputemany_path not character")
+    if(length(uploads_for_imputemany_path)!=1)stop("uploads_for_imputemany_path not length 1")
+  }else if(request == "bulk_imputations_path"){
+    if(!is.character(bulk_imputations_path))stop("bulk_imputations_path not character")
+    if(length(bulk_imputations_path)!=1)stop("bulk_imputations_path not length 1")
   }else if(request == "version"){
     #note this is special - since it is *not* taken from configuration file, but hard-coded
     version <- "v1.0.6"
@@ -378,7 +307,7 @@ prepare_individual_genome<-function(
   #check for too many ongoing imputations
   if(verbose>0)print(paste0(Sys.time(),": Checking for too many ongoing imputations"))
   s<-list.files(get_conf("imputations_path"))
-  if(length(grep("^imputation_folder",s)) >= get_conf("maxImputationsInQueue")){
+  if(length(grep("^imputation_folder",s)) >= get_conf("max_imputations_in_queue")){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
     m<-paste(m,collapse="\t")
     write(m,file=paste0(get_conf("submission_logs_path"),"submission_log.txt"),append=TRUE)			
@@ -637,7 +566,7 @@ prepare_individual_genome<-function(
     
     
     #check header
-    if(!testReadHeader[1] %in% c("##fileformat=VCFv4.2","##fileformat=VCFv4.1","##fileformat=VCFv4.0")){
+    if(!testReadHeader[1] %in% c("##fileformat=VCFv4.2","##fileformat=VCFv4.1","##fileformat=VCFv4.0") && !escape_checks){
       m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"wrong_starting_vcf_header",email,uniqueID,filename)
       m<-paste(m,collapse="\t")
       write(m,file=paste0(get_conf("submission_logs_path"),"submission_log.txt"),append=TRUE)
@@ -663,6 +592,17 @@ prepare_individual_genome<-function(
       stop(safeError(paste0("Your vcf-file was too small to be accepted. Currently, we only accept vcf files that are larger than ",size_requirement/(1024*1024)," GB (gzipped). Your submitted data was ",signif(size/(1024*1024),3)," GB.  This is done to avoid accidentally processing exon-sequencing data, which would be a problem for most subsequent algorithms. They all require genome-wide data, because the vcf-handling is done without imputation. You can read more about why that is, at http://doi.org/10.13140/RG.2.2.34644.42883. You may also find some tips on converting exon-sequencing data to microarray-like data-format in github issue #32 https://github.com/lassefolkersen/impute-me/issues/32. After doing this, you may resubmit your file and it will be run through the imputation-algorithm. It is possible, although un-tested, that some useful information can be extraxted when using this approach.")))
     }
     
+    
+    
+    
+    #Check and block the word 'indels' in the filename (common error from Dante labs uploads - usually caught by size-requirement but not always )
+    if(length(grep("indel",filename,ignore.case=T))>0  && !escape_checks){
+      m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"vcf_indel_name_error",email,uniqueID,filename)
+      m<-paste(m,collapse="\t")
+      write(m,file=paste0(get_conf("submission_logs_path"),"submission_log.txt"),append=TRUE)
+      if(!protect_from_deletion)unlink(homeFolder,recursive=T)
+      stop(safeError("The vcf reading algorithm found the word 'indel' in the file name. Typically vcf files should contain both single nucleotide variants and indels, but if they only contain indels the calculations will fail. If this data is from Dante labs, check that you use the file with 'SNPs' or 'combined' in the name instead. If you are sure this file is correct, you may simply rename it to not include the word indel, and retry upload."))
+    }
     
     
     
@@ -982,7 +922,7 @@ prepare_imputemany_genome<-function(
   #check for too many ongoing imputations
   if(verbose>0)print(paste0(Sys.time(),": Check for too many ongoing imputations"))
   s<-list.files(get_conf("imputations_path"))
-  if(length(grep("^imputation_folder",s)) >= get_conf("maxImputationsInQueue")){
+  if(length(grep("^imputation_folder",s)) >= get_conf("max_imputations_in_queue")){
     m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
     m<-paste(m,collapse="\t")
     write(m,file=paste0(get_conf("submission_logs_path"),"submission_log.txt"),append=TRUE)			
@@ -1016,7 +956,7 @@ prepare_imputemany_genome<-function(
   #later (manual) inspection and downstream processing. This is the most 'robust'
   #choice in the sense that virtually nothing is done automatically.
   if(!should_be_imputed){
-    outfolder <- "~/exports_for_imputemany/"
+    outfolder <- get_conf("uploads_for_imputemany_path")
     if(!file.exists(outfolder))dir.create(outfolder)
     file.copy(path,paste0(outfolder,upload_time,".zip") )
   }
@@ -1025,8 +965,9 @@ prepare_imputemany_genome<-function(
   #handle different file-types - because this will be done at (slow) web-speed, hence the progress-tracker
   if(should_be_imputed){
     #unpacking and file-submission logic
-    if(!file.exists("~/uploads_for_imputemany/"))dir.create("~/uploads_for_imputemany/")
-    newUnzippedPath <- paste0("~/uploads_for_imputemany/",upload_time,"_input.txt")
+    uploads_for_imputemany_path <- get_conf("uploads_for_imputemany_path")
+    if(!file.exists(uploads_for_imputemany_path))dir.create(uploads_for_imputemany_path)
+    newUnzippedPath <- paste0(uploads_for_imputemany_path,upload_time,"_input.txt")
     gunzipResults<-unzip(path,exdir="~/uploads_for_imputemany/")
     if(length(grep(" ",gunzipResults))>0)stop(safeError("Please don't use spaces in filenames, also not inside zip-file contents."))
     gunzipResults<-grep("_MACOSX",gunzipResults,invert=T,value=T)
@@ -1072,7 +1013,7 @@ prepare_imputemany_genome<-function(
     if(submission_type == "plink-ped"){
       pedfile<-gunzipResults[gsub("^.+\\.","",gunzipResults)=="ped"]
       mapfile<-gunzipResults[gsub("^.+\\.","",gunzipResults)=="map"]
-      runDir <- "~/uploads_for_imputemany/"
+      runDir <- get_conf("uploads_for_imputemany_path")
       outfile<-sub("\\.ped$","",basename(pedfile))
       
       
@@ -1455,8 +1396,8 @@ check_for_cron_ready_jobs<-function(
   
   
   #get global variables
-  serverRole <- get_conf("serverRole")
-  hubAddress <- get_conf("hubAddress")
+  server_role <- get_conf("server_role")
+  hub_address <- get_conf("hub_address")
   verbose <- get_conf("verbose")
   seconds_wait_before_start<-get_conf("seconds_wait_before_start")
   
@@ -1465,7 +1406,7 @@ check_for_cron_ready_jobs<-function(
   #This block serves to space the runs some time apart. It is mostly relevant on e.g. t2.medium AWS instances
   #that can build up computing power. But it may also be useful in debugging situations.
   if(seconds_wait_before_start>0){
-    #First checking if node is already at max load (maxImputations, set in configuration.R)
+    #First checking if node is already at max load (max_imputations_per_node, set in configuration.R)
     foldersToCheck<-grep("^imputation_folder",list.files(get_conf("imputations_path")),value=T)
     runningJobCount<-0
     for(folderToCheck in foldersToCheck){
@@ -1476,8 +1417,8 @@ check_for_cron_ready_jobs<-function(
       }
     }
     #then stop job if runs are already running
-    if(runningJobCount>(get_conf("maxImputations")-1)){
-      stop(paste("Found",runningJobCount,"running jobs, which is more than maxImputations so doing nothing"))
+    if(runningJobCount>(get_conf("max_imputations_per_node")-1)){
+      stop(paste("Found",runningJobCount,"running jobs, which is more than max_imputations_per_node so doing nothing"))
     }else{
       if(verbose>0)print(paste0(Sys.time(),": Waiting ",seconds_wait_before_start/(60)," minutes before re-checking. Set seconds_wait_before_start variable in ~/configuration/configuration.R if this is not ok."))
       Sys.sleep(seconds_wait_before_start)
@@ -1510,8 +1451,8 @@ check_for_cron_ready_jobs<-function(
       if(job_status=="Job is running"){runningVcfCount<-runningVcfCount+1}
     }
   }
-  if(runningVcfCount + runningImputationCount >(get_conf("maxImputations")-1)){
-    stop(paste0("Found ",runningVcfCount + runningImputationCount," running jobs (",runningImputationCount," imputations, ",runningVcfCount," vcfs), which is more than the maxImputations setting. Aborting and doing nothing"))
+  if(runningVcfCount + runningImputationCount >(get_conf("max_imputations_per_node")-1)){
+    stop(paste0("Found ",runningVcfCount + runningImputationCount," running jobs (",runningImputationCount," imputations, ",runningVcfCount," vcfs), which is more than the max_imputations_per_node setting. Aborting and doing nothing"))
   }
   
   
@@ -1519,10 +1460,10 @@ check_for_cron_ready_jobs<-function(
   
   if(job_type=="single"){
     
-    #If the computer is not too busy and the serverRole is node - we fetch ONE job (if it is hub, the jobs are already there)
-    if(serverRole== "Node"){
+    #If the computer is not too busy and the server_role is node - we fetch ONE job (if it is hub, the jobs are already there)
+    if(server_role== "Node"){
       #sort checking order by time entered
-      cmd1 <- paste0("ssh ubuntu@",hubAddress," ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' ",get_conf("imputations_path")," | tail -n +2")
+      cmd1 <- paste0("ssh ubuntu@",hub_address," ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' ",get_conf("imputations_path")," | tail -n +2")
       remotedata<-system(cmd1,intern=T)
       Sys.sleep(0.2)
       remotedata_df<-as.data.frame(do.call(rbind,strsplit(remotedata,"\\s+")),stringsAsFactors=F)
@@ -1534,7 +1475,7 @@ check_for_cron_ready_jobs<-function(
       #check if there's any fast-queue jobs to put up-front. The fast-queue jobs is just a file with uniqueID
       #and then TRUE or FALSE. The TRUE or FALSE means if a bulk impute is allowed to take it or not
       #which is not relevant here in single-running.
-      cmd0 <- paste0("ssh ubuntu@",hubAddress," cat ",get_conf("misc_files_path"),"fast_queue_emails.txt
+      cmd0 <- paste0("ssh ubuntu@",hub_address," cat ",get_conf("misc_files_path"),"fast_queue_emails.txt
                 ")
       f1<-system(cmd0,intern=T)
       Sys.sleep(0.2)
@@ -1546,18 +1487,18 @@ check_for_cron_ready_jobs<-function(
       
       #then loop over all remote folders
       for(remoteFolderToCheck in remoteFoldersToCheck){
-        cmd2 <- paste0("ssh ubuntu@",hubAddress," cat ",get_conf("imputations_path"),remoteFolderToCheck,"/job_status.txt")
+        cmd2 <- paste0("ssh ubuntu@",hub_address," cat ",get_conf("imputations_path"),remoteFolderToCheck,"/job_status.txt")
         job_status<-system(cmd2,intern=T)
         #Check if the job is ready
         if(job_status=="Job is ready"){
           if(verbose>0)print(paste0(Sys.time(),": Found remote job-status file and job is ready ",remoteFolderToCheck," - will copy to local Node"))
           
           #First write to job-status that now the job is off to a remote server
-          cmd3 <- paste("ssh ubuntu@",hubAddress," 'echo Job is remote-running > /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt'",sep="")
+          cmd3 <- paste("ssh ubuntu@",hub_address," 'echo Job is remote-running > ",get_conf("imputations_path"),remoteFolderToCheck,"/job_status.txt'",sep="")
           system(cmd3)
           
           #then copy all the files to here
-          cmd4 <- paste("scp -r ubuntu@",hubAddress,":/home/ubuntu/imputations/",remoteFolderToCheck," /home/ubuntu/imputations/",remoteFolderToCheck,sep="")
+          cmd4 <- paste("scp -r ubuntu@",hub_address,":",get_conf("imputations_path"),remoteFolderToCheck," ",get_conf("imputations_path"),remoteFolderToCheck,sep="")
           system(cmd4)
           
           #Then write locally that job is ready (and break, because we only need one)
@@ -1608,11 +1549,11 @@ check_for_cron_ready_jobs<-function(
     #bulk running parameter (never tested with anything else than 10)
     length_requested <- 10
     
-    #If the computer is not too busy (per above checks) and the serverRole is node - we fetch 10 jobs, 
+    #If the computer is not too busy (per above checks) and the server_role is node - we fetch 10 jobs, 
     #copying them to local and marking them as running on hub.
-    if(serverRole== "Node"){
+    if(server_role== "Node"){
       #sort checking order by time entered
-      cmd1 <- paste("ssh ubuntu@",hubAddress," ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' /home/ubuntu/imputations/  | tail -n +2",sep="")
+      cmd1 <- paste("ssh ubuntu@",hub_address," ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' ",get_conf("imputations_path"),"  | tail -n +2",sep="")
       remotedata<-system(cmd1,intern=T)
       
       Sys.sleep(0.2) #And remember to pause if running interactive. It'll fail otherwise
@@ -1626,7 +1567,7 @@ check_for_cron_ready_jobs<-function(
       #and then TRUE or FALSE. The TRUE or FALSE means if a bulk impute is allowed to take it or not
       #(they can be in priority queue either because they are paid, or because they are error-prone. 
       #Don't put error-prone in the bulk imputing line)
-      cmd0 <- paste0("ssh ubuntu@",hubAddress," cat ",get_conf("misc_files_path"),"fast_queue_emails.txt
+      cmd0 <- paste0("ssh ubuntu@",hub_address," cat ",get_conf("misc_files_path"),"fast_queue_emails.txt
                 ")
       f1<-system(cmd0,intern=T)
       Sys.sleep(0.2)
@@ -1650,7 +1591,7 @@ check_for_cron_ready_jobs<-function(
       remoteFoldersToRun <- vector()
       for(remoteFolderToCheck in remoteFoldersToCheck){
         if(length(remoteFoldersToRun)>=length_requested)break
-        cmd2 <- paste("ssh ubuntu@",hubAddress," cat /home/ubuntu/imputations/",remoteFolderToCheck,"/job_status.txt",sep="")
+        cmd2 <- paste("ssh ubuntu@",hub_address," cat ",get_conf("imputations_path"),remoteFolderToCheck,"/job_status.txt",sep="")
         job_status<-system(cmd2,intern=T)
         
         #Check if the job is ready
@@ -1665,13 +1606,13 @@ check_for_cron_ready_jobs<-function(
       if(length(remoteFoldersToRun)==length_requested){
         #Then write to job-status that now the job is off to a remote server
         for(remoteFolderToRun in remoteFoldersToRun){
-          cmd3 <- paste("ssh ubuntu@",hubAddress," 'echo Job is remote-running > /home/ubuntu/imputations/",remoteFolderToRun,"/job_status.txt'",sep="")
+          cmd3 <- paste("ssh ubuntu@",hub_address," 'echo Job is remote-running > ",get_conf("imputations_path"),remoteFolderToRun,"/job_status.txt'",sep="")
           system(cmd3)
         }
         
         #then copy all the files to here
         for(remoteFolderToRun in remoteFoldersToRun){
-          cmd4 <- paste("scp -r ubuntu@",hubAddress,":/home/ubuntu/imputations/",remoteFolderToRun," /home/ubuntu/imputations/",remoteFolderToRun,sep="")
+          cmd4 <- paste("scp -r ubuntu@",hub_address,":",get_conf("imputations_path"),remoteFolderToRun," ",get_conf("imputations_path"),remoteFolderToRun,sep="")
           system(cmd4)
           
           #And write locally that job is ready
@@ -1739,10 +1680,10 @@ check_for_cron_ready_jobs<-function(
   }else if(job_type =="vcf"){
     
     #First handle the Node running code - which will later merge into local/hub running after a scp step
-    if(get_conf("serverRole")== "Node"){
+    if(get_conf("server_role")== "Node"){
       
       #sort checking order by time entered
-      cmd1 <- paste0("ssh ubuntu@",hubAddress," ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' ",get_conf("vcfs_path")," | tail -n +2")
+      cmd1 <- paste0("ssh ubuntu@",hub_address," ls -l --time-style='+\\%Y-\\%m-\\%d-\\%H:\\%M:\\%S' ",get_conf("vcfs_path")," | tail -n +2")
       remotedata<-system(cmd1,intern=T)
       Sys.sleep(0.2)
       remotedata_df<-as.data.frame(do.call(rbind,strsplit(remotedata,"\\s+")),stringsAsFactors=F)
@@ -1754,7 +1695,7 @@ check_for_cron_ready_jobs<-function(
       #check if there's any fast-queue jobs to put up-front. The fast-queue jobs is just a file with uniqueID
       #and then TRUE or FALSE. The TRUE or FALSE means if a bulk impute is allowed to take it or not
       #which is not relevant here in single-running.
-      cmd0 <- paste0("ssh ubuntu@",hubAddress," cat ",get_conf("misc_files_path"),"fast_queue_emails.txt
+      cmd0 <- paste0("ssh ubuntu@",hub_address," cat ",get_conf("misc_files_path"),"fast_queue_emails.txt
                 ")
       f1<-system(cmd0,intern=T)
       Sys.sleep(0.2)
@@ -1766,18 +1707,18 @@ check_for_cron_ready_jobs<-function(
       
       #then loop over all remote folders
       for(remoteFolderToCheck in remoteFoldersToCheck){
-        cmd2 <- paste0("ssh ubuntu@",hubAddress," cat ",get_conf("vcfs_path"),remoteFolderToCheck,"/job_status.txt")
+        cmd2 <- paste0("ssh ubuntu@",hub_address," cat ",get_conf("vcfs_path"),remoteFolderToCheck,"/job_status.txt")
         job_status<-system(cmd2,intern=T)
         #Check if the job is ready
         if(job_status=="Job is ready"){
           if(verbose>0)print(paste0(Sys.time(),": Found remote job-status file and job is ready ",remoteFolderToCheck," - will copy to local Node"))
           
           #First write to job-status that now the job is off to a remote server
-          cmd3 <- paste0("ssh ubuntu@",hubAddress," 'echo Job is remote-running > ",get_conf("vcfs_path"),remoteFolderToCheck,"/job_status.txt'")
+          cmd3 <- paste0("ssh ubuntu@",hub_address," 'echo Job is remote-running > ",get_conf("vcfs_path"),remoteFolderToCheck,"/job_status.txt'")
           system(cmd3)
           
           #then copy all the files to here
-          cmd4 <- paste0("scp -r ubuntu@",hubAddress,":",get_conf("vcfs_path"),remoteFolderToCheck," /home/ubuntu/vcfs/",remoteFolderToCheck)
+          cmd4 <- paste0("scp -r ubuntu@",hub_address,":",get_conf("vcfs_path"),remoteFolderToCheck," ",get_conf("vcfs_path"),remoteFolderToCheck)
           system(cmd4)
           
           #Then write locally that job is ready
@@ -1815,8 +1756,8 @@ check_for_cron_ready_jobs<-function(
         if(job_status=="Job is running"){runningJobCount<-runningJobCount+1}
       }
     }
-    if(runningJobCount>(get_conf("maxImputations")-1)){
-      stop(paste("Found",runningJobCount,"running jobs, which is more than maxImputations so doing nothing"))
+    if(runningJobCount>(get_conf("max_imputations_per_node")-1)){
+      stop(paste("Found",runningJobCount,"running jobs, which is more than max_imputations_per_node so doing nothing"))
     }
     
     
@@ -1859,9 +1800,9 @@ check_for_cron_ready_jobs<-function(
     
   }else{stop(paste("Unknown job_type:",job_type," - must be single, bulk or vcf"))}
   
-  if(serverRole=="Hub"){
+  if(server_role=="Hub"){
     if(verbose>0)print(paste0(Sys.time(),": Found ",length(uniqueIDs)," jobs of type ",job_type," and marked them as job_running."))
-  }else if(serverRole=="Node"){
+  }else if(server_role=="Node"){
     if(verbose>0)print(paste0(Sys.time(),": Found ",length(uniqueIDs)," jobs of type ",job_type,", copied them to this Node and marked them as job_running on the Hub."))
   }
   
@@ -2779,7 +2720,13 @@ convert_vcfs_to_simple_format<-function(
   system(cmd2,ignore.stdout=ignore.stdout, ignore.stderr=ignore.stderr)
   
   #read and check vcftool output
-  tped<-read.table(paste0(vcf_folder,"extracted.tped"),stringsAsFactors=F,sep="\t")
+  if(!file.exists(paste0(vcf_folder,"extracted.tped"))){
+    if(verbose>0)print(paste0(Sys.time()," Merging input VCF with requested set of locations produced no file ('extracted.tped'). This means that not a single input position was among the common variants needed to produce polygenic risk scores."))
+    tped <- data.frame()
+  }else{
+    tped<-read.table(paste0(vcf_folder,"extracted.tped"),stringsAsFactors=F,sep="\t")  
+  }
+  
   if(nrow(tped) < minimum_required_variant_count){
     if(verbose>0)print(paste0(Sys.time(),": Observed less than minimum_required_variant_count (",nrow(tped),"). Will try to re-run extraction step assuming GRCh38."))
     
@@ -2796,9 +2743,13 @@ convert_vcfs_to_simple_format<-function(
     }
     cmd2 <- paste0("vcftools --gzvcf ",vcf_path," --positions ",applied_bed_path," --out ",vcf_folder,"extracted --plink-tped")
     system(cmd2,ignore.stdout=ignore.stdout, ignore.stderr=ignore.stderr)
-    tped<-read.table(paste0(vcf_folder,"extracted.tped"),stringsAsFactors=F,sep="\t")
+    if(!file.exists(paste0(vcf_folder,"extracted.tped"))){
+      tped<-read.table(paste0(vcf_folder,"extracted.tped"),stringsAsFactors=F,sep="\t")
+    }else{
+      tped <- data.frame()
+    }
     if(nrow(tped) < minimum_required_variant_count){
-      stop(paste("This VCF-file only had",nrow(tped),"recognized SNPs from the 1M requested common-SNP set. This must be at least ",minimum_required_variant_count," or else we suspect a problem with the DNA sequencing"))
+      stop(paste("This VCF-file only had",nrow(tped),"recognized SNPs from the >1M requested common-SNP set. This must be at least ",minimum_required_variant_count," or else we suspect a problem with the DNA sequencing"))
     }
     
     #But in the (best) success case, we continue
@@ -3079,7 +3030,7 @@ convert_vcfs_to_simple_format<-function(
 
 summarize_imputation<-function(
   uniqueID,
-  runDir,
+  runDir=paste0(get_conf("imputations_path"),"imputation_folder_",uniqueID),
   export_simple_format = FALSE
 ){
   #' summarize imputation
@@ -3441,8 +3392,8 @@ transfer_cleanup_and_mailout<-function(
   
   #get logging level and other global variables
   verbose <- get_conf("verbose")
-  serverRole <- get_conf("serverRole")
-  hubAddress <- get_conf("hubAddress")
+  server_role <- get_conf("server_role")
+  hub_address <- get_conf("hub_address")
   
   
   #check arguments
@@ -3485,43 +3436,43 @@ transfer_cleanup_and_mailout<-function(
   }
   
   #If this is running as a node, we need to copy it back
-  if(serverRole== "Node"){
-    cmd5 <- paste("scp -r ",get_conf("data_path"),uniqueID," ubuntu@",hubAddress,":",get_conf("data_path"),sep="")
+  if(server_role== "Node"){
+    cmd5 <- paste("scp -r ",get_conf("data_path"),uniqueID," ubuntu@",hub_address,":",get_conf("data_path"),sep="")
     out5<-system(cmd5)
     if(out5!=0)stop(paste0("Problem with transferring the data for ",uniqueID,". Possible connection error. Aborting. Nothing was changed, so after solving connectivity the function can be re-run as transfer_cleanup_and_mailout('",uniqueID,"') without problems"))
   }
   
   
   #making a link out to where the data can be retrieved	(different on hub and node, and also depends on vcf-file or not)
-  if(serverRole== "Node" ){
+  if(server_role== "Node" ){
     
     if(!is_vcf_file){
       if(export_simple_format){
-        cmd6 <- paste0("ssh ubuntu@",hubAddress," 'ln -s ",get_conf("data_path"),uniqueID,"/",uniqueID,".simple_format.zip ",get_conf("code_path"),"www/",uniqueID,".simple_format.zip'")
+        cmd6 <- paste0("ssh ubuntu@",hub_address," 'ln -s ",get_conf("data_path"),uniqueID,"/",uniqueID,".simple_format.zip ",get_conf("code_path"),"www/",uniqueID,".simple_format.zip'")
         out6<-system(cmd6)
       }else{
         out6<-0
       }
       
-      cmd7 <- paste0("ssh ubuntu@",hubAddress," 'ln -s ",get_conf("data_path"),uniqueID,"/",uniqueID,".gen.zip ",get_conf("code_path"),"www/",uniqueID,".gen.zip'")
+      cmd7 <- paste0("ssh ubuntu@",hub_address," 'ln -s ",get_conf("data_path"),uniqueID,"/",uniqueID,".gen.zip ",get_conf("code_path"),"www/",uniqueID,".gen.zip'")
       out7<-system(cmd7)
       
     }else{
       out6<-out7<-0
     }
     
-    cmd8 <- paste("ssh ubuntu@",hubAddress," 'ln -s ",get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json ",get_conf("code_path"),"www/",uniqueID,"_data.json'",sep="")
+    cmd8 <- paste("ssh ubuntu@",hub_address," 'ln -s ",get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json ",get_conf("code_path"),"www/",uniqueID,"_data.json'",sep="")
     out8<-system(cmd8)
     
     if(out6+out7+out8 > 0)stop(paste0("Problem with symlink-creation on Hub for ",uniqueID,". Possible connection error. Aborting."))
     
-  }else if(serverRole== "Hub" & is_vcf_file){
+  }else if(server_role== "Hub" & is_vcf_file){
     file.symlink(
       from=paste(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json",sep=""),
       to=paste0(get_conf("code_path"),"/www/",uniqueID,"_data.json")
     )
     
-  }else if(serverRole== "Hub" & !is_vcf_file){
+  }else if(server_role== "Hub" & !is_vcf_file){
     
     if(export_simple_format){
       file.symlink(
@@ -3604,8 +3555,8 @@ transfer_cleanup_and_mailout<-function(
   
   
   #also clear the hub imputation_folder if running as node
-  if(serverRole== "Node"){
-    cmd9 <- paste("ssh ubuntu@",hubAddress," 'rm -r ",summary_folder,"'",sep="")
+  if(server_role== "Node"){
+    cmd9 <- paste("ssh ubuntu@",hub_address," 'rm -r ",summary_folder,"'",sep="")
     out9<-system(cmd9)
     
     #also don't leave the finished data here, if running as Node
@@ -5203,10 +5154,10 @@ reset_runs_from_node<-function(
   #' @return No return value, but all specified uniqueIDs will be deleted from this node, and their job-status will have been set to 'Job is ready' at the Hub node.
   
   #define server-role
-  serverRole <- get_conf("serverRole")
-  hubAddress <- get_conf("hubAddress")
+  server_role <- get_conf("server_role")
+  hub_address <- get_conf("hub_address")
   verbose <- get_conf("verbose")
-  if(serverRole!="Node")stop("This function only works when running on nodes")
+  if(server_role!="Node")stop("This function only works when running on nodes")
   
   
   
@@ -5234,7 +5185,7 @@ reset_runs_from_node<-function(
   
   if(check_is_running){
     for(uniqueID in uniqueIDs){
-      cmd1 <- paste0("ssh ubuntu@",hubAddress," 'cat ",get_conf("imputations_path"),"imputation_folder_",uniqueID,"/job_status.txt'")
+      cmd1 <- paste0("ssh ubuntu@",hub_address," 'cat ",get_conf("imputations_path"),"imputation_folder_",uniqueID,"/job_status.txt'")
       status<-system(cmd1,intern=T)
       if(status!="Job is remote-running")stop(paste("Status for",uniqueID,"was not remote-running. This must be the case for a reset. Aborting with no change. Status was",status))
     }
@@ -5255,18 +5206,18 @@ reset_runs_from_node<-function(
   
   
   #check the bulk_imputations folder (can always be deleted)
-  bulk_to_delete<-list.files("~/bulk_imputations/")
+  bulk_to_delete<-list.files(get_conf("bulk_imputations_path"))
   if(length(bulk_to_delete)==1){
-    if(verbose>0)print(paste0(Sys.time(),": Also deleting one folder in ~/bulk_imputations"))
+    if(verbose>0)print(paste0(Sys.time(),": Also deleting one folder in ",get_conf("bulk_imputations_path")))
   }else{
-    if(verbose>0)print(paste0(Sys.time()," Deleting ",length(bulk_to_delete)," folders in ~/bulk_imputations: ",paste(bulk_to_delete,collapse=", ")))
+    if(verbose>0)print(paste0(Sys.time()," Deleting ",length(bulk_to_delete)," folders in ",get_conf("bulk_imputations_path"),": ",paste(bulk_to_delete,collapse=", ")))
   }
-  unlink(paste0("~/bulk_imputations/",bulk_to_delete),recursive=T)  
+  unlink(paste0(get_conf("bulk_imputations_path"),bulk_to_delete),recursive=T)  
   
   #set job ready tag
-  if(verbose>0)print(paste0(Sys.time(),": Setting Job ready tag for ",length(uniqueIDs)," uniqueIDs on hub at: ",hubAddress))
+  if(verbose>0)print(paste0(Sys.time(),": Setting Job ready tag for ",length(uniqueIDs)," uniqueIDs on hub at: ",hub_address))
   for(uniqueID in uniqueIDs){
-    cmd2 <- paste0("ssh ubuntu@",hubAddress," 'echo Job is ready > ",get_conf("imputations_path"),"/imputation_folder_",uniqueID,"/job_status.txt'")
+    cmd2 <- paste0("ssh ubuntu@",hub_address," 'echo Job is ready > ",get_conf("imputations_path"),"/imputation_folder_",uniqueID,"/job_status.txt'")
     system(cmd2)
   }
   
@@ -5328,8 +5279,8 @@ summarize_imputemany_json<-function(
   if(length(missing_json)>0)  stop(paste("JSON files were missing for these",length(missing_json),"uniqueIDs:",paste(missing_json,collapse=", ")))
   
   
-  #get hubAddress
-  hubAddress <- get_conf("hubAddress")
+  #get hub_address
+  hub_address <- get_conf("hub_address")
   
   #in this for-loop we read in all the json data.
   #the strategy is to start with a data.frame with uniqueIDs as rows (since that is constant), 
@@ -5435,10 +5386,10 @@ summarize_imputemany_json<-function(
   dir_out <- paste0("www/summary_",grapper_preventer,"/")
   file_out <- paste0(dir_out,name,"_summary.xlsx")
   file_out_long <- paste0(get_conf("code_path"),file_out)
-  if(length(grep("/$",hubAddress))){
-    file_out_web <- paste0(hubAddress,file_out)  
+  if(length(grep("/$",hub_address))){
+    file_out_web <- paste0(hub_address,file_out)  
   }else{
-    file_out_web <- paste0(hubAddress,"/",file_out)
+    file_out_web <- paste0(hub_address,"/",file_out)
   }
   if(file.exists(dirname(file_out_long)))stop("The grapper preventer generated a random number that already exists")
   dir.create(dirname(file_out_long),recursive=T)
@@ -6105,5 +6056,10 @@ convert_gen_file<-function(
     }
   }
 }
+
+
+
+
+
 
 

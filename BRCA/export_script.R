@@ -68,7 +68,7 @@ export_function<-function(uniqueID){
   
   
   #checking for SNPs that are measured in input, but didn't make it through imputation (issue #28)
-  input_data_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,".input_data.zip")
+  input_data_path <- paste0(get_conf("data_path"),uniqueID,"/",uniqueID,".input_data.zip")
   idTempFolder<-paste(get_conf("data_path"),uniqueID,"temp/",sep="/")
   if(file.exists(input_data_path) & !file.exists(idTempFolder)){
     dir.create(idTempFolder)

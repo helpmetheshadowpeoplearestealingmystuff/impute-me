@@ -252,7 +252,7 @@ shinyServer(function(input, output) {
       }
       
       #check and load prs
-      if(!"prs"%in%names(d1))stop(safeError("No all-SNP scores were available for this sample. It was probably uploaded before implementation."))
+      if(!"prs"%in%names(d1))stop(safeError("No all-SNP scores were available for this sample. It was probably uploaded before implementation. Try switching off 'show all-SNP scores' in advanced options."))
       d2<-d1[["prs"]]
       
       #check and load study

@@ -11,9 +11,8 @@
 uniqueIDs<-check_for_cron_ready_jobs("bulk")
 
 #prepare a runDir for the bulk running
-if(!file.exists("~/bulk_imputations/"))dir.create("~/bulk_imputations/")
-runDir<-paste("~/bulk_imputations/",format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"_bulk",sep="")
-dir.create(runDir)
+runDir<-paste(get_conf("bulk_imputations_path"),format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"_bulk",sep="")
+dir.create(runDir,recursive=TRUE)
 
 #run the imputation (this takes quite a while)
 run_bulk_imputation(uniqueIDs, runDir)  

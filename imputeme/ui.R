@@ -1,7 +1,5 @@
 
 
-# stop(getwd())
-setwd("/home/ubuntu/srv/impute-me/imputeme")
 source("../uifunctions.R")
 # source("/home/ubuntu/srv/impute-me/uifunctions.R")
 initialize('hc',TRUE)

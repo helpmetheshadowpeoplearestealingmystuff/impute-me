@@ -43,15 +43,8 @@ export_function<-function(uniqueID){
   # Select which of the different approaches to actually run.
   # A more complete write-up of testing is available at this DOI:
   # https://doi.org/10.13140/RG.2.2.10081.53602/1
-    algorithms_to_run <- c(
-    "SCORESUM_PLINK_1_9",
-    "SCORESUM_PLINK_2_0",
-    "SCORESUM_PLINK_2_0_DOSAGE",
-    "SCORESUM_PLINK_2_0_DOSAGE_MATRIX"
-  )
-  algorithms_to_run <- c(
-    "SCORESUM_PLINK_2_0_DOSAGE_MATRIX"
-  )
+  algorithms_to_run <- get_conf("plink_algorithms_to_run")
+  
   
   
   #check score files exists and are ok

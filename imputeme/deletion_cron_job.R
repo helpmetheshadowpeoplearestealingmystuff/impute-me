@@ -2,9 +2,7 @@
 # crontab -e
 # 00 20 * * * Rscript /home/ubuntu/srv/impute-me/imputeme/deletion_cron_job.R > /home/ubuntu/misc_files/cron_logs/`date +\%Y\%m\%d\%H\%M\%S`-delete-cron.log 2>&1
 
-source("/home/ubuntu/srv/impute-me/functions.R")
-
-uniqueIDs<-list.files("/home/ubuntu/data")
+uniqueIDs<-list.files(get_conf("data_path"))
 
 
 
@@ -13,28 +11,28 @@ keeping_time_1 <- 14
 keeping_time_2 <- 2 * 365
 
 for(uniqueID in uniqueIDs){
-  pData<-try(read.table(paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep=""),sep="\t",header=T,stringsAsFactors=F))
+  pData<-try(read.table(paste(get_conf("data_path"),uniqueID,"/pData.txt",sep=""),sep="\t",header=T,stringsAsFactors=F))
   if(class(pData)=="try-error")next
   if(!all(c("protect_from_deletion","first_timeStamp")%in%colnames(pData)))next
   
   #DNA-traceable files - links
-  f1<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".simple_format.zip",sep="")
-  f2<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,".gen.zip",sep="")
+  f1<-paste(get_conf("code_path"),"www/",uniqueID,".simple_format.zip",sep="")
+  f2<-paste(get_conf("code_path"),"www/",uniqueID,".gen.zip",sep="")
   
   #DNA-traceable files - data
-  f3<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".gen.zip",sep="")
-  f4<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".simple_format.zip",sep="")
-  f5<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".input_data.zip",sep="")
+  f3<-paste(get_conf("data_path"),uniqueID,"/",uniqueID,".gen.zip",sep="")
+  f4<-paste(get_conf("data_path"),uniqueID,"/",uniqueID,".simple_format.zip",sep="")
+  f5<-paste(get_conf("data_path"),uniqueID,"/",uniqueID,".input_data.zip",sep="")
   
   #Non-traceable files - link
-  f6<-paste("/home/ubuntu/srv/impute-me/www/",uniqueID,"_data.json",sep="")
+  f6<-paste(get_conf("code_path"),"www/",uniqueID,"_data.json",sep="")
   
   #non-traceable files - data
-  f7<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json",sep="")
-  f8<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.all_gwas.gz",sep="")
-  f9<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.gz",sep="")
-  f10<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.nonsenser.gz",sep="")
-  f11<-paste("/home/ubuntu/data/",uniqueID,"/",uniqueID,".cached.ethnicity.gz",sep="")
+  f7<-paste(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json",sep="")
+  f8<-paste(get_conf("data_path"),uniqueID,"/",uniqueID,".cached.all_gwas.gz",sep="")
+  f9<-paste(get_conf("data_path"),uniqueID,"/",uniqueID,".cached.gz",sep="")
+  f10<-paste(get_conf("data_path"),uniqueID,"/",uniqueID,".cached.nonsenser.gz",sep="")
+  f11<-paste(get_conf("data_path"),uniqueID,"/",uniqueID,".cached.ethnicity.gz",sep="")
   
   #time assignment
   start<-strptime(pData[1,"first_timeStamp"],"%Y-%m-%d-%H-%M")
@@ -49,12 +47,12 @@ for(uniqueID in uniqueIDs){
     #modify pdata to not save personally identifiable information    
     pData[,"email"]<-NULL
     pData[,"filename"]<-NULL
-    pdata_path<-paste("/home/ubuntu/data/",uniqueID,"/pData.txt",sep="")
+    pdata_path<-paste(get_conf("data_path"),uniqueID,"/pData.txt",sep="")
     write.table(pdata,file=pdata_path,sep="\t",col.names=T,row.names=F,quote=F)
     
     
     #modify json to not save personally identifiable information
-    json_path <- paste0("/home/ubuntu/data/",uniqueID,"/",uniqueID,"_data.json")
+    json_path <- paste0(get_conf("data_path"),uniqueID,"/",uniqueID,"_data.json")
     d0<-fromJSON(json_path)
     d0[["original_filename"]] <- NULL
     d0[["original_submission_email"]] <- NULL
@@ -124,7 +122,7 @@ for(uniqueID in uniqueIDs){
 
 
 #also delete the usage reports, just to clean up a little
-unlink(list.files("/home/ubuntu/srv/impute-me/www/",pattern="_report\\.pdf$",full.names=T))
+unlink(list.files(get_conf("code_path"),"www/",pattern="_report\\.pdf$",full.names=T))
 
 
 
@@ -132,7 +130,7 @@ unlink(list.files("/home/ubuntu/srv/impute-me/www/",pattern="_report\\.pdf$",ful
 #also delete the summary reports, just to clean up a little
 age_limit <- 7
 l<-data.frame(
-  f=list.files("/home/ubuntu/srv/impute-me/www",pattern="^summary_",full.names=T),
+  f=list.files(get_conf("code_path"),"www",pattern="^summary_",full.names=T),
   stringsAsFactors = F
 )
 l[,"time"]<-file.info(l[,"f"])[,"mtime"]

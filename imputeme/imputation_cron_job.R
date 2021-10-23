@@ -18,7 +18,7 @@ uniqueID<-check_for_cron_ready_jobs("single")
 run_imputation(uniqueID=uniqueID)
 
 #summarizing files
-summarize_imputation(uniqueID=uniqueID,runDir=paste0(get_conf("imputations_path"),"imputation_folder_",uniqueID))
+summarize_imputation(uniqueID=uniqueID)
 
 #Run the genotype extraction routine
 crawl_for_snps_to_analyze(uniqueIDs=uniqueID)

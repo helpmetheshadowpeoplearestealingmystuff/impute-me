@@ -1,5 +1,4 @@
 library("shiny")
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 #Replace 'template' with name of module throughout the script
@@ -35,7 +34,7 @@ shinyServer(function(input, output) {
 	  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 		if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 		if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-		if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+		if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
 			Sys.sleep(3) #wait a little to prevent raw-force fishing	
 			stop(safeError("Did not find a user with this id"))
 		}
@@ -56,7 +55,7 @@ shinyServer(function(input, output) {
 		
 		#write the score to the log file
 		log_function<-function(uniqueID){
-			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+			user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
 			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"microbiome",uniqueID)
 			m<-paste(m,collapse="\t")
 			if(file.exists(user_log_file)){

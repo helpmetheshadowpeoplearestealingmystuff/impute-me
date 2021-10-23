@@ -1,20 +1,6 @@
 library("shiny")
-
-#REMOVE LATER
-# rm(list=ls())
-# source("C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/functions_local.R")
-# dataFolder<-"C:/Users/FOLK/Documents/Work/Bioinformatics/data/"
-# uniqueID <- "id_57n662948"
-# disease<-"ALL"
-# SNPs_to_analyze_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/leukemia/SNPs_to_analyze_SOURCE.txt"
-# means_file<-"C:/Users/FOLK/Documents/Work/Bioinformatics/2015-08-17_gene_surfer/gene-surfer/leukemia/2016-05-22_means.txt"
-
-
-# 
-source("/home/ubuntu/srv/impute-me/functions.R")
-dataFolder<-"/home/ubuntu/data/"
-SNPs_to_analyze_file<-"/home/ubuntu/srv/impute-me/leukemia/SNPs_to_analyze_SOURCE.txt"
-means_file<-"/home/ubuntu/srv/impute-me/leukemia/2016-05-22_means.txt"
+SNPs_to_analyze_file<-paste0(get_conf("code_path"),"leukemia/SNPs_to_analyze_SOURCE.txt")
+means_file<-paste0(get_conf("code_path"),"leukemia/2016-05-22_means.txt")
 
 
 
@@ -78,8 +64,8 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 		  uniqueID<-isolate(gsub(" ","",input$uniqueID))
 			if(nchar(uniqueID)!=12)stop(safeError("uniqueID must have 12 digits"))
 			if(length(grep("^id_",uniqueID))==0)stop(safeError("uniqueID must start with 'id_'"))
-			# pDataFile<-paste(dataFolder,uniqueID,"/pData.txt",sep="")
-			if(!file.exists(paste(dataFolder,uniqueID,sep=""))){
+			
+			if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
 				Sys.sleep(3) #wait a little to prevent raw-force fishing	
 				stop(safeError("Did not find a user with this id"))
 			}
@@ -171,7 +157,7 @@ This plot shows the risk profile for ",dis,". Patients with this disease have ge
 		
 		#write the score to the log file
 		log_function<-function(uniqueID,disease,GRS_beta){
-			user_log_file<-paste("/home/ubuntu/data/",uniqueID,"/user_log_file.txt",sep="")
+			user_log_file<-paste(get_conf("data_path"),uniqueID,"/user_log_file.txt",sep="")
 			m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"leukemia",uniqueID,disease,GRS_beta)
 			m<-paste(m,collapse="\t")
 			if(file.exists(user_log_file)){
