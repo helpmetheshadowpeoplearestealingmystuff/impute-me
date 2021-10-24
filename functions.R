@@ -28,6 +28,7 @@ set_conf<-function(
     "seconds_wait_before_start"=0,           #a delay that is useful only with CPU-credit systems
     "running_as_docker"=TRUE,           #adapt to docker running
     "max_imputation_chunk_size"=1000,           #how much stuff to put into the memory in each chunk. Lower values results in slower running with less memory-requirements.
+    "minimum_required_variant_in_vcf_count"=200000,    #The least amount of matching variants acceptable for passing as a whole-genome sequencing vcf
     "block_double_uploads_by_md5sum"=FALSE,           #If the upload interface should give an error when the exact same file is being uploaded twice (by md5sum).
     "plink_algorithms_to_run"='SCORESUM_PLINK_2_0_DOSAGE_MATRIX',           #What types of plink algorithms to run (see prs module export_script.R for details)
     "modules_to_compute"='AllDiseases,autoimmuneDiseases,BRCA,drugResponse,ethnicity,rareDiseases,ukbiobank,prs',           #Select the modules to pre-run (defaults to all folders in the repo if set to NULL).
@@ -82,7 +83,7 @@ set_conf<-function(
     
   }else{
     if(is.null(value))stop("Can't set_conf a value of NULL")
-    if(!request %in% names(default_configuration))stop(paste("Didn't recognize",request,"as a imputeme environment variable"))
+    if(!request %in% names(default_configuration))stop(paste0("Didn't recognize ",request," as an imputeme environment variable. Please select only one of: ", paste(sort(names(default_configuration)),collapse=", ")))
     previous_value<-Sys.getenv(request)
     names(value)<-request
     do.call(Sys.setenv, as.list(value))
@@ -170,6 +171,10 @@ get_conf<-function(
   }else if(request == "max_imputation_chunk_size"){
     if(!is.numeric(max_imputation_chunk_size))stop("max_imputation_chunk_size not numeric")
     if(length(max_imputation_chunk_size)!=1)stop("max_imputation_chunk_size not length 1")
+  }else if(request == "minimum_required_variant_in_vcf_count"){
+    if(!is.numeric(minimum_required_variant_in_vcf_count))stop("minimum_required_variant_in_vcf_count not numeric")
+    if(length(minimum_required_variant_in_vcf_count)!=1)stop("minimum_required_variant_in_vcf_count not length 1")
+    if(minimum_required_variant_in_vcf_count < 1000)stop("minimum_required_variant_in_vcf_count must be at least 1000")
   }else if(request == "block_double_uploads_by_md5sum"){
     if(!is.logical(block_double_uploads_by_md5sum))stop("block_double_uploads_by_md5sum not logical")
     if(length(block_double_uploads_by_md5sum)!=1)stop("block_double_uploads_by_md5sum not length 1")
@@ -685,7 +690,7 @@ prepare_individual_genome<-function(
   #finalizing: 
   #1) saving the small job_status.txt that just shows a status for the node/hub setup to read quickly over ssh
   #2) saving the variables.rdata which is a file of processing-specific parameters that is needed in first process, but afterwards deleted
-  if(verbose>0)print(paste0(Sys.time(),": Finalize"))
+  if(verbose>0)print(paste0(Sys.time(),": Finalize prepare_individual_genome"))
   imputemany_upload <- FALSE
   should_be_imputed <- TRUE
   upload_time<-format(Sys.time(),"%Y-%m-%d-%H-%M-%S")
@@ -2659,7 +2664,7 @@ convert_vcfs_to_simple_format<-function(
   out_gen_path<-paste0(out_folder,"/",uniqueID,".gen.zip")
   out_temp_simple_per_chr_path<-paste0(out_temp_path,"/",uniqueID,"_chr__CHR__.simple_format.txt")
   out_simple_path<-paste0(out_folder,"/",uniqueID,".simple_format.zip")
-  minimum_required_variant_count <- 200000
+  minimum_required_variant_in_vcf_count <- get_conf("minimum_required_variant_in_vcf_count")
   start_wd<-getwd()
   
   #checks of input
@@ -2727,8 +2732,8 @@ convert_vcfs_to_simple_format<-function(
     tped<-read.table(paste0(vcf_folder,"extracted.tped"),stringsAsFactors=F,sep="\t")  
   }
   
-  if(nrow(tped) < minimum_required_variant_count){
-    if(verbose>0)print(paste0(Sys.time(),": Observed less than minimum_required_variant_count (",nrow(tped),"). Will try to re-run extraction step assuming GRCh38."))
+  if(nrow(tped) < minimum_required_variant_in_vcf_count){
+    if(verbose>0)print(paste0(Sys.time(),": Observed less than minimum_required_variant_in_vcf_count (",nrow(tped),"). Will try to re-run extraction step assuming GRCh38."))
     
     #ideally we would have liked to only test build-version once (above), but since major formats like e.g. 
     #Nebula seems to be in GRCh38 - without saying so in the header - we'll re-run the relevant import 
@@ -2748,13 +2753,13 @@ convert_vcfs_to_simple_format<-function(
     }else{
       tped <- data.frame()
     }
-    if(nrow(tped) < minimum_required_variant_count){
-      stop(paste("This VCF-file only had",nrow(tped),"recognized SNPs from the >1M requested common-SNP set. This must be at least ",minimum_required_variant_count," or else we suspect a problem with the DNA sequencing"))
+    if(nrow(tped) < minimum_required_variant_in_vcf_count){
+      stop(paste("This VCF-file only had",nrow(tped),"recognized SNPs from the >1M requested common-SNP set. This must be at least ",minimum_required_variant_in_vcf_count," or else we suspect a problem with the DNA sequencing"))
     }
     
     #But in the (best) success case, we continue
   }else{
-    if(verbose>0)print(paste0(Sys.time(),": ",uniqueID," had ",nrow(tped)," variants matched with the request-bed file"))
+    if(verbose>0)print(paste0(Sys.time(),": ",uniqueID," had ",nrow(tped)," variants matched with the request-bed file. The minimum required amount was ",minimum_required_variant_in_vcf_count,"."))
   }
   
   
@@ -2768,12 +2773,12 @@ convert_vcfs_to_simple_format<-function(
   bed<-read.table(bed_path,stringsAsFactors=F,sep="\t",header=T)
   
   #First check if they can be matched by rsid
-  if(length(grep("^rs",tped[,"V2"])) > minimum_required_variant_count){
+  if(length(grep("^rs",tped[,"V2"])) > minimum_required_variant_in_vcf_count){
     rownames(tped) <- tped[,"V2"]
     rownames(bed) <- bed[,"rsid"]
     
     #Or else revert to positional matching (be careful here - as explained above!)
-  }else if(length(grep("[0-9]+:[0-9]+",tped[,"V2"])) > minimum_required_variant_count){
+  }else if(length(grep("[0-9]+:[0-9]+",tped[,"V2"])) > minimum_required_variant_in_vcf_count){
     if(verbose>0)print(paste0(Sys.time(),": Switching to chr:pos positional matching in the style of Dante lab"))
     rownames(tped) <- tped[,"V2"]
     
@@ -2797,11 +2802,11 @@ convert_vcfs_to_simple_format<-function(
     stop("Not matching on rsid in vcf-name field and also not recognised as Dante lab chr:pos naming. Needs manual evaluation.")
   }
   
-  #double check that a reasonable number of variants are matched (we still use the minimum_required_variant_count variable, although
+  #double check that a reasonable number of variants are matched (we still use the minimum_required_variant_in_vcf_count variable, although
   #it now lost meaning a little because it's a lot of different counts. Fact is
   #that these values are still up for tuning, but a fairly wide canyon - all the
   #way down to exon seq is accepted)
-  if(length(intersect(rownames(tped), rownames(bed))) < minimum_required_variant_count){
+  if(length(intersect(rownames(tped), rownames(bed))) < minimum_required_variant_in_vcf_count){
     stop("Too few vcf-name fields could be matched in the reference bed file")
   }
   
