@@ -27,6 +27,7 @@ set_conf<-function(
     "error_report_mail"='',           #optional email-address to send (major) errors to
     "seconds_wait_before_start"=0,           #a delay that is useful only with CPU-credit systems
     "running_as_docker"=TRUE,           #adapt to docker running
+    "autostart_supercronic"=TRUE,            #Attempt to auto-start cron-jobs with the prepare_individual_genome function (makes it easier for casual docker users, but may confuse things in pipeline running)
     "max_imputation_chunk_size"=1000,           #how much stuff to put into the memory in each chunk. Lower values results in slower running with less memory-requirements.
     "minimum_required_variant_in_vcf_count"=200000,    #The least amount of matching variants acceptable for passing as a whole-genome sequencing vcf
     "block_double_uploads_by_md5sum"=FALSE,           #If the upload interface should give an error when the exact same file is being uploaded twice (by md5sum).
@@ -110,10 +111,10 @@ get_conf<-function(
   
   #reform class as necessary
   #numeric
-  if(request %in% c("max_imputations_per_node","max_imputations_in_queue","bulk_node_count","seconds_wait_before_start","max_imputation_chunk_size","verbose")){
+  if(request %in% c("max_imputations_per_node","max_imputations_in_queue","bulk_node_count","seconds_wait_before_start","max_imputation_chunk_size","verbose","minimum_required_variant_in_vcf_count")){
     assign(request,as.numeric(Sys.getenv(request)))
   #logical
-    }else if(request %in% c("running_as_docker","block_double_uploads_by_md5sum")){
+    }else if(request %in% c("running_as_docker","block_double_uploads_by_md5sum","autostart_supercronic")){
     assign(request,as.logical(Sys.getenv(request)))
   }else if(request %in% c("modules_to_compute","plink_algorithms_to_run","routinely_delete_this")){
   #comma-separated lists to vectors
@@ -168,6 +169,9 @@ get_conf<-function(
   }else if(request == "running_as_docker"){
     if(!is.logical(running_as_docker))stop("running_as_docker not logical")
     if(length(running_as_docker)!=1)stop("running_as_docker not length 1")
+  }else if(request == "autostart_supercronic"){
+    if(!is.logical(autostart_supercronic))stop("autostart_supercronic not logical")
+    if(length(autostart_supercronic)!=1)stop("autostart_supercronic not length 1")
   }else if(request == "max_imputation_chunk_size"){
     if(!is.numeric(max_imputation_chunk_size))stop("max_imputation_chunk_size not numeric")
     if(length(max_imputation_chunk_size)!=1)stop("max_imputation_chunk_size not length 1")
@@ -759,8 +763,8 @@ prepare_individual_genome<-function(
     }
   }
   
-  #if running as docker, then kill previous supercronic jobs and restart
-  if(get_conf("running_as_docker")){
+  #if autostart_supercronic, then kill previous supercronic jobs and restart
+  if(get_conf("autostart_supercronic")){
     processes<-system("ps -e",intern=T)
     processes<-do.call(rbind,strsplit(processes," +"))
     if("supercronic" %in% processes[,5]){
@@ -885,7 +889,7 @@ prepare_imputemany_genome<-function(
   if(length(should_be_imputed)!=1)stop(paste("should_be_imputed must be length 1, not",length(should_be_imputed)))
   
 
-  #check if mail address is in positive list for bulk upload  
+  #check if mail address is in positive list for bulk upload (when running as docker it is ok to auto-create this)
   acceptedMails_path<-paste0(get_conf("misc_files_path"),"accepted_emails.txt")
   if(!file.exists(acceptedMails_path)){
     if(get_conf("running_as_docker")){
@@ -1347,7 +1351,7 @@ prepare_imputemany_genome<-function(
   
   
   #if running as docker, then kill previous supercronic jobs and restart
-  if(get_conf("running_as_docker")){
+  if(get_conf("autostart_supercronic")){
     processes<-system("ps -e",intern=T)
     processes<-do.call(rbind,strsplit(processes," +"))
     if("supercronic" %in% processes[,5]){

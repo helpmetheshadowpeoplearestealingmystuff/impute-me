@@ -143,6 +143,7 @@ RUN echo "alias ll='ls -lh'" > /home/ubuntu/.bashrc
 RUN echo ".First <- function(){" > /home/ubuntu/.Rprofile && \
 echo "cat('\n   Welcome to impute.me!\n\n')" >> /home/ubuntu/.Rprofile && \
 echo "source('/imputeme/code/impute-me/functions.R')" >> /home/ubuntu/.Rprofile && \
+echo "set_conf('defaults')" >> /home/ubuntu/.Rprofile && \
 echo "}" >> /home/ubuntu/.Rprofile
 
 #Write a crontab to open using supercronic, once the docker is running
