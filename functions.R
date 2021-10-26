@@ -1867,7 +1867,7 @@ run_imputation<-function(
   if(length(runDir)!=1)stop(paste("runDir must be length 1, not",length(runDir)))
   if(!file.exists(runDir))stop(paste("Did not find runDir at path:",runDir))
   if(length(grep("/$",runDir))!=0)runDir <- sub("/$","",runDir) #remove trailing slash
-  setwd(runDir)
+  # setwd(runDir)
   load(paste(runDir,"/variables.rdata",sep=""))
   rawdata<-paste(runDir,"/",uniqueID,"_raw_data.txt",sep="")
   
@@ -1926,7 +1926,7 @@ run_imputation<-function(
   
   
   #Load data using plink 1.9
-  cmd1<-paste0(plink," --23file ",rawdata," ",uniqueID," ",uniqueID," --recode --out step_1")
+  cmd1<-paste0(plink," --23file ",rawdata," ",uniqueID," ",uniqueID," --recode --out ",runDir,"/step_1")
   out1<-system(cmd1,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
   
   
@@ -1936,10 +1936,10 @@ run_imputation<-function(
   }  
   
   #Rscript to omit duplicates
-  map<-read.table('step_1.map',sep='\t',stringsAsFactors=F,comment.char="")
+  map<-read.table(paste0(runDir,'/step_1.map'),sep='\t',stringsAsFactors=F,comment.char="")
   exclude<-map[duplicated(map[,4]),2]
   if(verbose>1)print(paste0(Sys.time(),': Removed ',length(exclude),' SNPs that were duplicated'))
-  write.table(exclude,file='step_2_exclusions',sep='\t',row.names=FALSE,col.names=F,quote=F)
+  write.table(exclude,file=paste0(runDir,'/step_2_exclusions'),sep='\t',row.names=FALSE,col.names=F,quote=F)
   
   
   #loop over chromosomes
@@ -1948,7 +1948,7 @@ run_imputation<-function(
     
     
     #First in loop - extract only one specific chromosome
-    cmd2<-paste(plink," --file step_1 --chr ",chr," --recode --out step_2_chr",chr," --exclude step_2_exclusions",sep="")
+    cmd2<-paste(plink," --file ",runDir,"/step_1 --chr ",chr," --recode --out ",runDir,"/step_2_chr",chr," --exclude ",runDir,"/step_2_exclusions",sep="")
     out2<-system(cmd2,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
     
     #if X chromosome is missing it is allowed to skip forward
@@ -1958,13 +1958,13 @@ run_imputation<-function(
     }
     
     #Then check for strand flips etc. 
-    cmd3<-paste0(shapeit," -check --input-ped step_2_chr",chr,".ped step_2_chr",chr,".map -M ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_2_chr",chr,"_shapeit_log")
+    cmd3<-paste0(shapeit," -check --input-ped ",runDir,"/step_2_chr",chr,".ped ",runDir,"/step_2_chr",chr,".map -M ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log ",runDir,"/step_2_chr",chr,"_shapeit_log")
     system(cmd3,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
     
     
     
     #Many homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
-    logFile<-read.table(paste("step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1)
+    logFile<-read.table(paste(runDir,"/step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1)
     omitMissing<-logFile[logFile[,1] %in% 'Missing',3]
     logStrand<-logFile[logFile[,1] %in% 'Strand',]
     omitNonIdentical<-logStrand[logStrand[,5] != logStrand[,6],3]
@@ -1984,10 +1984,10 @@ run_imputation<-function(
     
     #This removes any duplicates there might be
     forceHomozygoteTable<-forceHomozygoteTable[!duplicated(forceHomozygoteTable[,4]),]
-    map<-read.table(paste("step_2_chr",chr,".map",sep=""),sep="\t",stringsAsFactors=F,comment.char = "")
+    map<-read.table(paste(runDir,"/step_2_chr",chr,".map",sep=""),sep="\t",stringsAsFactors=F,comment.char = "")
     
     #This loads the ped file, and doubles it
-    ped2<-ped1<-strsplit(readLines(paste("step_2_chr",chr,".ped",sep=""))," ")[[1]]
+    ped2<-ped1<-strsplit(readLines(paste(runDir,"/step_2_chr",chr,".ped",sep=""))," ")[[1]]
     
     #this checks that nothing went wrong with reading in the map file in R (happens sometimes with quotes etc)
     if((length(ped1)-6) / 2 !=nrow(map)){
@@ -2010,21 +2010,21 @@ run_imputation<-function(
     ped2[A1_pos]<-forceHomozygoteTable[,9]
     ped2[A2_pos]<-forceHomozygoteTable[,10]
     ped<-rbind(ped1,ped2)
-    write.table(ped,paste("step_3_chr",chr,".ped",sep=""),sep=" ",col.names=F,row.names=F,quote=F)
+    write.table(ped,paste(runDir,"/step_3_chr",chr,".ped",sep=""),sep=" ",col.names=F,row.names=F,quote=F)
     omitRemaining<-logStrand[!logStrand[,4]%in%forceHomozygoteTable[,4],3]
     if(verbose>1)print(paste0(Sys.time(),': Strand-flip handling. Omitting ',length(omitMissing),' because of missing, ',length(omitBlank),' because they are blank, and ',length(omitNonIdentical),' true strand flips'))
-    write.table(c(omitNonIdentical,omitBlank,omitMissing,omitRemaining),file=paste("step_3_chr",chr,"_exclusions",sep=""),sep='\t',row.names=F,col.names=F,quote=F)
+    write.table(c(omitNonIdentical,omitBlank,omitMissing,omitRemaining),file=paste(runDir,"/step_3_chr",chr,"_exclusions",sep=""),sep='\t',row.names=F,col.names=F,quote=F)
     
     
     #running the shapeit command (with two people, the right one and a placeholder heterozygote
-    cmd4<-paste0(shapeit," --input-ped step_3_chr",chr,".ped step_2_chr",chr,".map -M ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_4_chr",chr,"_shapeit_log --exclude-snp step_3_chr",chr,"_exclusions -O step_4_chr",chr)
+    cmd4<-paste0(shapeit," --input-ped ",runDir,"/step_3_chr",chr,".ped ",runDir,"/step_2_chr",chr,".map -M ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log ",runDir,"/step_4_chr",chr,"_shapeit_log --exclude-snp ",runDir,"/step_3_chr",chr,"_exclusions -O ",runDir,"/step_4_chr",chr)
     system(cmd4,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
     
     
     #checking for errors and stopping if there are any. 
     #No point to continue otherwise
     #There's a few specialized bug-hunter scripts that may be activated at this point
-    log<-readLines(paste("step_4_chr",chr,"_shapeit_log.log",sep=""))
+    log<-readLines(paste(runDir,"/step_4_chr",chr,"_shapeit_log.log",sep=""))
     if(substr(log[length(log)],1,5)=="ERROR"){
       if(length(grep("Non biallelic site",log[length(log)]))>0){
         check_for_rare_nonbiallic_snps(uniqueID)
@@ -2033,9 +2033,9 @@ run_imputation<-function(
     }
     
     #removing the placeholder person again
-    cmd5_1<-paste("cut --delimiter=' ' -f 1-7 step_4_chr",chr,".haps > step_5_chr",chr,".haps",sep="")
+    cmd5_1<-paste("cut --delimiter=' ' -f 1-7 ",runDir,"/step_4_chr",chr,".haps > ",runDir,"/step_5_chr",chr,".haps",sep="")
     system(cmd5_1)
-    cmd5_2<-paste("head -n 3 step_4_chr",chr,".sample > step_5_chr",chr,".sample",sep="")
+    cmd5_2<-paste("head -n 3 ",runDir,"/step_4_chr",chr,".sample > ",runDir,"/step_5_chr",chr,".sample",sep="")
     system(cmd5_2)
     
     
@@ -2057,7 +2057,7 @@ run_imputation<-function(
       #4000 lines: 88.5% of failed chunks had more than 4000 lines (compare to 9% of non-failed chunks)
       #2020-12-25: changing max_imputation_chunk_size from 4000 to 3000 - we've had too many 'snapd.service: Watchdog timeout' errors lately, and they often seem to come just around the 3000 to 4000 range.
       #2021-01-01: make the max_imputation_chunk_size configurable
-      cmd_special_1 <- paste0("awk '$3>",start," && $3<",end,"' step_5_chr",chr,".haps")
+      cmd_special_1 <- paste0("awk '$3>",start," && $3<",end,"' ",runDir,"/step_5_chr",chr,".haps")
       chunk_lines_length<-length(system(cmd_special_1,intern=T))
       if(verbose>1)print(paste0(Sys.time(),": initiating impute2 run with a chunk of ",chunk_lines_length," lines, i is ",i))
       
@@ -2071,7 +2071,7 @@ run_imputation<-function(
         
         #if the chunk is smaller than the max_imputation_chunk_size we try to run it, but catch any errors in preparation for re-run
       }else if(chunk_lines_length < get_conf("max_imputation_chunk_size")){
-        cmd7<-paste0(impute2," -m ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start," ",end," -Ne 20000 -o step_7_chr",chr,"_",i)
+        cmd7<-paste0(impute2," -m ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g ",runDir,"/step_5_chr",chr,".haps -int ",start," ",end," -Ne 20000 -o ",runDir,"/step_7_chr",chr,"_",i)
         step_7_log<-system(cmd7,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
         
         #test for memory-lack bug (step_7_log will be 137 if killed, otherwise 0)
@@ -2104,7 +2104,7 @@ run_imputation<-function(
           start_2 <- floor(starts[i] + (j-1)*(5e6/ divisions))
           end_2 <- floor(starts[i]+ (j)*(5e6/ divisions))
           
-          cmd7<-paste0(impute2," -m ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start_2," ",end_2," -Ne 20000 -o step_7_chr",chr,"_",i,"-",j)
+          cmd7<-paste0(impute2," -m ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g ",runDir,"/step_5_chr",chr,".haps -int ",start_2," ",end_2," -Ne 20000 -o ",runDir,"/step_7_chr",chr,"_",i,"-",j)
           step_7_log_2<-system(cmd7,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
           if(step_7_log_2 == 137)stop("the memory problem was still active after second round. It may be smart to reduce the max_imputation_chunk_size in the ~/configuration/configuration.R to a lower number.")
           
@@ -2112,7 +2112,7 @@ run_imputation<-function(
       }
     }
   }
-  setwd(start_wd)
+  # setwd(start_wd)
 }
 
 
