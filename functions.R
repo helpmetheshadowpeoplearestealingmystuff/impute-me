@@ -325,7 +325,8 @@ prepare_individual_genome<-function(
   }
   
   #check for vcf file
-  if(length(grep("\\.vcf\\.gz$",filename))==1 | length(grep("\\.vcf$",filename))==1){
+  
+  if(length(grep("\\.vcf\\.gz$",filename))==1 | length(grep("\\.vcf$",filename))==1 | length(grep("fileformat=VCF",readLines(path,n=1)))>0){
     is_vcf_file <- TRUE
   }else{
     is_vcf_file<-FALSE
@@ -369,8 +370,7 @@ prepare_individual_genome<-function(
     homeFolderShort<-paste("imputation_folder",uniqueID,sep="_")
     homeFolder<-paste0(get_conf("imputations_path"),homeFolderShort,"/")
     dir.create(homeFolder,recursive=T)
-    setwd(homeFolder)
-    write.table("Job is not ready yet",file="job_status.txt",col.names=F,row.names=F,quote=F)
+    write.table("Job is not ready yet",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
     
     
     #unzipping (or not) and moving to new place
@@ -498,15 +498,14 @@ prepare_individual_genome<-function(
     
     
     
-    #This block prepares a vcf file in a separate vcf-file holding area for later processing
+  #This block prepares a vcf file in a separate vcf-file holding area for later processing
   }else if(is_vcf_file){
     #create vcf folder
     if(verbose>0)print(paste0(Sys.time(),": create vcf folder for ",uniqueID))
     homeFolderShort<-paste("vcf_folder",uniqueID,sep="_")
     homeFolder<-paste0(get_conf("vcfs_path"),homeFolderShort,"/")
     dir.create(homeFolder,recursive=T)
-    setwd(homeFolder)
-    write.table("Job is not ready yet",file="job_status.txt",col.names=F,row.names=F,quote=F)
+    write.table("Job is not ready yet",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
     
     
     #unzipping (or not) and moving to new place
@@ -516,7 +515,7 @@ prepare_individual_genome<-function(
     file.copy(path, newTempPath)
     #file.rename(path, newTempPath) #better from space/speed perspective - but unstable across file-systems
     #check if it's gz file - if it is we juse it as-is
-    if(substr(filename, nchar(filename)-2,nchar(filename)) == ".gz"){
+    if(substr(filename, nchar(filename)-2,nchar(filename)) == ".gz" | length(grep("gzip",system(paste("file ", newTempPath),intern=T))>0)){
       filetype<-system(paste("file ", newTempPath),intern=T)
       if(length(grep("gzip",filetype))==1){
         file.rename(newTempPath, newReadyPath)
@@ -641,9 +640,7 @@ prepare_individual_genome<-function(
     #check that first line column 9 is consistent
     #There is a lot of fine-tuning going into this demand, here's some preliminary observations.
     # First: we dislike formats that don't have DP, since it prevents filtering out low-pass sequencing samples
-    #
     # That's ok for companies like Dante lab (GT:AD:AF:DP:F1R2:F2R1:GQ:PL:GP:PRI:SB:MB) and Nebula (GT:AD:DP:GQ:PGT:PID:PL:PS)
-    #
     # That's a problem for the following companies that only report the GT field:
     # genotek.ru, estonian biobank and sequencing.com ("ultimate DNA test kit"). This is a pity, since
     # it seems the data is of ok quality otherwise. Possibly one could write a GT-only
@@ -698,9 +695,9 @@ prepare_individual_genome<-function(
   imputemany_upload <- FALSE
   should_be_imputed <- TRUE
   upload_time<-format(Sys.time(),"%Y-%m-%d-%H-%M-%S")
-  save(uniqueID,email,filename,protect_from_deletion,is_vcf_file,imputemany_upload,should_be_imputed,upload_time,file=paste(homeFolder,"variables.rdata",sep=""))
-  unlink("job_status.txt")
-  write.table("Job is ready",file="job_status.txt",col.names=F,row.names=F,quote=F)
+  save(uniqueID,email,filename,protect_from_deletion,is_vcf_file,imputemany_upload,should_be_imputed,upload_time,file=paste0(homeFolder,"variables.rdata"))
+  unlink(paste0(homeFolder,"job_status.txt"))
+  write.table("Job is ready",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
   
   
   #updating progress
@@ -2918,7 +2915,7 @@ convert_vcfs_to_simple_format<-function(
   write.table(output, file=out_input_temp_path,sep="\t",row.names=F,col.names=F,quote=F)
   setwd(out_temp_path)
   zip(out_input_path, basename(out_input_temp_path), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-  
+  setwd(start_wd)
   
   
   #Write a pData file
@@ -3019,12 +3016,12 @@ convert_vcfs_to_simple_format<-function(
   }
   setwd(out_temp_path)
   zip(out_gen_path, basename(files_for_zipping), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-  
+  setwd(start_wd)
   
   
   #deleting working folders and reset wd folder
   unlink(out_temp_path,recursive=T)
-  setwd(start_wd)
+  
   
   
   
