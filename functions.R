@@ -515,7 +515,7 @@ prepare_individual_genome<-function(
     file.copy(path, newTempPath)
     #file.rename(path, newTempPath) #better from space/speed perspective - but unstable across file-systems
     #check if it's gz file - if it is we juse it as-is
-    if(substr(filename, nchar(filename)-2,nchar(filename)) == ".gz" | length(grep("gzip",system(paste("file ", newTempPath),intern=T))>0)){
+    if(substr(filename, nchar(filename)-2,nchar(filename)) == ".gz"){
       filetype<-system(paste("file ", newTempPath),intern=T)
       if(length(grep("gzip",filetype))==1){
         file.rename(newTempPath, newReadyPath)
