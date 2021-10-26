@@ -2914,9 +2914,10 @@ convert_vcfs_to_simple_format<-function(
   #because we don't impute anything. But it has to be there to avoid crashing dependencies
   write.table(output, file=out_input_temp_path,sep="\t",row.names=F,col.names=F,quote=F)
   setwd(out_temp_path)
-  zip(out_input_path, basename(out_input_temp_path), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-  setwd(start_wd)
-  
+  # zip::zip(out_input_path, basename(out_input_temp_path), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+  zip::zip(out_input_path,out_input_temp_path, mode = "cherry-pick", include_directories=F, recurse=F)
+  # setwd(start_wd)
+
   
   #Write a pData file
   load(variables_path)
@@ -3014,9 +3015,10 @@ convert_vcfs_to_simple_format<-function(
     rm("o")
     gc(verbose=verbose>8)
   }
-  setwd(out_temp_path)
-  zip(out_gen_path, basename(files_for_zipping), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
-  setwd(start_wd)
+  # setwd(out_temp_path)
+  # zip(out_gen_path, basename(files_for_zipping), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+  zip::zip(out_input_path,files_for_zipping, mode = "cherry-pick", include_directories=F, recurse=F)
+  # setwd(start_wd)
   
   
   #deleting working folders and reset wd folder
