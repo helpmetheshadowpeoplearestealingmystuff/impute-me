@@ -1333,7 +1333,7 @@ prepare_imputemany_genome<-function(
   #if possible, admin-mail a notification that an imputemany upload has happened
   #doesn't matter too much if an admin-email is actually sent or not, it'll run either way
   if(get_conf("from_email_address") != "" & get_conf("from_email_password") != "" & get_conf("error_report_mail")!= ""){
-    message<-paste0("<html><body>A data set with name ",upload_time," was uploaded to the server by ",email," (imputation was set to ",should_be_imputed,")</body></html>")
+    message<-paste0("<html><body>A data set with time-stamp ",upload_time," and file name ",filename," was uploaded to the server by ",email," (imputation was set to ",should_be_imputed,")</body></html>")
     suppressWarnings(library("gmailr",warn.conflicts = FALSE))
     gm_auth_configure( path =paste0(get_conf("misc_files_path"),"mailchecker.json"))
     gm_auth(email=get_conf("from_email_address"),cache=paste0(get_conf("misc_files_path"),"mail_secret"))
@@ -2659,7 +2659,7 @@ convert_vcfs_to_simple_format<-function(
   out_folder<-paste0(get_conf("data_path"),uniqueID)
   out_pdata_path<-paste0(out_folder,"/pData.txt")
   out_temp_path<-paste0(out_folder,"/temp")
-  out_input_path<-paste0(out_folder,"/",uniqueID,".input_data.zip") #Odd naming, "out_input_path", I know, but it's because it should be a copy of the input-file saved in the ~/data folder. For VCFs however, it's the post-subsetting input file. They are too big otherwise.
+  out_input_path<-paste0(out_folder,"/",uniqueID,".input_data.zip") #Odd naming, "out_input_path", I know, but it's because it should be a copy of the input-file saved in the ~/data folder. For VCFs however, it's 'input' file almost directly, with a slight modification (down-scaling to common variants). So it's an output of something called 'input'.
   out_input_temp_path<-paste0(out_temp_path,"/",uniqueID,"_raw_data.txt")
   out_temp_gen_per_chr_path<-paste0(out_temp_path,"/",uniqueID,"_chr__CHR__.gen")
   out_gen_path<-paste0(out_folder,"/",uniqueID,".gen.zip")
@@ -2914,7 +2914,7 @@ convert_vcfs_to_simple_format<-function(
   #because we don't impute anything. But it has to be there to avoid crashing dependencies
   write.table(output, file=out_input_temp_path,sep="\t",row.names=F,col.names=F,quote=F)
   setwd(out_temp_path)
-  zip(out_input_path, basename(out_input_temp_path), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+  zip(sub("^\\.",start_wd,out_input_path), basename(out_input_temp_path), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
   setwd(start_wd)
   
   
@@ -3015,7 +3015,7 @@ convert_vcfs_to_simple_format<-function(
     gc(verbose=verbose>8)
   }
   setwd(out_temp_path)
-  zip(out_gen_path, basename(files_for_zipping), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
+  zip(sub("^\\.",start_wd,out_gen_path), basename(files_for_zipping), flags = "-r9Xq", extras = "",zip = Sys.getenv("R_ZIPCMD", "zip"))
   setwd(start_wd)
   
   
