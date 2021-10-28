@@ -1,0 +1,29 @@
+max_imputations_per_node <- 1
+max_imputations_in_queue <- 250
+server_role <- "Hub"
+hub_address <- "www.impute.me"
+routinely_delete_this <- "link,data"
+paypal <- "https://www.paypal.me/lfolkersenimputeme/5"
+bulk_node_count <- 3
+error_report_mail <- ""
+seconds_wait_before_start <- 0
+from_email_password <- ""
+from_email_address <- ""
+verbose<-1
+max_imputation_chunk_size <- 1000
+running_as_docker<-FALSE
+block_double_uploads_by_md5sum <- TRUE
+modules_to_compute <- "AllDiseases,athletics,autoimmuneDiseases,BRCA,diseaseNetwork,drugResponse,ethnicity,guessMyHeight,intelligence,kandinsky,leukemia,microbiome,nonsenser,opinions,prs,rareDiseases,ukbiobank"
+cron_logs_path <- '/home/ubuntu/logs/cron_logs/'
+submission_logs_path <- '/home/ubuntu/logs/submission/'
+shiny_logs_path <- '/home/ubuntu/logs/shiny/'
+misc_files_path <- '/home/ubuntu/misc_files/'
+data_path <- '/home/ubuntu/data/'
+programs_path <- '/home/ubuntu/programs/'
+prs_dir_path <- '/home/ubuntu/prs_dir/'
+imputations_path <- '/home/ubuntu/imputations/'
+vcfs_path <- '/home/ubuntu/vcfs/'
+code_path <- '/home/ubuntu/srv/impute-me/'
+bulk_imputations_path <- "/home/ubuntu/bulk_imputations/"
+uploads_for_imputemany_path <- "/home/ubuntu/uploads_for_imputemany/"
+plink_algorithms_to_run <- "SCORESUM_PLINK_2_0_DOSAGE_MATRIX"
