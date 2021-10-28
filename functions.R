@@ -1360,8 +1360,8 @@ prepare_imputemany_genome<-function(
         Sys.sleep(0.1)
       }
     }
-    if(!file.exists(paste0(get_conf("code_path"),"supercronic.txt")))stop(safeError(paste0("Code was found to be running as docker container, but with no ",get_conf("code_path"),"/supercronic.txt file ready for launch. The job will likely never execute.")))
-    supercronic_out<-try(system(paste0("supercronic ",get_conf("code_path"),"supercronic.txt &")))
+    if(!file.exists(paste0(get_conf("programs_path"),"supercronic.txt")))stop(safeError(paste0("Code was found to be running as docker container, but with no ",get_conf("programs_path"),"/supercronic.txt file ready for launch. The job will likely never execute.")))
+    supercronic_out<-try(system(paste0("supercronic ",get_conf("programs_path"),"supercronic.txt &")))
     if(supercronic_out != 0)stop(safeError("Code was found to be running as docker container, but gave an error when trying to start supercronic. The job will likely not start"))
   }
   
