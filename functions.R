@@ -326,7 +326,7 @@ prepare_individual_genome<-function(
   
   #check for vcf file
   
-  if(length(grep("\\.vcf\\.gz$",filename))==1 | length(grep("\\.vcf$",filename))==1 | length(grep("fileformat=VCF",readLines(path,n=1)))>0){
+  if(length(grep("\\.vcf\\.gz$",filename))==1 | length(grep("\\.vcf$",filename))==1 | suppressWarnings(length(grep("fileformat=VCF",readLines(path,n=1)))>0)){
     is_vcf_file <- TRUE
   }else{
     is_vcf_file<-FALSE
@@ -787,7 +787,7 @@ prepare_individual_genome<-function(
   
   #end with a message. In docker the message includes uniqueID, in web-running it does not (needs email absolutely)
   if(get_conf("running_as_docker")){
-    return(paste("Genome files succesfully submitted. <b>The processing of your genome will take several days to run</b>. Typically between 1 and 5 days, depending on server-queue. When the processing is finished you will receive an email to",email,"with uniqueID and download-instructions. Look in your spam filter if not. The uniqueID of this run is <b>", uniqueID,"</b> -  you can close this browser window."))
+    return(paste("Genome files succesfully submitted. <b>The processing of your genome will take several days to run</b>. Typically between 1 and 5 days, depending on server-queue. The uniqueID of this run is <b>", uniqueID,"</b> -  you can close this browser window, but do note the uniqueID since you need it when processing is finished."))
     
   }else{
     return(paste("Genome files succesfully submitted. <b>The processing of your genome will take several days to run</b>. Typically between 1 and 5 days, depending on server-queue. When the processing is finished you will receive an email to",email,"with uniqueID and download-instructions. Look in your spam filter if not. You can close this browser window."))
@@ -894,6 +894,7 @@ prepare_imputemany_genome<-function(
       "email   imputeok",
       "any   TRUE"
       )
+      if(!file.exists(dirname(acceptedMails_path)))dir.create(dirname(acceptedMails_path),recursive = T)
       f<-file(acceptedMails_path,"w")
       writeLines(default_accepted_emails_all,f)
       close(f)
