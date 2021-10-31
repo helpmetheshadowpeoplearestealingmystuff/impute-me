@@ -227,7 +227,7 @@ get_conf<-function(
     #note this is special - since it is *not* taken from configuration file, but hard-coded
     version <- "v1.0.6"
   }else{
-    stop(paste("Unknown request:",request))
+    stop(paste0("Unknown request:",request,". Try to write one of the following instead: autostart_supercronic, block_double_uploads_by_md5sum, bulk_imputations_path, bulk_node_count, code_path, cron_logs_path, data_path, error_report_mail, from_email_address, from_email_password, hub_address, imputations_path, max_imputation_chunk_size, max_imputations_in_queue, max_imputations_per_node, minimum_required_variant_in_vcf_count, misc_files_path, modules_to_compute, paypal, plink_algorithms_to_run, programs_path, prs_dir_path, routinely_delete_this, running_as_docker, seconds_wait_before_start, server_role, shiny_logs_path, submission_logs_path, uploads_for_imputemany_path, vcfs_path, verbose, version"))
   }    
   #export the request
   return(get(request))
@@ -1847,7 +1847,7 @@ run_imputation<-function(
   
   #set logging level
   verbose <- get_conf("verbose")
-  
+  max_imputation_chunk_size<-get_conf("max_imputation_chunk_size")
   
   #define program paths
   shapeit=paste0(get_conf("programs_path"),"shapeit.v2.904.3.10.0-693.11.6.el7.x86_64/bin/shapeit")
@@ -2071,7 +2071,7 @@ run_imputation<-function(
         next
         
         #if the chunk is smaller than the max_imputation_chunk_size we try to run it, but catch any errors in preparation for re-run
-      }else if(chunk_lines_length < get_conf("max_imputation_chunk_size")){
+      }else if(chunk_lines_length < max_imputation_chunk_size){
         cmd7<-paste0(impute2," -m ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start," ",end," -Ne 20000 -o step_7_chr",chr,"_",i)
         step_7_log<-system(cmd7,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
         
@@ -2079,7 +2079,8 @@ run_imputation<-function(
         if(step_7_log == 137){
           re_run_chunk <- TRUE
           divisions<-3
-          print(paste0(Sys.time(),": restart impute2 run at ",i," with new subset to avoid memory-lack bug. This was done because of impute2-error-137. Chunk_lines_length was ",chunk_lines_length, ". If this error is observed often or around the time of known pipeline failures, it may be smart to reduce the max_imputation_chunk_size in the ~/configuration/configuration.R to a lower number." ))
+          if(max_imputation_chunk_size>300)max_imputation_chunk_size <- max_imputation_chunk_size * 0.9
+          print(paste0(Sys.time(),": restart impute2 run at ",i," with new subset to avoid memory-lack bug. This was done because of impute2-error-137. Chunk_lines_length was ",chunk_lines_length, ". If this error is observed often or around the time of known pipeline failures, it may be smart to reduce the max_imputation_chunk_size in the ~/configuration/configuration.R to a lower number. For this run that setting was now auto-decreased by 10%, to ",round(max_imputation_chunk_size),", but it will reset to preset for next run." ))
         }else{
           re_run_chunk <- FALSE
         }
@@ -2089,7 +2090,7 @@ run_imputation<-function(
         re_run_chunk <- TRUE
         
         #calibrating how many divisions to use
-        if(chunk_lines_length > get_conf("max_imputation_chunk_size") *3){
+        if(chunk_lines_length > max_imputation_chunk_size *3){
           divisions <- 9
         }else{
           divisions <-3
@@ -2148,7 +2149,7 @@ run_bulk_imputation<-function(
   
   #set logging level
   verbose <- get_conf("verbose")
-  
+  max_imputation_chunk_size<-get_conf("max_imputation_chunk_size")
   
   #define program paths
   shapeit=paste0(get_conf("programs_path"),"shapeit.v2.904.3.10.0-693.11.6.el7.x86_64/bin/shapeit")
@@ -2500,7 +2501,7 @@ run_bulk_imputation<-function(
       if(chunk_lines_length == 0){ #if it's zero we should just skip this
         if(verbose>2)print(paste0(Sys.time(),": skip impute2 run at ",i," with because chunk_lines_length was ",chunk_lines_length ))
         next  
-      }else if(chunk_lines_length < get_conf("max_imputation_chunk_size")){
+      }else if(chunk_lines_length < max_imputation_chunk_size){
         cmd14<-paste0(impute2," -m ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt -h ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz -l ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz -known_haps_g step_5_chr",chr,".haps -int ",start," ",end," -Ne 20000 -o step_7_chr",chr,"_",i)
         step_7_log<-system(cmd14,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
         
@@ -2509,7 +2510,8 @@ run_bulk_imputation<-function(
         if(step_7_log == 137){
           re_run_chunk <- TRUE
           divisions<-3
-          if(verbose>=0)print(paste0(Sys.time(),": restart impute2 run at ",i," with new subset to avoid memory-lack bug. This was done because of impute2-error-137. Chunk_lines_length was ",chunk_lines_length, ". If this error is observed often or around the time of known pipeline failures, it may be smart to reduce the max_imputation_chunk_size in the ~/configuration/configuration.R to a lower number." ))
+          if(max_imputation_chunk_size>300)max_imputation_chunk_size <- max_imputation_chunk_size * 0.9
+          if(verbose>=0)print(paste0(Sys.time(),": restart impute2 run at ",i," with new subset to avoid memory-lack bug. This was done because of impute2-error-137. Chunk_lines_length was ",chunk_lines_length, ". If this error is observed often or around the time of known pipeline failures, it may be smart to reduce the max_imputation_chunk_size in the ~/configuration/configuration.R to a lower number. For this run that setting was now auto-decreased by 10%, to ",round(max_imputation_chunk_size),", but it will reset to preset for next run." ))
         }else{
           re_run_chunk <- FALSE
         }
@@ -2518,7 +2520,7 @@ run_bulk_imputation<-function(
         re_run_chunk <- TRUE
         
         #calibrating how many divisions to use, based on tests with very dense data it's good to divide in more chunks
-        if(chunk_lines_length > get_conf("max_imputation_chunk_size")*3){
+        if(chunk_lines_length > max_imputation_chunk_size*3){
           divisions <- 9
         }else{
           divisions <-3

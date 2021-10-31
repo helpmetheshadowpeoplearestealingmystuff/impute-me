@@ -17,6 +17,7 @@ export_function<-function(uniqueID){
   
   
   #Set verbosity consequences
+  verbose <- get_conf("verbose")
   if(verbose > 3){
     ignore.stdout <- FALSE 
   }else{

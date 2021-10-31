@@ -1,17 +1,16 @@
-source("/home/ubuntu/srv/impute-me/functions.R")
 
 
 export_function<-function(uniqueID){
   #start check ups
   
   
-  if(!file.exists(paste("/home/ubuntu/data/",uniqueID,sep=""))){
+  if(!file.exists(paste(get_conf("data_path"),uniqueID,sep=""))){
     stop("Did not find a user with this id")
   }
   
-  SNPs_to_analyze_file<-paste0("/home/ubuntu/srv/impute-me/","autoimmuneDiseases/2016-05-21_SNPs_to_analyze_SOURCE.txt")
+  SNPs_to_analyze_file<-paste0(get_conf("code_path"),"autoimmuneDiseases/2016-05-21_SNPs_to_analyze_SOURCE.txt")
   
-  means_file<-paste0("/home/ubuntu/srv/impute-me/","autoimmuneDiseases/2016-05-21_means.txt")
+  means_file<-paste0(get_conf("code_path"),"autoimmuneDiseases/2016-05-21_means.txt")
   means<-suppressWarnings(read.table(means_file,sep="\t",header=T,row.names=1,stringsAsFactors=F))
   
   
