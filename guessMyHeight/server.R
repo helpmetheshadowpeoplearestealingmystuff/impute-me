@@ -189,6 +189,7 @@ shinyServer(function(input, output) {
 			#make robust against non-initialized files
 			if(class(heights_in_data)=="try-error"){
 			  heights_in_data <-as.data.frame(matrix(nrow=0,ncol=5,dimnames=list(NULL,c("uniqueID","height","gender","height_25282103","height_30718517"))))
+			  if(!file.exists(dirname(all_heights_file)))dir.create(dirname(all_heights_file),recursive=T)
 			  write.table(heights_in_data,file=all_heights_file, quote=F,row.names=F,col.names=T,sep="\t")
 			}else{
 			  if(ncol(heights_in_data)!=5 || !all(colnames(heights_in_data)==c("uniqueID","height","gender","height_25282103","height_30718517"))){

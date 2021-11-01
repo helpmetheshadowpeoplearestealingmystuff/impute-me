@@ -75,6 +75,7 @@ shinyServer(function(input, output) {
 		if(class(opinions_in_data)=="try-error"){
 		  headers_required <- c("uniqueID","g_opinion","real_opinion","real_age","gender","source","datestamp")
 		  opinions_in_data <-as.data.frame(matrix(nrow=0,ncol=length(headers_required),dimnames=list(NULL,headers_required)))
+		  if(!file.exists(dirname(all_opinions_file)))dir.create(dirname(all_opinions_file),recursive=T)
 		  write.table(opinions_in_data,file=all_opinions_file, quote=F,row.names=F,col.names=T,sep="\t")
 		}
 		
