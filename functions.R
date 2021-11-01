@@ -2767,6 +2767,11 @@ convert_vcfs_to_simple_format<-function(
   }
   
   
+  #add sensible colnames and remove those that are not needed
+  colnames(tped) <- c("chr","chr_pos","cm","pos","a1","a2")
+  tped[,"chr"]<-tped[,"pos"]<-tped[,"cm"]<-NULL
+  
+  
   #Reading in the full unmodified bed - there's a few difficult steps here as well, 
   #because right now the 'tped' object is all vcf-variants matched on positions (GCRh38 or GCRh37 as it may be)
   #and no hard requirements for variant-names, which is the second column in the tped. They should be matched.
@@ -2777,15 +2782,15 @@ convert_vcfs_to_simple_format<-function(
   bed<-read.table(bed_path,stringsAsFactors=F,sep="\t",header=T)
   
   #First check if they can be matched by rsid
-  if(length(grep("^rs",tped[,"V2"])) > minimum_required_variant_in_vcf_count){
-    rownames(tped) <- tped[,"V2"]
+  if(length(grep("^rs",tped[,"chr_pos"])) > minimum_required_variant_in_vcf_count){
+    rownames(tped) <- tped[,"chr_pos"]
     rownames(bed) <- bed[,"rsid"]
     
     #Or else revert to positional matching (be careful here - as explained above!)
-  }else if(length(grep("[0-9]+:[0-9]+",tped[,"V2"])) > minimum_required_variant_in_vcf_count){
+  }else if(length(grep("[0-9]+:[0-9]+",tped[,"chr_pos"])) > minimum_required_variant_in_vcf_count){
     if(verbose>0)print(paste0(Sys.time(),": Switching to chr:pos positional matching in the style of Dante lab"))
-    rownames(tped) <- tped[,"V2"]
-    
+    rownames(tped) <- tped[,"chr_pos"]
+    if(verbose>2)print(paste0(Sys.time(),": ",uniqueID," creating in-R bed file with correct build (",build_guess,") and chr-prefix setting (chr_prefix: ",chr_prefix,")"))
     if(build_guess %in% c("none","grch37")){
       if(chr_prefix){
         rownames(bed) <- paste0("chr",bed[,"chr_pos_name"])
@@ -2812,6 +2817,8 @@ convert_vcfs_to_simple_format<-function(
   #way down to exon seq is accepted)
   if(length(intersect(rownames(tped), rownames(bed))) < minimum_required_variant_in_vcf_count){
     stop("Too few vcf-name fields could be matched in the reference bed file")
+  }else{
+    if(verbose>2)print(paste0(Sys.time(),": ",uniqueID," passed double check that a reasonable number of variants are matched with ",length(intersect(rownames(tped), rownames(bed)))," variants"))
   }
   
   
@@ -2829,35 +2836,45 @@ convert_vcfs_to_simple_format<-function(
     if(verbose>1)print(paste0(Sys.time(),": Flipped ",length(w0)," ref and alt alleles known to differ between hg19 and hg38"))
   }
   
-  
   #Now all relevant SNPs have been exported to a tped, we have ensured that the bed-file has matching information
   #and both GRCh37 and GRCh38 locations, and there is a key to extract the alt/ref info from the bed file.
-  #then we first create a data.frame with the inferred homozygote refs
-  w1 <- which(!rownames(bed) %in% rownames(tped))
-  homozygote_refs<-data.frame(
+  
+  
+  #prepare the last things to be lifted out of the tped, before removing it from memory
+  w1 <- which(rownames(bed) %in% rownames(tped))
+  w2 <- which(!rownames(bed) %in% rownames(tped))
+  genotypes_extracted <- tped[rownames(bed)[w1],c("a1","a2")]
+  rm("tped")
+  gc(verbose=verbose>4)
+  genotypes_extracted<-apply(genotypes_extracted,1,paste,collapse="")
+  
+  #create data.frame with vcf-extracted data (i.e. those that are not homozygote ref)
+  non_homozygote_refs<-data.frame(
     rsid=bed[w1,"rsid"],
     chr=bed[w1,"chr"],
     pos=bed[w1,"grch37_start"],
-    genotype=paste0(bed[w1,"ref"],bed[w1,"ref"]),
+    genotype=genotypes_extracted,
     ref=bed[w1,"ref"],
     alt=bed[w1,"alt"],
     stringsAsFactors=F)
+  if(verbose>2)print(paste0(Sys.time(),": ",uniqueID," had ",length(w1)," variants that were not homozygote-ref."))
   
   
-  #create data.frame with vcf-extracted data (i.e. those that are not homozygote ref)
-  w2 <- which(rownames(bed) %in% rownames(tped))
-  non_homozygote_refs<-data.frame(
+
+  #then a data.frame with the inferred homozygote refs
+  homozygote_refs<-data.frame(
     rsid=bed[w2,"rsid"],
     chr=bed[w2,"chr"],
     pos=bed[w2,"grch37_start"],
-    genotype=apply(tped[rownames(bed)[w2],c(5,6)],1,paste,collapse=""),
+    genotype=paste0(bed[w2,"ref"],bed[w2,"ref"]),
     ref=bed[w2,"ref"],
     alt=bed[w2,"alt"],
     stringsAsFactors=F)
+  if(verbose>2)print(paste0(Sys.time(),": ",uniqueID," had ",length(w2)," variants that were homozygote-ref."))
   
   
-  #clean up for memory reasons (this is peak)
-  rm("tped","bed","w1","w2")
+  #clean up for memory reasons
+  rm("bed","w1","w2")
   gc(verbose=verbose>4)
   
   
