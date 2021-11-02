@@ -83,7 +83,7 @@ shinyServer(function(input, output) {
 		
 		#also store this in the all_opinions_file file (for faster loading)
 		line<-paste(c(uniqueID,GRS_beta,real_opinion,real_age,gender,"interactive",format(Sys.time(),"%Y-%m-%d-%H-%M-%S")),collapse="\t")
-		all_opinions_file<-paste(get_conf("misc_files_path"),"all_opinions.txt")
+		all_opinions_file<-paste0(get_conf("misc_files_path"),"all_opinions.txt")
 		if(!is.na(GRS_beta) & !is.na(real_age) & !is.na(real_opinion) & uniqueID != "id_613z86871"){ #only save if height is given and it is not the test user
 		  write(line,file=all_opinions_file,append=TRUE)  
 		}

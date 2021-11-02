@@ -225,7 +225,7 @@ get_conf<-function(
     if(length(bulk_imputations_path)!=1)stop("bulk_imputations_path not length 1")
   }else if(request == "version"){
     #note this is special - since it is *not* taken from configuration file, but hard-coded
-    version <- "v1.0.6"
+    version <- "v1.0.7"
   }else{
     stop(paste0("Unknown request:",request,". Try to write one of the following instead: autostart_supercronic, block_double_uploads_by_md5sum, bulk_imputations_path, bulk_node_count, code_path, cron_logs_path, data_path, error_report_mail, from_email_address, from_email_password, hub_address, imputations_path, max_imputation_chunk_size, max_imputations_in_queue, max_imputations_per_node, minimum_required_variant_in_vcf_count, misc_files_path, modules_to_compute, paypal, plink_algorithms_to_run, programs_path, prs_dir_path, routinely_delete_this, running_as_docker, seconds_wait_before_start, server_role, shiny_logs_path, submission_logs_path, uploads_for_imputemany_path, vcfs_path, verbose, version"))
   }    
