@@ -36,14 +36,14 @@ set_conf<-function(
     "cron_logs_path"='/home/ubuntu/logs/cron_logs/',           #Path to write cron-logs to. Can be empty.
     "submission_logs_path"='/home/ubuntu/logs/submission/',           #Path to write submission logs to (information about user errors, etc). Can be empty.
     "shiny_logs_path"='/home/ubuntu/logs/shiny/',           #Path to write shiny-logs to (the shiny-server system's logs). Can be empty.
-    "misc_files_path"='/home/ubuntu/misc_files/',           #Path to misc-files to (e.g. md5sums, height-scores, imputemany-registry etc).  Can be empty, but then the default configuration.R will be written.
+    "misc_files_path"='/home/ubuntu/misc_files/',           #Path to misc-files to (e.g. md5sums, height-scores, imputepersony-registry etc).  Can be empty, but then the default configuration.R will be written.
     "data_path"='/home/ubuntu/data/',           #Path to write processed final data (imputed bulk data, prs-jsons, etc)
     "programs_path"='/imputeme/programs/',           #Path where to look for programs and imputation-reference. Is not changed during processing and rarely in updates, and must be pre-loaded.
     "prs_dir_path"='/imputeme/prs_dir/',           #Path where to look for prs-weights and frequency data. Is not changed during processing but often in updates, and must be pre-loaded.
     "imputations_path"='/home/ubuntu/imputations/',           #Landing folder for microarray data to be imputed. Can be empty, must be writeable.
     "vcfs_path"='/home/ubuntu/vcfs/',           #Landing folder for sequencing data to be processed without imputation. Can be empty, must be writeable.
     "code_path"='/imputeme/code/impute-me/',           #Path of the entire impute-me github code repository. Cannot be empty. Must be writeable for the ./www/ folder exposition-system through the shiny-server to work, otherwise immutable.
-    "uploads_for_imputemany_path"='/home/ubuntu/uploads_for_imputemany/',           #Path to where uploads to imputemany are saved before being split
+    "uploads_for_imputepersony_path"='/home/ubuntu/uploads_for_imputepersony/',           #Path to where uploads to imputepersony are saved before being split
     "bulk_imputations_path"='/home/ubuntu/bulk_imputations/',           #Working folder for bulk imputation
     "verbose"=1           #how much info to put into logs (min 0, max 10)
   )
@@ -217,9 +217,9 @@ get_conf<-function(
   }else if(request == "code_path"){
     if(!is.character(code_path))stop("code_path not character")
     if(length(code_path)!=1)stop("code_path not length 1")
-  }else if(request == "uploads_for_imputemany_path"){
-    if(!is.character(uploads_for_imputemany_path))stop("uploads_for_imputemany_path not character")
-    if(length(uploads_for_imputemany_path)!=1)stop("uploads_for_imputemany_path not length 1")
+  }else if(request == "uploads_for_imputepersony_path"){
+    if(!is.character(uploads_for_imputepersony_path))stop("uploads_for_imputepersony_path not character")
+    if(length(uploads_for_imputepersony_path)!=1)stop("uploads_for_imputepersony_path not length 1")
   }else if(request == "bulk_imputations_path"){
     if(!is.character(bulk_imputations_path))stop("bulk_imputations_path not character")
     if(length(bulk_imputations_path)!=1)stop("bulk_imputations_path not length 1")
@@ -227,7 +227,7 @@ get_conf<-function(
     #note this is special - since it is *not* taken from configuration file, but hard-coded
     version <- "v1.0.7"
   }else{
-    stop(paste0("Unknown request:",request,". Try to write one of the following instead: autostart_supercronic, block_double_uploads_by_md5sum, bulk_imputations_path, bulk_node_count, code_path, cron_logs_path, data_path, error_report_mail, from_email_address, from_email_password, hub_address, imputations_path, max_imputation_chunk_size, max_imputations_in_queue, max_imputations_per_node, minimum_required_variant_in_vcf_count, misc_files_path, modules_to_compute, paypal, plink_algorithms_to_run, programs_path, prs_dir_path, routinely_delete_this, running_as_docker, seconds_wait_before_start, server_role, shiny_logs_path, submission_logs_path, uploads_for_imputemany_path, vcfs_path, verbose, version"))
+    stop(paste0("Unknown request:",request,". Try to write one of the following instead: autostart_supercronic, block_double_uploads_by_md5sum, bulk_imputations_path, bulk_node_count, code_path, cron_logs_path, data_path, error_report_mail, from_email_address, from_email_password, hub_address, imputations_path, max_imputation_chunk_size, max_imputations_in_queue, max_imputations_per_node, minimum_required_variant_in_vcf_count, misc_files_path, modules_to_compute, paypal, plink_algorithms_to_run, programs_path, prs_dir_path, routinely_delete_this, running_as_docker, seconds_wait_before_start, server_role, shiny_logs_path, submission_logs_path, uploads_for_imputepersony_path, vcfs_path, verbose, version"))
   }    
   #export the request
   return(get(request))
@@ -313,15 +313,15 @@ prepare_individual_genome<-function(
   updateProgress(detail = "Check mail, check queue, check md5sum",value=1,max=4)
   
   
-  #check for too many ongoing imputations
-  if(verbose>0)print(paste0(Sys.time(),": Checking for too many ongoing imputations"))
+  #check for too persony ongoing imputations
+  if(verbose>0)print(paste0(Sys.time(),": Checking for too persony ongoing imputations"))
   s<-list.files(get_conf("imputations_path"))
   if(length(grep("^imputation_folder",s)) >= get_conf("max_imputations_in_queue")){
-    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_persony_jobs",email,length(grep("^imputation_folder",s)))
     m<-paste(m,collapse="\t")
     write(m,file=paste0(get_conf("submission_logs_path"),"submission_log.txt"),append=TRUE)			
     
-    stop(safeError(paste("Too many imputations are already in progress. Cannot start a new one. The only solution to this is to wait a few days until the queues are shorter.")))
+    stop(safeError(paste("Too persony imputations are already in progress. Cannot start a new one. The only solution to this is to wait a few days until the queues are shorter.")))
   }
   
   #check for vcf file
@@ -427,7 +427,7 @@ prepare_individual_genome<-function(
       m<-paste(m,collapse="\t")
       write(m,file=paste0(get_conf("submission_logs_path"),"submission_log.txt"),append=TRUE)	
       if(!protect_from_deletion)unlink(homeFolder,recursive=T)
-      stop(safeError("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
+      stop(safeError("Your file didn't seem like genomic data at all. It must contain persony rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
     }
     
     
@@ -443,7 +443,7 @@ prepare_individual_genome<-function(
       m<-paste(m,collapse="\t")
       write(m,file=paste0(get_conf("submission_logs_path"),"submission_log.txt"),append=TRUE)			
       if(!protect_from_deletion)unlink(homeFolder,recursive=T)
-      stop(safeError(paste0("Your file only had ",lines," lines. That doesn't look like a genome-wide microarray input file. Genome-wide microarray files have many formats and come from many places (23andme, myheritage, ancestrycom, etc), but they always have hundreds of thousands of measurements")))
+      stop(safeError(paste0("Your file only had ",lines," lines. That doesn't look like a genome-wide microarray input file. Genome-wide microarray files have persony formats and come from persony places (23andme, myheritage, ancestrycom, etc), but they always have hundreds of thousands of measurements")))
     }
     
     #running the alternative format converters
@@ -638,7 +638,7 @@ prepare_individual_genome<-function(
     
     
     #check that first line column 9 is consistent
-    #There is a lot of fine-tuning going into this demand, here's some preliminary observations.
+    #There is a lot of fine-tuning going into this depersond, here's some preliminary observations.
     # First: we dislike formats that don't have DP, since it prevents filtering out low-pass sequencing samples
     # That's ok for companies like Dante lab (GT:AD:AF:DP:F1R2:F2R1:GQ:PL:GP:PRI:SB:MB) and Nebula (GT:AD:DP:GQ:PGT:PID:PL:PS)
     # That's a problem for the following companies that only report the GT field:
@@ -692,10 +692,10 @@ prepare_individual_genome<-function(
   #1) saving the small job_status.txt that just shows a status for the node/hub setup to read quickly over ssh
   #2) saving the variables.rdata which is a file of processing-specific parameters that is needed in first process, but afterwards deleted
   if(verbose>0)print(paste0(Sys.time(),": Finalize prepare_individual_genome"))
-  imputemany_upload <- FALSE
+  imputepersony_upload <- FALSE
   should_be_imputed <- TRUE
   upload_time<-format(Sys.time(),"%Y-%m-%d-%H-%M-%S")
-  save(uniqueID,email,filename,protect_from_deletion,is_vcf_file,imputemany_upload,should_be_imputed,upload_time,file=paste0(homeFolder,"variables.rdata"))
+  save(uniqueID,email,filename,protect_from_deletion,is_vcf_file,imputepersony_upload,should_be_imputed,upload_time,file=paste0(homeFolder,"variables.rdata"))
   unlink(paste0(homeFolder,"job_status.txt"))
   write.table("Job is ready",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
   
@@ -772,16 +772,16 @@ prepare_individual_genome<-function(
         Sys.sleep(0.1)
       }
     }
-    if(verbose>=0 & !file.exists(paste0(get_conf("programs_path"),"supercronic.txt")))print(paste0(Sys.time(),": Code was found to be running as docker container, but with no supercronic.txt file ready for launch. The job needs to be executed manually."))
+    if(verbose>=0 & !file.exists(paste0(get_conf("programs_path"),"supercronic.txt")))print(paste0(Sys.time(),": Code was found to be running as docker container, but with no supercronic.txt file ready for launch. The job needs to be executed personually."))
     #it's possible that the ending ampersand is not a good idea. The problem is that when the
     #docker is running as a web-interface it works well. But when the function is called from outside of
     #the docker, with docker exec - then supercronic deletes itself after a few seconds. It can be
     #kept with e.g. a Sys.sleep() argument. But that would destroy the feedback on the website (port 3838-based)
-    #and there's no easy way to tell which place invoked the command. So right now the web
+    #and there's no easy way to tell which place invoked the compersond. So right now the web
     #interface "wins" because that's for more casual users. Then super users can
     #separately call and start the supercronic
     supercronic_out<-try(system(paste0("supercronic ",get_conf("programs_path"),"supercronic.txt &")))
-    if(supercronic_out != 0)stop(safeError("Code was found to be running as docker container, but gave an error when trying to start supercronic. The job must be started manually."))
+    if(supercronic_out != 0)stop(safeError("Code was found to be running as docker container, but gave an error when trying to start supercronic. The job must be started personually."))
   }
   
   
@@ -803,7 +803,7 @@ prepare_individual_genome<-function(
 
 
 
-prepare_imputemany_genome<-function(
+prepare_imputepersony_genome<-function(
   path, 
   email=NULL, 
   updateProgress=NULL,
@@ -811,10 +811,10 @@ prepare_imputemany_genome<-function(
   protect_from_deletion=FALSE,
   filename=NULL
 ){
-  #' prepare imputemany genome
+  #' prepare imputepersony genome
   #' 
   #' This is the data-receiving function for batch uploads, performing the 
-  #' same function as prepare_individual_genome, only for many genomes
+  #' same function as prepare_individual_genome, only for persony genomes
   #' at the same time. Like prepare_individual_genome, it will perform in 
   #' web-speed, meaning a few seconds (more slow than individual genome 
   #' handling though). If these checks are passed, files converted to 
@@ -926,15 +926,15 @@ prepare_imputemany_genome<-function(
   
   
   
-  #check for too many ongoing imputations
-  if(verbose>0)print(paste0(Sys.time(),": Check for too many ongoing imputations"))
+  #check for too persony ongoing imputations
+  if(verbose>0)print(paste0(Sys.time(),": Check for too persony ongoing imputations"))
   s<-list.files(get_conf("imputations_path"))
   if(length(grep("^imputation_folder",s)) >= get_conf("max_imputations_in_queue")){
-    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_many_jobs",email,length(grep("^imputation_folder",s)))
+    m<-c(format(Sys.time(),"%Y-%m-%d-%H-%M-%S"),"too_persony_jobs",email,length(grep("^imputation_folder",s)))
     m<-paste(m,collapse="\t")
     write(m,file=paste0(get_conf("submission_logs_path"),"submission_log.txt"),append=TRUE)			
     
-    stop(safeError(paste("Too many imputations are already in progress. Cannot start a new one.")))
+    stop(safeError(paste("Too persony imputations are already in progress. Cannot start a new one.")))
   }
   
   
@@ -954,16 +954,16 @@ prepare_imputemany_genome<-function(
     write(this_person_md5sum,file=paste0(get_conf("misc_files_path"),"md5sums.txt"),append=TRUE)			
   }
   
-  #Start handling logic. There's many different paths in and out of this interface
+  #Start handling logic. There's persony different paths in and out of this interface
   #because it both has to handle various input formats, but also be able to either
   #send the data to the main imputation algorithm, or elsewhere for later
-  #manual handling - depending on user choice
+  #personual handling - depending on user choice
   
   #if the 'should be imputed" switch is not on, we just leave them in a folder for 
-  #later (manual) inspection and downstream processing. This is the most 'robust'
+  #later (personual) inspection and downstream processing. This is the most 'robust'
   #choice in the sense that virtually nothing is done automatically.
   if(!should_be_imputed){
-    outfolder <- get_conf("uploads_for_imputemany_path")
+    outfolder <- get_conf("uploads_for_imputepersony_path")
     if(!file.exists(outfolder))dir.create(outfolder)
     file.copy(path,paste0(outfolder,upload_time,".zip") )
   }
@@ -972,10 +972,10 @@ prepare_imputemany_genome<-function(
   #handle different file-types - because this will be done at (slow) web-speed, hence the progress-tracker
   if(should_be_imputed){
     #unpacking and file-submission logic
-    uploads_for_imputemany_path <- get_conf("uploads_for_imputemany_path")
-    if(!file.exists(uploads_for_imputemany_path))dir.create(uploads_for_imputemany_path)
-    newUnzippedPath <- paste0(uploads_for_imputemany_path,upload_time,"_input.txt")
-    gunzipResults<-unzip(path,exdir="~/uploads_for_imputemany/")
+    uploads_for_imputepersony_path <- get_conf("uploads_for_imputepersony_path")
+    if(!file.exists(uploads_for_imputepersony_path))dir.create(uploads_for_imputepersony_path)
+    newUnzippedPath <- paste0(uploads_for_imputepersony_path,upload_time,"_input.txt")
+    gunzipResults<-unzip(path,exdir="~/uploads_for_imputepersony/")
     if(length(grep(" ",gunzipResults))>0)stop(safeError("Please don't use spaces in filenames, also not inside zip-file contents."))
     gunzipResults<-grep("_MACOSX",gunzipResults,invert=T,value=T)
     if(length(gunzipResults)==1){ #then its a zip file
@@ -1020,7 +1020,7 @@ prepare_imputemany_genome<-function(
     if(submission_type == "plink-ped"){
       pedfile<-gunzipResults[gsub("^.+\\.","",gunzipResults)=="ped"]
       mapfile<-gunzipResults[gsub("^.+\\.","",gunzipResults)=="map"]
-      runDir <- get_conf("uploads_for_imputemany_path")
+      runDir <- get_conf("uploads_for_imputepersony_path")
       outfile<-sub("\\.ped$","",basename(pedfile))
       
       
@@ -1157,8 +1157,8 @@ prepare_imputemany_genome<-function(
         
         should_be_imputed<-TRUE
         filename <- sampleName
-        imputemany_upload <- TRUE
-        save(uniqueID,email,filename,protect_from_deletion,sampleNames,upload_time,should_be_imputed,imputemany_upload,file=paste(homeFolder,"variables.rdata",sep=""))
+        imputepersony_upload <- TRUE
+        save(uniqueID,email,filename,protect_from_deletion,sampleNames,upload_time,should_be_imputed,imputepersony_upload,file=paste(homeFolder,"variables.rdata",sep=""))
         
         write.table("Job is ready",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
         
@@ -1190,7 +1190,7 @@ prepare_imputemany_genome<-function(
       print("checking if it is a consistent file")
       testRead<-try(read.table(path,nrow=10,stringsAsFactors=F,sep="\t"))
       if(class(testRead)=="try-error"){
-        stop(safeError("Your file didn't seem like genomic data at all. It must contain many rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
+        stop(safeError("Your file didn't seem like genomic data at all. It must contain persony rows, one per SNP, with information about your genotype. Please write an email if you think this is a mistake and that this file format should be supported."))
       }
 
       #reading and checking
@@ -1308,8 +1308,8 @@ prepare_imputemany_genome<-function(
         fileout_name <- paste0(homeFolder,uniqueID,"_raw_data.txt" )
         write.table(o,file=fileout_name, row.names=F,col.names=F, quote=F, sep ="\t")
         filename <- sampleName
-        imputemany_upload <- TRUE
-        save(uniqueID,email,filename,protect_from_deletion,sampleNames,upload_time,should_be_imputed,imputemany_upload,file=paste(homeFolder,"variables.rdata",sep=""))
+        imputepersony_upload <- TRUE
+        save(uniqueID,email,filename,protect_from_deletion,sampleNames,upload_time,should_be_imputed,imputepersony_upload,file=paste(homeFolder,"variables.rdata",sep=""))
         unlink(paste0(homeFolder,"job_status.txt"))
         write.table("Job is ready",file=paste0(homeFolder,"job_status.txt"),col.names=F,row.names=F,quote=F)
       }
@@ -1317,21 +1317,21 @@ prepare_imputemany_genome<-function(
     
     
     #prepare write-out to bulk-impute register file 
-    imputemany_registry_path <- paste0(get_conf("misc_files_path"),"imputemany_registry.txt")
-    if(!file.exists(imputemany_registry_path)){
-      f<-file(imputemany_registry_path,"w")
+    imputepersony_registry_path <- paste0(get_conf("misc_files_path"),"imputepersony_registry.txt")
+    if(!file.exists(imputepersony_registry_path)){
+      f<-file(imputepersony_registry_path,"w")
       writeLines(paste(c("upload_time","has_been_sent","error_sent","length","email","uniqueIDs"),collapse="\t"),f)
       close(f)
     }
     #headers are: upload time, has-been-sent,length,  error-sent, email, uniqueIDs
     registry_entry <-paste(c(upload_time,FALSE, FALSE, length(sampleNames),email, paste(names(sampleNames),collapse=",")),collapse="\t")
-    write(registry_entry,file=imputemany_registry_path,append=TRUE)			
+    write(registry_entry,file=imputepersony_registry_path,append=TRUE)			
     
     
   }
   
   
-  #if possible, admin-mail a notification that an imputemany upload has happened
+  #if possible, admin-mail a notification that an imputepersony upload has happened
   #doesn't matter too much if an admin-email is actually sent or not, it'll run either way
   if(get_conf("from_email_address") != "" & get_conf("from_email_password") != "" & get_conf("error_report_mail")!= ""){
     message<-paste0("<html><body>A data set with time-stamp ",upload_time," and file name ",filename," was uploaded to the server by ",email," (imputation was set to ",should_be_imputed,")</body></html>")
@@ -1341,7 +1341,7 @@ prepare_imputemany_genome<-function(
     prepared_email <- try(gm_mime() %>%
                             gm_to(get_conf("error_report_mail")) %>%
                             gm_from(get_conf("from_email_address")) %>%
-                            gm_subject("Impute-many data set uploaded") %>%
+                            gm_subject("Impute-persony data set uploaded") %>%
                             gm_html_body(message))
     mailingResult<-try(gm_send_message(prepared_email))
   }
@@ -1931,7 +1931,7 @@ run_imputation<-function(
   out1<-system(cmd1,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
   
   
-  #If the standard command fails, we run an extensive error rescue. Hopefully shouldn't be used too often, but is nice for when people submit weird custom-setup data
+  #If the standard compersond fails, we run an extensive error rescue. Hopefully shouldn't be used too often, but is nice for when people submit weird custom-setup data
   if(out1 == 3){
     special_error_check(uniqueID,runDir)
   }  
@@ -1964,14 +1964,14 @@ run_imputation<-function(
     
     
     
-    #Many homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
+    #persony homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
     logFile<-read.table(paste("step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1)
     omitMissing<-logFile[logFile[,1] %in% 'Missing',3]
     logStrand<-logFile[logFile[,1] %in% 'Strand',]
     omitNonIdentical<-logStrand[logStrand[,5] != logStrand[,6],3]
     omitBlank<-logStrand[logStrand[,5]%in%'',3]
     
-    #These are super-annoying. We have to create another (fake) person with the alternative allele just for their sake. This next command takes all the homozygotes, minus the indels (which are too complicated to lift out from 23andme)
+    #These are super-annoying. We have to create another (fake) person with the alternative allele just for their sake. This next compersond takes all the homozygotes, minus the indels (which are too complicated to lift out from 23andme)
     forceHomozygoteTable<-logStrand[
       logStrand[,5] == logStrand[,6] & 
         nchar(logStrand[,9])==1 & 
@@ -1996,7 +1996,7 @@ run_imputation<-function(
       if(length(have_quotes)>0){
         have_quotes_count <- length(have_quotes)
         if(have_quotes_count>5)have_quotes<-have_quotes[1:5]
-        stop(paste0("Mismatch between read-in map and ped length. This has happened before, because of special characters in the SNP names. In this case ", have_quotes_count," SNP(s) were found to have quotes in them. These should be manually removed, e.g.: ",paste(have_quotes,collapse=", ")))  
+        stop(paste0("Mismatch between read-in map and ped length. This has happened before, because of special characters in the SNP names. In this case ", have_quotes_count," SNP(s) were found to have quotes in them. These should be personually removed, e.g.: ",paste(have_quotes,collapse=", ")))  
       }else{
         stop("Mismatch between read-in map and ped length.")
       }
@@ -2017,7 +2017,7 @@ run_imputation<-function(
     write.table(c(omitNonIdentical,omitBlank,omitMissing,omitRemaining),file=paste("step_3_chr",chr,"_exclusions",sep=""),sep='\t',row.names=F,col.names=F,quote=F)
     
     
-    #running the shapeit command (with two people, the right one and a placeholder heterozygote
+    #running the shapeit compersond (with two people, the right one and a placeholder heterozygote
     cmd4<-paste0(shapeit," --input-ped step_3_chr",chr,".ped step_2_chr",chr,".map -M ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_4_chr",chr,"_shapeit_log --exclude-snp step_3_chr",chr,"_exclusions -O step_4_chr",chr)
     system(cmd4,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
     
@@ -2056,7 +2056,7 @@ run_imputation<-function(
       #2020-07-05 Adding in the extra error logger and catcher
       #the full analysis showed that on current server-setup, the typical break point was around
       #4000 lines: 88.5% of failed chunks had more than 4000 lines (compare to 9% of non-failed chunks)
-      #2020-12-25: changing max_imputation_chunk_size from 4000 to 3000 - we've had too many 'snapd.service: Watchdog timeout' errors lately, and they often seem to come just around the 3000 to 4000 range.
+      #2020-12-25: changing max_imputation_chunk_size from 4000 to 3000 - we've had too persony 'snapd.service: Watchdog timeout' errors lately, and they often seem to come just around the 3000 to 4000 range.
       #2021-01-01: make the max_imputation_chunk_size configurable
       cmd_special_1 <- paste0("awk '$3>",start," && $3<",end,"' step_5_chr",chr,".haps")
       chunk_lines_length<-length(system(cmd_special_1,intern=T))
@@ -2085,11 +2085,11 @@ run_imputation<-function(
           re_run_chunk <- FALSE
         }
         
-        #if we already know the chunk is too big to handle, we demand a split of it  
+        #if we already know the chunk is too big to handle, we depersond a split of it  
       }else{
         re_run_chunk <- TRUE
         
-        #calibrating how many divisions to use
+        #calibrating how persony divisions to use
         if(chunk_lines_length > max_imputation_chunk_size *3){
           divisions <- 9
         }else{
@@ -2246,7 +2246,7 @@ run_bulk_imputation<-function(
     
     
     
-    #If the standard command fails, we run an extensive error rescue. Hopefully shouldn't be used too often, but is nice for when people submit weird custom-setup data
+    #If the standard compersond fails, we run an extensive error rescue. Hopefully shouldn't be used too often, but is nice for when people submit weird custom-setup data
     if(out1 == 3 ){
       special_error_check(uniqueID)
     }  
@@ -2295,7 +2295,7 @@ run_bulk_imputation<-function(
     }    
     
     #Consider if we should continue at all: if there's none, we don't. If there's more we do. 
-    #However, if there's only one we have to proceed in a special way because the merge commands would fail
+    #However, if there's only one we have to proceed in a special way because the merge compersonds would fail
     if(nrow(merge_df)==0){ #no continue case
       if(verbose>0)print(paste0(Sys.time(),": NOTE Skipping chr",chr," because none of the samples had it"))
       next
@@ -2372,7 +2372,7 @@ run_bulk_imputation<-function(
           }
           
           
-          stop("Too many non-biallelic SNPs. This must be investigated. Check above debugging info")
+          stop("Too persony non-biallelic SNPs. This must be investigated. Check above debugging info")
           
         }
         for(uniqueID in uniqueIDs){
@@ -2406,14 +2406,14 @@ run_bulk_imputation<-function(
     system(cmd9,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
     
     
-    #Many homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
+    #persony homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
     logFile<-read.table(paste("step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1,comment.char="")
     omitMissing<-logFile[logFile[,1] %in% 'Missing',3] #SNPs that were not found in 1kgenomes. Lot's of 23andme iXXXXX here.
     logStrand<-logFile[logFile[,1] %in% 'Strand',]
     omitNonIdentical<-logStrand[logStrand[,5] != logStrand[,6],3] #typically indels with different notation than 1kgenomes (<10 counts is usual)
     omitBlank<-logStrand[logStrand[,5]%in%'',3] #these are SNPs that are in map-file but contents is all-blank in input data. Safe to omit
     
-    #These are super-annoying. We have to create another (fake) person with the alternative allele just for their sake. This next command takes all the homozygotes, minus the indels (which are too complicated to lift out from 23andme)
+    #These are super-annoying. We have to create another (fake) person with the alternative allele just for their sake. This next compersond takes all the homozygotes, minus the indels (which are too complicated to lift out from 23andme)
     forceHomozygoteTable<-logStrand[
       logStrand[,5] == logStrand[,6] & 
         nchar(logStrand[,9])==1 & 
@@ -2446,7 +2446,7 @@ run_bulk_imputation<-function(
     write.table(c(omitNonIdentical,omitBlank,omitMissing,omitRemaining),file=paste("step_3_chr",chr,"_exclusions",sep=""),sep='\t',row.names=F,col.names=F,quote=F)
     
     
-    #running the shapeit command (with up to eleven people, the ten right ones and a placeholder heterozygote - or less if some where skipped)
+    #running the shapeit compersond (with up to eleven people, the ten right ones and a placeholder heterozygote - or less if some where skipped)
     cmd10<-paste0(shapeit," --force --input-ped step_3_chr",chr,".ped step_2_chr",chr,".map -M ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_4_chr",chr,"_shapeit_log --exclude-snp step_3_chr",chr,"_exclusions -O step_4_chr",chr)
     system(cmd10,ignore.stderr=ignore.stderr, ignore.stdout=ignore.stdout)
     
@@ -2497,7 +2497,7 @@ run_bulk_imputation<-function(
       if(verbose>1)print(paste0(Sys.time(),": initiating impute2 run with a chunk of ",chunk_lines_length," lines, i is ",i))
       
       
-      #execute impute2 step depending on how many lines we have
+      #execute impute2 step depending on how persony lines we have
       if(chunk_lines_length == 0){ #if it's zero we should just skip this
         if(verbose>2)print(paste0(Sys.time(),": skip impute2 run at ",i," with because chunk_lines_length was ",chunk_lines_length ))
         next  
@@ -2515,11 +2515,11 @@ run_bulk_imputation<-function(
         }else{
           re_run_chunk <- FALSE
         }
-        #if we already know the chunk is too big to handle, we demand a split of it  
+        #if we already know the chunk is too big to handle, we depersond a split of it  
       }else{
         re_run_chunk <- TRUE
         
-        #calibrating how many divisions to use, based on tests with very dense data it's good to divide in more chunks
+        #calibrating how persony divisions to use, based on tests with very dense data it's good to divide in more chunks
         if(chunk_lines_length > max_imputation_chunk_size*3){
           divisions <- 9
         }else{
@@ -2808,7 +2808,7 @@ convert_vcfs_to_simple_format<-function(
     }else{stop("impossible2")}
     
   }else{
-    stop("Not matching on rsid in vcf-name field and also not recognised as Dante lab chr:pos naming. Needs manual evaluation.")
+    stop("Not matching on rsid in vcf-name field and also not recognised as Dante lab chr:pos naming. Needs personual evaluation.")
   }
   
   #double check that a reasonable number of variants are matched (we still use the minimum_required_variant_in_vcf_count variable, although
@@ -2944,9 +2944,9 @@ convert_vcfs_to_simple_format<-function(
   md5sum <- md5sum(vcf_path)
   imputation_type<-"vcf"
   f<-file(out_pdata_path,"w")
-  writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion","should_be_imputed","imputemany_upload","upload_time","imputation_type"),collapse="\t"),f)
-  # writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,sex,protect_from_deletion,should_be_imputed,imputemany_upload,upload_time,imputation_type),collapse="\t"),f)
-  writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,sex,protect_from_deletion,should_be_imputed,imputemany_upload,upload_time,imputation_type),collapse="\t"),f)
+  writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion","should_be_imputed","imputepersony_upload","upload_time","imputation_type"),collapse="\t"),f)
+  # writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,sex,protect_from_deletion,should_be_imputed,imputepersony_upload,upload_time,imputation_type),collapse="\t"),f)
+  writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,sex,protect_from_deletion,should_be_imputed,imputepersony_upload,upload_time,imputation_type),collapse="\t"),f)
   
   close(f)
   
@@ -3022,7 +3022,7 @@ convert_vcfs_to_simple_format<-function(
     o[w4,"prob3"] <- 1
     
     
-    #check how many are missing still (typically just a few, due to odd alt-notation)
+    #check how persony are missing still (typically just a few, due to odd alt-notation)
     w5<-which(apply(is.na(o[,c("prob1","prob2","prob3")]),1,sum)>0)
     o[w5,"prob1"] <- 0
     o[w5,"prob2"] <- 0
@@ -3270,7 +3270,7 @@ summarize_imputation<-function(
       
       #	re-run if it's less than 100 bytes (fair to assume something was wrong then)
       if(size<100 ){
-        if(verbose>0)print(paste0("retrying step 8-9 command for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
+        if(verbose>0)print(paste0("retrying step 8-9 compersond for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
         cmd7 <- paste("split --lines 5000000 step_8_chr",chr,".gen step_8_extra_chr",chr,".gen",sep="")
         system(cmd7)
         chunks<-grep(paste("step_8_extra_chr",chr,"\\.gena[a-z]$",sep=""),list.files(runDir),value=T)
@@ -3367,14 +3367,14 @@ summarize_imputation<-function(
   if(verbose>0)print(paste0(Sys.time(),": Creating pdata file for ",uniqueID))
   load(paste0(runDir,"/variables.rdata"))
   if(!exists("should_be_imputed")) should_be_imputed  <- NA
-  if(!exists("imputemany_upload")) imputemany_upload  <- NA
+  if(!exists("imputepersony_upload")) imputepersony_upload  <- NA
   if(!exists("upload_time")) upload_time <- NA
   timeStamp<-format(Sys.time(),"%Y-%m-%d-%H-%M")
   md5sum <- md5sum(paste(uniqueID,"_raw_data.txt",sep=""))
   # gender<-system(paste("cut --delimiter=' ' -f 6 ",runDir,"/step_4_chr22.sample",sep=""),intern=T)[3]
   f<-file(paste0(prepDestinationDir,"/pData.txt"),"w")
-  writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion","should_be_imputed","imputemany_upload","upload_time","imputation_type"),collapse="\t"),f)
-  writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,sex,protect_from_deletion,should_be_imputed,imputemany_upload,upload_time,imputation_type),collapse="\t"),f)
+  writeLines(paste(c("uniqueID","filename","email","first_timeStamp","md5sum","gender","protect_from_deletion","should_be_imputed","imputepersony_upload","upload_time","imputation_type"),collapse="\t"),f)
+  writeLines(paste(c(uniqueID,filename,email,timeStamp,md5sum,sex,protect_from_deletion,should_be_imputed,imputepersony_upload,upload_time,imputation_type),collapse="\t"),f)
   close(f)
   
   
@@ -3431,10 +3431,10 @@ transfer_cleanup_and_mailout<-function(
   pData<-try(read.table(pDataFile,header=T,stringsAsFactors=F,sep="\t"))
   email<-pData[1,"email"]
   filename<-pData[1,"filename"]
-  if("imputemany_upload"%in%colnames(pData)){
-    imputemany_upload<-pData[1,"imputemany_upload"]
+  if("imputepersony_upload"%in%colnames(pData)){
+    imputepersony_upload<-pData[1,"imputepersony_upload"]
   }else{
-    imputemany_upload<-FALSE
+    imputepersony_upload<-FALSE
   }
   if("imputation_type"%in%colnames(pData)){
     imputation_type<-pData[1,"imputation_type"]
@@ -3520,8 +3520,8 @@ transfer_cleanup_and_mailout<-function(
   
   
   
-  if(exists("imputemany_upload") && imputemany_upload){
-    print(paste0(Sys.time(),": Skipping mail because it's from imputemany_upload"))
+  if(exists("imputepersony_upload") && imputepersony_upload){
+    print(paste0(Sys.time(),": Skipping mail because it's from imputepersony_upload"))
   }else{
     print(paste0(Sys.time(),": Sending results mail"))
     ip<-"https://www.impute.me"
@@ -3589,7 +3589,7 @@ transfer_cleanup_and_mailout<-function(
     if(out9==0){
       unlink(paste(get_conf("data_path"),uniqueID,sep=""),recursive=TRUE)
     }else{
-      stop("Error code for shh call to Hub. Final removal of data aborted, but note that several other transfers already have taken place, including results mailing. Need to manually untangle.")
+      stop("Error code for shh call to Hub. Final removal of data aborted, but note that several other transfers already have taken place, including results mailing. Need to personually untangle.")
     }
   }
   
@@ -4737,7 +4737,7 @@ remove_all_temp_folders<-function(
 ){
   #' remove all temp folders
   #' 
-  #' A function that will crawl all data directories and remove any lingering temp folders - only use with manual execution
+  #' A function that will crawl all data directories and remove any lingering temp folders - only use with personual execution
   #' 
   #' @param uniqueIDs Optional vector of uniqueIDs to check for temp-folders. Otherwise all uniqueIDs in ~/data are checked.
   
@@ -4767,7 +4767,7 @@ remove_all_empty_data_folders<-function(
   #' 
   #' A function that will crawl all data directories and remove any that 
   #' are empty. These can happen on submission errors. Best to just execute 
-  #' manually
+  #' personually
   #' 
   #' @param uniqueIDs Optional vector of uniqueIDs to check for emptiness. Otherwise all uniqueIDs in ~/data are checked.
   
@@ -5219,7 +5219,7 @@ reset_runs_from_node<-function(
   
   
   #check if there are overlaps
-  if(length(intersect(folders_imputation,folders_data))>0)stop("There are folders both in ~/imputation and ~/data we haven't seen that before, but should probably be checked manually")
+  if(length(intersect(folders_imputation,folders_data))>0)stop("There are folders both in ~/imputation and ~/data we haven't seen that before, but should probably be checked personually")
   
   
   if(length(folders_data)>0){
@@ -5266,7 +5266,7 @@ reset_runs_from_node<-function(
 
 
 
-summarize_imputemany_json<-function(
+summarize_imputepersony_json<-function(
   uniqueIDs, 
   name
 ){
@@ -5501,7 +5501,7 @@ check_for_rare_nonbiallic_snps<-function(
   
   
   #this blocks allows the check_for_rare_nonbiallic_snps script to be run also on new samples, not halfway through processing
-  #(useful when suspecting many non-biallelic alleles. Most often the block is skipped however.)
+  #(useful when suspecting persony non-biallelic alleles. Most often the block is skipped however.)
   required_files<-c("step_2_exclusions","step_2_chrX.ped")
   if(any(!file.exists(required_files))){
     if(verbose>=0)print(paste0(Sys.time(),": Re-running first parts of imputation script in preparation for check_for_rare_nonbiallic_snps from scratch."))
@@ -5536,14 +5536,14 @@ check_for_rare_nonbiallic_snps<-function(
     cmd3<-paste0(shapeit," -check --input-ped step_2_chr",chr,".ped step_2_chr",chr,".map -M ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_2_chr",chr,"_shapeit_log")
     system(cmd3,ignore.stdout = T, ignore.stderr = T)
     
-    #Many homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
+    #persony homozygote SNPs will fail the check, because, well - of course, they don't have the ref-allele. So we make more detailed R script for sorting them
     logFile<-read.table(paste("step_2_chr",chr,"_shapeit_log.snp.strand",sep=""),sep='\t',stringsAsFactors=FALSE,header=F,skip=1)
     omitMissing<-logFile[logFile[,1] %in% 'Missing',3]
     logStrand<-logFile[logFile[,1] %in% 'Strand',]
     omitNonIdentical<-logStrand[logStrand[,5] != logStrand[,6],3]
     omitBlank<-logStrand[logStrand[,5]%in%'',3]
     
-    #These are super-annoying. We have to create another (fake) person with the alternative allele just for their sake. This next command takes all the homozygotes, minus the indels (which are too complicated to lift out from 23andme)
+    #These are super-annoying. We have to create another (fake) person with the alternative allele just for their sake. This next compersond takes all the homozygotes, minus the indels (which are too complicated to lift out from 23andme)
     forceHomozygoteTable<-logStrand[
       logStrand[,5] == logStrand[,6] & 
         nchar(logStrand[,9])==1 & 
@@ -5573,7 +5573,7 @@ check_for_rare_nonbiallic_snps<-function(
     omitRemaining<-logStrand[!logStrand[,4]%in%forceHomozygoteTable[,4],3]
     write.table(c(omitNonIdentical,omitBlank,omitMissing,omitRemaining),file=paste("step_3_chr",chr,"_exclusions",sep=""),sep='\t',row.names=F,col.names=F,quote=F)
     
-    #running the shapeit command (with two people, the right one and a placeholder heterozygote
+    #running the shapeit compersond (with two people, the right one and a placeholder heterozygote
     cmd4<-paste0(shapeit," -check --input-ped step_3_chr",chr,".ped step_2_chr",chr,".map -M ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/genetic_map_chr",chr,"_combined_b37.txt --input-ref ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.hap.gz ",get_conf("programs_path"),"ALL_1000G_phase1integrated_v3_impute/ALL_1000G_phase1integrated_v3_chr",chr,"_impute.legend.gz ",sample_ref," --output-log step_4_chr",chr,"_shapeit_log --exclude-snp step_3_chr",chr,"_exclusions")
     system(cmd4,ignore.stdout = T, ignore.stderr = T)
     
@@ -5709,7 +5709,7 @@ check_genome_build<-function(map_file){
   #' A function that quickly checks if a map file (plink format) is in the hg19 build, using a
   #' small set of SNPs with hg19-position, known to almost always be included in input files
   #' 
-  #' @param map_file The file that needs to be checked (plink format mainly, but also checks for and accepts many raw DTC formats)
+  #' @param map_file The file that needs to be checked (plink format mainly, but also checks for and accepts persony raw DTC formats)
   
   #checking map file
   if(class(map_file)!="character")stop(paste("map_file must be character, not",class(map_file)))
@@ -5978,7 +5978,7 @@ convert_gen_file<-function(
       
       #	re-run if it's less than 100 bytes (fair to assume something was wrong then)
       if(size<100 ){
-        if(verbose>0)print(paste0("retrying step 8-9 command for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
+        if(verbose>0)print(paste0("retrying step 8-9 compersond for chr",chr,". Trying to split it in pieces (non-normal low memory running)"))
         cmd7 <- paste("split --lines 5000000 ",runDir,"/step_8_chr",chr,".gen ",runDir,"/step_8_extra_chr",chr,".gen",sep="")
         system(cmd7)
         chunks<-grep(paste("step_8_extra_chr",chr,"\\.gena[a-z]$",sep=""),list.files(runDir),value=T)

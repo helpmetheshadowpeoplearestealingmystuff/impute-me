@@ -117,7 +117,7 @@ rm shapeit.v2.r904.glibcv2.17.linux.tar.gz
 
 #Get gtools
 WORKDIR /imputeme/programs
-RUN wget http://www.well.ox.ac.uk/~cfreeman/software/gwas/gtool_v0.7.5_x86_64.tgz && \
+RUN wget http://www.well.ox.ac.uk/~cfreeperson/software/gwas/gtool_v0.7.5_x86_64.tgz && \
 tar zxvf gtool_v0.7.5_x86_64.tgz && \
 rm gtool_v0.7.5_x86_64.tgz
 
@@ -161,7 +161,7 @@ EXPOSE 3838
 #set work dir to home folder
 WORKDIR /home/ubuntu
 
-#final command
+#final compersond
 CMD shiny-server
 
 
